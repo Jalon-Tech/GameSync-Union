@@ -12,13 +12,9 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
@@ -27,65 +23,57 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
     header {
       background-color: var(--black-faded);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
+      flex-wrap: wrap;
     }
-
     .logo {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center; margin-bottom: 0.5rem;
     }
-
     .logo img {
-      height: 50px;
-      margin-right: 1rem;
+      height: 50px; margin-right: 1rem;
     }
-
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
-      color: var(--gsu-red);
+      color: var(--white-text);
     }
-
+    nav {
+      display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center;
+    }
     nav a {
-      margin: 0 1rem;
       text-decoration: none;
       color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
     }
-
     nav a:hover {
       color: var(--gsu-red);
     }
-
     main {
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 2rem;
       flex: 1;
     }
-
     .section-header {
       text-align: center;
       margin-bottom: 2rem;
     }
-
     .section-header h1 {
       font-family: 'Montserrat', sans-serif;
       font-size: 2.5rem;
       color: var(--gsu-red);
     }
-
     .section-header p {
       font-size: 1.1rem;
       color: #ccc;
     }
-
     .placeholder {
       background-color: var(--black-faded);
       padding: 2rem;
@@ -93,36 +81,48 @@
       text-align: center;
       color: #aaa;
     }
-
     footer {
       background-color: var(--black-faded);
       text-align: center;
-      padding: 1rem 1rem;
+      padding: 1rem;
     }
-
     .platform-icons {
       display: flex;
       justify-content: center;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 1.5rem;
       margin-bottom: 0.6rem;
     }
-
     .platform-icons img {
       height: 32px;
-      width: auto;
       opacity: 0.9;
       transition: opacity 0.2s ease;
     }
-
     .platform-icons img:hover {
       opacity: 1;
     }
-
     footer p {
       color: #ccc;
       font-size: 1rem;
       font-family: 'Roboto', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .logo-text { font-size: 1.3rem; }
+      .section-header h1 { font-size: 2rem; }
+      .section-header p { font-size: 1rem; }
+      nav a { font-size: 0.9rem; }
+      main { padding: 0 1rem; }
+      .placeholder { padding: 1.2rem; font-size: 0.95rem; }
+    }
+
+    @media (max-width: 480px) {
+      .logo img { height: 40px; }
+      .logo-text { font-size: 1.1rem; }
+      .section-header h1 { font-size: 1.7rem; }
+      .section-header p { font-size: 0.95rem; }
+      .platform-icons img { height: 28px; }
+      footer p { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -130,7 +130,7 @@
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text" style="color: #FFFFFF;">GameSync Union</div>
+      <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
       <a href="index.html">Home</a>
@@ -145,11 +145,10 @@
   <main>
     <div class="section-header">
       <h1>Community Gameplay Videos</h1>
-      <p>Relive epic moments, flawless runs, and funny clips from GameSync players.</p>
+      <p>The best moments captured by players — combos, clutches, and cinematic replays.</p>
     </div>
-
     <div class="placeholder">
-      [This page will showcase video uploads from the community, including highlights, replays, and creative gameplay moments.]
+      [This section will display a gallery of uploaded gameplay clips submitted by users.]
     </div>
   </main>
 
