@@ -85,7 +85,7 @@
       margin-bottom: 0.7rem;
     }
 
-    .input-field {
+    .input-field, textarea {
       padding: 0.6rem;
       border: none;
       border-radius: 6px;
@@ -93,6 +93,7 @@
       width: 100%;
       background-color: #2a2a2a;
       color: var(--white-text);
+      resize: none;
     }
 
     .btn {
@@ -130,7 +131,7 @@
       filter: grayscale(100%) brightness(140%);
     }
 
-    video {
+    video, iframe {
       width: 100%;
       border-radius: 6px;
       margin-top: 0.6rem;
@@ -165,8 +166,9 @@
       <div class="box">
         <h2>Upload Tips</h2>
         <p>🎮 Use MP4 format for gameplay clips</p>
-        <p>🎨 Use JPG/PNG for screenshots</p>
-        <p>🔥 Max file size: 25MB</p>
+        <p>🖼 Upload JPG/PNG artwork or game visuals</p>
+        <p>🔗 Paste a full YouTube video URL for embeds</p>
+        <p>🔥 Max file size for direct uploads: 25MB</p>
       </div>
     </aside>
 
@@ -174,24 +176,30 @@
       <div class="box">
         <h2>Upload Your Content</h2>
         <input type="text" class="input-field" placeholder="Title of upload" />
-        <textarea class="input-field" placeholder="Short description (optional)"></textarea>
+        <textarea class="input-field" placeholder="Description (optional)"></textarea>
         <input type="file" class="input-field" />
-        <button class="btn">Upload</button>
-        <p class="upload-preview">* Upload functionality will connect to Firebase or backend later.</p>
+        <input type="text" class="input-field" placeholder="YouTube Video URL (optional)" />
+        <button class="btn">Submit Upload</button>
+        <p class="upload-preview">* Future support for Firebase will allow real uploads and previews.</p>
       </div>
 
       <div class="box">
         <h2>Recent Uploads</h2>
-        <p>[This section will display your recent videos, screenshots, or other uploads]</p>
-        <!-- Example placeholder video -->
+        <p>[Your uploads will be listed here with previews]</p>
+
+        <!-- Example Video Upload -->
         <video controls src="sample-upload.mp4"></video>
+
+        <!-- Example YouTube Embed -->
+        <iframe height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+        title="YouTube video player" frameborder="0" allowfullscreen></iframe>
       </div>
     </main>
 
     <aside>
       <div class="box">
         <h2>Top Clips This Week</h2>
-        <p>[Display trending uploads here]</p>
+        <p>[Highlight the most viewed uploads here]</p>
       </div>
     </aside>
   </div>
