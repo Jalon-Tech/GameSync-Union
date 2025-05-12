@@ -7,33 +7,6 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-    .search-filters {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-}
-
-.search-filters input,
-.search-filters select {
-  padding: 0.7rem 1rem;
-  border-radius: 6px;
-  border: none;
-  background-color: #2a2a2a;
-  color: var(--white-text);
-  font-size: 1rem;
-  min-width: 240px;
-  max-width: 300px;
-  transition: border 0.3s ease;
-}
-
-.search-filters input:focus,
-.search-filters select:focus {
-  outline: none;
-  border: 1px solid var(--gsu-red);
-}
-
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -112,7 +85,7 @@
       margin-bottom: 0.7rem;
     }
 
-    .input-field {
+    .input-field, select {
       padding: 0.6rem;
       border: none;
       border-radius: 6px;
@@ -120,6 +93,14 @@
       width: 100%;
       background-color: #2a2a2a;
       color: var(--white-text);
+      font-family: 'Roboto', sans-serif;
+    }
+
+    label {
+      display: block;
+      margin: 0.5rem 0 0.3rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
     }
 
     .btn {
@@ -213,28 +194,32 @@
     <aside>
       <div class="box">
         <h2>Filter Games</h2>
-        <input type="text" placeholder="Search by game title...">
-      <select>
-        <option value="">All Platforms</option>
-        <option value="pc">PC</option>
-        <option value="playstation5">PlayStation 5</option>
-        <option value="xbox-series-x">Xbox Series X|S</option>
-        <option value="switch">Nintendo Switch</option>
-      </select>
 
-      <select>
-        <option value="">All Genres</option>
-        <option>Action</option>
-        <option>RPG (Role-Playing Games)</option>
-        <option>Fighting</option>
-        <option>Platformer</option>
-        <option>Adventure</option>
-        <option>Sports</option>
-        <option>Racing</option>
-        <option>Shooter (FPS / Third-Person)</option>
-      </select>
-        
-        <button class="btn">Apply Filters</button>
+        <input type="text" class="input-field" placeholder="Search by game title..." />
+
+        <label for="platformFilter">Platform</label>
+        <select id="platformFilter" class="input-field">
+          <option value="">All Platforms</option>
+          <option value="pc">PC</option>
+          <option value="playstation5">PlayStation 5</option>
+          <option value="xbox-series-x">Xbox Series X|S</option>
+          <option value="switch">Nintendo Switch</option>
+        </select>
+
+        <label for="genreFilter">Genre</label>
+        <select id="genreFilter" class="input-field">
+          <option value="">All Genres</option>
+          <option>Action</option>
+          <option>RPG (Role-Playing Games)</option>
+          <option>Fighting</option>
+          <option>Platformer</option>
+          <option>Adventure</option>
+          <option>Sports</option>
+          <option>Racing</option>
+          <option>Shooter (FPS / Third-Person)</option>
+        </select>
+
+        <button class="btn" style="margin-top: 1rem;">Apply Filters</button>
       </div>
     </aside>
 
