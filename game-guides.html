@@ -12,9 +12,13 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
+
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
@@ -23,6 +27,7 @@
       flex-direction: column;
       min-height: 100vh;
     }
+
     header {
       background-color: var(--black-faded);
       display: flex;
@@ -31,20 +36,31 @@
       padding: 1rem 2rem;
       flex-wrap: wrap;
     }
+
     .logo {
-      display: flex; align-items: center; margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
     }
+
     .logo img {
-      height: 50px; margin-right: 1rem;
+      height: 50px;
+      margin-right: 1rem;
     }
+
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--white-text);
     }
+
     nav {
-      display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
     }
+
     nav a {
       text-decoration: none;
       color: var(--white-text);
@@ -52,40 +68,73 @@
       transition: color 0.3s ease;
       font-size: 1rem;
     }
+
     nav a:hover {
       color: var(--gsu-red);
     }
+
     main {
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 2rem;
       flex: 1;
     }
+
     .section-header {
       text-align: center;
       margin-bottom: 2rem;
     }
+
     .section-header h1 {
       font-family: 'Montserrat', sans-serif;
       font-size: 2.5rem;
       color: var(--gsu-red);
     }
+
     .section-header p {
       font-size: 1.1rem;
       color: #ccc;
     }
-    .placeholder {
+
+    .box {
       background-color: var(--black-faded);
-      padding: 2rem;
       border-radius: 8px;
-      text-align: center;
-      color: #aaa;
+      padding: 2rem;
+      margin-top: 2rem;
     }
+
+    .box h2 {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      color: var(--gsu-red);
+    }
+
+    .box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .box ul li {
+      margin-bottom: 1rem;
+    }
+
+    .box ul li a {
+      color: var(--gsu-red);
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    .box ul li a:hover {
+      text-decoration: underline;
+    }
+
     footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1rem;
     }
+
     .platform-icons {
       display: flex;
       justify-content: center;
@@ -93,14 +142,17 @@
       gap: 1.5rem;
       margin-bottom: 0.6rem;
     }
+
     .platform-icons img {
       height: 32px;
       opacity: 0.9;
       transition: opacity 0.2s ease;
     }
+
     .platform-icons img:hover {
       opacity: 1;
     }
+
     footer p {
       color: #ccc;
       font-size: 1rem;
@@ -110,17 +162,16 @@
     @media (max-width: 768px) {
       .logo-text { font-size: 1.3rem; }
       .section-header h1 { font-size: 2rem; }
-      .section-header p { font-size: 1rem; }
       nav a { font-size: 0.9rem; }
       main { padding: 0 1rem; }
-      .placeholder { padding: 1.2rem; font-size: 0.95rem; }
     }
 
     @media (max-width: 480px) {
       .logo img { height: 40px; }
       .logo-text { font-size: 1.1rem; }
       .section-header h1 { font-size: 1.7rem; }
-      .section-header p { font-size: 0.95rem; }
+      .box { padding: 1.2rem; }
+      .box ul li a { font-size: 0.95rem; }
       .platform-icons img { height: 28px; }
       footer p { font-size: 0.85rem; }
     }
@@ -145,11 +196,19 @@
   <main>
     <div class="section-header">
       <h1>Game Guides</h1>
-      <p>Find boss strategies, tutorials, combo breakdowns, and community knowledge all in one spot.</p>
+      <p>Find tutorials, strategies, and community-powered tips for all types of games.</p>
     </div>
-    <div class="placeholder">
-      [This page will list all guide categories: <br>
-      <strong>Boss Fights, Tutorials, Combos, Trophy Tips,</strong> and <strong>Community Discussions</strong>]
+
+    <div class="box">
+      <h2>Guide Categories</h2>
+      <ul>
+        <li>🔥 <a href="boss-fight-strategies.html">Boss Fight Strategies</a></li>
+        <li>📹 <a href="gameplay-tutorials.html">Gameplay Tutorials</a></li>
+        <li>🎮 <a href="community-gameplay-videos.html">Enjoyable Gameplay Videos from the Community</a></li>
+        <li>🥋🥊 <a href="combo-guides.html">Combo Guides for Fighting Games</a></li>
+        <li>🏆 <a href="trophy-tips.html">Tips for Acquiring Trophies and Achievements</a></li>
+        <li>💬 <a href="guide-discussion.html">Guide Discussion & Community Chat</a></li>
+      </ul>
     </div>
   </main>
 
