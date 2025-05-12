@@ -87,11 +87,36 @@
       color: #aaa;
     }
 
-    footer {
+   footer {
   background-color: var(--black-faded);
   text-align: center;
-  padding: 1.2rem 1rem;
-  margin-top: 4rem;
+  padding: 1rem 1rem;
+  margin-top: 3rem;
+}
+
+.platform-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.platform-icons img {
+  height: 28px;
+  width: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.platform-icons img:hover {
+  opacity: 1;
+}
+
+footer p {
+  color: #ccc;
+  font-size: 0.95rem;
+  font-family: 'Roboto', sans-serif;
 }
 
 .platform-icons {
@@ -152,7 +177,6 @@ footer p {
   </div>
   <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
 </footer>
-
 
 </body>
 </html>
