@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Uploads | GameSync Union</title>
-  <link rel="icon" href="GSU_Logo.png" type="image/png">
+  <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -142,6 +142,24 @@
       margin-top: 0.5rem;
       opacity: 0.8;
     }
+
+    .search-filters {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-filters input,
+    .search-filters select {
+      padding: 0.6rem;
+      background-color: #2a2a2a;
+      color: var(--white-text);
+      border: none;
+      border-radius: 6px;
+      font-family: 'Roboto', sans-serif;
+      min-width: 200px;
+    }
   </style>
 </head>
 <body>
@@ -183,10 +201,31 @@
         <p class="upload-preview">* Future support for Firebase will allow real uploads and previews.</p>
       </div>
 
+      <div class="search-filters">
+        <input type="text" placeholder="Search uploads..." />
+
+        <select>
+          <option value="">All Categories</option>
+          <option value="boss">Boss Fight Strategies</option>
+          <option value="tutorial">Gameplay Tutorials</option>
+          <option value="community">Community Gameplay Videos</option>
+          <option value="combo">Combo Guides for Fighting Games</option>
+          <option value="trophy">Trophy & Achievement Tips</option>
+          <option value="chat">Guide Discussion & Community Chat</option>
+        </select>
+
+        <select>
+          <option value="">All Platforms</option>
+          <option value="ps5">PlayStation</option>
+          <option value="xbox">Xbox</option>
+          <option value="pc">PC</option>
+          <option value="switch">Nintendo Switch</option>
+        </select>
+      </div>
+
       <div class="box">
         <h2>Recent Uploads</h2>
         <p>[Your uploads will be listed here with previews]</p>
-        
       </div>
     </main>
 
