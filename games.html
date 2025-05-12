@@ -186,8 +186,27 @@
     <aside>
       <div class="box">
         <h2>Filter Games</h2>
-        <input type="text" class="input-field" placeholder="Search by name..." />
-        <input type="text" class="input-field" placeholder="Platform (e.g. PS5)" />
+        <input type="text" placeholder="Search by game title...">
+      <select>
+        <option value="">All Platforms</option>
+        <option value="pc">PC</option>
+        <option value="playstation5">PlayStation 5</option>
+        <option value="xbox-series-x">Xbox Series X|S</option>
+        <option value="switch">Nintendo Switch</option>
+      </select>
+
+      <select>
+        <option value="">All Genres</option>
+        <option>Action</option>
+        <option>RPG (Role-Playing Games)</option>
+        <option>Fighting</option>
+        <option>Platformer</option>
+        <option>Adventure</option>
+        <option>Sports</option>
+        <option>Racing</option>
+        <option>Shooter (FPS / Third-Person)</option>
+      </select>
+        
         <button class="btn">Apply Filters</button>
       </div>
     </aside>
