@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Uploads | GameSync Union</title>
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gsu-red: #e60023;
+      --black-main: #191818;
+      --black-faded: #1F1F1F;
+      --white-text: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--black-main);
+      color: var(--white-text);
+    }
+
+    header {
+      background-color: var(--black-faded);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 60px;
+      margin-right: 1rem;
+    }
+
+    .logo-text {
+      font-size: 1.6rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--gsu-red);
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
+      padding: 2rem;
+    }
+
+    aside, main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .box {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .box h2 {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.7rem;
+    }
+
+    .input-field {
+      padding: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      width: 100%;
+      background-color: #2a2a2a;
+      color: var(--white-text);
+    }
+
+    .btn {
+      background-color: var(--gsu-red);
+      border: none;
+      color: var(--white-text);
+      padding: 0.8rem;
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    footer {
+      background-color: var(--black-faded);
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    .platform-icons img {
+      height: 50px;
+      margin: 0 15px;
+      filter: grayscale(100%) brightness(140%);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 6px;
+      margin-top: 0.6rem;
+    }
+
+    .upload-preview {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <div class="logo-text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">Trophies</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">Guides</a>
+      <a href="uploads.html">Uploads</a>
+    </nav>
+  </header>
+
+  <div class="main-container">
+    <aside>
+      <div class="box">
+        <h2>Upload Tips</h2>
+        <p>🎮 Use MP4 format for gameplay clips</p>
+        <p>🎨 Use JPG/PNG for screenshots</p>
+        <p>🔥 Max file size: 25MB</p>
+      </div>
+    </aside>
+
+    <main>
+      <div class="box">
+        <h2>Upload Your Content</h2>
+        <input type="text" class="input-field" placeholder="Title of upload" />
+        <textarea class="input-field" placeholder="Short description (optional)"></textarea>
+        <input type="file" class="input-field" />
+        <button class="btn">Upload</button>
+        <p class="upload-preview">* Upload functionality will connect to Firebase or backend later.</p>
+      </div>
+
+      <div class="box">
+        <h2>Recent Uploads</h2>
+        <p>[This section will display your recent videos, screenshots, or other uploads]</p>
+        <!-- Example placeholder video -->
+        <video controls src="sample-upload.mp4"></video>
+      </div>
+    </main>
+
+    <aside>
+      <div class="box">
+        <h2>Top Clips This Week</h2>
+        <p>[Display trending uploads here]</p>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="platform-icons">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+  </footer>
+
+</body>
+</html>
