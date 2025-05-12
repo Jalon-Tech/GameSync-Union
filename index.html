@@ -1,25 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Basic setup for encoding and responsive design -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png">
-
-  <!-- Importing custom fonts for branding consistency -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-
-  <!-- === Global Styles and Theme Variables === -->
   <style>
     :root {
-      --gsu-red: #e60023;           /* GSU brand red */
-      --black-main: #191818;        /* Primary dark background */
-      --black-faded: #1F1F1F;       /* Slightly lighter dark shade */
-      --white-text: #FFFFFF;        /* Universal white text color */
+      --gsu-red: #e60023;
+      --black-main: #191818;
+      --black-faded: #1F1F1F;
+      --white-text: #FFFFFF;
     }
 
-    /* Universal reset for padding, margins, and box-sizing */
     * {
       margin: 0;
       padding: 0;
@@ -32,48 +26,53 @@
       color: var(--white-text);
     }
 
-    /* === Header Section === */
     header {
       background-color: var(--black-faded);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
+      flex-wrap: wrap;
     }
 
-    /* Logo styling (icon + title) */
     .logo {
       display: flex;
       align-items: center;
+      margin-bottom: 0.5rem;
     }
 
     .logo img {
-      height: 60px;
+      height: 50px;
       margin-right: 1rem;
     }
 
     .logo-text {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-family: 'Montserrat', sans-serif;
     }
 
-    /* Navigation bar links */
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
     nav a {
-      margin: 0 1rem;
       text-decoration: none;
       color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
       transition: color 0.3s ease;
+      font-size: 1rem;
     }
 
     nav a:hover {
       color: var(--gsu-red);
     }
 
-    /* === Main Grid Layout === */
     .main-container {
       display: grid;
-      grid-template-columns: 1fr 3fr 1.2fr; /* Left, center, and right panels */
+      grid-template-columns: 1fr 3fr 1.2fr;
       gap: 1rem;
       padding: 2rem;
     }
@@ -84,7 +83,6 @@
       gap: 1.2rem;
     }
 
-    /* Universal box styling for all content sections */
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
@@ -96,7 +94,6 @@
       margin-bottom: 0.7rem;
     }
 
-    /* Form input styling */
     .input-field {
       padding: 0.6rem;
       border: none;
@@ -107,7 +104,6 @@
       color: var(--white-text);
     }
 
-    /* Reusable button styling */
     .btn {
       background-color: var(--gsu-red);
       border: none;
@@ -123,7 +119,6 @@
       opacity: 0.85;
     }
 
-    /* === Footer Styling === */
     footer {
       background-color: var(--black-faded);
       text-align: center;
@@ -131,43 +126,89 @@
       margin-top: 2rem;
     }
 
-    /* Platform logos in the footer */
     .platform-icons {
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px 0;
+      flex-wrap: wrap;
     }
 
     .platform-icons img {
       height: 50px;
-      margin: 0 15px;
+      margin: 10px 15px;
       filter: grayscale(100%) brightness(140%);
     }
 
-    /* Layout section with horizontally spaced highlights */
     .section-flex {
       display: flex;
       justify-content: space-between;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .section-flex div {
-      flex: 1;
+      flex: 1 1 100px;
       text-align: center;
+    }
+
+    /* ===== Responsive Fixes ===== */
+
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .section-flex {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .logo img {
+        height: 40px;
+      }
+
+      .logo-text {
+        font-size: 1.2rem;
+      }
+
+      nav a {
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 0.7rem;
+      }
+
+      .input-field {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- === HEADER: Branding and Navigation === -->
   <header>
     <div class="logo">
-      <!-- GSU logo with brand color filter -->
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
-    <!-- Main site navigation -->
     <nav>
       <a href="index.html">Home</a>
       <a href="games.html">Games</a>
@@ -178,12 +219,8 @@
     </nav>
   </header>
 
-  <!-- === MAIN CONTENT GRID === -->
   <div class="main-container">
-
-    <!-- === LEFT SIDEBAR === -->
     <aside>
-      <!-- Account creation/login box -->
       <div class="box" id="auth-box">
         <h2>Create Account or Sign In</h2>
         <input type="text" class="input-field" placeholder="Email" />
@@ -192,27 +229,21 @@
         <button class="btn">Create Account</button>
         <p style="text-align:center; margin-top:0.6rem;">Already a member? <a href="#" style="color: #e60023;">Log In</a></p>
       </div>
-
-      <!-- Placeholder for user-generated content -->
       <div class="box">
         <h2>Recent Uploads</h2>
         <p>[Your gameplay clips will show up here]</p>
       </div>
     </aside>
 
-    <!-- === CENTER CONTENT (MAIN FEED) === -->
     <main>
-      <!-- Welcome introduction -->
       <div class="box" style="text-align:center;">
         <h2>Welcome to GameSync Union</h2>
         <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
         <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
       </div>
 
-      <!-- Search bar for global content discovery -->
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
-      <!-- Community section with highlights -->
       <div class="box">
         <h2>Community Highlights</h2>
         <div class="section-flex">
@@ -222,7 +253,6 @@
         </div>
       </div>
 
-      <!-- Static guide content preview -->
       <div class="box">
         <h2>Game Guides</h2>
         <p>Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
@@ -234,31 +264,25 @@
           <li><a href="trophy-tips.html" style="color: #e60023;">Tips for Acquiring Trophies and Achievements</a></li>
           <li><a href="guide-discussion.html" style="color: #e60023;">Guide Discussion & Community Chat</a></li>
         </ul>
-        
       </div>
 
-      <!-- Trophy system display -->
       <div class="box">
         <h2>Your Trophies</h2>
         <p>[View trophies and compare achievements]</p>
       </div>
 
-      <!-- User-uploaded content section -->
       <div class="box">
         <h2>User Uploads</h2>
         <p>[Uploaded game videos and highlight reels]</p>
       </div>
 
-      <!-- Community fan art gallery -->
       <div class="box">
         <h2>Art Showcase</h2>
         <p>[In-game screenshots, posters, and original artwork]</p>
       </div>
     </main>
 
-    <!-- === RIGHT SIDEBAR === -->
     <aside>
-      <!-- Profile summary for the logged-in user -->
       <div class="box">
         <h2>Your Profile</h2>
         <p>🎯 Favorite Games</p>
@@ -266,7 +290,6 @@
         <p>🏆 Trophy Stats</p>
       </div>
 
-      <!-- Dynamic news pulled from external APIs -->
       <div class="box">
         <h2>Upcoming Games & Events</h2>
         <p>Stay updated on everything new in gaming:</p>
@@ -285,8 +308,7 @@
     </aside>
   </div>
 
-  <!-- === FOOTER WITH PLATFORM ICONS === -->
- <footer>
+  <footer>
     <div class="platform-icons">
       <img src="PS_Logo.png" alt="PlayStation" />
       <img src="Xbox.png" alt="Xbox" />
@@ -297,7 +319,5 @@
       &copy; 2025 GameSync Union. Built for gamers, by gamers.
     </p>
   </footer>
-
-
 </body>
 </html>
