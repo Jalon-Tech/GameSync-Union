@@ -85,7 +85,7 @@
       margin-bottom: 0.7rem;
     }
 
-    .input-field, select {
+    .input-field, select, textarea {
       padding: 0.6rem;
       border: none;
       border-radius: 6px;
@@ -94,6 +94,7 @@
       background-color: #2a2a2a;
       color: var(--white-text);
       font-family: 'Roboto', sans-serif;
+      resize: none;
     }
 
     label {
@@ -152,7 +153,7 @@
     footer {
       background-color: var(--black-faded);
       text-align: center;
-      padding: 1rem;
+      padding: 1rem 0;
       margin-top: 2rem;
     }
 
@@ -160,7 +161,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px 0;
+      padding: 10px 0 0.5rem;
     }
 
     .platform-icons img {
@@ -263,42 +264,43 @@
         <p>🛡️ God of War: Ragnarok</p>
       </div>
 
-     <div class="box">
-  <h2>Suggest a Game</h2>
+      <div class="box">
+        <h2>Suggest a Game</h2>
 
-  <label for="suggestTitle">Game Title</label>
-  <input type="text" id="suggestTitle" class="input-field" placeholder="Game Title" />
+        <label for="suggestTitle">Game Title</label>
+        <input type="text" id="suggestTitle" class="input-field" placeholder="Game Title" />
 
-  <label for="suggestPlatform">Platform</label>
-  <select id="suggestPlatform" class="input-field">
-    <option value="">Select Platform</option>
-    <option value="pc">PC</option>
-    <option value="playstation5">PlayStation 5</option>
-    <option value="xbox">Xbox Series X|S</option>
-    <option value="switch">Nintendo Switch</option>
-  </select>
+        <label for="suggestPlatform">Platform</label>
+        <select id="suggestPlatform" class="input-field">
+          <option value="">Select Platform</option>
+          <option value="pc">PC</option>
+          <option value="playstation5">PlayStation 5</option>
+          <option value="xbox">Xbox Series X|S</option>
+          <option value="switch">Nintendo Switch</option>
+        </select>
 
-  <label for="suggestRating">Your Rating (1–10)</label>
-  <select id="suggestRating" class="input-field">
-    <option value="">Rate it</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-    <option value="6">6</option>
-    <option value="7">7</option>
-    <option value="8">8</option>
-    <option value="9">9</option>
-    <option value="10">10</option>
-  </select>
+        <label for="suggestRating">Your Rating (1–10)</label>
+        <select id="suggestRating" class="input-field">
+          <option value="">Rate it</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
 
-  <label for="suggestReview">Write a Review</label>
-  <textarea id="suggestReview" class="input-field" rows="4" placeholder="Share why you recommend this game..."></textarea>
+        <label for="suggestReview">Write a Review</label>
+        <textarea id="suggestReview" class="input-field" rows="4" placeholder="Share why you recommend this game..."></textarea>
 
-  <button class="btn" style="margin-top: 1rem;">Submit Suggestion</button>
-</div>
-
+        <button class="btn" style="margin-top: 1rem;">Submit Suggestion</button>
+      </div>
+    </aside>
+  </div>
 
   <!-- === FOOTER === -->
   <footer>
@@ -308,6 +310,9 @@
       <img src="Steam.png" alt="PC" />
       <img src="Switch.png" alt="Nintendo Switch" />
     </div>
+    <p style="color: #ccc; font-size: 0.9rem; font-family: 'Roboto', sans-serif; padding-bottom: 0.5rem;">
+      &copy; 2025 GameSync Union. Built for gamers, by gamers.
+    </p>
   </footer>
 
 </body>
