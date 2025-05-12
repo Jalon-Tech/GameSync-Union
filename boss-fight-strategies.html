@@ -34,11 +34,13 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
+      flex-wrap: wrap;
     }
 
     .logo {
       display: flex;
       align-items: center;
+      margin-bottom: 0.5rem;
     }
 
     .logo img {
@@ -49,14 +51,22 @@
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
-      color: var(--gsu-red);
+      color: var(--white-text);
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
     }
 
     nav a {
-      margin: 0 1rem;
       text-decoration: none;
       color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
     }
 
     nav a:hover {
@@ -105,6 +115,7 @@
       justify-content: center;
       align-items: center;
       gap: 1.5rem;
+      flex-wrap: wrap;
       margin-bottom: 0.6rem;
     }
 
@@ -124,13 +135,66 @@
       font-size: 1rem;
       font-family: 'Roboto', sans-serif;
     }
+
+    @media (max-width: 768px) {
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .section-header h1 {
+        font-size: 2rem;
+      }
+
+      .section-header p {
+        font-size: 1rem;
+      }
+
+      main {
+        padding: 0 1rem;
+      }
+
+      nav a {
+        font-size: 0.9rem;
+      }
+
+      .placeholder {
+        padding: 1.2rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo img {
+        height: 40px;
+      }
+
+      .logo-text {
+        font-size: 1.1rem;
+      }
+
+      .section-header h1 {
+        font-size: 1.7rem;
+      }
+
+      .section-header p {
+        font-size: 0.95rem;
+      }
+
+      .platform-icons img {
+        height: 28px;
+      }
+
+      footer p {
+        font-size: 0.85rem;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text" style="color: #FFFFFF;">GameSync Union</div>
+      <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
       <a href="index.html">Home</a>
