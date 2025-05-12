@@ -197,30 +197,34 @@
         <textarea class="input-field" placeholder="Description (optional)"></textarea>
         <input type="file" class="input-field" />
         <input type="text" class="input-field" placeholder="YouTube Video URL (optional)" />
+
+        <div class="search-filters">
+          
+          <label for="uploadType" style="margin-top: 0.5rem;">Upload Type</label>
+          <input type="text" id="uploadType" name="uploadType" placeholder="e.g., Gameplay Clip, Trophy Tip, Fan Art" class="input-field" />
+         
+          <select>
+            <option value="">All Categories</option>
+            <option value="boss">Boss Fight Strategies</option>
+            
+            <option value="tutorial">Gameplay Tutorials</option>
+            <option value="community">Community Gameplay Videos</option>
+            <option value="combo">Combo Guides for Fighting Games</option>
+            <option value="trophy">Trophy & Achievement Tips</option>
+            <option value="chat">Guide Discussion & Community Chat</option>
+            <option value="art">Fan Art</option>
+          </select>
+          <select>
+            <option value="">All Platforms</option>
+            <option value="ps5">PlayStation</option>
+            <option value="xbox">Xbox</option>
+            <option value="pc">PC</option>
+            <option value="switch">Nintendo Switch</option>
+          </select>
+        </div>
+
         <button class="btn">Submit Upload</button>
         <p class="upload-preview">* Future support for Firebase will allow real uploads and previews.</p>
-      </div>
-
-      <div class="search-filters">
-        <input type="text" placeholder="Search uploads..." />
-
-        <select>
-          <option value="">All Categories</option>
-          <option value="boss">Boss Fight Strategies</option>
-          <option value="tutorial">Gameplay Tutorials</option>
-          <option value="community">Community Gameplay Videos</option>
-          <option value="combo">Combo Guides for Fighting Games</option>
-          <option value="trophy">Trophy & Achievement Tips</option>
-          <option value="chat">Guide Discussion & Community Chat</option>
-        </select>
-
-        <select>
-          <option value="">All Platforms</option>
-          <option value="ps5">PlayStation</option>
-          <option value="xbox">Xbox</option>
-          <option value="pc">PC</option>
-          <option value="switch">Nintendo Switch</option>
-        </select>
       </div>
 
       <div class="box">
