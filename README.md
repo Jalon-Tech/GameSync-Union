@@ -1,2 +1,1 @@
-# GameSync-Union
-GameSync Union is a gaming community platform where players can showcase their games, trophies, consoles, and fan content. Built with Firebase and JavaScript, it features user profiles, guides, release updates, and forums—designed to unite dedicated players across all platforms.
+GameSync Union is a web platform for gamers to showcase their profiles, trophies, consoles, and favorites. Built with Firebase and JavaScript, it features user auth, game release updates via API, and community-driven content—designed to unite players across all platforms.
