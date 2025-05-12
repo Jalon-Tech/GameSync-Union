@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Uploads | GameSync Union</title>
-  <link rel="icon" href="GSU_Logo.png" type="image/png" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uploads | GameSync Union</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --gsu-red: #e60023;
@@ -13,168 +12,125 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
-
     header {
       background-color: var(--black-faded);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
+      flex-wrap: wrap;
     }
-
     .logo {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center; margin-bottom: 0.5rem;
     }
-
     .logo img {
-      height: 60px;
-      margin-right: 1rem;
+      height: 50px; margin-right: 1rem;
     }
-
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
+      color: var(--white-text);
     }
-
+    nav {
+      display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center;
+    }
     nav a {
-      margin: 0 1rem;
       text-decoration: none;
       color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
       transition: color 0.3s ease;
+      font-size: 1rem;
     }
-
     nav a:hover {
       color: var(--gsu-red);
     }
-
-    .main-container {
-      display: grid;
-      grid-template-columns: 1fr 3fr 1.2fr;
-      gap: 1rem;
-      padding: 2rem;
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      flex: 1;
     }
-
-    aside, main {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
+    .section-header {
+      text-align: center;
+      margin-bottom: 2rem;
     }
-
-    .box {
+    .section-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.5rem;
+      color: var(--gsu-red);
+    }
+    .section-header p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+    .placeholder {
       background-color: var(--black-faded);
+      padding: 2rem;
       border-radius: 8px;
-      padding: 1rem;
+      text-align: center;
+      color: #aaa;
     }
-
-    .box h2 {
-      font-family: 'Montserrat', sans-serif;
-      margin-bottom: 0.7rem;
-    }
-
-    .input-field, textarea, select {
-      padding: 0.6rem;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 0.6rem;
-      width: 100%;
-      background-color: #2a2a2a;
-      color: var(--white-text);
-      font-family: 'Roboto', sans-serif;
-      resize: none;
-    }
-
-    .btn {
-      background-color: var(--gsu-red);
-      border: none;
-      color: var(--white-text);
-      padding: 0.8rem;
-      width: 100%;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .btn:hover {
-      opacity: 0.85;
-    }
-
     footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1rem;
-      margin-top: 2rem;
     }
-
     .platform-icons {
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 20px 0;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
     }
-
     .platform-icons img {
-      height: 50px;
-      margin: 0 15px;
-      filter: grayscale(100%) brightness(140%);
+      height: 32px;
+      opacity: 0.9;
+      transition: opacity 0.2s ease;
     }
-
-    video, iframe {
-      width: 100%;
-      border-radius: 6px;
-      margin-top: 0.6rem;
+    .platform-icons img:hover {
+      opacity: 1;
     }
-
-    .upload-preview {
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      opacity: 0.8;
-    }
-
-    label {
-      display: block;
-      margin: 0.5rem 0 0.3rem;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-    }
-
-    .summary-box {
-      background-color: #292929;
-      border-radius: 6px;
-      padding: 0.8rem;
-      margin-top: 1.2rem;
-    }
-
-    .summary-box h3 {
-      font-family: 'Montserrat', sans-serif;
+    footer p {
+      color: #ccc;
       font-size: 1rem;
-      margin-bottom: 0.5rem;
+      font-family: 'Roboto', sans-serif;
     }
 
-    .summary-box p {
-      margin: 0.2rem 0;
+    @media (max-width: 768px) {
+      .logo-text { font-size: 1.3rem; }
+      .section-header h1 { font-size: 2rem; }
+      .section-header p { font-size: 1rem; }
+      nav a { font-size: 0.9rem; }
+      main { padding: 0 1rem; }
+      .placeholder { padding: 1.2rem; font-size: 0.95rem; }
+    }
+
+    @media (max-width: 480px) {
+      .logo img { height: 40px; }
+      .logo-text { font-size: 1.1rem; }
+      .section-header h1 { font-size: 1.7rem; }
+      .section-header p { font-size: 0.95rem; }
+      .platform-icons img { height: 28px; }
+      footer p { font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text">GAMESYNC UNION</div>
+      <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
       <a href="index.html">Home</a>
@@ -186,71 +142,15 @@
     </nav>
   </header>
 
-  <div class="main-container">
-    <aside>
-      <div class="box">
-        <h2>Upload Tips</h2>
-        <p>🎮 Use MP4 format for gameplay clips</p>
-        <p>🖼 Upload JPG/PNG artwork or game visuals</p>
-        <p>🔗 Paste a full YouTube video URL for embeds</p>
-        <p>🔥 Max file size for direct uploads: 25MB</p>
-      </div>
-    </aside>
-
-    <main>
-      <div class="box" style="min-height: 700px;">
-        <h2>Upload Your Content</h2>
-
-        <input type="text" class="input-field" placeholder="Title of upload" />
-        <textarea class="input-field" placeholder="Description (optional)"></textarea>
-        <input type="file" class="input-field" />
-        <input type="text" class="input-field" placeholder="YouTube Video URL (optional)" />
-
-        <label for="category">Select Upload Type:</label>
-        <select id="category" onchange="document.getElementById('uploadTypePreview').innerText = this.options[this.selectedIndex].text;">
-          <option value="">-- Choose Category --</option>
-          <option value="boss">Boss Fight Strategies</option>
-          <option value="tutorial">Gameplay Tutorials</option>
-          <option value="community">Community Gameplay Videos</option>
-          <option value="combo">Combo Guides for Fighting Games</option>
-          <option value="trophy">Trophy & Achievement Tips</option>
-          <option value="chat">Guide Discussion & Community Chat</option>
-          <option value="art">Fan Art</option>
-        </select>
-
-        <label for="platform">Select Platform:</label>
-        <select id="platform" onchange="document.getElementById('platformPreview').innerText = this.options[this.selectedIndex].text;">
-          <option value="">-- Choose Platform --</option>
-          <option value="ps5">PlayStation</option>
-          <option value="xbox">Xbox</option>
-          <option value="pc">PC</option>
-          <option value="switch">Nintendo Switch</option>
-        </select>
-
-        <div class="summary-box">
-          <h3>Selected Upload Summary</h3>
-          <p><strong>Upload Type:</strong> <span id="uploadTypePreview">None selected</span></p>
-          <p><strong>Platform:</strong> <span id="platformPreview">None selected</span></p>
-          <p style="opacity: 0.8;">Selections above auto-fill this section.</p>
-        </div>
-
-        <button class="btn" style="margin-top: 1.5rem;">Submit Upload</button>
-        <p class="upload-preview">* Future support for Firebase will allow real uploads and previews.</p>
-      </div>
-
-      <div class="box">
-        <h2>Recent Uploads</h2>
-        <p>[Your uploads will be listed here with previews]</p>
-      </div>
-    </main>
-
-    <aside>
-      <div class="box">
-        <h2>Top Clips This Week</h2>
-        <p>[Highlight the most viewed uploads here]</p>
-      </div>
-    </aside>
-  </div>
+  <main>
+    <div class="section-header">
+      <h1>Uploads</h1>
+      <p>Submit and showcase your best gameplay clips, screenshots, and art. Get seen by the community.</p>
+    </div>
+    <div class="placeholder">
+      [This section will allow video and image uploads with descriptions, tags, and comment interaction.]
+    </div>
+  </main>
 
   <footer>
     <div class="platform-icons">
@@ -259,11 +159,7 @@
       <img src="Steam.png" alt="PC" />
       <img src="Switch.png" alt="Nintendo Switch" />
     </div>
-    <p style="color: #ccc; font-size: 0.9rem; font-family: 'Roboto', sans-serif; padding-bottom: 0.5rem;">
-      &copy; 2025 GameSync Union. Built for gamers, by gamers.
-    </p>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
-
 </body>
 </html>
