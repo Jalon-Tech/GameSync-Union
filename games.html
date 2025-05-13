@@ -153,21 +153,28 @@
     footer {
       background-color: var(--black-faded);
       text-align: center;
-      padding: 1rem 0;
-      margin-top: 2rem;
+      padding: 1.2rem 1rem;
+      margin-top: 4rem;
     }
 
-    .platform-icons {
+       .platform-icons {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 10px 0 0.5rem;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
     }
-
+    
     .platform-icons img {
-      height: 50px;
-      margin: 0 15px;
-      filter: grayscale(100%) brightness(140%);
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
+    }
+    
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
     }
   </style>
 </head>
@@ -304,16 +311,13 @@
 
   <!-- === FOOTER === -->
   <footer>
-    <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
-    </div>
-    <p style="color: #ccc; font-size: 0.9rem; font-family: 'Roboto', sans-serif; padding-bottom: 0.5rem;">
-      &copy; 2025 GameSync Union. Built for gamers, by gamers.
-    </p>
+  <div class="platform-icons">
+    <img src="PS_Logo.png" alt="PlayStation" />
+    <img src="Xbox.png" alt="Xbox" />
+    <img src="Steam.png" alt="PC" />
+    <img src="Switch.png" alt="Nintendo Switch" />
+  </div>
+  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
 </body>
 </html>
