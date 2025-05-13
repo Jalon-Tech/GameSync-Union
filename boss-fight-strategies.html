@@ -209,21 +209,20 @@
   <main>
   <div class="section-header">
     <h1>Boss Fight Strategies</h1>
-    <p>Search, filter, and discover strategy breakdowns for bosses from games across all platforms.</p>
+    <p>Master the toughest encounters across PlayStation, Xbox, Switch, and PC. Each section is crafted to help you survive, adapt, and dominate the battlefield.</p>
   </div>
 
-  <!-- Search + Filters -->
+  <!-- Search and Filter Section -->
   <section style="margin-bottom: 2rem;">
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; background-color: var(--black-faded); padding: 1.5rem; border-radius: 10px;">
-
+    <div style="background-color: var(--black-faded); padding: 1.5rem; border-radius: 10px; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between;">
       <!-- Search Bar -->
       <input 
         type="text" 
         placeholder="Search by game name..." 
-        style="flex: 1 1 250px; padding: 0.6rem 1rem; border-radius: 6px; border: none; font-size: 1rem; font-family: 'Roboto'; background-color: #2a2a2a; color: white;"
+        style="flex: 1 1 260px; padding: 0.6rem 1rem; border-radius: 6px; border: none; font-size: 1rem; font-family: 'Roboto'; background-color: #2a2a2a; color: white;"
       />
 
-      <!-- Genre Dropdown -->
+      <!-- Genre Dropdown (Updated) -->
       <select 
         style="flex: 1 1 180px; padding: 0.6rem 1rem; border-radius: 6px; background-color: #2a2a2a; color: white; border: none; font-family: 'Montserrat'; font-size: 1rem;">
         <option value="">Genre</option>
@@ -237,6 +236,7 @@
         <option>Shooter</option>
       </select>
 
+
       <!-- Platform Dropdown -->
       <select 
         style="flex: 1 1 180px; padding: 0.6rem 1rem; border-radius: 6px; background-color: #2a2a2a; color: white; border: none; font-family: 'Montserrat'; font-size: 1rem;">
@@ -249,30 +249,56 @@
     </div>
   </section>
 
-  <!-- Boss Strategy Previews (Static for now) -->
-  <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-    <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
-      <h3 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.2rem;">🗡️ General Radahn – Elden Ring</h3>
-      <p style="color: #ccc; margin-top: 0.6rem;">Massive gravity-based boss. Ride Torrent, summon allies, and avoid his meteor drop. Phase 2 is aggressive—focus on mobility.</p>
-    </div>
-
-    <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
-      <h3 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.2rem;">🕷️ Venom – Spider-Man 2</h3>
-      <p style="color: #ccc; margin-top: 0.6rem;">Multi-phase symbiote fight. Use melee over gadgets. Counter his berserker lunges and time your symbiote parries.</p>
-    </div>
-
-    <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
-      <h3 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.2rem;">🔥 Ganon – Tears of the Kingdom</h3>
-      <p style="color: #ccc; margin-top: 0.6rem;">Classic boss with new tricks. Use Recall, dodge gloom corruption, and prep meals. Flurry rush is essential in final phases.</p>
+  <!-- Intro Section -->
+  <section style="margin-bottom: 2rem;">
+    <div style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
+      <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem;">What You'll Find Here:</h2>
+      <p style="color: #ccc; font-size: 1rem; line-height: 1.7;">
+        This hub breaks down boss mechanics, player-tested tactics, and counter strategies. Whether you're in a fast-paced fighter, a story-driven RPG, or an open-world epic, this is where gamers unite to prepare for battle.
+      </p>
+      <ul style="color: #aaa; margin-top: 1rem; padding-left: 1.2rem; line-height: 1.8;">
+        <li>🧠 Phase-by-phase boss breakdowns</li>
+        <li>⚔️ Weapon, ability, and elemental recommendations</li>
+        <li>⏱️ Reaction timing and parry/dodge windows</li>
+        <li>🎮 Platform-specific mechanics (PS5, Xbox Series X|S, Switch, PC)</li>
+        <li>🗂️ Genres covered: Action-RPGs, Platformers, Fighters, Soulslikes, Hack-and-Slash</li>
+      </ul>
     </div>
   </section>
 
-  <!-- Placeholder for Community Content -->
+  <!-- Boss Previews -->
+  <section style="margin-bottom: 2rem;">
+    <h2 style="font-family: 'Montserrat', sans-serif; color: var(--gsu-red); font-size: 1.5rem; margin-bottom: 1rem;">Featured Boss Highlights</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+      <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+        <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">🗡️ General Radahn – Elden Ring</h3>
+        <p style="color: #ccc; margin-top: 0.6rem;">Utilize Torrent, bait magic attacks, and stagger him with bleed. Beware his gravity dive mid-fight. Phase 2 is a chaos zone—stay mobile and alert.</p>
+      </div>
+
+      <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+        <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">🕷️ Venom – Marvel’s Spider-Man 2</h3>
+        <p style="color: #ccc; margin-top: 0.6rem;">Parry when possible, dodge heavy swings, and time your symbiote powers. Once enraged, he becomes unpredictable—precision is key.</p>
+      </div>
+
+      <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+        <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">🔥 Ganondorf – Tears of the Kingdom</h3>
+        <p style="color: #ccc; margin-top: 0.6rem;">Watch for gloom-based corruption. Fuse weapons wisely and use Recall creatively. His final form demands perfect dodge timing for flurry attacks.</p>
+      </div>
+
+      <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+        <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">👊 Shao Kahn – Mortal Kombat 1</h3>
+        <p style="color: #ccc; margin-top: 0.6rem;">Zoning and counter-play are essential. His armor will soak normal attacks—use meter burns and punish his unsafe hammer swings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Placeholder Community Section -->
   <section style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
     <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Community Contributions (Coming Soon)</h2>
-    <p style="color: #aaa; margin-top: 0.8rem;">When users begin submitting strategies and clips, they’ll be shown here with filter and search compatibility.</p>
+    <p style="color: #aaa; margin-top: 0.8rem;">Once users begin sharing tips, videos, and commentary, they’ll appear here automatically. Until then, enjoy hand-picked strategy previews and expert insights across genres.</p>
   </section>
 </main>
+
 
 
   <footer>
