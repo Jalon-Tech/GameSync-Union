@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,72 +12,68 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
-
     header {
       background-color: var(--black-faded);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
+      flex-wrap: wrap;
     }
-
     .logo {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center; margin-bottom: 0.5rem;
     }
-
     .logo img {
-      height: 50px;
-      margin-right: 1rem;
+      height: 50px; margin-right: 1rem;
     }
-
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
-      color: var(--gsu-red);
+      color: var(--white-text);
     }
-
+    nav {
+      display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center;
+    }
     nav a {
-      margin: 0 1rem;
       text-decoration: none;
       color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
     }
-
     nav a:hover {
       color: var(--gsu-red);
     }
-
     main {
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 2rem;
+      flex: 1;
     }
-
     .section-header {
       text-align: center;
       margin-bottom: 2rem;
     }
-
     .section-header h1 {
       font-family: 'Montserrat', sans-serif;
       font-size: 2.5rem;
       color: var(--gsu-red);
     }
-
     .section-header p {
       font-size: 1.1rem;
       color: #ccc;
     }
-
     .placeholder {
       background-color: var(--black-faded);
       padding: 2rem;
@@ -86,12 +81,48 @@
       text-align: center;
       color: #aaa;
     }
-
     footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1rem;
-      margin-top: 4rem;
+    }
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .platform-icons img {
+      height: 32px;
+      opacity: 0.9;
+      transition: opacity 0.2s ease;
+    }
+    .platform-icons img:hover {
+      opacity: 1;
+    }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .logo-text { font-size: 1.3rem; }
+      .section-header h1 { font-size: 2rem; }
+      .section-header p { font-size: 1rem; }
+      nav a { font-size: 0.9rem; }
+      main { padding: 0 1rem; }
+      .placeholder { padding: 1.2rem; font-size: 0.95rem; }
+    }
+
+    @media (max-width: 480px) {
+      .logo img { height: 40px; }
+      .logo-text { font-size: 1.1rem; }
+      .section-header h1 { font-size: 1.7rem; }
+      .section-header p { font-size: 0.95rem; }
+      .platform-icons img { height: 28px; }
+      footer p { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -99,10 +130,10 @@
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text"style = "color: #FFFFFF;">GameSync Union</div>
+      <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
-     <a href="index.html">Home</a>
+      <a href="index.html">Home</a>
       <a href="games.html">Games</a>
       <a href="trophies.html">Trophies</a>
       <a href="art.html">Art</a>
@@ -114,25 +145,21 @@
   <main>
     <div class="section-header">
       <h1>Gameplay Tutorials</h1>
-      <p>Learn mechanics, systems, and progression strategies for new or complex games.</p>
+      <p>Step-by-step breakdowns to help players learn mechanics, techniques, and game systems.</p>
     </div>
-
     <div class="placeholder">
-      [This page will display all related guides, filters, and community uploads for <strong>Gameplay Tutorials</strong>.]
+      [This page will showcase tutorial videos, training breakdowns, and starter guides for all types of games.]
     </div>
   </main>
 
- <footer>
+  <footer>
     <div class="platform-icons">
       <img src="PS_Logo.png" alt="PlayStation" />
       <img src="Xbox.png" alt="Xbox" />
       <img src="Steam.png" alt="PC" />
       <img src="Switch.png" alt="Nintendo Switch" />
     </div>
-    <p style="color: #ccc; font-size: 0.9rem; font-family: 'Roboto', sans-serif; padding-bottom: 0.5rem;">
-      &copy; 2025 GameSync Union. Built for gamers, by gamers.
-    </p>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
 </body>
 </html>
