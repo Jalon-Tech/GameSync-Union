@@ -12,6 +12,7 @@
       --black-main: #191818;
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
+      --card-glow: 0 0 12px rgba(230, 0, 35, 0.3);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -25,6 +26,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     .logo {
       display: flex;
@@ -37,6 +39,7 @@
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
+      color: var(--gsu-red);
     }
     nav a {
       margin: 0 1rem;
@@ -59,23 +62,24 @@
     }
     .box {
       background-color: var(--black-faded);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 1rem;
+      box-shadow: var(--card-glow);
     }
     .box h2 {
       font-family: 'Montserrat', sans-serif;
       margin-bottom: 0.7rem;
+      color: var(--gsu-red);
     }
-    .input-field, select, textarea {
+    .input-field, select {
       padding: 0.6rem;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       margin-bottom: 0.6rem;
       width: 100%;
       background-color: #2a2a2a;
       color: var(--white-text);
       font-family: 'Roboto', sans-serif;
-      resize: none;
     }
     .btn {
       background-color: var(--gsu-red);
@@ -83,24 +87,36 @@
       color: var(--white-text);
       padding: 0.8rem;
       width: 100%;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
+      transition: 0.3s ease;
     }
-    .btn:hover { opacity: 0.85; }
+    .btn:hover { opacity: 0.9; transform: scale(1.03); }
     .game-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
     }
     .game-card {
       background-color: #2a2a2a;
-      border-radius: 6px;
+      border-radius: 10px;
       padding: 1rem;
       text-align: center;
-      transition: transform 0.2s ease;
+      box-shadow: var(--card-glow);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
-    .game-card:hover { transform: scale(1.03); }
+    .game-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 16px rgba(230, 0, 35, 0.5);
+    }
+    .game-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      object-fit: contain;
+      background-color: #1c1c1c;
+    }
     .game-card h3 {
       font-size: 1.1rem;
       margin-top: 0.6rem;
@@ -111,11 +127,21 @@
       font-family: 'Roboto', sans-serif;
       margin: 0.4rem 0;
     }
-    .game-card img {
-      width: 100%;
-      border-radius: 4px;
+    .trending-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.8rem;
+    }
+    .trending-item img {
+      width: 55px;
+      height: 55px;
       object-fit: cover;
-      max-height: 150px;
+      border-radius: 6px;
+    }
+    .trending-item span {
+      font-size: 0.95rem;
+      font-family: 'Roboto', sans-serif;
     }
     .load-more {
       text-align: center;
@@ -126,15 +152,21 @@
       border: none;
       color: var(--white-text);
       padding: 0.8rem 1.5rem;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
+      transition: 0.3s ease;
+    }
+    .load-more button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
     }
     footer {
       background-color: var(--black-faded);
       text-align: center;
-      padding: 1.2rem 1rem;
+      padding: 1.5rem 1rem;
       margin-top: 4rem;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
     }
     .platform-icons {
       display: flex;
@@ -147,6 +179,10 @@
       height: 32px;
       width: auto;
       opacity: 0.9;
+      transition: transform 0.3s ease;
+    }
+    .platform-icons img:hover {
+      transform: scale(1.1);
     }
     footer p {
       color: #ccc;
@@ -205,7 +241,6 @@
         <h2>All Games</h2>
         <div class="game-grid" id="gameGrid"></div>
       </div>
-
       <div class="box">
         <h2>User-Submitted Games</h2>
         <p>[This section will list custom games added by users]</p>
@@ -215,7 +250,7 @@
     <aside>
       <div class="box">
         <h2>Trending This Week</h2>
-        <ul id="trendingGames"></ul>
+        <div id="trendingGames"></div>
       </div>
     </aside>
   </div>
@@ -286,9 +321,13 @@
         const response = await fetch(url);
         const data = await response.json();
         data.results.forEach(game => {
-          const li = document.createElement('li');
-          li.textContent = game.name;
-          trendingList.appendChild(li);
+          const div = document.createElement('div');
+          div.classList.add('trending-item');
+          div.innerHTML = `
+            <img src="${game.background_image}" alt="${game.name}" />
+            <span>${game.name}</span>
+          `;
+          trendingList.appendChild(div);
         });
       } catch (error) {
         console.error('Error fetching trending games:', error);
