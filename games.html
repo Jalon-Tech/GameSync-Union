@@ -319,5 +319,33 @@
   </div>
   <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+  <script>
+  const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
+  const gameGrid = document.querySelector('.game-grid');
+
+  async function fetchGames() {
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&page_size=8`);
+      const data = await response.json();
+
+      gameGrid.innerHTML = ''; // Clear the placeholder cards
+
+      data.results.forEach(game => {
+        const card = document.createElement('div');
+        card.classList.add('game-card');
+        card.innerHTML = `
+          <img src="${game.background_image}" alt="${game.name}" />
+          <h3>${game.name}</h3>
+        `;
+        gameGrid.appendChild(card);
+      });
+    } catch (error) {
+      console.error('Error fetching games:', error);
+    }
+  }
+
+  fetchGames();
+</script>
+
 </body>
 </html>
