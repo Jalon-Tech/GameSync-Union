@@ -6,26 +6,28 @@
   <title>GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  
   <style>
+    
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-
+  
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+  
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
     }
-
+  
     header {
       background-color: var(--black-faded);
       display: flex;
@@ -34,30 +36,30 @@
       padding: 1rem 2rem;
       flex-wrap: wrap;
     }
-
+  
     .logo {
       display: flex;
       align-items: center;
       margin-bottom: 0.5rem;
     }
-
+  
     .logo img {
       height: 50px;
       margin-right: 1rem;
     }
-
+  
     .logo-text {
       font-size: 1.5rem;
       font-family: 'Montserrat', sans-serif;
     }
-
+  
     nav {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.8rem;
     }
-
+  
     nav a {
       text-decoration: none;
       color: var(--white-text);
@@ -65,30 +67,30 @@
       transition: color 0.3s ease;
       font-size: 1rem;
     }
-
+  
     nav a:hover {
       color: var(--gsu-red);
     }
-
+  
     .main-container {
       display: grid;
       grid-template-columns: 1fr 3fr 1.2fr;
       gap: 1rem;
       padding: 2rem;
     }
-
+  
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
       margin-bottom: 1rem;
     }
-
+  
     .box h2 {
       font-family: 'Montserrat', sans-serif;
       margin-bottom: 0.7rem;
     }
-
+  
     .input-field {
       padding: 0.6rem;
       border: none;
@@ -98,7 +100,7 @@
       background-color: #2a2a2a;
       color: var(--white-text);
     }
-
+  
     .btn {
       background-color: var(--gsu-red);
       border: none;
@@ -109,40 +111,11 @@
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
     }
-
+  
     .btn:hover {
       opacity: 0.85;
     }
-    .trending-item {
-      background-color: #1f1f1f;
-      border-radius: 6px;
-      margin-bottom: 0.8rem;
-      overflow: hidden;
-    }
-
-    .trending-item img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .trending-item .content {
-      padding: 0.5rem;
-    }
-
-    .trending-item .content span {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--gsu-red);
-    }
-
-    .trending-item .content strong {
-      font-size: 0.9rem;
-      color: white;
-      display: block;
-      margin-top: 0.2rem;
-    }
-
+  
     .slider {
       display: flex;
       overflow-x: auto;
@@ -150,65 +123,112 @@
       padding: 1rem 0;
       scroll-snap-type: x mandatory;
     }
-
+  
     .slide {
       background-color: var(--black-faded);
       border-radius: 8px;
-      flex: 0 0 240px;
+      flex: 0 0 260px;
       scroll-snap-align: start;
       text-align: center;
       padding: 1rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
-
+  
     .slide img {
       max-width: 100%;
-      height: 130px;
+      height: 140px;
       object-fit: cover;
       border-radius: 6px;
       margin-bottom: 0.5rem;
     }
-
+  
     .slide h3 {
       font-size: 0.95rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--gsu-red);
     }
-    
-  /* Trending Topics – Larger Cards Like Trending Games */
-#trendingTopics {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 1rem 0;
-}
-
-.trending-card {
+  
+    /* 🔥 Trending Topics */
+ .trending-section {
   background-color: var(--black-faded);
   border-radius: 12px;
   padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  max-width: 100%;
+}
+
+.trending-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  color: var(--white-text);
+}
+
+#trendingTopics {
+  background-color: var(--black-faded);
+  border-radius: 12px;
+  padding: 1rem;
+  max-height: 460px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.trending-title {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  color: var(--white-text);
+  margin-bottom: 0.5rem;
+}
+
+
+#trendingTopics::-webkit-scrollbar {
+  width: 6px;
+}
+#trendingTopics::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+/* Individual trending cards */
+.trending-card {
+  background-color: #222;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
   text-align: center;
   gap: 0.6rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border-left: 3px solid var(--gsu-red);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease;
-  scroll-snap-align: start;
-  width: 220px;
-  min-width: 220px;
+  width: 320px;
 }
 
 .trending-card:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
+}
+
+.trending-card a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .trending-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: contain;
   border-radius: 8px;
+  background-color: #000;
+  padding: 4px;
 }
 
 .trending-card h4 {
@@ -218,44 +238,51 @@
 }
 
 .trending-card p {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #ddd;
   margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 0 6px;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 
 
-
-    .platform-icons img {
-      height: 26px;
-      width: auto;
-      opacity: 0.85;
+  
+    .slide a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
-
+  
     @media (max-width: 768px) {
       .main-container {
         grid-template-columns: 1fr;
         padding: 1rem;
       }
-
+  
       nav {
         justify-content: flex-start;
       }
-
+  
       .trending-card {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .trending-card img {
         width: 100%;
-        height: 120px;
+        min-width: unset;
+      }
+  
+      .trending-card img {
+        max-height: 150px;
+      }
+  
+      .trending-card p {
+        white-space: normal;
       }
     }
-  </style>
+</style>
+
+
 </head>
 <body>
   <header>
@@ -294,8 +321,21 @@
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
      <div class="box">
-        <h2>🔥 Trending Topics</h2>
-        <div id="trendingTopics" class="slider"></div>
+       <div id="trendingTopics">
+  <h2 class="trending-title">🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll down)</span></h2>
+  
+  <!-- Cards go below and scroll with the heading -->
+  <div class="trending-card">
+    <a href="#">
+      <img src="example.jpg" alt="Example Topic" />
+      <h4>💬 Discussion</h4>
+      <p>Is Spider-Man 2 the best Insomniac game?</p>
+    </a>
+  </div>
+  
+  <!-- More trending cards will be added by Firebase -->
+  </div>
+
     </div>
 
 
@@ -400,8 +440,8 @@
 
     async function fetchTrendingCards() {
       try {
-        const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(3));
-        const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(2));
+        const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(5));
+        const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(5));
 
         const [discussionSnap, uploadsSnap] = await Promise.all([
           getDocs(discussionQuery),
