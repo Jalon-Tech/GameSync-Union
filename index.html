@@ -373,38 +373,36 @@ footer p {
   </footer>
   
   <script>
-  const gamespotFeed = 'https://www.gamespot.com/feeds/news/';
-  const proxyUrl = 'https://api.rss2json.com/v1/api.json?rss_url=';
+  const gamespotRSS = 'https://www.gamespot.com/feeds/news/';
+  const proxy = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
-  fetch(`${proxyUrl}${encodeURIComponent(gamespotFeed)}`)
+  fetch(`${proxy}${encodeURIComponent(gamespotRSS)}`)
     .then(res => res.json())
     .then(data => {
       const container = document.getElementById('trendingTopics');
       container.innerHTML = '';
 
-      const articles = data.items.slice(0, 5); // Top 5 articles
+      const articles = data.items.slice(0, 6); // Top 6 articles
       articles.forEach(item => {
-        const li = document.createElement('li');
-        const image = item.enclosure?.link || 'https://via.placeholder.com/100x60?text=No+Image';
+        const image = item.enclosure?.link || 'https://via.placeholder.com/300x160?text=No+Image';
 
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
-        li.style.marginBottom = '1rem';
+        const card = document.createElement('div');
+        card.classList.add('topic-card');
 
-        li.innerHTML = `
-          <img src="${image}" alt="Thumbnail" style="width: 100px; height: auto; border-radius: 6px; margin-right: 0.8rem;" />
-          <a href="${item.link}" target="_blank" style="color: #e60023; font-weight: 600; font-family: 'Montserrat', sans-serif; text-decoration: none;">
-            ${item.title}
-          </a>
+        card.innerHTML = `
+          <img src="${image}" alt="GameSpot Thumbnail" />
+          <a href="${item.link}" target="_blank">${item.title}</a>
         `;
-        container.appendChild(li);
+
+        container.appendChild(card);
       });
     })
-    .catch(error => {
-      console.error('GameSpot feed error:', error);
-      document.getElementById('trendingTopics').innerHTML = '<p style="color: gray;">Could not load GameSpot topics.</p>';
+    .catch(err => {
+      console.error('Failed to load GameSpot feed:', err);
+      document.getElementById('trendingTopics').innerHTML = '<p style="color: gray;">Trending topics failed to load.</p>';
     });
 </script>
+
 
 
 </body>
