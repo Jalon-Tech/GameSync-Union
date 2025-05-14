@@ -142,12 +142,11 @@
       margin-bottom: 0.5rem;
     }
   
-   .slide h3 {
-      font-size: 1.15rem; /* increased from 0.95rem */
+    .slide h3 {
+      font-size: 0.95rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--gsu-red);
     }
-
   
     /* 🔥 Trending Topics */
   #trendingTopics {
@@ -163,40 +162,75 @@
   width: 100%;
 }
 
+/* Each post inside the trending box */
+#trendingTopics {
+  background-color: var(--black-faded);
+  border-radius: 12px;
+  padding: 1rem;
+  max-height: 460px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* This moves the cards to the left */
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 0;
+}
+
 .trending-card {
   background-color: #222;
   border-radius: 10px;
-  padding: 0.8rem;
+  padding: 1rem;
+  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
-  align-items: center;
   text-align: center;
   gap: 0.6rem;
   border-left: 3px solid var(--gsu-red);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease;
-  max-width: 500px; /* shrink slightly from full width */
-  margin: 0 auto;
+  width: 320px; /* Set consistent width */
 }
 
 
+.trending-card:hover {
+  transform: scale(1.01);
+}
+
+.trending-card a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.trending-card img {
+  max-width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #000;
+  padding: 4px;
+}
+
 .trending-card h4 {
-  font-size: 1.1rem;
+  font-size: 0.85rem;
   color: var(--gsu-red);
   margin: 0;
-  font-weight: 600;
 }
 
 .trending-card p {
-  font-size: 1.35rem;
-  color: #fff;
+  font-size: 0.95rem;
+  color: #ddd;
   margin: 0;
-  font-weight: 600;
-  padding: 0 8px;
-  word-break: break-word;
+  padding: 0 6px;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
-
-
 
 #trendingTopics::-webkit-scrollbar {
   width: 6px;
@@ -205,6 +239,7 @@
   background: #555;
   border-radius: 4px;
 }
+
 
   
     .slide a {
@@ -228,22 +263,13 @@
         min-width: unset;
       }
   
-     .trending-card img {
-        max-height: 180px;
-        object-fit: cover;
+      .trending-card img {
+        max-height: 150px;
       }
-
   
       .trending-card p {
-        font-size: 1.4rem; /* increase to match card size */
-        color: #ddd;
-        margin: 0;
-        word-break: break-word;
-        padding: 0 6px;
-        font-weight: 500;
+        white-space: normal;
       }
-
-
     }
 </style>
 
@@ -332,16 +358,15 @@
     </aside>
   </div>
 
-  <footer style="background-color: var(--black-faded); padding: 1.5rem 1rem; margin-top: 2rem; text-align: center; color: var(--white-text);">
-  <div class="platform-icons" style="display: flex; justify-content: center; align-items: center; gap: 1.2rem; margin-bottom: 1rem; flex-wrap: wrap;">
-    <img src="PS_Logo.png" alt="PlayStation" style="height: 32px;" />
-    <img src="Xbox.png" alt="Xbox" style="height: 32px;" />
-    <img src="Steam.png" alt="PC" style="height: 32px;" />
-    <img src="Switch.png" alt="Nintendo Switch" style="height: 32px;" />
-  </div>
-  <p style="font-size: 0.9rem;">&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-</footer>
-
+  <footer style="text-align:center; padding: 1rem; background-color: var(--black-faded); margin-top: 2rem;">
+    <div class="platform-icons" style="margin-bottom: 0.5rem;">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  </footer>
   <!-- RAWG API Script -->
   <script>
     const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
