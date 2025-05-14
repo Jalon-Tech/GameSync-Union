@@ -126,9 +126,11 @@
       width: 100%;
       height: auto;
       border-radius: 4px;
-      object-fit: contain;
+      object-fit: contain; /* Preserves full image detail */
       background-color: #1c1c1c;
+      aspect-ratio: 1.91 / 1; /* Match common cover art aspect ratio like 1200x630 */
     }
+
     .no-results {
       text-align: center;
       font-family: 'Roboto', sans-serif;
