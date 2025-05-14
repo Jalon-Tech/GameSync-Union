@@ -154,7 +154,8 @@
   flex-direction: column;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
-  max-height: 300px; /* Adjust this height as needed */
+  max-height: 580px; /* Controls scroll area height */
+  gap: 1rem;
   padding-right: 8px;
 }
 
@@ -170,9 +171,51 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease;
   scroll-snap-align: start;
+  width: 260px;
+  min-width: 260px;
+  min-height: 330px;
+  margin: 0 auto;
+}
+
+.trending-card:hover {
+  transform: scale(1.02);
+}
+
+.trending-card a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
   width: 100%;
-  min-height: 280px; /* Adjust this for how "tall" each card appears */
-  margin-bottom: 1rem;
+  height: 100%;
+}
+
+.trending-card img {
+  max-width: 100%;
+  max-height: 170px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #000;
+  display: block;
+  padding: 4px;
+}
+
+.trending-card h4 {
+  font-size: 0.85rem;
+  color: var(--gsu-red);
+  margin: 0;
+}
+
+.trending-card p {
+  font-size: 0.95rem;
+  color: #ddd;
+  margin: 0;
+  padding: 0 6px;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 #trendingTopics::-webkit-scrollbar {
@@ -183,7 +226,6 @@
   background: #555;
   border-radius: 4px;
 }
-
   
     .slide a {
       text-decoration: none;
