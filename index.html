@@ -240,6 +240,46 @@ footer p {
   color: var(--gsu-red);
 }
   </style>
+  <style>
+    .card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.topic-card {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.topic-card:hover {
+  transform: scale(1.03);
+}
+
+.topic-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.topic-card a {
+  display: block;
+  padding: 0.8rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.topic-card a:hover {
+  color: var(--gsu-red);
+}
+
+  </style>
+  
 </head>
 <body>
 
@@ -288,8 +328,9 @@ footer p {
 
   <div class="section-flex">
     <div style="flex: 1 1 100%;">
-      <h3 style="color: var(--gsu-red); margin-bottom: 0.5rem;">🔥 Trending Topics</h3>
+      <h3 style="color: var(--gsu-red); margin-bottom: 0.5rem;">🔥 Trending Gaming Topics (GameSpot)</h3>
       <ul id="trendingTopics" style="list-style: none; padding-left: 0;"></ul>
+      <div id="trendingTopics" class="card-grid"></div>
     </div>
     <div style="flex: 1 1 100%;">
       <h3 style="color: var(--gsu-red); margin-bottom: 0.5rem;">📹 Latest Uploads</h3>
@@ -372,7 +413,7 @@ footer p {
   <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
   
-  <script>
+ <script>
   const gamespotRSS = 'https://www.gamespot.com/feeds/news/';
   const proxy = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
