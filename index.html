@@ -34,208 +34,411 @@
       padding: 1rem 2rem;
       flex-wrap: wrap;
     }
-.logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
 
-.logo img {
-  height: 50px;
-  margin-right: 1rem;
-}
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
 
-.logo-text {
-  font-size: 1.5rem;
-  font-family: 'Montserrat', sans-serif;
-}
+    .logo img {
+      height: 50px;
+      margin-right: 1rem;
+    }
 
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.8rem;
-}
+    .logo-text {
+      font-size: 1.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
 
-nav a {
-  text-decoration: none;
-  color: var(--white-text);
-  font-family: 'Montserrat', sans-serif;
-  transition: color 0.3s ease;
-  font-size: 1rem;
-}
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
 
-nav a:hover {
-  color: var(--gsu-red);
-}
+    nav a {
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
+    }
 
-.main-container {
-  display: grid;
-  grid-template-columns: 1fr 3fr 1.2fr;
-  gap: 1rem;
-  padding: 2rem;
-}
+    nav a:hover {
+      color: var(--gsu-red);
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
+      padding: 2rem;
+    }
+
     .box {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
 
-.box h2 {
-  font-family: 'Montserrat', sans-serif;
-  margin-bottom: 0.7rem;
-}
+    .box h2 {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.7rem;
+    }
 
-.input-field {
-  padding: 0.6rem;
-  border: none;
-  border-radius: 6px;
-  margin-bottom: 0.6rem;
-  width: 100%;
-  background-color: #2a2a2a;
-  color: var(--white-text);
-}
+    .input-field {
+      padding: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      width: 100%;
+      background-color: #2a2a2a;
+      color: var(--white-text);
+    }
 
-.btn {
-  background-color: var(--gsu-red);
-  border: none;
-  color: var(--white-text);
-  padding: 0.8rem;
-  width: 100%;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
-}
+    .btn {
+      background-color: var(--gsu-red);
+      border: none;
+      color: var(--white-text);
+      padding: 0.8rem;
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
 
-.btn:hover {
-  opacity: 0.85;
-}
+    .btn:hover {
+      opacity: 0.85;
+    }
+    .trending-item {
+      background-color: #1f1f1f;
+      border-radius: 6px;
+      margin-bottom: 0.8rem;
+      overflow: hidden;
+    }
 
-/* Trending Topics Card Style */
-.trending-card {
-  background-color: #1f1f1f;
-  border-radius: 6px;
-  padding: 0.6rem;
-  margin-bottom: 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  text-decoration: none;
-}
+    .trending-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
-.trending-card img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 6px;
-  flex-shrink: 0;
-}
-.trending-card h4 {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--gsu-red);
-}
+    .trending-item .content {
+      padding: 0.5rem;
+    }
 
-.trending-card p {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #ddd;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+    .trending-item .content span {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--gsu-red);
+    }
 
-.slider {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 1rem 0;
-}
+    .trending-item .content strong {
+      font-size: 0.9rem;
+      color: white;
+      display: block;
+      margin-top: 0.2rem;
+    }
 
-.slide {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  flex: 0 0 240px;
-  scroll-snap-align: start;
-  text-align: center;
-  padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding: 1rem 0;
+      scroll-snap-type: x mandatory;
+    }
 
-.slide img {
-  max-width: 100%;
-  height: 130px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-}
+    .slide {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      flex: 0 0 240px;
+      scroll-snap-align: start;
+      text-align: center;
+      padding: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
 
-.slide h3 {
-  font-size: 0.95rem;
-  font-family: 'Montserrat', sans-serif;
-  color: var(--gsu-red);
-}
-/* == Platform Icons Footer == */
-.platform-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 0.6rem;
-}
+    .slide img {
+      max-width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
 
-.platform-icons img {
-  height: 26px;
-  width: auto;
-  opacity: 0.85;
-}
+    .slide h3 {
+      font-size: 0.95rem;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--gsu-red);
+    }
 
-/* == Responsive Design == */
-@media (max-width: 768px) {
-  .main-container {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
+    .trending-card {
+      background-color: #1f1f1f;
+      border-radius: 8px;
+      padding: 0.6rem;
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      text-decoration: none;
+    }
 
-  nav {
-    justify-content: flex-start;
-  }
+    .trending-card img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
 
-  .trending-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    .trending-card h4 {
+      margin: 0;
+      font-size: 0.75rem;
+      color: var(--gsu-red);
+    }
 
-  .trending-card img {
-    width: 100%;
-    height: 120px;
-  }
+    .trending-card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #ddd;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-  .slide {
-    flex: 0 0 80%;
-  }
+    .platform-icons img {
+      height: 26px;
+      width: auto;
+      opacity: 0.85;
+    }
 
-  .slide img {
-    height: 110px;
-  }
-}
+    @media (max-width: 768px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
 
-@media (max-width: 480px) {
-  .logo-text {
-    font-size: 1.2rem;
-  }
+      nav {
+        justify-content: flex-start;
+      }
 
-  nav a {
-    font-size: 0.9rem;
-  }
+      .trending-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-  .btn {
-    font-size: 0.9rem;
-  }
+      .trending-card img {
+        width: 100%;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <div class="logo-text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">Trophies</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">Guides</a>
+      <a href="uploads.html">Uploads</a>
+    </nav>
+  </header>
 
-  .input-field {
-    font-size: 0.9rem;
-  }
-}
+  <div class="main-container">
+    <aside>
+      <div class="box" id="auth-box">
+        <h2>Create Account or Sign In</h2>
+        <input type="text" class="input-field" placeholder="Email" />
+        <input type="text" class="input-field" placeholder="Username" />
+        <input type="password" class="input-field" placeholder="Password" />
+        <button class="btn">Sign In</button>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="#" style="color: #e60023;">Create Account</a></p>
+      </div>
+    </aside>
+    <main>
+      <div class="box" style="text-align:center;">
+        <h2>Welcome to GameSync Union</h2>
+        <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
+        <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
+      </div>
+
+      <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
+
+      <div class="box">
+        <h2>🔥 Trending Topics</h2>
+        <div id="trendingTopics"></div>
+      </div>
+
+      <div class="box">
+        <h2>Game Guides</h2>
+        <ul>
+          <li><a href="boss-fight-strategies.html" style="color: var(--gsu-red);">Boss Fight Strategies</a></li>
+          <li><a href="gameplay-tutorials.html" style="color: var(--gsu-red);">Gameplay Tutorials</a></li>
+          <li><a href="community-gameplay-videos.html" style="color: var(--gsu-red);">Gameplay Videos</a></li>
+          <li><a href="combo-guides.html" style="color: var(--gsu-red);">Combo Guides</a></li>
+          <li><a href="trophy-tips.html" style="color: var(--gsu-red);">Trophy Tips</a></li>
+          <li><a href="guide-discussion.html" style="color: var(--gsu-red);">Discussion & Chat</a></li>
+        </ul>
+      </div>
+
+      <div class="box" id="trending-games">
+        <h2 style="text-align:center;">🔥 Trending Games</h2>
+        <div class="slider" id="gameSlider"></div>
+      </div>
+    </main>
+
+    <aside>
+      <div class="box">
+        <h2>Your Profile</h2>
+        <p>🎯 Favorite Games</p>
+        <p>🎮 Games Played</p>
+        <p>🏆 Trophy Stats</p>
+      </div>
+
+      <div class="box">
+        <h2>Upcoming Games & Events</h2>
+        <ul>
+          <li>🆕 Recently Announced Games</li>
+          <li>🚀 Upcoming Releases</li>
+          <li>📆 Countdowns & Launch Events</li>
+          <li>🛠 Patch Notes</li>
+          <li>🎮 Conventions & Streams</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <footer style="text-align:center; padding: 1rem; background-color: var(--black-faded); margin-top: 2rem;">
+    <div class="platform-icons" style="margin-bottom: 0.5rem;">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  </footer>
+  <!-- RAWG API Script -->
+  <script>
+    const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
+    fetch(`https://api.rawg.io/api/games/lists/popular?key=${apiKey}&page_size=10`)
+      .then(res => res.json())
+      .then(data => {
+        const slider = document.getElementById('gameSlider');
+        slider.innerHTML = '';
+        data.results.forEach(game => {
+          const card = document.createElement('div');
+          card.className = 'slide';
+          card.innerHTML = `
+            <img src="${game.background_image || 'fallback.jpg'}" alt="${game.name}" loading="lazy" />
+            <h3>${game.name}</h3>
+          `;
+          slider.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading RAWG games:', error);
+        document.getElementById('gameSlider').innerHTML = '<p style="color: #aaa;">Failed to load games.</p>';
+      });
+  </script>
+
+  <!-- Firebase Trending Cards Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      orderBy,
+      limit,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7ATuJf91J9bT0kQkAp-xv4XC8tZmSCT",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "148891736565",
+      appId: "1:148891736565:web:a8d8b3be7936a46bb77c51c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const trendingSection = document.getElementById("trendingTopics");
+    trendingSection.innerHTML = '<p style="color: gray;">Loading...</p>';
+
+    async function fetchTrendingCards() {
+      try {
+        const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(3));
+        const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(2));
+
+        const [discussionSnap, uploadsSnap] = await Promise.all([
+          getDocs(discussionQuery),
+          getDocs(uploadsQuery)
+        ]);
+
+        const items = [];
+
+        discussionSnap.forEach(doc => {
+          const data = doc.data();
+          if (data.topic && data.thumbnail) {
+            items.push({
+              title: data.topic,
+              img: data.thumbnail,
+              url: "guide-discussion.html",
+              tag: "💬 Discussion"
+            });
+          }
+        });
+
+        uploadsSnap.forEach(doc => {
+          const data = doc.data();
+          if (data.title && data.thumbnail) {
+            items.push({
+              title: data.title,
+              img: data.thumbnail,
+              url: "uploads.html",
+              tag: "📹 Upload"
+            });
+          }
+        });
+
+        trendingSection.innerHTML = "";
+
+        if (items.length === 0) {
+          trendingSection.innerHTML = '<p style="color: gray;">No trending items found.</p>';
+          return;
+        }
+
+        items.slice(0, 5).forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'trending-card';
+          card.innerHTML = `
+            <a href="${item.url}" style="text-decoration: none;">
+              <img src="${item.img}" alt="${item.title}" />
+              <h4>${item.tag}</h4>
+              <p>${item.title}</p>
+            </a>
+          `;
+          trendingSection.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error("Failed to fetch trending content:", error);
+        trendingSection.innerHTML = '<p style="color: gray;">Failed to load content.</p>';
+      }
+    }
+
+    fetchTrendingCards();
+  </script>
+</body>
+</html>
