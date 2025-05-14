@@ -126,68 +126,126 @@
       margin-top: 4rem;
     }
 
-    .platform-icons {
+   .platform-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.platform-icons img {
+  height: 32px;
+  width: auto;
+  opacity: 0.9;
+}
+
+footer p {
+  color: #ccc;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+    .section-flex {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .platform-icons img {
-      height: 32px;
-      width: auto;
-      opacity: 0.9;
-    }
-
-    footer p {
-      color: #ccc;
-      font-size: 1rem;
-      font-family: 'Roboto', sans-serif;
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      justify-content: space-between;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    .topic-card {
-      background-color: #2a2a2a;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s ease;
+    .section-flex div {
+      flex: 1 1 100px;
+      text-align: center;
     }
 
-    .topic-card:hover {
-      transform: scale(1.03);
+    /* ===== Responsive Fixes ===== */
+
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .section-flex {
+        flex-direction: column;
+        text-align: center;
+      }
     }
 
-    .topic-card img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-    }
+    @media (max-width: 600px) {
+      .logo img {
+        height: 40px;
+      }
 
-    .topic-card a {
-      display: block;
-      padding: 0.8rem;
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-      text-decoration: none;
-    }
+      .logo-text {
+        font-size: 1.2rem;
+      }
 
-    .topic-card a:hover {
-      color: var(--gsu-red);
+      nav a {
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 0.7rem;
+      }
+
+      .input-field {
+        font-size: 0.9rem;
+      }
     }
+    #trending-games {
+  overflow-x: auto;
+}
+
+.slider {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+}
+
+.slide {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  text-align: center;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.slide img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.slide h3 {
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--gsu-red);
+}
   </style>
 </head>
 <body>
+
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -226,8 +284,12 @@
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
       <div class="box">
-        <h2>🔥 Trending Gaming Topics (GameSpot)</h2>
-        <div id="trendingTopics" class="card-grid"></div>
+        <h2>Community Highlights</h2>
+        <div class="section-flex">
+          <div>🔥 Trending Topics</div>
+          <div>📹 Latest Uploads</div>
+          <div>🎨 Fan Art</div>
+        </div>
       </div>
 
       <div class="box">
@@ -257,6 +319,10 @@
         <h2>Art Showcase</h2>
         <p>[In-game screenshots, posters, and original artwork]</p>
       </div>
+<div class="box" id="trending-games">
+      <h2 style="text-align:center;">🔥 Trending Games</h2>
+      <div class="slider" id="gameSlider"></div>
+</div>
     </main>
 
     <aside>
@@ -286,41 +352,43 @@
   </div>
 
   <footer>
-    <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
-    </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  <div class="platform-icons">
+    <img src="PS_Logo.png" alt="PlayStation" />
+    <img src="Xbox.png" alt="Xbox" />
+    <img src="Steam.png" alt="PC" />
+    <img src="Switch.png" alt="Nintendo Switch" />
+  </div>
+  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
   <script>
-    const proxyUrl = 'https://api.rss2json.com/v1/api.json?rss_url=';
-    const gamespotFeed = 'https://www.gamespot.com/feeds/news/';
+  const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd'; // RAWG API key
 
-    fetch(`${proxyUrl}${encodeURIComponent(gamespotFeed)}`)
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('trendingTopics');
-        container.innerHTML = '';
+  fetch(`https://api.rawg.io/api/games/lists/popular?key=${apiKey}&page_size=10`)
+    .then(res => res.json())
+    .then(data => {
+      const slider = document.getElementById('gameSlider');
+      slider.innerHTML = ''; // Clear placeholder
 
-        const articles = data.items.slice(0, 6);
-        articles.forEach(item => {
-          const image = item.enclosure?.link || 'https://via.placeholder.com/300x160?text=No+Image';
-          const card = document.createElement('div');
-          card.classList.add('topic-card');
-          card.innerHTML = `
-            <img src="${image}" alt="Thumbnail" />
-            <a href="${item.link}" target="_blank">${item.title}</a>
-          `;
-          container.appendChild(card);
-        });
-      })
-      .catch(err => {
-        console.error('Failed to load GameSpot topics:', err);
-        document.getElementById('trendingTopics').innerHTML = '<p style="color: gray;">Could not load trending topics.</p>';
+      if (!data.results || data.results.length === 0) {
+        slider.innerHTML = '<p style="color: #aaa;">No trending games available.</p>';
+        return;
+      }
+
+      data.results.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'slide';
+        card.innerHTML = `
+          <img src="${game.background_image || 'fallback.jpg'}" alt="${game.name}" loading="lazy" />
+          <h3>${game.name}</h3>
+        `;
+        slider.appendChild(card);
       });
-  </script>
+    })
+    .catch(error => {
+      console.error('Error loading RAWG games:', error);
+      document.getElementById('gameSlider').innerHTML = '<p style="color: #aaa;">Failed to load trending games. Please check your internet connection or API key.</p>';
+    });
+</script>
+
 </body>
 </html>
