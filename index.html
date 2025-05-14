@@ -285,10 +285,19 @@ footer p {
 
       <div class="box">
         <h2>Community Highlights</h2>
-        <div class="section-flex">
-          <div>🔥 Trending Topics</div>
-          <div>📹 Latest Uploads</div>
-          <div>🎨 Fan Art</div>
+       <div class="section-flex">
+         
+        <div>
+          <h3 style="color: var(--gsu-red);">🔥 Trending Topics</h3>
+          <ul id="trendingTopics" style="list-style: none; padding-left: 0;"></ul>
+        </div>
+        <div>
+          <h3 style="color: var(--gsu-red);">📹 Latest Uploads</h3>
+          <p>[Your gameplay clips will show up here]</p>
+        </div>
+        <div>
+          <h3 style="color: var(--gsu-red);">🎨 Fan Art</h3>
+          <p>[User-submitted fan art goes here]</p>
         </div>
       </div>
 
@@ -452,4 +461,64 @@ footer p {
 
 
 </body>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import {
+    getFirestore, collection, query, orderBy, limit, getDocs
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const trendingList = document.getElementById('trendingTopics');
+  trendingList.innerHTML = '<li style="color: gray;">Loading...</li>';
+
+  async function fetchTrendingTopics() {
+    const discussionRef = collection(db, "discussions");
+    const uploadsRef = collection(db, "uploads");
+
+    const discussionQuery = query(discussionRef, orderBy("timestamp", "desc"), limit(3));
+    const uploadsQuery = query(uploadsRef, orderBy("uploadedAt", "desc"), limit(2));
+
+    const [discussionSnap, uploadsSnap] = await Promise.all([
+      getDocs(discussionQuery),
+      getDocs(uploadsQuery)
+    ]);
+
+    const items = [];
+
+    discussionSnap.forEach(doc => {
+      const data = doc.data();
+      if (data.topic) {
+        items.push({ text: `💬 ${data.topic}`, url: "guide-discussion.html" });
+      }
+    });
+
+    uploadsSnap.forEach(doc => {
+      const data = doc.data();
+      if (data.title) {
+        items.push({ text: `📹 ${data.title}`, url: "uploads.html" });
+      }
+    });
+
+    trendingList.innerHTML = "";
+    items.slice(0, 5).forEach(item => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="${item.url}" style="color: var(--gsu-red); text-decoration: none;">${item.text}</a>`;
+      trendingList.appendChild(li);
+    });
+  }
+
+  fetchTrendingTopics();
+</script>
+
 </html>
