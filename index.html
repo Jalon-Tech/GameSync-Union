@@ -153,13 +153,14 @@
   background-color: var(--black-faded);
   border-radius: 12px;
   padding: 1rem;
-  max-height: 600px;
+  height: 420px; /* Controls total scroll box height */
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 1rem;
 }
 
 .trending-card {
@@ -191,7 +192,7 @@
 
 .trending-card img {
   max-width: 100%;
-  max-height: 150px;
+  max-height: 160px;
   object-fit: contain;
   border-radius: 8px;
   background-color: #000;
@@ -218,7 +219,6 @@
 #trendingTopics::-webkit-scrollbar {
   width: 6px;
 }
-
 #trendingTopics::-webkit-scrollbar-thumb {
   background: #666;
   border-radius: 4px;
@@ -295,7 +295,8 @@
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
      <div class="box">
-        <h2>🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
+       <h2>🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
+
 
         <div id="trendingTopics" class="slider"></div>
     </div>
