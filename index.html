@@ -8,6 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   
   <style>
+    .horizontal-headings {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  flex-wrap: nowrap;
+}
+
     
     :root {
       --gsu-red: #e60023;
@@ -311,20 +319,20 @@
 
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
-     <div class="box" style="display: flex; gap: 2rem; overflow-x: auto; padding: 1rem 0;">
+     <div class="box">
+      <div class="horizontal-headings">
         <div>
           <h2>🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
         </div>
-       
         <div>
           <h2>📹 Latest Uploads <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
         </div>
-       
         <div>
           <h2>🎨 Fan Art <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
         </div>
-       
       </div>
+    </div>
+
 
 
 
