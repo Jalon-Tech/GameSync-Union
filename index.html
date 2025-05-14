@@ -206,6 +206,39 @@ footer p {
         font-size: 0.9rem;
       }
     }
+    #trending-games {
+  overflow-x: auto;
+}
+
+.slider {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+}
+
+.slide {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  text-align: center;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.slide img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.slide h3 {
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--gsu-red);
+}
   </style>
 </head>
 <body>
@@ -286,6 +319,10 @@ footer p {
         <h2>Art Showcase</h2>
         <p>[In-game screenshots, posters, and original artwork]</p>
       </div>
+<div class="box" id="trending-games">
+      <h2 style="text-align:center;">🔥 Trending Games</h2>
+      <div class="slider" id="gameSlider"></div>
+</div>
     </main>
 
     <aside>
@@ -323,5 +360,23 @@ footer p {
   </div>
   <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+  <script>
+  const apiKey = 'YOUR_RAWG_API_KEY'; // Replace with your actual API key
+
+  fetch(`https://api.rawg.io/api/games/lists/popular?key=${apiKey}&page_size=10`)
+    .then(response => response.json())
+    .then(data => {
+      const slider = document.getElementById('gameSlider');
+      data.results.forEach(game => {
+        const gameDiv = document.createElement('div');
+        gameDiv.classList.add('slide');
+        gameDiv.innerHTML = `
+          <img src="${game.background_image}" alt="${game.name}" />
+          <h3>${game.name}</h3>
+        `;
+        slider.appendChild(gameDiv);
+      });
+    });
+</script>
 </body>
 </html>
