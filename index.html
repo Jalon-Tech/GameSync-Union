@@ -149,7 +149,7 @@
     }
   
     /* 🔥 Trending Topics */
-  #trendingTopics {
+#trendingTopics {
   background-color: var(--black-faded);
   border-radius: 12px;
   padding: 1rem;
@@ -162,83 +162,6 @@
   width: 100%;
 }
 
-/* Each post inside the trending box */
-#trendingTopics {
-  background-color: var(--black-faded);
-  border-radius: 12px;
-  padding: 1rem;
-  max-height: 460px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* This moves the cards to the left */
-  gap: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 0;
-}
-
-.trending-card {
-  background-color: #222;
-  border-radius: 10px;
-  padding: 1rem;
-  scroll-snap-align: start;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  gap: 0.6rem;
-  border-left: 3px solid var(--gsu-red);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  transition: transform 0.2s ease;
-  width: 320px; /* Set consistent width */
-}
-
-
-.trending-card:hover {
-  transform: scale(1.01);
-}
-
-.trending-card a {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.trending-card img {
-  max-width: 100%;
-  max-height: 160px;
-  object-fit: contain;
-  border-radius: 8px;
-  background-color: #000;
-  padding: 4px;
-}
-
-.trending-card h4 {
-  font-size: 0.85rem;
-  color: var(--gsu-red);
-  margin: 0;
-}
-
-.trending-card p {
-  font-size: 0.95rem;
-  color: #ddd;
-  margin: 0;
-  padding: 0 6px;
-  text-align: center;
-  word-wrap: break-word;
-  white-space: normal;
-  overflow-wrap: break-word;
-}
-
-#trendingTopics::-webkit-scrollbar {
-  width: 6px;
-}
-#trendingTopics::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 4px;
-}
 
 
   
@@ -311,12 +234,13 @@
 
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
-     <div class="box">
-       <h2>🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
+     <div class="box trending-wrapper">
+        <h2 class="trending-title">🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
+        <div id="trendingTopics">
+          <!-- trending cards go here -->
+        </div>
+      </div>
 
-
-        <div id="trendingTopics" class="slider"></div>
-    </div>
 
 
       <div class="box">
