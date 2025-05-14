@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameSync Union</title>
-  <link rel="icon" href="GSU_Logo.png" type="image/png">
+  <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -77,16 +77,11 @@
       padding: 2rem;
     }
 
-    aside, main {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
+      margin-bottom: 1rem;
     }
 
     .box h2 {
@@ -119,37 +114,62 @@
       opacity: 0.85;
     }
 
-    .trending-card {
-      background-color: #2a2a2a;
-      border-radius: 8px;
-      padding: 0.6rem;
-      text-align: center;
-      flex: 0 1 160px;
-      margin: 0.5rem;
+    .trending-item {
+      background-color: #1f1f1f;
+      border-radius: 6px;
+      margin-bottom: 0.8rem;
+      overflow: hidden;
     }
 
-    .trending-card img {
+    .trending-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .trending-item .content {
+      padding: 0.5rem;
+    }
+
+    .trending-item .content span {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--gsu-red);
+    }
+
+    .trending-item .content strong {
+      font-size: 0.9rem;
+      color: white;
+      display: block;
+      margin-top: 0.2rem;
+    }
+
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+
+    .slide {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      flex: 0 0 220px;
+      scroll-snap-align: start;
+      text-align: center;
+      padding: 0.8rem;
+    }
+
+    .slide img {
       width: 100%;
       height: auto;
       border-radius: 6px;
     }
 
-    .trending-card h4 {
+    .slide h3 {
       font-size: 0.95rem;
       color: var(--gsu-red);
-      margin: 0.4rem 0 0.2rem;
-    }
-
-    .trending-card p {
-      font-size: 0.85rem;
-      color: #ddd;
-    }
-
-    .section-flex.trending-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 1rem;
+      margin-top: 0.5rem;
     }
   </style>
 </head>
@@ -193,10 +213,9 @@
 
       <div class="box">
         <h2>🔥 Trending Topics</h2>
-        <div id="trendingTopics" class="section-flex trending-wrap">
-          <p style="color: gray;">Loading...</p>
-        </div>
+        <div id="trendingTopics"></div>
       </div>
+
       <div class="box">
         <h2>Game Guides</h2>
         <ul>
@@ -245,118 +264,223 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
-  <!-- RAWG API Script -->
-  <script>
-    const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
-    fetch(`https://api.rawg.io/api/games/lists/popular?key=${apiKey}&page_size=10`)
-      .then(res => res.json())
-      .then(data => {
-        const slider = document.getElementById('gameSlider');
-        slider.innerHTML = '';
-        data.results.forEach(game => {
-          const card = document.createElement('div');
-          card.className = 'slide';
-          card.innerHTML = `
-            <img src="${game.background_image || 'fallback.jpg'}" alt="${game.name}" loading="lazy" />
-            <h3>${game.name}</h3>
-          `;
-          slider.appendChild(card);
-        });
-      })
-      .catch(error => {
-        console.error('Error loading RAWG games:', error);
-        document.getElementById('gameSlider').innerHTML = '<p style="color: #aaa;">Failed to load games.</p>';
+<!-- RAWG API Script -->
+<script>
+  const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
+  fetch(`https://api.rawg.io/api/games/lists/popular?key=${apiKey}&page_size=10`)
+    .then(res => res.json())
+    .then(data => {
+      const slider = document.getElementById('gameSlider');
+      slider.innerHTML = '';
+      data.results.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'slide';
+        card.innerHTML = `
+          <img src="${game.background_image || 'fallback.jpg'}" alt="${game.name}" loading="lazy" />
+          <h3>${game.name}</h3>
+        `;
+        slider.appendChild(card);
       });
-  </script>
-  <!-- Firebase Trending Cards Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      query,
-      orderBy,
-      limit,
-      getDocs
-    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    })
+    .catch(error => {
+      console.error('Error loading RAWG games:', error);
+      document.getElementById('gameSlider').innerHTML = '<p style="color: #aaa;">Failed to load games.</p>';
+    });
+</script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB7ATuJf91J9bT0kQkAp-xv4XC8tZmSCT",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "148891736565",
-      appId: "1:148891736565:web:a8d8b3be7936a46bb77c51c"
-    };
+<!-- Firebase Trending Cards Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    orderBy,
+    limit,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyB7ATuJf91J9bT0kQkAp-xv4XC8tZmSCT",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "148891736565",
+    appId: "1:148891736565:web:a8d8b3be7936a46bb77c51c"
+  };
 
-    const trendingSection = document.getElementById("trendingTopics");
-    trendingSection.innerHTML = '<li style="color: gray;">Loading...</li>';
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    async function fetchTrendingCards() {
-      try {
-        const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(3));
-        const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(2));
+  const trendingSection = document.getElementById("trendingTopics");
+  trendingSection.innerHTML = '<p style="color: gray;">Loading...</p>';
 
-        const [discussionSnap, uploadsSnap] = await Promise.all([
-          getDocs(discussionQuery),
-          getDocs(uploadsQuery)
-        ]);
+  async function fetchTrendingCards() {
+    try {
+      const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(3));
+      const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(2));
 
-        const items = [];
+      const [discussionSnap, uploadsSnap] = await Promise.all([
+        getDocs(discussionQuery),
+        getDocs(uploadsQuery)
+      ]);
 
-        discussionSnap.forEach(doc => {
-          const data = doc.data();
-          if (data.topic && data.thumbnail) {
-            items.push({
-              title: data.topic,
-              img: data.thumbnail,
-              url: "guide-discussion.html",
-              tag: "💬 Discussion"
-            });
-          }
-        });
+      const items = [];
 
-        uploadsSnap.forEach(doc => {
-          const data = doc.data();
-          if (data.title && data.thumbnail) {
-            items.push({
-              title: data.title,
-              img: data.thumbnail,
-              url: "uploads.html",
-              tag: "📹 Upload"
-            });
-          }
-        });
-
-        trendingSection.innerHTML = "";
-        if (items.length === 0) {
-          trendingSection.innerHTML = '<li style="color: gray;">No trending items found.</li>';
-          return;
+      discussionSnap.forEach(doc => {
+        const data = doc.data();
+        if (data.topic && data.thumbnail) {
+          items.push({
+            title: data.topic,
+            img: data.thumbnail,
+            url: "guide-discussion.html",
+            tag: "💬 Discussion"
+          });
         }
+      });
 
-        items.slice(0, 5).forEach(item => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <a href="${item.url}" style="display: block; background: #1f1f1f; border-radius: 6px; padding: 0.6rem; margin-bottom: 0.7rem; text-align: left; text-decoration: none;">
-              <img src="${item.img}" alt="${item.title}" style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 0.5rem;" />
-              <strong style="color: var(--gsu-red); font-size: 0.95rem;">${item.tag}</strong><br />
-              <span style="color: white; font-size: 0.9rem;">${item.title}</span>
-            </a>
-          `;
-          trendingSection.appendChild(li);
-        });
+      uploadsSnap.forEach(doc => {
+        const data = doc.data();
+        if (data.title && data.thumbnail) {
+          items.push({
+            title: data.title,
+            img: data.thumbnail,
+            url: "uploads.html",
+            tag: "📹 Upload"
+          });
+        }
+      });
 
-      } catch (error) {
-        console.error("Failed to fetch trending content:", error);
-        trendingSection.innerHTML = '<li style="color: gray;">Failed to load content.</li>';
+      trendingSection.innerHTML = "";
+
+      if (items.length === 0) {
+        trendingSection.innerHTML = '<p style="color: gray;">No trending items found.</p>';
+        return;
       }
-    }
 
-    fetchTrendingCards();
-  </script>
-</body>
-</html>
+      items.slice(0, 5).forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'trending-card';
+        card.innerHTML = `
+          <a href="${item.url}" style="text-decoration: none;">
+            <img src="${item.img}" alt="${item.title}" style="height: 80px; object-fit: cover;" />
+            <h4>${item.tag}</h4>
+            <p>${item.title}</p>
+          </a>
+        `;
+        trendingSection.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error("Failed to fetch trending content:", error);
+      trendingSection.innerHTML = '<p style="color: gray;">Failed to load content.</p>';
+    }
+  }
+
+  fetchTrendingCards();
+</script>
+/* == RAWG Game Slider Styling (original look restored) == */
+#trending-games {
+  overflow-x: auto;
+}
+
+.slider {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+}
+
+.slide {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  text-align: center;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.slide img {
+  max-width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.slide h3 {
+  font-size: 0.95rem;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--gsu-red);
+}
+
+/* == Trending Topics (vertical cards under label) == */
+.section-flex.trending-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trending-card {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  padding: 0.6rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  text-decoration: none;
+}
+
+.trending-card img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.trending-card h4 {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--gsu-red);
+}
+
+.trending-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* == Platform Icons Footer == */
+.platform-icons img {
+  height: 26px;
+  width: auto;
+  opacity: 0.85;
+}
+
+/* == Responsive == */
+@media (max-width: 768px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  nav {
+    justify-content: flex-start;
+  }
+
+  .trending-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .trending-card img {
+    width: 100%;
+    height: 120px;
+  }
+}
