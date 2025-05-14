@@ -58,6 +58,11 @@
       gap: 1rem;
       padding: 2rem;
     }
+    @media (max-width: 900px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+    }
     aside, main {
       display: flex;
       flex-direction: column;
@@ -66,7 +71,7 @@
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
-      padding: 1rem;
+      padding: 1rem 1.2rem;
     }
     .box h2 {
       font-family: 'Montserrat', sans-serif;
@@ -124,9 +129,9 @@
     }
     .game-card img {
       width: 100%;
-      height: auto;
+      height: 160px;
       border-radius: 4px;
-      object-fit: contain;
+      object-fit: cover;
       background-color: #1c1c1c;
     }
     .no-results {
