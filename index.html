@@ -166,15 +166,15 @@
 #trendingTopics {
   background-color: var(--black-faded);
   border-radius: 12px;
-  padding: 1rem 0.5rem;
+  padding: 1rem;
   max-height: 460px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* This moves the cards to the left */
   gap: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 0; /* Remove space between title and box */
+  margin-top: 0;
 }
 
 .trending-card {
@@ -184,15 +184,14 @@
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
-  align-items: center;
   text-align: center;
   gap: 0.6rem;
   border-left: 3px solid var(--gsu-red);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease;
-  width: 80%;
-  max-width: 320px;
+  width: 320px; /* Set consistent width */
 }
+
 
 .trending-card:hover {
   transform: scale(1.01);
