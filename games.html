@@ -136,6 +136,19 @@
       margin-top: 1rem;
       color: #ccc;
     }
+    .load-more {
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .load-more button {
+      background-color: var(--gsu-red);
+      border: none;
+      color: var(--white-text);
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
     footer {
       background-color: var(--black-faded);
       text-align: center;
@@ -210,6 +223,9 @@
         <div class="game-grid" id="gameGrid"></div>
         <p class="no-results" id="noResults" style="display:none;">No games found for your search or selected platform. Here are some top-rated picks:</p>
       </div>
+      <div class="load-more" id="loadMoreContainer" style="display:none;">
+        <button onclick="loadMoreGames()">Load More</button>
+      </div>
       <div class="box">
         <h2>User-Submitted Games</h2>
         <p>[This section will list custom games added by users]</p>
@@ -253,24 +269,33 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
   <script>
+    let currentPage = 1;
     const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
-    async function fetchGames() {
-      const search = document.getElementById('searchInput').value;
-      const platform = document.getElementById('platformFilter').value;
-      const genre = document.getElementById('genreFilter').value;
+
+    async function fetchGames(loadMore = false) {
+      const search = document.getElementById('searchInput')?.value;
+      const platform = document.getElementById('platformFilter')?.value;
+      const genre = document.getElementById('genreFilter')?.value;
       const grid = document.getElementById('gameGrid');
       const noResults = document.getElementById('noResults');
-      grid.innerHTML = '';
+      if (!loadMore) {
+        grid.innerHTML = '';
+        currentPage = 1;
+      }
       noResults.style.display = 'none';
+
       const url = new URL('https://api.rawg.io/api/games');
       url.searchParams.append('key', apiKey);
       url.searchParams.append('page_size', 20);
+      url.searchParams.append('page', currentPage);
       if (search) url.searchParams.append('search', search);
       if (platform) url.searchParams.append('platforms', platform);
       if (genre) url.searchParams.append('genres', genre);
+
       try {
         const res = await fetch(url);
         const data = await res.json();
+
         if (!data.results.length) {
           noResults.style.display = 'block';
           fetchRecommended();
@@ -281,11 +306,14 @@
               <h3>${game.name}</h3>
             </div>`;
           });
+
+          document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
         }
       } catch (e) {
-        console.error('Error:', e);
+        console.error('Error fetching games:', e);
       }
     }
+
     async function fetchRecommended() {
       const grid = document.getElementById('gameGrid');
       const url = `https://api.rawg.io/api/games?key=${apiKey}&ordering=-rating&page_size=5&platforms=4,187,186,7`;
@@ -298,18 +326,27 @@
         </div>`;
       });
     }
+
     async function fetchTrendingGames() {
       const trending = document.getElementById('trendingGames');
       const res = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&ordering=-added&page_size=4&platforms=4,187,186,7`);
       const data = await res.json();
       trending.innerHTML = data.results.map(g => `
         <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;">
-          <img src="${g.background_image}" alt="${g.name}" style="width:55px;height:55px;border-radius:6px;object-fit:cover;" />
+          <img src="${g.background_image}" alt="${g.name}" style="width:55px;height:auto;border-radius:6px;object-fit:contain;" />
           <span>${g.name}</span>
         </div>`).join('');
     }
-    fetchGames();
-    fetchTrendingGames();
+
+    function loadMoreGames() {
+      currentPage++;
+      fetchGames(true);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchGames();
+      fetchTrendingGames();
+    });
   </script>
 </body>
 </html>
