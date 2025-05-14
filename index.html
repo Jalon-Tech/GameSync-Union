@@ -361,22 +361,34 @@ footer p {
   <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
   <script>
-  const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd'; // Replace with your actual API key
+  const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd'; // RAWG API key
 
   fetch(`https://api.rawg.io/api/games/lists/popular?key=${apiKey}&page_size=10`)
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
       const slider = document.getElementById('gameSlider');
+      slider.innerHTML = ''; // Clear placeholder
+
+      if (!data.results || data.results.length === 0) {
+        slider.innerHTML = '<p style="color: #aaa;">No trending games available.</p>';
+        return;
+      }
+
       data.results.forEach(game => {
-        const gameDiv = document.createElement('div');
-        gameDiv.classList.add('slide');
-        gameDiv.innerHTML = `
-          <img src="${game.background_image}" alt="${game.name}" />
+        const card = document.createElement('div');
+        card.className = 'slide';
+        card.innerHTML = `
+          <img src="${game.background_image || 'fallback.jpg'}" alt="${game.name}" loading="lazy" />
           <h3>${game.name}</h3>
         `;
-        slider.appendChild(gameDiv);
+        slider.appendChild(card);
       });
+    })
+    .catch(error => {
+      console.error('Error loading RAWG games:', error);
+      document.getElementById('gameSlider').innerHTML = '<p style="color: #aaa;">Failed to load trending games. Please check your internet connection or API key.</p>';
     });
 </script>
+
 </body>
 </html>
