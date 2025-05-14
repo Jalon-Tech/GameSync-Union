@@ -175,45 +175,57 @@
       color: var(--gsu-red);
     }
     
-  .trending-card {
-  background-color: #1f1f1f;
-  border-radius: 10px;
-  padding: 0.8rem;
+  /* Trending Topics – Larger Cards Like Trending Games */
+#trendingTopics {
   display: flex;
   gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+}
+
+.trending-card {
+  background-color: var(--black-faded);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease;
-  min-height: 110px;
+  scroll-snap-align: start;
+  width: 220px;
+  min-width: 220px;
 }
 
 .trending-card:hover {
-  transform: scale(1.01);
+  transform: scale(1.02);
 }
 
 .trending-card img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 160px;
   object-fit: cover;
   border-radius: 8px;
-  flex-shrink: 0;
 }
 
 .trending-card h4 {
-  margin: 0 0 4px 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--gsu-red);
+  margin: 0;
 }
 
 .trending-card p {
-  margin: 0;
   font-size: 1rem;
   color: #ddd;
+  margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 
 
 
@@ -281,10 +293,11 @@
 
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
-      <div class="box">
+     <div class="box">
         <h2>🔥 Trending Topics</h2>
-        <div id="trendingTopics"></div>
-      </div>
+        <div id="trendingTopics" class="slider"></div>
+    </div>
+
 
       <div class="box">
         <h2>Game Guides</h2>
