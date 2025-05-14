@@ -1,5 +1,4 @@
-current code: <!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -273,84 +272,81 @@ current code: <!DOCTYPE html>
     let currentPage = 1;
     const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
 
-```
-async function fetchGames(loadMore = false) {
-  const search = document.getElementById('searchInput')?.value;
-  const platform = document.getElementById('platformFilter')?.value;
-  const genre = document.getElementById('genreFilter')?.value;
-  const grid = document.getElementById('gameGrid');
-  const noResults = document.getElementById('noResults');
-  if (!loadMore) {
-    grid.innerHTML = '';
-    currentPage = 1;
-  }
-  noResults.style.display = 'none';
+    async function fetchGames(loadMore = false) {
+      const search = document.getElementById('searchInput')?.value;
+      const platform = document.getElementById('platformFilter')?.value;
+      const genre = document.getElementById('genreFilter')?.value;
+      const grid = document.getElementById('gameGrid');
+      const noResults = document.getElementById('noResults');
+      if (!loadMore) {
+        grid.innerHTML = '';
+        currentPage = 1;
+      }
+      noResults.style.display = 'none';
 
-  const url = new URL('https://api.rawg.io/api/games');
-  url.searchParams.append('key', apiKey);
-  url.searchParams.append('page_size', 20);
-  url.searchParams.append('page', currentPage);
-  if (search) url.searchParams.append('search', search);
-  if (platform) url.searchParams.append('platforms', platform);
-  if (genre) url.searchParams.append('genres', genre);
+      const url = new URL('https://api.rawg.io/api/games');
+      url.searchParams.append('key', apiKey);
+      url.searchParams.append('page_size', 20);
+      url.searchParams.append('page', currentPage);
+      if (search) url.searchParams.append('search', search);
+      if (platform) url.searchParams.append('platforms', platform);
+      if (genre) url.searchParams.append('genres', genre);
 
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-    if (!data.results.length) {
-      noResults.style.display = 'block';
-      fetchRecommended();
-    } else {
+        if (!data.results.length) {
+          noResults.style.display = 'block';
+          fetchRecommended();
+        } else {
+          data.results.forEach(game => {
+            grid.innerHTML += `<div class="game-card">
+              <img src="${game.background_image}" alt="${game.name}" />
+              <h3>${game.name}</h3>
+            </div>`;
+          });
+
+          document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
+        }
+      } catch (e) {
+        console.error('Error fetching games:', e);
+      }
+    }
+
+    async function fetchRecommended() {
+      const grid = document.getElementById('gameGrid');
+      const url = `https://api.rawg.io/api/games?key=${apiKey}&ordering=-rating&page_size=5&platforms=4,187,186,7`;
+      const res = await fetch(url);
+      const data = await res.json();
       data.results.forEach(game => {
         grid.innerHTML += `<div class="game-card">
           <img src="${game.background_image}" alt="${game.name}" />
           <h3>${game.name}</h3>
         </div>`;
       });
-
-      document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
     }
-  } catch (e) {
-    console.error('Error fetching games:', e);
-  }
-}
 
-async function fetchRecommended() {
-  const grid = document.getElementById('gameGrid');
-  const url = `https://api.rawg.io/api/games?key=${apiKey}&ordering=-rating&page_size=5&platforms=4,187,186,7`;
-  const res = await fetch(url);
-  const data = await res.json();
-  data.results.forEach(game => {
-    grid.innerHTML += `<div class="game-card">
-      <img src="${game.background_image}" alt="${game.name}" />
-      <h3>${game.name}</h3>
-    </div>`;
-  });
-}
+    async function fetchTrendingGames() {
+      const trending = document.getElementById('trendingGames');
+      const res = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&ordering=-added&page_size=4&platforms=4,187,186,7`);
+      const data = await res.json();
+      trending.innerHTML = data.results.map(g => `
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;">
+          <img src="${g.background_image}" alt="${g.name}" style="width:55px;height:auto;border-radius:6px;object-fit:contain;" />
+          <span>${g.name}</span>
+        </div>`).join('');
+    }
 
-async function fetchTrendingGames() {
-  const trending = document.getElementById('trendingGames');
-  const res = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&ordering=-added&page_size=4&platforms=4,187,186,7`);
-  const data = await res.json();
-  trending.innerHTML = data.results.map(g => `
-    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;">
-      <img src="${g.background_image}" alt="${g.name}" style="width:55px;height:auto;border-radius:6px;object-fit:contain;" />
-      <span>${g.name}</span>
-    </div>`).join('');
-}
+    function loadMoreGames() {
+      currentPage++;
+      fetchGames(true);
+    }
 
-function loadMoreGames() {
-  currentPage++;
-  fetchGames(true);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  fetchGames();
-  fetchTrendingGames();
-});
-```
-
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchGames();
+      fetchTrendingGames();
+    });
   </script>
 </body>
 </html>
