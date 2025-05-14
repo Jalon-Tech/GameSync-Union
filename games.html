@@ -216,6 +216,10 @@
         </select>
         <button class="btn" onclick="fetchGames()">Apply Filters</button>
       </div>
+      <div class="box">
+        <h2>Trending This Week</h2>
+        <div id="trendingGames"></div>
+      </div>
     </aside>
     <main>
       <div class="box">
@@ -233,10 +237,6 @@
     </main>
     <aside>
       <div class="box">
-        <h2>Trending This Week</h2>
-        <div id="trendingGames"></div>
-      </div>
-      <div class="box">
         <h2>Suggest a Game</h2>
         <label for="suggestTitle">Game Title</label>
         <input type="text" id="suggestTitle" class="input-field" placeholder="Game Title" />
@@ -251,16 +251,7 @@
         <label for="suggestRating">Your Rating (1–10)</label>
         <select id="suggestRating" class="input-field">
           <option value="">Rate it</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
+          ${[...Array(10).keys()].map(i => `<option value="${i+1}">${i+1}</option>`).join('')}
         </select>
         <label for="suggestReview">Write a Review</label>
         <textarea id="suggestReview" class="input-field" rows="4" placeholder="Share why you recommend this game..."></textarea>
@@ -333,6 +324,38 @@
       }
     }
 
+    async function fetchTrendingGames() {
+      const trendingContainer = document.getElementById('trendingGames');
+      trendingContainer.innerHTML = '';
+
+      const url = new URL('https://api.rawg.io/api/games');
+      url.searchParams.append('key', apiKey);
+      url.searchParams.append('page_size', 5);
+      url.searchParams.append('ordering', '-added');
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        for (let game of data.results) {
+          const div = document.createElement('div');
+          div.style.marginBottom = '1rem';
+          div.style.borderBottom = '1px solid #333';
+          div.style.paddingBottom = '0.6rem';
+
+          div.innerHTML = `
+            <strong>${game.name}</strong><br />
+            <small style="color:#aaa;">Rating: ${game.rating || 'N/A'} / 5</small>
+          `;
+
+          trendingContainer.appendChild(div);
+        }
+      } catch (err) {
+        console.error('Error loading trending games:', err);
+        trendingContainer.innerHTML = '<p style="color:#aaa;">Unable to load trending games.</p>';
+      }
+    }
+
     function loadMoreGames() {
       currentPage++;
       fetchGames(true);
@@ -340,6 +363,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       fetchGames();
+      fetchTrendingGames();
     });
   </script>
 </body>
