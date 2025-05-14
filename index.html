@@ -126,166 +126,68 @@
       margin-top: 4rem;
     }
 
-   .platform-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.platform-icons img {
-  height: 32px;
-  width: auto;
-  opacity: 0.9;
-}
-
-footer p {
-  color: #ccc;
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-}
-
-    .section-flex {
+    .platform-icons {
       display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
     }
 
-    .section-flex div {
-      flex: 1 1 100px;
-      text-align: center;
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
     }
 
-    /* ===== Responsive Fixes ===== */
-
-    @media (max-width: 1024px) {
-      .main-container {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      nav {
-        justify-content: flex-start;
-      }
-
-      .logo-text {
-        font-size: 1.3rem;
-      }
-
-      .section-flex {
-        flex-direction: column;
-        text-align: center;
-      }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
     }
 
-    @media (max-width: 600px) {
-      .logo img {
-        height: 40px;
-      }
-
-      .logo-text {
-        font-size: 1.2rem;
-      }
-
-      nav a {
-        font-size: 0.9rem;
-      }
-
-      .btn {
-        padding: 0.7rem;
-      }
-
-      .input-field {
-        font-size: 0.9rem;
-      }
-    }
-    #trending-games {
-  overflow-x: auto;
-}
-
-.slider {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 1rem 0;
-}
-
-.slide {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  flex: 0 0 280px;
-  scroll-snap-align: start;
-  text-align: center;
-  padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-}
-
-.slide img {
-  max-width: 100%;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-}
-
-.slide h3 {
-  font-size: 1rem;
-  font-family: 'Montserrat', sans-serif;
-  color: var(--gsu-red);
-}
-  </style>
-  <style>
     .card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
-}
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
 
-.topic-card {
-  background-color: #2a2a2a;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease;
-}
+    .topic-card {
+      background-color: #2a2a2a;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease;
+    }
 
-.topic-card:hover {
-  transform: scale(1.03);
-}
+    .topic-card:hover {
+      transform: scale(1.03);
+    }
 
-.topic-card img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-}
+    .topic-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
 
-.topic-card a {
-  display: block;
-  padding: 0.8rem;
-  color: #fff;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.95rem;
-  text-decoration: none;
-}
+    .topic-card a {
+      display: block;
+      padding: 0.8rem;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
 
-.topic-card a:hover {
-  color: var(--gsu-red);
-}
-
+    .topic-card a:hover {
+      color: var(--gsu-red);
+    }
   </style>
-  
 </head>
 <body>
-
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -324,25 +226,9 @@ footer p {
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
       <div class="box">
-  <h2>Community Highlights</h2>
-
-  <div class="section-flex">
-    <div style="flex: 1 1 100%;">
-      <h3 style="color: var(--gsu-red); margin-bottom: 0.5rem;">🔥 Trending Gaming Topics (GameSpot)</h3>
-      <ul id="trendingTopics" style="list-style: none; padding-left: 0;"></ul>
-      <div id="trendingTopics" class="card-grid"></div>
-    </div>
-    <div style="flex: 1 1 100%;">
-      <h3 style="color: var(--gsu-red); margin-bottom: 0.5rem;">📹 Latest Uploads</h3>
-      <p>[Your gameplay uploads go here]</p>
-    </div>
-    <div style="flex: 1 1 100%;">
-      <h3 style="color: var(--gsu-red); margin-bottom: 0.5rem;">🎨 Fan Art</h3>
-      <p>[User-submitted fan art goes here]</p>
-    </div>
-  </div>
-</div>
-
+        <h2>🔥 Trending Gaming Topics (GameSpot)</h2>
+        <div id="trendingTopics" class="card-grid"></div>
+      </div>
 
       <div class="box">
         <h2>Game Guides</h2>
@@ -371,10 +257,6 @@ footer p {
         <h2>Art Showcase</h2>
         <p>[In-game screenshots, posters, and original artwork]</p>
       </div>
-<div class="box" id="trending-games">
-      <h2 style="text-align:center;">🔥 Trending Games</h2>
-      <div class="slider" id="gameSlider"></div>
-</div>
     </main>
 
     <aside>
@@ -404,47 +286,41 @@ footer p {
   </div>
 
   <footer>
-  <div class="platform-icons">
-    <img src="PS_Logo.png" alt="PlayStation" />
-    <img src="Xbox.png" alt="Xbox" />
-    <img src="Steam.png" alt="PC" />
-    <img src="Switch.png" alt="Nintendo Switch" />
-  </div>
-  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+    <div class="platform-icons">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-  
- <script>
-  const gamespotRSS = 'https://www.gamespot.com/feeds/news/';
-  const proxy = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
-  fetch(`${proxy}${encodeURIComponent(gamespotRSS)}`)
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById('trendingTopics');
-      container.innerHTML = '';
+  <script>
+    const proxyUrl = 'https://api.rss2json.com/v1/api.json?rss_url=';
+    const gamespotFeed = 'https://www.gamespot.com/feeds/news/';
 
-      const articles = data.items.slice(0, 6); // Top 6 articles
-      articles.forEach(item => {
-        const image = item.enclosure?.link || 'https://via.placeholder.com/300x160?text=No+Image';
+    fetch(`${proxyUrl}${encodeURIComponent(gamespotFeed)}`)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('trendingTopics');
+        container.innerHTML = '';
 
-        const card = document.createElement('div');
-        card.classList.add('topic-card');
-
-        card.innerHTML = `
-          <img src="${image}" alt="GameSpot Thumbnail" />
-          <a href="${item.link}" target="_blank">${item.title}</a>
-        `;
-
-        container.appendChild(card);
+        const articles = data.items.slice(0, 6);
+        articles.forEach(item => {
+          const image = item.enclosure?.link || 'https://via.placeholder.com/300x160?text=No+Image';
+          const card = document.createElement('div');
+          card.classList.add('topic-card');
+          card.innerHTML = `
+            <img src="${image}" alt="Thumbnail" />
+            <a href="${item.link}" target="_blank">${item.title}</a>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error('Failed to load GameSpot topics:', err);
+        document.getElementById('trendingTopics').innerHTML = '<p style="color: gray;">Could not load trending topics.</p>';
       });
-    })
-    .catch(err => {
-      console.error('Failed to load GameSpot feed:', err);
-      document.getElementById('trendingTopics').innerHTML = '<p style="color: gray;">Trending topics failed to load.</p>';
-    });
-</script>
-
-
-
+  </script>
 </body>
 </html>
