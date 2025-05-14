@@ -126,25 +126,25 @@
       margin-top: 4rem;
     }
 
-    .platform-icons {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 0.6rem;
-    }
+   .platform-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 0.6rem;
+}
 
-    .platform-icons img {
-      height: 32px;
-      width: auto;
-      opacity: 0.9;
-    }
+.platform-icons img {
+  height: 32px;
+  width: auto;
+  opacity: 0.9;
+}
 
-    footer p {
-      color: #ccc;
-      font-size: 1rem;
-      font-family: 'Roboto', sans-serif;
-    }
+footer p {
+  color: #ccc;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+}
 
     .section-flex {
       display: flex;
@@ -206,40 +206,39 @@
         font-size: 0.9rem;
       }
     }
+    #trending-games {
+  overflow-x: auto;
+}
 
-    #trending-games, #trending-news {
-      overflow-x: auto;
-    }
+.slider {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+}
 
-    .slider {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding: 1rem 0;
-    }
+.slide {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  text-align: center;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
 
-    .slide {
-      background-color: var(--black-faded);
-      border-radius: 8px;
-      flex: 0 0 280px;
-      scroll-snap-align: start;
-      text-align: center;
-      padding: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
+.slide img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
 
-    .slide img {
-      max-width: 100%;
-      border-radius: 6px;
-      margin-bottom: 0.5rem;
-    }
-
-    .slide h3 {
-      font-size: 1rem;
-      font-family: 'Montserrat', sans-serif;
-      color: var(--gsu-red);
-    }
+.slide h3 {
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--gsu-red);
+}
   </style>
 </head>
 <body>
@@ -304,6 +303,92 @@
           <li><a href="trophy-tips.html" style="color: #e60023;">Tips for Acquiring Trophies and Achievements</a></li>
           <li><a href="guide-discussion.html" style="color: #e60023;">Guide Discussion & Community Chat</a></li>
         </ul>
+      </div>
 
-::contentReference[oaicite:9]{index=9}
- 
+      <div class="box">
+        <h2>Your Trophies</h2>
+        <p>[View trophies and compare achievements]</p>
+      </div>
+
+      <div class="box">
+        <h2>User Uploads</h2>
+        <p>[Uploaded game videos and highlight reels]</p>
+      </div>
+
+      <div class="box">
+        <h2>Art Showcase</h2>
+        <p>[In-game screenshots, posters, and original artwork]</p>
+      </div>
+<div class="box" id="trending-games">
+      <h2 style="text-align:center;">🔥 Trending Games</h2>
+      <div class="slider" id="gameSlider"></div>
+</div>
+    </main>
+
+    <aside>
+      <div class="box">
+        <h2>Your Profile</h2>
+        <p>🎯 Favorite Games</p>
+        <p>🎮 Games Played</p>
+        <p>🏆 Trophy Stats</p>
+      </div>
+
+      <div class="box">
+        <h2>Upcoming Games & Events</h2>
+        <p>Stay updated on everything new in gaming:</p>
+        <ul>
+          <li>🆕 Recently Announced Games</li>
+          <li>🚀 Upcoming Game Releases</li>
+          <li>📆 Countdown to Launch & Events</li>
+          <li>🛠 Major Patch Notes & Updates</li>
+          <li>🎮 Gaming Conventions & Streams</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+          <a href="#" style="color: #e60023;">Learn more</a>
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+  <div class="platform-icons">
+    <img src="PS_Logo.png" alt="PlayStation" />
+    <img src="Xbox.png" alt="Xbox" />
+    <img src="Steam.png" alt="PC" />
+    <img src="Switch.png" alt="Nintendo Switch" />
+  </div>
+  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  </footer>
+  <script>
+  const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd'; // RAWG API key
+
+  fetch(`https://api.rawg.io/api/games/lists/popular?key=${apiKey}&page_size=10`)
+    .then(res => res.json())
+    .then(data => {
+      const slider = document.getElementById('gameSlider');
+      slider.innerHTML = ''; // Clear placeholder
+
+      if (!data.results || data.results.length === 0) {
+        slider.innerHTML = '<p style="color: #aaa;">No trending games available.</p>';
+        return;
+      }
+
+      data.results.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'slide';
+        card.innerHTML = `
+          <img src="${game.background_image || 'fallback.jpg'}" alt="${game.name}" loading="lazy" />
+          <h3>${game.name}</h3>
+        `;
+        slider.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error('Error loading RAWG games:', error);
+      document.getElementById('gameSlider').innerHTML = '<p style="color: #aaa;">Failed to load trending games. Please check your internet connection or API key.</p>';
+    });
+</script>
+
+</body>
+</html>
