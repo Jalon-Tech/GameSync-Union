@@ -389,6 +389,33 @@ footer p {
       document.getElementById('gameSlider').innerHTML = '<p style="color: #aaa;">Failed to load trending games. Please check your internet connection or API key.</p>';
     });
 </script>
+  <script>
+  const newsApiKey = 'pub_8690050da1298731e2bc7c294ddf05906db42'; // Get from https://newsdata.io
+
+  fetch(`https://newsdata.io/api/1/news?apikey=${newsApiKey}&q=gaming&language=en&country=us`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('trendingTopics');
+      container.innerHTML = '';
+
+      const articles = data.results.slice(0, 5); // Limit to top 5
+
+      articles.forEach(article => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <a href="${article.link}" target="_blank" style="color: #e60023; display: block; margin-bottom: 0.5rem;">
+            ${article.title}
+          </a>
+        `;
+        container.appendChild(li);
+      });
+    })
+    .catch(err => {
+      console.error('Failed to load trending topics:', err);
+      document.getElementById('trendingTopics').innerHTML = '<p style="color: gray;">Could not load news.</p>';
+    });
+</script>
+
 
 </body>
 </html>
