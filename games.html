@@ -311,7 +311,6 @@
           noResults.style.display = 'block';
         } else {
           for (let game of data.results) {
-            const trailer = await fetchTrailer(game.id);
             const platforms = game.platforms?.map(p => p.platform.name).join(', ') || 'N/A';
             const image = game.background_image || 'https://via.placeholder.com/400x225?text=No+Image';
 
@@ -322,8 +321,8 @@
               <img src="${image}" alt="${game.name}" />
               <h3>${game.name}</h3>
               <p style="margin-top: 0.4rem;"><strong>Rating:</strong> ${game.rating || 'N/A'} / 5</p>
+              <div style="height: 10px;"></div>
               <p style="margin-bottom: 0.8rem;"><strong>Platforms:</strong> ${platforms}</p>
-              ${trailer ? `<video controls width="100%" style="border-radius: 6px;"><source src="${trailer}" type="video/mp4">Your browser does not support the video tag.</video>` : '<p><em>Official trailer not available.</em></p>'}
             `;
             grid.appendChild(card);
           }
@@ -331,17 +330,6 @@
         }
       } catch (e) {
         console.error('Error fetching games:', e);
-      }
-    }
-
-    async function fetchTrailer(gameId) {
-      try {
-        const response = await fetch(`https://api.rawg.io/api/games/${gameId}/movies?key=${apiKey}`);
-        const data = await response.json();
-        return data.results?.[0]?.data?.max || null;
-      } catch (e) {
-        console.error('Error fetching trailer:', e);
-        return null;
       }
     }
 
