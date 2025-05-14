@@ -173,32 +173,36 @@
       font-size: 0.95rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--gsu-red);
-    }.trending-card {
+    }
+    
+  .trending-card {
   background-color: #1f1f1f;
   border-radius: 10px;
-  padding: 0.9rem;
+  padding: 0.8rem;
   display: flex;
-  gap: 0.9rem;
+  gap: 1rem;
   align-items: center;
   text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease;
+  min-height: 110px;
 }
 
 .trending-card:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .trending-card img {
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
 }
 
 .trending-card h4 {
-  margin: 0;
-  font-size: 0.85rem;
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
   color: var(--gsu-red);
 }
 
@@ -210,6 +214,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 
 
     .platform-icons img {
