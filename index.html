@@ -150,84 +150,40 @@
   
     /* 🔥 Trending Topics */
     #trendingTopics {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding: 1rem 0;
-    }
-  
-    .trending-card {
-      background-color: var(--black-faded);
-      border-radius: 12px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 0.6rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      transition: transform 0.2s ease;
-      scroll-snap-align: start;
-      width: 260px;
-      min-width: 260px;
-    }
-  
-    .trending-card:hover {
-      transform: scale(1.02);
-    }
-  
-    .trending-card a {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-decoration: none;
-      color: inherit;
-      width: 100%;
-      height: 100%;
-    }
-  
-    .trending-card img {
-      max-width: 100%;
-      max-height: 170px;
-      object-fit: contain;
-      border-radius: 8px;
-      background-color: #000;
-      display: block;
-      padding: 4px;
-    }
-  
-    .trending-card h4 {
-      font-size: 0.85rem;
-      color: var(--gsu-red);
-      margin: 0;
-    }
-  
-    .trending-card p {
-      font-size: 0.95rem;
-      color: #ddd;
-      margin: 0;
-      padding: 0 6px;
-      text-align: center;
-      word-wrap: break-word;
-      white-space: normal;
-      overflow-wrap: break-word;
-    }
-  
-    .platform-icons img {
-      height: 26px;
-      width: auto;
-      opacity: 0.85;
-    }
-  
-    #trendingTopics::-webkit-scrollbar {
-      height: 8px;
-    }
-  
-    #trendingTopics::-webkit-scrollbar-thumb {
-      background: #444;
-      border-radius: 4px;
-    }
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  max-height: 300px; /* Adjust this height as needed */
+  padding-right: 8px;
+}
+
+.trending-card {
+  background-color: var(--black-faded);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+  scroll-snap-align: start;
+  width: 100%;
+  min-height: 280px; /* Adjust this for how "tall" each card appears */
+  margin-bottom: 1rem;
+}
+
+#trendingTopics::-webkit-scrollbar {
+  width: 6px;
+}
+
+#trendingTopics::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
   
     .slide a {
       text-decoration: none;
@@ -299,7 +255,7 @@
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
      <div class="box">
-        <h2>🔥 Trending Topics</h2>
+        <h2>🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll ↓)</span></h2>
         <div id="trendingTopics" class="slider"></div>
     </div>
 
@@ -405,8 +361,8 @@
 
     async function fetchTrendingCards() {
       try {
-        const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(3));
-        const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(2));
+        const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(5));
+        const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(5));
 
         const [discussionSnap, uploadsSnap] = await Promise.all([
           getDocs(discussionQuery),
