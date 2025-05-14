@@ -12,160 +12,139 @@
       --black-main: #191818;
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
-      --gray-text: #cccccc;
-      --card-bg: #252525;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
     }
-
     header {
       background-color: var(--black-faded);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 2rem;
+      padding: 1rem 2rem;
       flex-wrap: wrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
-
     .logo {
       display: flex;
       align-items: center;
+      margin-bottom: 0.5rem;
     }
-
     .logo img {
       height: 50px;
       margin-right: 1rem;
     }
-
     .logo-text {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-family: 'Montserrat', sans-serif;
-      color: var(--gsu-red);
-      letter-spacing: 1px;
     }
-
     nav {
       display: flex;
-      gap: 1.2rem;
       flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
     }
-
     nav a {
       text-decoration: none;
       color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      font-size: 1rem;
       transition: color 0.3s ease;
+      font-size: 1rem;
     }
-
     nav a:hover {
       color: var(--gsu-red);
     }
-
     .main-container {
       display: grid;
-      grid-template-columns: 1fr 3fr 1.3fr;
-      gap: 1.5rem;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
       padding: 2rem;
     }
-
-    .box {
-      background-color: var(--card-bg);
-      border-radius: 10px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    aside, main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
     }
-
+    .box {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      padding: 1rem;
+    }
     .box h2 {
       font-family: 'Montserrat', sans-serif;
-      margin-bottom: 1rem;
-      font-size: 1.4rem;
+      margin-bottom: 0.7rem;
     }
-
     .input-field {
-      padding: 0.8rem;
+      padding: 0.6rem;
       border: none;
       border-radius: 6px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.6rem;
       width: 100%;
-      background-color: #2e2e2e;
+      background-color: #2a2a2a;
       color: var(--white-text);
     }
-
     .btn {
       background-color: var(--gsu-red);
       border: none;
       color: var(--white-text);
       padding: 0.8rem;
-      border-radius: 6px;
       width: 100%;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
       font-family: 'Montserrat', sans-serif;
     }
-
     .btn:hover {
+      opacity: 0.85;
+    }
+    footer {
+      background-color: var(--black-faded);
+      text-align: center;
+      padding: 1.2rem 1rem;
+      margin-top: 4rem;
+    }
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .platform-icons img {
+      height: 32px;
+      width: auto;
       opacity: 0.9;
     }
-
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
     .section-flex {
       display: flex;
-      flex-wrap: wrap;
+      justify-content: space-between;
       gap: 1rem;
-      justify-content: center;
+      flex-wrap: wrap;
     }
-
-    .highlight-card {
-      background-color: var(--black-faded);
-      border-radius: 10px;
-      overflow: hidden;
-      width: 260px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    .section-flex div {
+      flex: 1 1 100px;
       text-align: center;
-      transition: transform 0.3s ease;
     }
-
-    .highlight-card:hover {
-      transform: translateY(-6px);
+    #trending-games {
+      overflow-x: auto;
     }
-
-    .highlight-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-
-    .highlight-card h3 {
-      font-size: 1rem;
-      color: var(--gsu-red);
-      padding-top: 0.6rem;
-    }
-
-    .highlight-card p {
-      font-size: 0.95rem;
-      color: var(--white-text);
-      padding: 0.5rem 1rem 1rem;
-    }
-
     .slider {
       display: flex;
-      overflow-x: auto;
       gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
       padding: 1rem 0;
     }
-
     .slide {
       background-color: var(--black-faded);
       border-radius: 8px;
@@ -175,57 +154,20 @@
       padding: 1rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
-
     .slide img {
       max-width: 100%;
       border-radius: 6px;
       margin-bottom: 0.5rem;
     }
-
     .slide h3 {
       font-size: 1rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--gsu-red);
     }
-
-    footer {
-      background-color: var(--black-faded);
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-top: 3rem;
-    }
-
-    .platform-icons {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .platform-icons img {
-      height: 32px;
-      opacity: 0.8;
-      transition: transform 0.2s;
-    }
-
-    .platform-icons img:hover {
-      transform: scale(1.1);
-    }
-
-    footer p {
-      color: var(--gray-text);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 1024px) {
-      .main-container {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-      }
-    }
   </style>
 </head>
 <body>
+
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" />
@@ -264,8 +206,21 @@
 
       <div class="box">
         <h2>Community Highlights</h2>
-        <div class="section-flex" id="trendingTopicsSection">
-          <p style="color: gray;">Loading...</p>
+        <div class="section-flex">
+          <div>
+            <h3 style="color: var(--gsu-red);">🔥 Trending Topics</h3>
+            <ul id="trendingTopics" style="list-style: none; padding-left: 0;">
+              <li style="color: gray;">Loading...</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--gsu-red);">📹 Latest Uploads</h3>
+            <p>[Your gameplay clips will show up here]</p>
+          </div>
+          <div>
+            <h3 style="color: var(--gsu-red);">🎨 Fan Art</h3>
+            <p>[User-submitted fan art goes here]</p>
+          </div>
         </div>
       </div>
 
@@ -296,6 +251,7 @@
       </div>
     </aside>
   </div>
+
   <footer>
     <div class="platform-icons">
       <img src="PS_Logo.png" alt="PlayStation" />
@@ -341,77 +297,59 @@
       projectId: "gamesync-union",
       storageBucket: "gamesync-union.appspot.com",
       messagingSenderId: "148891736565",
-      appId: "1:148891736565:web:a8d8b3be7936a46bb77c51c"
+      appId: "1:148891736565:web:a8d8b3be7936a46bb77c51c",
+      measurementId: "G-CPE48EX1EW"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const trendingSection = document.getElementById('trendingTopicsSection');
-    trendingSection.innerHTML = '<p style="color: gray;">Loading...</p>';
+    const trendingList = document.getElementById('trendingTopics');
+    trendingList.innerHTML = '<li style="color: gray;">Loading...</li>';
 
-    async function fetchTrendingCards() {
+    async function fetchTrendingTopics() {
       try {
-        const discussionQuery = query(collection(db, "discussions"), orderBy("timestamp", "desc"), limit(3));
-        const uploadsQuery = query(collection(db, "uploads"), orderBy("uploadedAt", "desc"), limit(2));
+        const discussionRef = collection(db, "discussions");
+        const uploadsRef = collection(db, "uploads");
 
         const [discussionSnap, uploadsSnap] = await Promise.all([
-          getDocs(discussionQuery),
-          getDocs(uploadsQuery)
+          getDocs(query(discussionRef, orderBy("timestamp", "desc"), limit(3))),
+          getDocs(query(uploadsRef, orderBy("uploadedAt", "desc"), limit(2)))
         ]);
 
         const items = [];
 
         discussionSnap.forEach(doc => {
           const data = doc.data();
-          if (data.topic && data.thumbnail) {
-            items.push({
-              title: data.topic,
-              img: data.thumbnail,
-              url: "guide-discussion.html",
-              tag: "💬 Discussion"
-            });
+          if (data.topic) {
+            items.push({ text: `💬 ${data.topic}`, url: "guide-discussion.html" });
           }
         });
 
         uploadsSnap.forEach(doc => {
           const data = doc.data();
-          if (data.title && data.thumbnail) {
-            items.push({
-              title: data.title,
-              img: data.thumbnail,
-              url: "uploads.html",
-              tag: "📹 Upload"
-            });
+          if (data.title) {
+            items.push({ text: `📹 ${data.title}`, url: "uploads.html" });
           }
         });
 
-        trendingSection.innerHTML = '';
-        if (items.length === 0) {
-          trendingSection.innerHTML = '<p style="color: gray;">No trending items found.</p>';
-          return;
-        }
-
+        trendingList.innerHTML = "";
         items.slice(0, 5).forEach(item => {
-          const card = document.createElement('div');
-          card.className = 'slide';
-          card.innerHTML = `
-            <a href="${item.url}" style="text-decoration: none;">
-              <img src="${item.img}" alt="${item.title}" />
-              <h3>${item.tag}</h3>
-              <p style="color: white; margin-top: 0.5rem;">${item.title}</p>
-            </a>
-          `;
-          trendingSection.appendChild(card);
+          const li = document.createElement("li");
+          li.innerHTML = `<a href="${item.url}" style="color: var(--gsu-red); text-decoration: none;">${item.text}</a>`;
+          trendingList.appendChild(li);
         });
 
+        if (items.length === 0) {
+          trendingList.innerHTML = '<li style="color: gray;">No trending topics yet.</li>';
+        }
       } catch (error) {
-        console.error("Failed to fetch trending content:", error);
-        trendingSection.innerHTML = '<p style="color: gray;">Failed to load trending content.</p>';
+        console.error("Trending fetch failed:", error);
+        trendingList.innerHTML = '<li style="color: gray;">Failed to load topics.</li>';
       }
     }
 
-    fetchTrendingCards();
+    fetchTrendingTopics();
   </script>
 
 </body>
