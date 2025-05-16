@@ -151,7 +151,7 @@
 }
 
 .game-card:hover {
-  transform: translateY(-6px) scale(1.01);
+  transform: translateY(-4px) scale(1.01);
   box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
   border: 1px solid var(--gsu-red);
 }
@@ -311,23 +311,27 @@
 .box:hover li {
   transform: translateX(6px);
 }
-    .scroll-hover-box {
+   .scroll-hover-box {
   max-height: 580px;
-  overflow: hidden;
+  overflow: visible; /* Allow upward hover animations to show */
+  position: relative;
+}
+
+.scroll-container {
+  max-height: 500px;
+  overflow-y: hidden;
+  transition: all 0.3s ease;
+  padding-right: 4px;
   position: relative;
 }
 
 .scroll-hover-box:hover .scroll-container {
   overflow-y: auto;
+  padding-right: 8px;
+  padding-top: 0.5rem; /* Give space above for hover animation */
 }
 
-.scroll-container {
-  max-height: 500px;
-  overflow: hidden;
-  padding-right: 4px;
-}
-
-/* Scrollbar styling */
+/* Smooth scroll on hover */
 .scroll-container::-webkit-scrollbar {
   width: 8px;
 }
@@ -338,6 +342,7 @@
 .scroll-container::-webkit-scrollbar-track {
   background: transparent;
 }
+
 
   </style>
 </head>
