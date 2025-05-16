@@ -218,10 +218,19 @@
       <div class="box">
         <h2>Community Highlights</h2>
         <div class="section-flex">
-          <div>🔥 Trending Topics</div>
-          <div>📹 Latest Uploads</div>
-          <div>🎨 Fan Art</div>
-        </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="color: var(--gsu-red); text-align: left;">🔥 Trending Topics</h3>
+    <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+  </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="color: var(--gsu-red); text-align: left;">📹 Latest Uploads</h3>
+    <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+  </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="color: var(--gsu-red); text-align: left;">🎨 Fan Art</h3>
+    <p>[Showcase user-submitted art here]</p>
+  </div>
+</div>
       </div>
 
       <div class="box">
@@ -337,6 +346,22 @@
     }
 
     loadTrendingTopics();
+
+    async function loadRecentUploads() {
+      const uploadsRef = collection(db, "uploads");
+      const q = query(uploadsRef, orderBy("timestamp", "desc"), limit(3));
+      const querySnapshot = await getDocs(q);
+      const uploadsList = document.getElementById("uploads-list");
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.username}: ${data.title}`;
+        uploadsList.appendChild(li);
+      });
+    }
+
+    loadRecentUploads();
   </script>
 </body>
 </html>
