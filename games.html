@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Games | GameSync Union</title>
@@ -309,6 +310,34 @@
 .box:hover li {
   transform: translateX(6px);
 }
+    .scroll-hover-box {
+  max-height: 580px;
+  overflow: hidden;
+  position: relative;
+}
+
+.scroll-hover-box:hover .scroll-container {
+  overflow-y: auto;
+}
+
+.scroll-container {
+  max-height: 500px;
+  overflow: hidden;
+  padding-right: 4px;
+}
+
+/* Scrollbar styling */
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: var(--gsu-red);
+  border-radius: 4px;
+}
+.scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
   </style>
 </head>
 <body>
@@ -359,11 +388,14 @@
       </div>
     </aside>
     <main>
-      <div class="box">
-        <h2>All Games</h2>
+      <div class="box scroll-hover-box">
+  <h2>All Games</h2>
+      <div class="scroll-container">
         <div class="game-grid" id="gameGrid"></div>
         <p class="no-results" id="noResults" style="display:none;">No games found for your search or selected platform. Here are some top-rated picks:</p>
       </div>
+      </div>
+
       <div class="load-more" id="loadMoreContainer" style="display:none;">
         <button onclick="loadMoreGames()">Load More</button>
       </div>
@@ -506,4 +538,5 @@
       fetchTrendingGames();
     });
   </script></body>
+  
 </html>
