@@ -69,35 +69,36 @@
       color: var(--gsu-red);
     }
     .main-container {
-      display: grid;
-      grid-template-columns: 1.2fr 4fr 1.2fr; /* increase middle column width */
-      gap: 1rem;
-      padding: 2rem;
-    }
-    
-    .scroll-hover-box {
-      max-height: 580px;
-      position: relative;
-      overflow: visible;
-      z-index: 1; /* bring above if overlapping */
-    }
-    
-    .scroll-container {
-      max-height: 500px;
-      overflow-y: auto;
-      padding-right: 8px;
-      padding-top: 0.5rem;
-    }
-    
-    /* Game card hover fix */
-    .game-card {
-      position: relative;
-      z-index: 1;
-    }
-    
-    .game-card:hover {
-      z-index: 10;
-    }
+  display: grid;
+  grid-template-columns: 1.2fr 4fr 1.2fr; /* increase middle column width */
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.scroll-hover-box {
+  max-height: 580px;
+  position: relative;
+  overflow: visible;
+  z-index: 1; /* bring above if overlapping */
+}
+
+.scroll-container {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 8px;
+  padding-top: 0.5rem;
+}
+
+/* Game card hover fix */
+.game-card {
+  position: relative;
+  z-index: 1;
+}
+
+.game-card:hover {
+  z-index: 10;
+}
+
 
 
     aside, main {
