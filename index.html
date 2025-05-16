@@ -13,19 +13,16 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
     }
-
     header {
       background-color: var(--black-faded);
       display: flex;
@@ -34,30 +31,25 @@
       padding: 1rem 2rem;
       flex-wrap: wrap;
     }
-
     .logo {
       display: flex;
       align-items: center;
       margin-bottom: 0.5rem;
     }
-
     .logo img {
       height: 50px;
       margin-right: 1rem;
     }
-
     .logo-text {
       font-size: 1.5rem;
       font-family: 'Montserrat', sans-serif;
     }
-
     nav {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.8rem;
     }
-
     nav a {
       text-decoration: none;
       color: var(--white-text);
@@ -65,35 +57,29 @@
       transition: color 0.3s ease;
       font-size: 1rem;
     }
-
     nav a:hover {
       color: var(--gsu-red);
     }
-
     .main-container {
       display: grid;
       grid-template-columns: 1fr 3fr 1.2fr;
       gap: 1rem;
       padding: 2rem;
     }
-
     aside, main {
       display: flex;
       flex-direction: column;
       gap: 1.2rem;
     }
-
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
     }
-
     .box h2 {
       font-family: 'Montserrat', sans-serif;
       margin-bottom: 0.7rem;
     }
-
     .input-field {
       padding: 0.6rem;
       border: none;
@@ -103,7 +89,6 @@
       background-color: #2a2a2a;
       color: var(--white-text);
     }
-
     .btn {
       background-color: var(--gsu-red);
       border: none;
@@ -114,94 +99,75 @@
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
     }
-
     .btn:hover {
       opacity: 0.85;
     }
-
     footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1.2rem 1rem;
       margin-top: 4rem;
     }
-
-   .platform-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.platform-icons img {
-  height: 32px;
-  width: auto;
-  opacity: 0.9;
-}
-
-footer p {
-  color: #ccc;
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-}
-
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
+    }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
     .section-flex {
       display: flex;
       justify-content: space-between;
       gap: 1rem;
       flex-wrap: wrap;
     }
-
     .section-flex div {
       flex: 1 1 100px;
       text-align: center;
     }
-
-    /* ===== Responsive Fixes ===== */
-
     @media (max-width: 1024px) {
       .main-container {
         grid-template-columns: 1fr;
         padding: 1rem;
       }
-
       header {
         flex-direction: column;
         align-items: flex-start;
       }
-
       nav {
         justify-content: flex-start;
       }
-
       .logo-text {
         font-size: 1.3rem;
       }
-
       .section-flex {
         flex-direction: column;
         text-align: center;
       }
     }
-
     @media (max-width: 600px) {
       .logo img {
         height: 40px;
       }
-
       .logo-text {
         font-size: 1.2rem;
       }
-
       nav a {
         font-size: 0.9rem;
       }
-
       .btn {
         padding: 0.7rem;
       }
-
       .input-field {
         font-size: 0.9rem;
       }
@@ -209,7 +175,6 @@ footer p {
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
@@ -323,5 +288,55 @@ footer p {
   </div>
   <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_FIREBASE_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadTrendingTopics() {
+      const topicsRef = collection(db, "chatTopics");
+      const uploadsRef = collection(db, "uploads");
+      const q1 = query(topicsRef, orderBy("commentCount", "desc"), limit(3));
+      const q2 = query(uploadsRef, orderBy("timestamp", "desc"), limit(2));
+
+      const [topicsSnap, uploadsSnap] = await Promise.all([getDocs(q1), getDocs(q2)]);
+
+      const topics = [];
+      topicsSnap.forEach(doc => {
+        topics.push(doc.data().title);
+      });
+      uploadsSnap.forEach(doc => {
+        const data = doc.data();
+        if (data.title) topics.push(data.title);
+      });
+
+      const trendingBox = document.querySelector('.section-flex div:first-child');
+      trendingBox.innerHTML = '<h3 style="color: var(--gsu-red);">🔥 Trending Topics</h3>';
+      const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+
+      topics.slice(0, 5).forEach(topic => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span style="color: var(--white-text);">• ${topic}</span>`;
+        ul.appendChild(li);
+      });
+      trendingBox.appendChild(ul);
+    }
+
+    loadTrendingTopics();
+  </script>
 </body>
 </html>
