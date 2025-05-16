@@ -68,38 +68,13 @@
     nav a:hover {
       color: var(--gsu-red);
     }
+
     .main-container {
-  display: grid;
-  grid-template-columns: 1.2fr 4fr 1.2fr; /* increase middle column width */
-  gap: 1rem;
-  padding: 2rem;
-}
-
-.scroll-hover-box {
-  max-height: 580px;
-  position: relative;
-  overflow: visible;
-  z-index: 1; /* bring above if overlapping */
-}
-
-.scroll-container {
-  max-height: 500px;
-  overflow-y: auto;
-  padding-right: 8px;
-  padding-top: 0.5rem;
-}
-
-/* Game card hover fix */
-.game-card {
-  position: relative;
-  z-index: 1;
-}
-
-.game-card:hover {
-  z-index: 10;
-}
-
-
+      display: grid;
+      grid-template-columns: 0.8fr 4.5fr 1.2fr;
+      gap: 1rem;
+      padding: 2rem;
+    }
 
     aside, main {
       display: flex;
@@ -107,13 +82,12 @@
       gap: 1.2rem;
     }
 
-        .box {
+    .box {
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem 1.2rem;
-      overflow: visible; /* LET hover content show! */
+      overflow: visible;
     }
-
 
     .box h2 {
       font-family: 'Montserrat', sans-serif;
@@ -154,6 +128,31 @@
       opacity: 0.85;
     }
 
+    .scroll-hover-box {
+      max-height: 580px;
+      overflow: visible;
+    }
+
+    .scroll-container {
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 8px;
+      padding-bottom: 2rem;
+    }
+
+    .scroll-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .scroll-container::-webkit-scrollbar-thumb {
+      background-color: var(--gsu-red);
+      border-radius: 4px;
+    }
+
+    .scroll-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
     .game-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -173,6 +172,7 @@
       justify-content: space-between;
       height: 360px;
       z-index: 1;
+      position: relative;
     }
 
     .game-card:hover {
@@ -187,7 +187,6 @@
       height: 160px;
       object-fit: cover;
       border-radius: 4px;
-      background-color: #1c1c1c;
       margin-bottom: 0.6rem;
     }
 
@@ -214,30 +213,6 @@
       font-size: 1rem;
       color: #ccc;
       margin-top: 1rem;
-    }
-
-    .scroll-hover-box {
-      overflow: hidden;
-    }
-
-    .scroll-container {
-      max-height: 500px;
-      overflow-y: auto;
-      padding-right: 8px;
-      padding-bottom: 2rem;
-    }
-
-    .scroll-container::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .scroll-container::-webkit-scrollbar-thumb {
-      background-color: var(--gsu-red);
-      border-radius: 4px;
-    }
-
-    .scroll-container::-webkit-scrollbar-track {
-      background: transparent;
     }
 
     .load-more {
@@ -286,9 +261,8 @@
         grid-template-columns: 1fr;
         padding: 1rem;
       }
-
-      .logo-text {
-        font-size: 1.3rem;
+      .game-grid {
+        grid-template-columns: 1fr 1fr;
       }
     }
 
@@ -296,48 +270,25 @@
       .logo img {
         height: 40px;
       }
-
       .logo-text {
         font-size: 1.2rem;
       }
-
       nav {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.4rem;
       }
-
-      nav a {
-        font-size: 0.9rem;
-      }
-
-      .btn {
-        padding: 0.7rem;
-      }
-
-      .input-field, select, textarea {
-        font-size: 0.9rem;
-      }
-
       .game-grid {
         grid-template-columns: 1fr;
-      }
-
-      .box {
-        padding: 0.8rem 1rem;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -346,10 +297,11 @@
       <a href="trophies.html">Trophies/Achievements</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">Upload to GSU community</a>
+      <a href="uploads.html">Upload</a>
     </nav>
   </header>
 
+  <!-- MAIN CONTENT -->
   <div class="main-container">
     <aside>
       <div class="box">
@@ -389,7 +341,7 @@
         <h2>All Games</h2>
         <div class="scroll-container">
           <div class="game-grid" id="gameGrid"></div>
-          <p class="no-results" id="noResults" style="display:none;">No games found for your search or selected platform. Here are some top-rated picks:</p>
+          <p class="no-results" id="noResults" style="display:none;">No games found.</p>
         </div>
       </div>
 
@@ -416,18 +368,14 @@
           <option value="xbox">Xbox Series X|S</option>
           <option value="switch">Nintendo Switch</option>
         </select>
-        <label for="suggestRating">Your Rating (1–10)</label>
-        <select id="suggestRating" class="input-field">
-          <option value="">Rate it</option>
-          ${[...Array(10).keys()].map(i => `<option value="${i+1}">${i+1}</option>`).join('')}
-        </select>
-        <label for="suggestReview">Write a Review</label>
-        <textarea id="suggestReview" class="input-field" rows="4" placeholder="Share why you recommend this game..."></textarea>
+        <label for="suggestReview">Your Review</label>
+        <textarea class="input-field" rows="4" placeholder="Why you recommend it..."></textarea>
         <button class="btn" style="margin-top: 1rem;">Submit Suggestion</button>
       </div>
     </aside>
   </div>
 
+  <!-- FOOTER -->
   <footer>
     <div class="platform-icons">
       <img src="PS_Logo.png" alt="PlayStation" />
@@ -477,13 +425,14 @@
 
             const card = document.createElement('div');
             card.classList.add('game-card');
+
             card.innerHTML = `
               <img src="${image}" alt="${game.name}" />
               <h3>${game.name}</h3>
-              <p style="margin-top: 0.4rem;"><strong>Rating:</strong> ${game.rating || 'N/A'} / 5</p>
-              <div style="height: 10px;"></div>
-              <p style="margin-bottom: 0.8rem;"><strong>Platforms:</strong> ${platforms}</p>
+              <p><strong>Rating:</strong> ${game.rating || 'N/A'} / 5</p>
+              <p><strong>Platforms:</strong> ${platforms}</p>
             `;
+
             grid.appendChild(card);
           }
 
@@ -492,6 +441,11 @@
       } catch (e) {
         console.error('Error fetching games:', e);
       }
+    }
+
+    function loadMoreGames() {
+      currentPage++;
+      fetchGames(true);
     }
 
     async function fetchTrendingGames() {
@@ -508,27 +462,17 @@
 
         for (let game of data.results) {
           const div = document.createElement('div');
-          div.style.marginBottom = '1rem';
-          div.style.borderBottom = '1px solid #333';
-          div.style.paddingBottom = '0.6rem';
-          const image = game.background_image || 'https://via.placeholder.com/300x180?text=No+Image';
-
           div.innerHTML = `
-            <img src="${image}" alt="${game.name}" style="width: 100%; max-height: 140px; object-fit: cover; border-radius: 4px; margin-bottom: 0.5rem;" />
+            <img src="${game.background_image || 'https://via.placeholder.com/300x180?text=No+Image'}" alt="${game.name}" style="width:100%; border-radius:4px;" />
             <strong>${game.name}</strong><br />
             <small style="color:#aaa;">Rating: ${game.rating || 'N/A'} / 5</small>
           `;
+          div.style.marginBottom = '1rem';
           trendingContainer.appendChild(div);
         }
       } catch (err) {
-        console.error('Error loading trending games:', err);
         trendingContainer.innerHTML = '<p style="color:#aaa;">Unable to load trending games.</p>';
       }
-    }
-
-    function loadMoreGames() {
-      currentPage++;
-      fetchGames(true);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
