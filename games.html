@@ -546,7 +546,7 @@
     });
     
   </script>
-  <script>
+    <script>
   const scrollBox = document.querySelector('.scroll-hover-box');
   const scrollContainer = document.querySelector('.scroll-container');
 
@@ -557,58 +557,6 @@
   scrollBox.addEventListener('mouseleave', () => {
     scrollContainer.classList.remove('show-scroll');
   });
-
-  async function fetchGames(loadMore = false) {
-    const search = document.getElementById('searchInput')?.value;
-    const platform = document.getElementById('platformFilter')?.value;
-    const genre = document.getElementById('genreFilter')?.value;
-    const grid = document.getElementById('gameGrid');
-    const noResults = document.getElementById('noResults');
-
-    if (!loadMore) {
-      grid.innerHTML = '';
-      currentPage = 1;
-    }
-
-    noResults.style.display = 'none';
-
-    const url = new URL('https://api.rawg.io/api/games');
-    url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 20);
-    url.searchParams.append('page', currentPage);
-    if (search) url.searchParams.append('search', search);
-    if (platform) url.searchParams.append('platforms', platform);
-    if (genre) url.searchParams.append('genres', genre);
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (!data.results.length) {
-        noResults.style.display = 'block';
-      } else {
-        for (let game of data.results) {
-          const platforms = game.platforms?.map(p => p.platform.name).join(', ') || 'N/A';
-          const image = game.background_image || 'https://via.placeholder.com/400x225?text=No+Image';
-
-          const card = document.createElement('div');
-          card.classList.add('game-card');
-
-          card.innerHTML = `
-            <img src="${image}" alt="${game.name}" />
-            <h3>${game.name}</h3>
-            <p style="margin-top: 0.4rem;"><strong>Rating:</strong> ${game.rating || 'N/A'} / 5</p>
-            <div style="height: 10px;"></div>
-            <p style="margin-bottom: 0.8rem;"><strong>Platforms:</strong> ${platforms}</p>
-          `;
-          grid.appendChild(card);
-        }
-        document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
-      }
-    } catch (e) {
-      console.error('Error fetching games:', e);
-    }
-  }
 </script>
 
 </body>
