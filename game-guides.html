@@ -309,6 +309,53 @@ footer p {
           <button class="add-guide-btn">🎮 Add a Guide of Your Own for the Gaming Community</button>
         </div>
 
+    <!-- Trending Guides Section -->
+<section style="margin-top: 4rem;">
+  <h2 style="font-family: 'Montserrat', sans-serif; color: #e60023; font-size: 2rem; margin-bottom: 1rem;">🔥 Trending Guides</h2>
+  <div class="guides-container" id="trendingGuides">
+    <!-- Trending guides will be dynamically inserted here -->
+    <div class="guide-card">
+      <h3>🧠 Best Elden Ring Builds</h3>
+      <p>Upvotes: 284 | Views: 1.2k</p>
+      <p>Maximize damage output with these top community builds!</p>
+    </div>
+    <div class="guide-card">
+      <h3>🎯 MW3 Best Loadouts</h3>
+      <p>Upvotes: 179 | Views: 890</p>
+      <p>Dominate multiplayer with optimal weapons and perks.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Newest Guides Section -->
+<section style="margin-top: 4rem;">
+  <h2 style="font-family: 'Montserrat', sans-serif; color: #e60023; font-size: 2rem; margin-bottom: 1rem;">🆕 Newest Game Guides</h2>
+  <div class="guides-container" id="newestGuides">
+    <!-- Newest guides will be dynamically inserted here -->
+    <div class="guide-card">
+      <h3>🧩 Resident Evil 4 Puzzle Solutions</h3>
+      <p>Submitted 2 hours ago</p>
+      <p>Quick walkthrough for solving the most annoying puzzles in RE4 remake.</p>
+    </div>
+    <div class="guide-card">
+      <h3>🕹️ Tekken 8 Beginners Combo Guide</h3>
+      <p>Submitted 1 day ago</p>
+      <p>Basic combos, movement tips, and punish setups for newcomers.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Guide Submission Form -->
+<section style="margin-top: 4rem;">
+  <h2 style="font-family: 'Montserrat', sans-serif; color: #e60023; font-size: 2rem; margin-bottom: 1rem;">🎮 Submit a New Guide</h2>
+  <form id="guideForm" class="guide-form" style="display: flex; flex-direction: column; gap: 1rem; background-color: #1F1F1F; padding: 1.5rem; border-radius: 8px;">
+    <input type="text" placeholder="Guide Title" class="input-field" required />
+    <input type="text" placeholder="Game Title" class="input-field" required />
+    <textarea placeholder="Your Guide Content..." class="input-field" rows="6" required></textarea>
+    <button type="submit" class="add-guide-btn" style="width: 200px;">Submit Guide</button>
+  </form>
+</section>
+
       
   </main>
 
