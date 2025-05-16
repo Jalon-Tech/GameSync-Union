@@ -170,6 +170,29 @@
       .platform-icons img { height: 28px; }
       footer p { font-size: 0.85rem; }
     }
+     .box {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  color: var(--white-text);
+}
+
+  .box:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--gsu-red);
+  background-color: var(--black-faded); /* stays consistent */
+  color: var(--white-text); /* ensures text remains white */
+}
+
+  .box li {
+  transition: transform 0.3s ease;
+}
+
+.box:hover li {
+  transform: translateX(6px);
+}
   </style>
 </head>
 <body>
