@@ -4,30 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameSync Union</title>
-  <link rel="icon" href="GSU_Logo.png" type="image/png" />
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-  
   <style>
-    
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-  
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-  
+
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
     }
-  
+
     header {
       background-color: var(--black-faded);
       display: flex;
@@ -36,30 +34,30 @@
       padding: 1rem 2rem;
       flex-wrap: wrap;
     }
-  
+
     .logo {
       display: flex;
       align-items: center;
       margin-bottom: 0.5rem;
     }
-  
+
     .logo img {
       height: 50px;
       margin-right: 1rem;
     }
-  
+
     .logo-text {
       font-size: 1.5rem;
       font-family: 'Montserrat', sans-serif;
     }
-  
+
     nav {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.8rem;
     }
-  
+
     nav a {
       text-decoration: none;
       color: var(--white-text);
@@ -67,30 +65,35 @@
       transition: color 0.3s ease;
       font-size: 1rem;
     }
-  
+
     nav a:hover {
       color: var(--gsu-red);
     }
-  
+
     .main-container {
       display: grid;
       grid-template-columns: 1fr 3fr 1.2fr;
       gap: 1rem;
       padding: 2rem;
     }
-  
+
+    aside, main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
-      margin-bottom: 1rem;
     }
-  
+
     .box h2 {
       font-family: 'Montserrat', sans-serif;
       margin-bottom: 0.7rem;
     }
-  
+
     .input-field {
       padding: 0.6rem;
       border: none;
@@ -100,7 +103,7 @@
       background-color: #2a2a2a;
       color: var(--white-text);
     }
-  
+
     .btn {
       background-color: var(--gsu-red);
       border: none;
@@ -111,238 +114,114 @@
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
     }
-  
+
     .btn:hover {
       opacity: 0.85;
     }
-  
-    .slider {
-      display: flex;
-      overflow-x: auto;
-      gap: 1rem;
-      padding: 1rem 0;
-      scroll-snap-type: x mandatory;
-    }
-  
-    .slide {
+
+    footer {
       background-color: var(--black-faded);
-      border-radius: 8px;
-      flex: 0 0 260px;
-      scroll-snap-align: start;
       text-align: center;
-      padding: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      padding: 1.2rem 1rem;
+      margin-top: 4rem;
     }
-  
-    .slide img {
-      max-width: 100%;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 0.5rem;
-    }
-  
-    .slide h3 {
-      font-size: 0.95rem;
-      font-family: 'Montserrat', sans-serif;
-      color: var(--gsu-red);
-    }
-  
-    /* 🔥 Trending Topics */
-  #trendingTopics {
-  background-color: var(--black-faded);
-  border-radius: 12px;
-  padding: 1rem;
-  max-height: 450px;
-  overflow-y: auto;
+
+   .platform-icons {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  width: 100%;
-}
-
-/* Each post inside the trending box */
-#trendingTopics {
-  background-color: var(--black-faded);
-  border-radius: 12px;
-  padding: 1rem;
-  max-height: 460px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* This moves the cards to the left */
-  gap: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 0;
-}
-
-.trending-card {
-  background-color: #222;
-  border-radius: 10px;
-  padding: 1rem;
-  scroll-snap-align: start;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  gap: 0.6rem;
-  border-left: 3px solid var(--gsu-red);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  transition: transform 0.2s ease;
-  width: 320px; /* Set consistent width */
-}
-
-
-.trending-card:hover {
-  transform: scale(1.01);
-}
-
-.trending-card a {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 100%;
+  gap: 1.5rem;
+  margin-bottom: 0.6rem;
 }
 
-.trending-card img {
-  max-width: 100%;
-  max-height: 160px;
-  object-fit: contain;
-  border-radius: 8px;
-  background-color: #000;
-  padding: 4px;
+.platform-icons img {
+  height: 32px;
+  width: auto;
+  opacity: 0.9;
 }
 
-.trending-card h4 {
-  font-size: 0.85rem;
-  color: var(--gsu-red);
-  margin: 0;
+footer p {
+  color: #ccc;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
 }
 
-.trending-card p {
-  font-size: 0.95rem;
-  color: #ddd;
-  margin: 0;
-  padding: 0 6px;
-  text-align: center;
-  word-wrap: break-word;
-  white-space: normal;
-  overflow-wrap: break-word;
-}
-
-#trendingTopics::-webkit-scrollbar {
-  width: 6px;
-}
-#trendingTopics::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 4px;
-}
-
-
-  
-    .slide a {
-      text-decoration: none;
-      color: inherit;
-      display: block;
+    .section-flex {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
-  
-    @media (max-width: 768px) {
+
+    .section-flex div {
+      flex: 1 1 100px;
+      text-align: center;
+    }
+
+    /* ===== Responsive Fixes ===== */
+
+    @media (max-width: 1024px) {
       .main-container {
         grid-template-columns: 1fr;
         padding: 1rem;
       }
-  
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
       nav {
         justify-content: flex-start;
       }
-  
-      .trending-card {
-        width: 100%;
-        min-width: unset;
+
+      .logo-text {
+        font-size: 1.3rem;
       }
-  
-      .trending-card img {
-        max-height: 150px;
-      }
-  
-      .trending-card p {
-        white-space: normal;
+
+      .section-flex {
+        flex-direction: column;
+        text-align: center;
       }
     }
-    /* 🔥 Enhanced for visibility and appeal */
-body {
-  font-size: 1.2rem;
-}
 
-.logo-text {
-  font-size: 2rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
+    @media (max-width: 600px) {
+      .logo img {
+        height: 40px;
+      }
 
-nav a {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
+      .logo-text {
+        font-size: 1.2rem;
+      }
 
-.box h2 {
-  font-size: 1.7rem;
-}
+      nav a {
+        font-size: 0.9rem;
+      }
 
-.btn {
-  font-size: 1.2rem;
-  padding: 1rem;
-}
+      .btn {
+        padding: 0.7rem;
+      }
 
-.input-field {
-  font-size: 1.1rem;
-  padding: 0.8rem;
-}
-
-.trending-card h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.2rem;
-  color: #e60023;
-}
-
-.trending-card p {
-  font-size: 1.1rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #eee;
-  text-align: center;
-  margin: 0 0.3rem;
-}
-
-
-footer p {
-  font-size: 1.2rem;
-}
-
-footer img {
-  height: 40px !important;
-}
-
-</style>
-
-
+      .input-field {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
+
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
       <a href="index.html">Home</a>
       <a href="games.html">Games</a>
-      <a href="trophies.html">Trophies</a>
+      <a href="trophies.html">Trophies/Achievements</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">Uploads</a>
+      <a href="uploads.html">Upload to GSU community</a>
     </nav>
   </header>
 
@@ -356,7 +235,12 @@ footer img {
         <button class="btn">Sign In</button>
         <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="#" style="color: #e60023;">Create Account</a></p>
       </div>
+      <div class="box">
+        <h2>Recent Uploads</h2>
+        <p>[Your gameplay clips will show up here]</p>
+      </div>
     </aside>
+
     <main>
       <div class="box" style="text-align:center;">
         <h2>Welcome to GameSync Union</h2>
@@ -366,29 +250,41 @@ footer img {
 
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
-     <div class="box">
-       <h2>🔥 Trending Topics <span style="font-size: 0.8rem; color: gray;">(Scroll to view more)</span></h2>
-
-
-        <div id="trendingTopics" class="slider" style="overflow-x: auto; flex-wrap: nowrap; white-space: nowrap;"></div>
-    </div>
-
+      <div class="box">
+        <h2>Community Highlights</h2>
+        <div class="section-flex">
+          <div>🔥 Trending Topics</div>
+          <div>📹 Latest Uploads</div>
+          <div>🎨 Fan Art</div>
+        </div>
+      </div>
 
       <div class="box">
         <h2>Game Guides</h2>
+        <p>Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
         <ul>
-          <li><a href="boss-fight-strategies.html" style="color: var(--gsu-red);">Boss Fight Strategies</a></li>
-          <li><a href="gameplay-tutorials.html" style="color: var(--gsu-red);">Gameplay Tutorials</a></li>
-          <li><a href="community-gameplay-videos.html" style="color: var(--gsu-red);">Gameplay Videos</a></li>
-          <li><a href="combo-guides.html" style="color: var(--gsu-red);">Combo Guides</a></li>
-          <li><a href="trophy-tips.html" style="color: var(--gsu-red);">Trophy Tips</a></li>
-          <li><a href="guide-discussion.html" style="color: var(--gsu-red);">Discussion & Chat</a></li>
+          <li><a href="boss-fight-strategies.html" style="color: #e60023;">Boss Fight Strategies</a></li>
+          <li><a href="gameplay-tutorials.html" style="color: #e60023;">Gameplay Tutorials</a></li>
+          <li><a href="community-gameplay-videos.html" style="color: #e60023;">Enjoyable Gameplay Videos from the Community</a></li>
+          <li><a href="combo-guides.html" style="color: #e60023;">Combo Guides for Fighting Games</a></li>
+          <li><a href="trophy-tips.html" style="color: #e60023;">Tips for Acquiring Trophies and Achievements</a></li>
+          <li><a href="guide-discussion.html" style="color: #e60023;">Guide Discussion & Community Chat</a></li>
         </ul>
       </div>
 
-      <div class="box" id="trending-games">
-        <h2 style="text-align:center;">🔥 Trending Games</h2>
-        <div class="slider" id="gameSlider"></div>
+      <div class="box">
+        <h2>Your Trophies</h2>
+        <p>[View trophies and compare achievements]</p>
+      </div>
+
+      <div class="box">
+        <h2>User Uploads</h2>
+        <p>[Uploaded game videos and highlight reels]</p>
+      </div>
+
+      <div class="box">
+        <h2>Art Showcase</h2>
+        <p>[In-game screenshots, posters, and original artwork]</p>
       </div>
     </main>
 
@@ -402,55 +298,30 @@ footer img {
 
       <div class="box">
         <h2>Upcoming Games & Events</h2>
+        <p>Stay updated on everything new in gaming:</p>
         <ul>
           <li>🆕 Recently Announced Games</li>
-          <li>🚀 Upcoming Releases</li>
-          <li>📆 Countdowns & Launch Events</li>
-          <li>🛠 Patch Notes</li>
-          <li>🎮 Conventions & Streams</li>
+          <li>🚀 Upcoming Game Releases</li>
+          <li>📆 Countdown to Launch & Events</li>
+          <li>🛠 Major Patch Notes & Updates</li>
+          <li>🎮 Gaming Conventions & Streams</li>
         </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+          <a href="#" style="color: #e60023;">Learn more</a>
+        </p>
       </div>
     </aside>
   </div>
 
-  <footer style="background-color: var(--black-faded); padding: 1.5rem 1rem; margin-top: 2rem; text-align: center; color: var(--white-text);">
-  <div style="display: flex; justify-content: center; align-items: center; gap: 1.2rem; margin-bottom: 1rem; flex-wrap: wrap;">
-    <img src="PS_Logo.png" alt="PlayStation" style="height: 32px;" />
-    <img src="Xbox.png" alt="Xbox" style="height: 32px;" />
-    <img src="Steam.png" alt="PC" style="height: 32px;" />
-    <img src="Switch.png" alt="Nintendo Switch" style="height: 32px;" />
+  <footer>
+  <div class="platform-icons">
+    <img src="PS_Logo.png" alt="PlayStation" />
+    <img src="Xbox.png" alt="Xbox" />
+    <img src="Steam.png" alt="PC" />
+    <img src="Switch.png" alt="Nintendo Switch" />
   </div>
-  <p style="font-size: 0.9rem;">&copy; 2025 <strong>GameSync Union</strong>. Built for gamers, by gamers.</p>
-</footer>
-
-  <!-- RAWG API Script -->
-  <script>
-    const fanArtQuery = query(collection(db, "fan_art"), orderBy("createdAt", "desc"), limit(5));
-const trophiesQuery = query(collection(db, "trophies"), orderBy("earnedAt", "desc"), limit(5));
-
-const [discussionSnap, uploadsSnap, fanArtSnap, trophiesSnap] = await Promise.all([
-  getDocs(discussionQuery),
-  getDocs(uploadsQuery),
-  getDocs(fanArtQuery),
-  getDocs(trophiesQuery)
-]);
-
-[...discussionSnap.docs, ...uploadsSnap.docs, ...fanArtSnap.docs, ...trophiesSnap.docs].forEach(doc => {
-  const data = doc.data();
-  if (data.title && data.thumbnail) {
-    items.push({
-      title: data.title,
-      img: data.thumbnail,
-      url: data.url || "#",
-      tag: data.type === "discussion" ? "💬 Discussion"
-           : data.type === "upload" ? "📹 Upload"
-           : data.type === "fan_art" ? "🎨 Fan Art"
-           : data.type === "trophy" ? "🏆 Trophy"
-           : "🔥 Trending"
-    });
-  }
-});
-
-  </script>
+  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  </footer>
 </body>
 </html>
