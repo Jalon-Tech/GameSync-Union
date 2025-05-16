@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Games | GameSync Union</title>
@@ -134,55 +133,53 @@
       gap: 1rem;
     }
 
+    .game-card {
+      background-color: #2a2a2a;
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+      border: 1px solid transparent;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 360px;
+    }
 
-        .game-card {
-  background-color: #2a2a2a;
-  border-radius: 6px;
-  padding: 1rem;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  color: var(--white-text);
-  border: 1px solid transparent;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 360px; /* uniform height */
-}
+    .game-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
+    }
 
-.game-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--gsu-red);
-}
+    .game-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 4px;
+      background-color: #1c1c1c;
+      margin-bottom: 0.6rem;
+    }
 
-.game-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 4px;
-  background-color: #1c1c1c;
-  margin-bottom: 0.6rem;
-}
+    .game-card h3 {
+      font-size: 1.1rem;
+      margin: 0.4rem 0 0.3rem;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--gsu-red);
+      transition: color 0.3s ease;
+    }
 
-.game-card h3 {
-  font-size: 1.1rem;
-  margin: 0.4rem 0 0.3rem;
-  font-family: 'Montserrat', sans-serif;
-  color: var(--gsu-red);
-  transition: color 0.3s ease;
-}
+    .game-card:hover h3 {
+      color: var(--white-text);
+    }
 
-.game-card:hover h3 {
-  color: var(--white-text);
-}
-
-.game-card p {
-  font-size: 0.9rem;
-  color: #ccc;
-  margin-bottom: 0.4rem;
-}
-
+    .game-card p {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-bottom: 0.4rem;
+    }
 
     .no-results {
       text-align: center;
@@ -234,121 +231,76 @@
       font-family: 'Roboto', sans-serif;
     }
 
-    /* Tablets */
+    .scroll-hover-box {
+      max-height: 580px;
+      overflow: visible;
+      position: relative;
+    }
+
+    .scroll-container {
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 8px;
+      padding-top: 0.5rem;
+    }
+
+    .scroll-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    .scroll-container::-webkit-scrollbar-thumb {
+      background-color: var(--gsu-red);
+      border-radius: 4px;
+    }
+    .scroll-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
     @media (max-width: 1024px) {
       .main-container {
         grid-template-columns: 1fr;
         padding: 1rem;
       }
-
       .logo-text {
         font-size: 1.3rem;
       }
     }
 
-    /* Phones */
     @media (max-width: 600px) {
       .logo img {
         height: 40px;
       }
-
       .logo-text {
         font-size: 1.2rem;
       }
-
       nav {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.4rem;
       }
-
       nav a {
         font-size: 0.9rem;
       }
-
       .btn {
         padding: 0.7rem;
       }
-
       .input-field, select, textarea {
         font-size: 0.9rem;
       }
-
       .game-grid {
         grid-template-columns: 1fr;
-        
       }
-
       .box {
         padding: 0.8rem 1rem;
       }
-
       header {
         flex-direction: column;
         align-items: flex-start;
       }
     }
-     .box {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  color: var(--white-text);
-}
-
-  .box:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--gsu-red);
-  background-color: var(--black-faded); /* stays consistent */
-  color: var(--white-text); /* ensures text remains white */
-}
-
-  .box li {
-  transition: transform 0.3s ease;
-}
-
-.box:hover li {
-  transform: translateX(6px);
-}
-   .scroll-hover-box {
-  max-height: 580px;
-  overflow: visible; /* Allow upward hover animations to show */
-  position: relative;
-}
-
-.scroll-container {
-  max-height: 500px;
-  overflow-y: hidden;
-  transition: all 0.3s ease;
-  padding-right: 4px;
-  position: relative;
-}
-
-.scroll-container.show-scroll {
-  overflow-y: auto;
-  padding-right: 8px;
-  padding-top: 0.5rem;
-}
-
-
-/* Smooth scroll on hover */
-.scroll-container::-webkit-scrollbar {
-  width: 8px;
-}
-.scroll-container::-webkit-scrollbar-thumb {
-  background-color: var(--gsu-red);
-  border-radius: 4px;
-}
-.scroll-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-
   </style>
 </head>
 <body>
-  <header>
+ <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
@@ -434,8 +386,22 @@
         <button class="btn" style="margin-top: 1rem;">Submit Suggestion</button>
       </div>
     </aside>
-  </div>
-  <footer>
+  </div>  <main>
+    <div class="box scroll-hover-box">
+      <h2>All Games</h2>
+      <div class="scroll-container">
+        <div class="game-grid" id="gameGrid"></div>
+        <p class="no-results" id="noResults" style="display:none;">No games found for your search or selected platform. Here are some top-rated picks:</p>
+      </div>
+    </div>
+    <div class="load-more" id="loadMoreContainer" style="display:none;">
+      <button onclick="loadMoreGames()">Load More</button>
+    </div>
+    <div class="box">
+      <h2>User-Suggested Games</h2>
+      <p>[This section will list custom games added by users]</p>
+    </div>
+  </main><footer>
     <div class="platform-icons">
       <img src="PS_Logo.png" alt="PlayStation" />
       <img src="Xbox.png" alt="Xbox" />
@@ -501,39 +467,39 @@
     }
 
     async function fetchTrendingGames() {
-  const trendingContainer = document.getElementById('trendingGames');
-  trendingContainer.innerHTML = '';
+      const trendingContainer = document.getElementById('trendingGames');
+      trendingContainer.innerHTML = '';
 
-  const url = new URL('https://api.rawg.io/api/games');
-  url.searchParams.append('key', apiKey);
-  url.searchParams.append('page_size', 5);
-  url.searchParams.append('ordering', '-added');
+      const url = new URL('https://api.rawg.io/api/games');
+      url.searchParams.append('key', apiKey);
+      url.searchParams.append('page_size', 5);
+      url.searchParams.append('ordering', '-added');
 
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-    for (let game of data.results) {
-      const div = document.createElement('div');
-      div.style.marginBottom = '1rem';
-      div.style.borderBottom = '1px solid #333';
-      div.style.paddingBottom = '0.6rem';
+        for (let game of data.results) {
+          const div = document.createElement('div');
+          div.style.marginBottom = '1rem';
+          div.style.borderBottom = '1px solid #333';
+          div.style.paddingBottom = '0.6rem';
 
-      const image = game.background_image || 'https://via.placeholder.com/300x180?text=No+Image';
+          const image = game.background_image || 'https://via.placeholder.com/300x180?text=No+Image';
 
-      div.innerHTML = `
-        <img src="${image}" alt="${game.name}" style="width: 100%; max-height: 140px; object-fit: cover; border-radius: 4px; margin-bottom: 0.5rem;" />
-        <strong>${game.name}</strong><br />
-        <small style="color:#aaa;">Rating: ${game.rating || 'N/A'} / 5</small>
-      `;
+          div.innerHTML = `
+            <img src="${image}" alt="${game.name}" style="width: 100%; max-height: 140px; object-fit: cover; border-radius: 4px; margin-bottom: 0.5rem;" />
+            <strong>${game.name}</strong><br />
+            <small style="color:#aaa;">Rating: ${game.rating || 'N/A'} / 5</small>
+          `;
 
-      trendingContainer.appendChild(div);
+          trendingContainer.appendChild(div);
+        }
+      } catch (err) {
+        console.error('Error loading trending games:', err);
+        trendingContainer.innerHTML = '<p style="color:#aaa;">Unable to load trending games.</p>';
+      }
     }
-  } catch (err) {
-    console.error('Error loading trending games:', err);
-    trendingContainer.innerHTML = '<p style="color:#aaa;">Unable to load trending games.</p>';
-  }
-}
 
     function loadMoreGames() {
       currentPage++;
@@ -544,22 +510,6 @@
       fetchGames();
       fetchTrendingGames();
     });
-    
   </script>
-    <script>
-  const scrollBox = document.querySelector('.scroll-hover-box');
-  const scrollContainer = document.querySelector('.scroll-container');
-
-  scrollBox.addEventListener('mouseenter', () => {
-    scrollContainer.classList.add('show-scroll');
-  });
-
-  scrollBox.addEventListener('mouseleave', () => {
-    scrollContainer.classList.remove('show-scroll');
-  });
-</script>
-
 </body>
-  
-  
 </html>
