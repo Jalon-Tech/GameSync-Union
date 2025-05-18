@@ -6,30 +6,6 @@
   <title>Game Guides | GameSync Union</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet"/>
   <style>
-
-    .button-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 3rem;
-  }
-
-  .add-guide-btn {
-    background-color: var(--gsu-red);
-    color: var(--white-text);
-    font-family: 'Montserrat', sans-serif;
-    border: none;
-    border-radius: 6px;
-    padding: 0.9rem 1.8rem;
-    font-size: 1rem;
-    cursor: pointer;
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .add-guide-btn:hover {
-    opacity: 0.9;
-  }
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -43,10 +19,28 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
+    }
+
+    .page-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
     }
 
     header {
@@ -84,12 +78,6 @@
       color: var(--gsu-red);
     }
 
-    main {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 2rem;
-    }
-
     .section-header {
       text-align: center;
       margin-bottom: 2rem;
@@ -106,26 +94,6 @@
       color: #ccc;
     }
 
-    .search-filters select {
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: none;
-      background-color: #2a2a2a;
-      color: var(--white-text);
-      font-size: 1rem;
-    }
-    
-
-    .search-filters input,
-    .search-filters select {
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: none;
-      background-color: #2a2a2a;
-      color: var(--white-text);
-      font-size: 1rem;
-    }
-
     .guides-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -136,6 +104,14 @@
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+    }
+
+    .guide-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
     }
 
     .guide-card h3 {
@@ -149,215 +125,178 @@
       color: #ccc;
     }
 
-    .guide-card .tag {
-      display: inline-block;
-      background-color: #2a2a2a;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.8rem;
-      border-radius: 4px;
-      margin-top: 0.4rem;
-      color: #aaa;
+    .button-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 3rem;
     }
 
     .add-guide-btn {
-      display: block;
-      margin: 2rem auto 0;
-      padding: 0.8rem 1.6rem;
       background-color: var(--gsu-red);
       color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
       border: none;
       border-radius: 6px;
-      cursor: pointer;
+      padding: 0.9rem 1.8rem;
       font-size: 1rem;
+      cursor: pointer;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
     }
 
     .add-guide-btn:hover {
       opacity: 0.9;
     }
 
-    footer {
-  background-color: var(--black-faded);
-  text-align: center;
-  padding: 1.2rem 1rem;
-  margin-top: 4rem;
-}
-
-.platform-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.platform-icons img {
-  height: 32px;
-  width: auto;
-  opacity: 0.9;
-}
-
-footer p {
-  color: #ccc;
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-}
-
     .guide-link {
       text-decoration: none !important;
       color: inherit !important;
       display: block;
     }
-    
+
     .guide-link h3 {
       text-decoration: none !important;
       color: inherit;
     }
-    
+
     .guide-link:hover h3 {
       font-weight: 800;
       color: var(--gsu-red);
     }
-     .guide-card {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  color: var(--white-text);
-}
 
-  .guide-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--gsu-red);
-  background-color: var(--black-faded); /* stays consistent */
-  color: var(--white-text); /* ensures text remains white */
-}
+    .site-footer {
+      background-color: var(--black-faded);
+      padding: 2rem 1rem;
+      text-align: center;
+      border-top: 1px solid #333;
+    }
 
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.85;
+      transition: transform 0.3s ease;
+    }
+
+    .platform-icons img:hover {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    .site-footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
   </style>
 </head>
 <body>
+  <div class="page-wrapper">
+    <header>
+      <div class="logo">
+        <img src="GSU_LOGO.png" alt="GSU Logo" />
+        <div class="logo-text">GameSync Union</div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="games.html">Games</a>
+        <a href="trophies.html">Trophies/Achievements</a>
+        <a href="art.html">Art</a>
+        <a href="game-guides.html">Guides</a>
+        <a href="uploads.html">Upload to GSU community</a>
+      </nav>
+    </header>
 
-  <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text" style = "color: #FFFFFF;">GameSync Union</div>
-    </div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">Trophies/Achievements</a>
-      <a href="art.html">Art</a>
-      <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">Upload to GSU community</a>
-    </nav>
-  </header>
+    <main>
+      <div class="section-header">
+        <h1>Game Guides</h1>
+        <p>Video Game guides for any game across PS5, Xbox, Switch, and PC to find or contribute community-powered guides.</p>
+      </div>
 
-  <main>
-    <div class="section-header">
-      <h1>Game Guides</h1>
-      <p>Video Game guides for any game across PS5, Xbox, Switch, and PC to find or contribute community-powered guides.</p>
-    </div>
+      <div class="guides-container">
+        <a href="boss-fight-strategies.html" class="guide-link">
+          <div class="guide-card">
+            <h3>🗡️ Boss Fight Strategies</h3>
+            <p>Breakdowns, patterns, and survival tips for the toughest bosses in gaming.</p>
+          </div>
+        </a>
 
+        <a href="gameplay-tutorials.html" class="guide-link">
+          <div class="guide-card">
+            <h3>🎮 Gameplay Tutorials</h3>
+            <p>Learn mechanics, systems, and progression strategies for new or complex games.</p>
+          </div>
+        </a>
 
-    <div class="guides-container">
-      <a href="boss-fight-strategies.html" class="guide-link">
-        <div class="guide-card">
-          <h3>🗡️ Boss Fight Strategies</h3>
-          <p>Breakdowns, patterns, and survival tips for the toughest bosses in gaming.</p>
-        </div>
-      </a>
-      
-      <a href="gameplay-tutorials.html" class="guide-link">
-        <div class="guide-card">
-          <h3>🎮 Gameplay Tutorials</h3>
-          <p>Learn mechanics, systems, and progression strategies for new or complex games.</p>
-        </div>
-      </a>
-      
-      <a href="community-gameplay-videos.html" class="guide-link">
-        <div class="guide-card">
-          <h3>📹 Community Gameplay Videos</h3>
-          <p>Relive epic moments, flawless runs, and funny clips from GameSync players.</p>
-        </div>
-      </a>
-      
-      <a href="combo-guides.html" class="guide-link">
-        <div class="guide-card">
-          <h3>🥊 Combo Guides for Fighting Games</h3>
-          <p>Master combo chains, cancels, and setups across the latest competitive fighters.</p>
-        </div>
-      </a>
-      
-      <a href="trophy-tips.html" class="guide-link">
-        <div class="guide-card">
-          <h3>🏆 Tips for Acquiring Trophies and Achievements</h3>
-          <p>Step-by-step advice for unlocking platinum trophies and hard-to-get achievements.</p>
-        </div>
-      </a>
-      
-      <a href="guide-discussion.html" class="guide-link">
-        <div class="guide-card">
-          <h3>💬 Guide Discussion & Community Chat</h3>
-          <p>Join the conversation, share feedback, ask questions, or help others with their guides.</p>
-        </div>
-      </a>
-        </div> <!-- CLOSES .guides-container -->
+        <a href="community-gameplay-videos.html" class="guide-link">
+          <div class="guide-card">
+            <h3>📹 Community Gameplay Videos</h3>
+            <p>Relive epic moments, flawless runs, and funny clips from GameSync players.</p>
+          </div>
+        </a>
 
-        <!-- Properly centered button -->
-        <div class="button-wrapper">
-          <button class="add-guide-btn">🎮 Add a Guide of Your Own for the Gaming Community</button>
-        </div>
+        <a href="combo-guides.html" class="guide-link">
+          <div class="guide-card">
+            <h3>🥊 Combo Guides for Fighting Games</h3>
+            <p>Master combo chains, cancels, and setups across the latest competitive fighters.</p>
+          </div>
+        </a>
 
-    <!-- Trending Guides Section -->
-<section style="margin-top: 4rem;">
-  <h2 style="font-family: 'Montserrat', sans-serif; color: #e60023; font-size: 2rem; margin-bottom: 1rem;">🔥 Trending Guides</h2>
-  <div class="guides-container" id="trendingGuides">
-    <!-- Trending guides will be dynamically inserted here -->
-    <div class="guide-card">
-      <h3>🧠 Best Elden Ring Builds</h3>
-      <p>Upvotes: 284 | Views: 1.2k</p>
-      <p>Maximize damage output with these top community builds!</p>
-    </div>
-    <div class="guide-card">
-      <h3>🎯 MW3 Best Loadouts</h3>
-      <p>Upvotes: 179 | Views: 890</p>
-      <p>Dominate multiplayer with optimal weapons and perks.</p>
-    </div>
+        <a href="trophy-tips.html" class="guide-link">
+          <div class="guide-card">
+            <h3>🏆 Tips for Acquiring Trophies and Achievements</h3>
+            <p>Step-by-step advice for unlocking platinum trophies and hard-to-get achievements.</p>
+          </div>
+        </a>
+
+        <a href="guide-discussion.html" class="guide-link">
+          <div class="guide-card">
+            <h3>💬 Guide Discussion & Community Chat</h3>
+            <p>Join the conversation, share feedback, ask questions, or help others with their guides.</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="button-wrapper">
+        <button class="add-guide-btn">🎮 Add a Guide of Your Own for the Gaming Community</button>
+      </div>
+
+      <!-- Trending Guides Section -->
+      <section style="margin-top: 4rem;">
+        <h2 style="font-family: 'Montserrat', sans-serif; color: #e60023; font-size: 2rem; margin-bottom: 1rem;">🔥 Trending Guides</h2>
+        <div class="guides-container" id="trendingGuides">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- Newest Guides Section -->
+      <section style="margin-top: 4rem;">
+        <h2 style="font-family: 'Montserrat', sans-serif; color: #e60023; font-size: 2rem; margin-bottom: 1rem;">🆕 Newest Game Guides</h2>
+        <div class="guides-container" id="newestGuides">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="platform-icons">
+        <img src="PS_Logo.png" alt="PlayStation" />
+        <img src="Xbox.png" alt="Xbox" />
+        <img src="Steam.png" alt="Steam (PC)" />
+        <img src="Switch.png" alt="Nintendo Switch" />
+      </div>
+      <p>&copy; 2025 <strong>GameSync Union</strong>. Built for gamers, by gamers.</p>
+    </footer>
   </div>
-</section>
-
-<!-- Newest Guides Section -->
-<section style="margin-top: 4rem;">
-  <h2 style="font-family: 'Montserrat', sans-serif; color: #e60023; font-size: 2rem; margin-bottom: 1rem;">🆕 Newest Game Guides</h2>
-  <div class="guides-container" id="newestGuides">
-    <!-- Newest guides will be dynamically inserted here -->
-    <div class="guide-card">
-      <h3>🧩 Resident Evil 4 Puzzle Solutions</h3>
-      <p>Submitted 2 hours ago</p>
-      <p>Quick walkthrough for solving the most annoying puzzles in RE4 remake.</p>
-    </div>
-    <div class="guide-card">
-      <h3>🕹️ Tekken 8 Beginners Combo Guide</h3>
-      <p>Submitted 1 day ago</p>
-      <p>Basic combos, movement tips, and punish setups for newcomers.</p>
-    </div>
-  </div>
-</section>
-
-    <footer>
-  <div class="platform-icons">
-    <img src="PS_Logo.png" alt="PlayStation" />
-    <img src="Xbox.png" alt="Xbox" />
-    <img src="Steam.png" alt="PC" />
-    <img src="Switch.png" alt="Nintendo Switch" />
-  </div>
-  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-  </footer>
-
-      
-  </main>
-
-
 </body>
 </html>
