@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Uploads For The GSU Community  | GameSync Union</title>
+  <title>Community Uploads Hub | GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
@@ -47,6 +47,7 @@
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
+      color: var(--gsu-red);
     }
 
     nav a {
@@ -61,23 +62,40 @@
       color: var(--gsu-red);
     }
 
-    .main-container {
-      display: grid;
-      grid-template-columns: 1fr 3fr 1.2fr;
-      gap: 1rem;
-      padding: 2rem;
+    .section-header {
+      text-align: center;
+      margin: 2rem 0 1rem;
     }
 
-    aside, main {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
+    .section-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.5rem;
+    }
+
+    .section-header p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem 4rem;
     }
 
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+    }
+
+    .box:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.3), 0 0 8px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
     }
 
     .box h2 {
@@ -85,123 +103,58 @@
       margin-bottom: 0.7rem;
     }
 
-    .input-field, textarea, select {
-      padding: 0.6rem;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 0.6rem;
-      width: 100%;
-      background-color: #2a2a2a;
-      color: var(--white-text);
-      font-family: 'Roboto', sans-serif;
-      resize: none;
+    .guides-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
     }
 
-    .btn {
-      background-color: var(--gsu-red);
-      border: none;
-      color: var(--white-text);
-      padding: 0.8rem;
-      width: 100%;
-      border-radius: 6px;
-      cursor: pointer;
+    .guide-card {
+      background-color: #292929;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .guide-card h3 {
       font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
     }
 
-    .btn:hover {
-      opacity: 0.85;
+    .guide-card p {
+      font-size: 0.9rem;
+      color: #ccc;
     }
 
-   footer {
+    footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1.2rem 1rem;
       margin-top: 4rem;
     }
 
-   .platform-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.platform-icons img {
-  height: 32px;
-  width: auto;
-  opacity: 0.9;
-}
-
-footer p {
-  color: #ccc;
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-}
-
-
-    video, iframe {
-      width: 100%;
-      border-radius: 6px;
-      margin-top: 0.6rem;
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
     }
 
-    .upload-preview {
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      opacity: 0.8;
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
     }
 
-    label {
-      display: block;
-      margin: 0.5rem 0 0.3rem;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-    }
-
-    .summary-box {
-      background-color: #292929;
-      border-radius: 6px;
-      padding: 0.8rem;
-      margin-top: 1.2rem;
-    }
-
-    .summary-box h3 {
-      font-family: 'Montserrat', sans-serif;
+    footer p {
+      color: #ccc;
       font-size: 1rem;
-      margin-bottom: 0.5rem;
+      font-family: 'Roboto', sans-serif;
     }
-
-    .summary-box p {
-      margin: 0.2rem 0;
-    }
-     .box {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  color: var(--white-text);
-}
-
-  .box:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--gsu-red);
-  background-color: var(--black-faded); /* stays consistent */
-  color: var(--white-text); /* ensures text remains white */
-}
-
-  .box li {
-  transition: transform 0.3s ease;
-}
-
-.box:hover li {
-  transform: translateX(6px);
-}
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
@@ -213,90 +166,55 @@ footer p {
       <a href="trophies.html">Trophies/Achievements</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">Upload to GSU community</a>
+      <a href="uploads.html">Community Uploads</a>
     </nav>
   </header>
 
-  <div class="main-container">
-    <aside>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">Upload Tips</h2>
-        <p>🎮 Use MP4 format for gameplay clips</p>
-        <p>🖼 Upload JPG/PNG artwork or game visuals</p>
-        <p>🔗 Paste a full YouTube video URL for embeds</p>
-        <p>🔥 Max file size for direct uploads: 25MB</p>
+  <main>
+    <div class="section-header">
+      <h1 style="color: var(--gsu-red);">🎮 GameSync Union: Community Uploads</h1>
+      <p>Explore the latest contributions by gamers across PS5, Xbox, PC, and Nintendo Switch.</p>
+    </div>
+
+    <div class="box">
+      <h2 style="color: var(--gsu-red);">🔥 Featured Uploads</h2>
+      <div class="guides-container" id="featuredUploads">
+        <!-- Firebase will insert featured uploads here -->
       </div>
-    </aside>
+    </div>
 
-    <main>
-      <div class="box" style="min-height: 700px;">
-        <h2 style="color: var(--gsu-red);">Upload Your Content to GSU community</h2>
-
-        <input type="text" class="input-field" placeholder="Title of upload" />
-        <input type="text" class="input-field" placeholder="Ttle of Video Game" />
-        <textarea class="input-field" placeholder="Description (optional)"></textarea>
-        <input type="file" class="input-field" />
-        <input type="text" class="input-field" placeholder="YouTube Video URL (optional)" />
-
-        <label for="category">Select Upload Type:</label>
-        <select id="category" onchange="document.getElementById('uploadTypePreview').innerText = this.options[this.selectedIndex].text;">
-          <option value="">-- Choose Category --</option>
-          <option value="boss">Boss Fight Strategies</option>
-          <option value="tutorial">Gameplay Tutorials</option>
-          <option value="community">Community Gameplay Videos</option>
-          <option value="combo">Combo Guides for Fighting Games</option>
-          <option value="trophy">Trophy/Achievement Tips</option>
-          <option value="chat">Guide Discussion & Community Chat</option>
-          <option value=earnedTrophies/Achievements>Acquired Trophies/Achievements</option>
-          <option value="art">Fan Art</option>
-        </select>
-
-        <label for="platform">Select Platform:</label>
-        <select id="platform" onchange="document.getElementById('platformPreview').innerText = this.options[this.selectedIndex].text;">
-          <option value="">-- Choose Platform --</option>
-          <option value="ps5">PlayStation</option>
-          <option value="xbox">Xbox</option>
-          <option value="pc">PC</option>
-          <option value="switch">Nintendo Switch</option>
-        </select>
-
-        <div class="summary-box">
-          <h3 style="color: var(--gsu-red);">Selected Upload Summary</h3>
-         <p><strong style="color: var(--gsu-red);">Upload Type:</strong> <span id="uploadTypePreview">None selected</span></p>
-
-          <p><strong style="color: var(--gsu-red);">Platform:</strong> <span id="platformPreview">None selected</span></p>
-
-          <p style="opacity: 0.8;">Selections above auto-fill this section.</p>
-        </div>
-
-        <button class="btn" style="margin-top: 1.5rem;">Submit Upload</button>
-        <p class="upload-preview">* Future support for Firebase will allow real uploads and previews.</p>
+    <div class="box">
+      <h2 style="color: var(--gsu-red);">🆕 Latest Uploads</h2>
+      <div class="guides-container" id="latestUploads">
+        <!-- Firebase will insert latest uploads here -->
       </div>
+    </div>
 
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">Recent Uploads</h2>
-        <p>[Your uploads will be listed here with previews]</p>
+    <div class="box">
+      <h2 style="color: var(--gsu-red);">🎨 Fan Art Highlights</h2>
+      <div class="guides-container" id="fanArtUploads">
+        <!-- Firebase will insert fan art here -->
       </div>
-    </main>
+    </div>
+  </main>
 
-    <aside>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">Top Clips This Week</h2>
-        <p>[Highlight the most viewed uploads here]</p>
-      </div>
-    </aside>
-  </div>
-
-   <footer>
-  <div class="platform-icons">
-    <img src="PS_Logo.png" alt="PlayStation" />
-    <img src="Xbox.png" alt="Xbox" />
-    <img src="Steam.png" alt="PC" />
-    <img src="Switch.png" alt="Nintendo Switch" />
-  </div>
-  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  <footer>
+    <div class="platform-icons">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-
+  <script>
+    // Example JS for placeholder card until Firebase is active
+    const latest = document.getElementById('latestUploads');
+    const card = document.createElement('div');
+    card.classList.add('guide-card');
+    card.innerHTML = "<h3>🕹️ Example Clip</h3><p>Platform: PS5</p><p>A sample video submission for display testing.</p>";
+    latest.appendChild(card);
+  </script>
 </body>
 </html>
