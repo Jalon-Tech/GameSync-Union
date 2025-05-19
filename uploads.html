@@ -110,21 +110,51 @@
     }
 
     .guide-card {
-      background-color: #292929;
-      border-radius: 8px;
-      padding: 1rem;
-    }
+  background: linear-gradient(145deg, #1c1c1c, #232323);
+  border-radius: 12px;
+  padding: 1.2rem;
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
 
-    .guide-card h3 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-    }
+.guide-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e60023, transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
 
-    .guide-card p {
-      font-size: 0.9rem;
-      color: #ccc;
-    }
+.guide-card:hover::before {
+  opacity: 0.15;
+}
+
+.guide-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  border-color: var(--gsu-red);
+  box-shadow: 0 10px 30px rgba(230, 0, 35, 0.25), 0 0 10px rgba(255, 255, 255, 0.03);
+}
+
+.guide-card h3 {
+  font-size: 1.25rem;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  text-shadow: 0 0 3px rgba(230, 0, 35, 0.3);
+}
+
+.guide-card p {
+  font-size: 0.95rem;
+  color: #ccc;
+  line-height: 1.4;
+}
 
     footer {
       background-color: var(--black-faded);
