@@ -280,11 +280,17 @@
 
     <aside>
     <div class="box" id="profile-box">
-      <h2>Your Profile</h2>
-        <p id="fav-games">🎯 Favorite Games</p>
-        <p id="games-played">🎮 Games Played</p>
-        <p id="trophy-stats">🏆 Trophy Stats</p>
-    </div>
+  <h2>Your Profile</h2>
+
+  <p id="username-display" style="font-weight: bold; font-size: 1rem; margin-bottom: 0.5rem;">👤 Username: [Loading...]</p>
+
+  <p id="fav-games" style="margin-bottom: 0.3rem;">🎯 Favorite Games:</p>
+  <div id="fav-images" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; justify-content: center;"></div>
+
+  <p id="games-played" style="margin-bottom: 0.3rem;">🎮 Games Played: [Loading...]</p>
+  <p id="trophy-stats" style="margin-bottom: 0.3rem;">🏆 Trophy Stats: [Loading...]</p>
+</div>
+
 
 
 
@@ -393,29 +399,17 @@
     const profileBox = document.getElementById("profile-box");
 
     // ✅ Insert username at the top of the profile card
-    const usernameEl = document.createElement("p");
-    usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
-    usernameEl.style.fontWeight = "bold";
-    usernameEl.style.fontSize = "1rem";
-    usernameEl.style.marginBottom = "0.5rem";
-    profileBox.prepend(usernameEl);
+    document.getElementById("username-display").textContent = `👤 Username: ${data.username || "N/A"}`;
+
 
     const favGamesEl = document.getElementById("fav-games");
     const gamesPlayedEl = document.getElementById("games-played");
     const trophyStatsEl = document.getElementById("trophy-stats");
 
     // Create image row if it doesn't exist
-    let imageRow = document.getElementById("fav-images");
-    if (!imageRow) {
-      imageRow = document.createElement("div");
-      imageRow.id = "fav-images";
-      imageRow.style.display = "flex";
-      imageRow.style.flexWrap = "wrap";
-      imageRow.style.gap = "0.5rem";
-      imageRow.style.marginTop = "0.8rem";
-      imageRow.style.justifyContent = "center";
-      profileBox.appendChild(imageRow);
-    }
+    const imageRow = document.getElementById("fav-images");
+    imageRow.innerHTML = "";
+
     imageRow.innerHTML = "";
 
     favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
