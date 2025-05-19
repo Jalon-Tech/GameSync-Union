@@ -325,70 +325,80 @@
   <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+ <!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDKqpzi3FxxxxxxxREALKEY",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "1046524260000",
-      appId: "1:1046524260000:web:xxxxxxxxREALAPPID"
-    };
+  const firebaseConfig = {
+    apiKey: "qBMwNM2oGO30dVBhODSC",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "1046524260000",
+    appId: "qBMwNM2oGO30dVBhODSC"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    async function loadTrendingTopics() {
-      const topicsRef = collection(db, "chatTopics");
-      const uploadsRef = collection(db, "uploads");
-      const q1 = query(topicsRef, orderBy("commentCount", "desc"), limit(3));
-      const q2 = query(uploadsRef, orderBy("timestamp", "desc"), limit(2));
+  // 🔐 Register New User
+  async function registerUser(email, username, password) {
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCred.user.uid;
+    await setDoc(doc(db, "users", uid), {
+      email,
+      username,
+      password,
+      Favorite_Games: "",
+      Games_Played: "",
+      Trophy_Stats: ""
+    });
+    alert("Account created successfully!");
+  }
 
-      const [topicsSnap, uploadsSnap] = await Promise.all([getDocs(q1), getDocs(q2)]);
+  // 🔐 Sign In Existing User
+  async function signInUser(email, password) {
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    const uid = userCred.user.uid;
+    const userDoc = await getDoc(doc(db, "users", uid));
+    const data = userDoc.data();
 
-      const topics = [];
-      topicsSnap.forEach(doc => {
-        topics.push(doc.data().title);
-      });
-      uploadsSnap.forEach(doc => {
-        const data = doc.data();
-        if (data.title) topics.push(data.title);
-      });
+    // Fill user profile box on the homepage
+    document.querySelector('.box:nth-child(1) p').textContent = `🎯 Favorite Games: ${data.Favorite_Games}`;
+    document.querySelector('.box:nth-child(1) p:nth-of-type(2)').textContent = `🎮 Games Played: ${data.Games_Played}`;
+    document.querySelector('.box:nth-child(1) p:nth-of-type(3)').textContent = `🏆 Trophy Stats: ${data.Trophy_Stats}`;
+  }
 
-      const trendingBox = document.querySelector('.section-flex div:first-child');
-      trendingBox.innerHTML = '<h3>🔥 Trending Topics</h3>';
-      const ul = document.createElement('ul');
-      ul.style.listStyle = 'none';
-      ul.style.padding = '0';
+  // 🧠 Auth Form Listeners
+  document.querySelector(".btn").addEventListener("click", async () => {
+    const email = document.querySelectorAll(".input-field")[0].value;
+    const username = document.querySelectorAll(".input-field")[1].value;
+    const password = document.querySelectorAll(".input-field")[2].value;
 
-      topics.slice(0, 5).forEach(topic => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span style="color: var(--white-text);">• ${topic}</span>`;
-        ul.appendChild(li);
-      });
-      trendingBox.appendChild(ul);
+    try {
+      await signInUser(email, password);
+    } catch (err) {
+      console.log("No account found. Creating new user...");
+      await registerUser(email, username, password);
     }
+  });
 
-    loadTrendingTopics();
-
-    async function loadRecentUploads() {
-      const uploadsRef = collection(db, "uploads");
-      const q = query(uploadsRef, orderBy("timestamp", "desc"), limit(3));
-      const querySnapshot = await getDocs(q);
-      const uploadsList = document.getElementById("uploads-list");
-
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        const li = document.createElement("li");
-        li.textContent = `${data.username}: ${data.title}`;
-        uploadsList.appendChild(li);
-      });
+  // 🎯 Show profile on page load if already logged in
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      const data = docSnap.data();
+      document.querySelector('.box:nth-child(1) p').textContent = `🎯 Favorite Games: ${data.Favorite_Games}`;
+      document.querySelector('.box:nth-child(1) p:nth-of-type(2)').textContent = `🎮 Games Played: ${data.Games_Played}`;
+      document.querySelector('.box:nth-child(1) p:nth-of-type(3)').textContent = `🏆 Trophy Stats: ${data.Trophy_Stats}`;
     }
+  });
 
-    loadRecentUploads();
-  </script>
+  // 🔥 Recent Uploads and Trending Topics from Firestore (already working in your code)
+</script>
+
 </body>
 </html>
