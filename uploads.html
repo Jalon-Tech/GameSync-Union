@@ -243,16 +243,10 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <script>
-    // Example JS for placeholder card until Firebase is active
-    const latest = document.getElementById('latestUploads');
-    const card = document.createElement('div');
-    card.classList.add('guide-card');
-    card.innerHTML = "<h3>🕹️ Example Clip</h3><p>Platform: PS5</p><p>A sample video submission for display testing.</p>";
-    latest.appendChild(card);
-  </script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+ <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
 <script>
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
@@ -269,19 +263,40 @@
   function renderCard(doc, containerId) {
     const data = doc.data();
     const container = document.getElementById(containerId);
+    if (!container) return;
+
     const card = document.createElement("div");
     card.classList.add("guide-card");
-
     card.innerHTML = `
       <h3>${data.title || "Untitled Upload"}</h3>
       <p><strong>Platform:</strong> ${data.platform || "Unknown"}</p>
       <p>${data.description || "No description provided."}</p>
     `;
-
     container.appendChild(card);
   }
 
-  // Load from Firestore by category
+  // 🎯 Latest Uploads (across all categories)
+  db.collection("uploads")
+    .orderBy("timestamp", "desc")
+    .limit(6)
+    .get()
+    .then(snapshot => {
+      snapshot.docs.forEach(doc => renderCard(doc, "latestUploads"));
+    })
+    .catch(err => console.error("Latest Uploads Error:", err));
+
+  // 🌟 Featured Uploads (flagged in Firebase)
+  db.collection("uploads")
+    .where("featured", "==", true)
+    .orderBy("timestamp", "desc")
+    .limit(6)
+    .get()
+    .then(snapshot => {
+      snapshot.docs.forEach(doc => renderCard(doc, "featuredUploads"));
+    })
+    .catch(err => console.error("Featured Uploads Error:", err));
+
+  // 📂 Category-Based Uploads (normal flow)
   const categories = [
     "boss", "tutorial", "community", "combo", "trophy",
     "chat", "art", "earnedTrophies"
@@ -290,16 +305,16 @@
   categories.forEach(category => {
     db.collection("uploads")
       .where("category", "==", category)
+      .orderBy("timestamp", "desc")
       .limit(6)
       .get()
       .then(snapshot => {
-        snapshot.docs.forEach(doc => {
-          renderCard(doc, `${category}Uploads`);
-        });
+        snapshot.docs.forEach(doc => renderCard(doc, `${category}Uploads`));
       })
       .catch(err => console.error(`${category} Uploads Error:`, err));
   });
 </script>
+
 
 </body>
 </html>
