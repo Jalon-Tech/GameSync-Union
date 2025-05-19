@@ -280,56 +280,29 @@
 
     <aside>
     <div class="box" id="profile-box">
-  <h2>Your Profile</h2>
-
-  <p id="username-display" style="font-weight: bold; font-size: 1rem; margin-bottom: 0.5rem;">👤 Username: [Loading...]</p>
-
-  <p id="fav-games" style="margin-bottom: 0.3rem;">🎯 Favorite Games:</p>
-  <div id="fav-images" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; justify-content: center;"></div>
-
-  <p id="games-played" style="margin-bottom: 0.3rem;">🎮 Games Played: [Loading...]</p>
-  <p id="trophy-stats" style="margin-bottom: 0.3rem;">🏆 Trophy Stats: [Loading...]</p>
-</div>
-
+      <h2>Your Profile</h2>
+        <p id="fav-games">🎯 Favorite Games</p>
+        <p id="games-played">🎮 Games Played</p>
+        <p id="trophy-stats">🏆 Trophy Stats</p>
+    </div>
 
 
 
       <div class="box">
-  <h2>Upcoming Games & Events</h2>
-  <p>Stay updated on everything new in gaming:</p>
-
-  <div style="margin-bottom: 1rem;">
-    <h3 style="color: #e60023;">🆕 Recently Announced Games</h3>
-    <ul id="announced-list" style="list-style: none; padding-left: 0;"></ul>
-  </div>
-
-  <div style="margin-bottom: 1rem;">
-    <h3 style="color: #e60023;">🚀 Upcoming Game Releases</h3>
-    <ul id="releases-list" style="list-style: none; padding-left: 0;"></ul>
-  </div>
-
-  <div style="margin-bottom: 1rem;">
-    <h3 style="color: #e60023;">📆 Countdown to Launch & Events</h3>
-    <ul id="countdown-list" style="list-style: none; padding-left: 0;"></ul>
-  </div>
-
-  <div style="margin-bottom: 1rem;">
-    <h3 style="color: #e60023;">🛠 Major Patch Notes & Updates</h3>
-    <ul id="patches-list" style="list-style: none; padding-left: 0;"></ul>
-  </div>
-
-  <div style="margin-bottom: 1rem;">
-    <h3 style="color: #e60023;">🎮 Gaming Conventions & Streams</h3>
-    <ul id="conventions-list" style="list-style: none; padding-left: 0;"></ul>
-  </div>
-
-  <p style="margin-top: 0.8rem; font-size: 0.9rem;">
-    *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
-    <a href="#" style="color: #e60023;">Learn more</a>
-  </p>
-</div>
-
-
+        <h2>Upcoming Games & Events</h2>
+        <p>Stay updated on everything new in gaming:</p>
+        <ul>
+          <li>🆕 Recently Announced Games</li>
+          <li>🚀 Upcoming Game Releases</li>
+          <li>📆 Countdown to Launch & Events</li>
+          <li>🛠 Major Patch Notes & Updates</li>
+          <li>🎮 Gaming Conventions & Streams</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+          <a href="#" style="color: #e60023;">Learn more</a>
+        </p>
+      </div>
     </aside>
   </div>
 
@@ -399,22 +372,34 @@
     const profileBox = document.getElementById("profile-box");
 
     // ✅ Insert username at the top of the profile card
-    document.getElementById("username-display").textContent = `👤 Username: ${data.username || "N/A"}`;
-
+    const usernameEl = document.createElement("p");
+    usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+    usernameEl.style.fontWeight = "bold";
+    usernameEl.style.fontSize = "1rem";
+    usernameEl.style.marginBottom = "0.5rem";
+    profileBox.prepend(usernameEl);
 
     const favGamesEl = document.getElementById("fav-games");
     const gamesPlayedEl = document.getElementById("games-played");
     const trophyStatsEl = document.getElementById("trophy-stats");
 
     // Create image row if it doesn't exist
-    const imageRow = document.getElementById("fav-images");
-    imageRow.innerHTML = "";
-
+    let imageRow = document.getElementById("fav-images");
+    if (!imageRow) {
+      imageRow = document.createElement("div");
+      imageRow.id = "fav-images";
+      imageRow.style.display = "flex";
+      imageRow.style.flexWrap = "wrap";
+      imageRow.style.gap = "0.5rem";
+      imageRow.style.marginTop = "0.8rem";
+      imageRow.style.justifyContent = "center";
+      profileBox.appendChild(imageRow);
+    }
     imageRow.innerHTML = "";
 
     favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-    gamesPlayedEl.textContent = `🎮 Games Played: ${data.gamesPlayed || "N/A"}`;
-    trophyStatsEl.textContent = `🏆 Trophy Stats: ${data.trophyCount || "N/A"}`;
+    gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+    trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
 
     if (Array.isArray(data.favoriteImages)) {
       data.favoriteImages.forEach(url => {
@@ -469,54 +454,6 @@ if (logoutBtn) {
     }
   });
 }
-import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-// grab your ULs
-const announcedList   = document.getElementById("announced-list");
-const releasesList    = document.getElementById("releases-list");
-const countdownList   = document.getElementById("countdown-list");
-const patchesList     = document.getElementById("patches-list");
-const conventionsList = document.getElementById("conventions-list");
-
-// listen to the single doc
-const upcomingDocRef = doc(db, "upcoming", "global");
-onSnapshot(upcomingDocRef, (snap) => {
-  if (!snap.exists()) return;
-  const data = snap.data();
-
-  // helper to render array into a list
-  function render(arr, container, formatter) {
-    container.innerHTML = "";
-    (arr || []).forEach(item => {
-      const li = document.createElement("li");
-      li.innerHTML = formatter(item);
-      container.appendChild(li);
-    });
-  }
-
-  render(data.recentlyAnnounced, announcedList, item =>
-    `🆕 <a href="${item.url}" style="color:var(--gsu-red)">${item.title}</a> (${item.date})`
-  );
-
-  render(data.upcomingReleases, releasesList, item =>
-    `🚀 ${item.title} — Release: ${item.date}`
-  );
-
-  render(data.countdowns, countdownList, item => {
-    const diff = Math.max(0,
-      Math.ceil((new Date(item.date) - new Date())/ (1000*60*60*24))
-    );
-    return `📆 ${item.label}: ${diff} day${diff!==1?"s":""} to go`;
-  });
-
-  render(data.patchNotes, patchesList, item =>
-    `🛠 <a href="${item.url}" style="color:var(--gsu-red)">${item.title}</a> (${item.date})`
-  );
-
-  render(data.conventions, conventionsList, item =>
-    `🎮 ${item.name} — ${item.date}`
-  );
-});
 
 </script>
 
