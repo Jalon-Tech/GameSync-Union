@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameSync Union</title>
-   <link rel="icon" href="GSU_Logo.png" type="image/png" />
+  <link rel="icon" href="/assets/GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -12,7 +12,7 @@
       --black-main: #191818;
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
-      --box-bg: #222;
+      --box-bg: #1F1F1F;
       --gray-box: #2b2b2b;
     }
     * {
@@ -31,6 +31,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
+      border-bottom: 2px solid var(--gsu-red);
     }
     .logo {
       display: flex;
@@ -41,9 +42,10 @@
       margin-right: 1rem;
     }
     .logo-text {
-      font-size: 1.5rem;
+      font-size: 1.75rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--white-text);
+      font-weight: 600;
     }
     nav {
       display: flex;
@@ -53,6 +55,8 @@
       color: var(--white-text);
       text-decoration: none;
       font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
     }
     nav a:hover {
       color: var(--gsu-red);
@@ -60,20 +64,22 @@
     .main-container {
       display: grid;
       grid-template-columns: 1fr 2fr 1fr;
-      gap: 1.5rem;
+      gap: 2rem;
       padding: 2rem;
     }
     .box {
-      background: var(--gray-box);
+      background: var(--box-bg);
       padding: 1.5rem;
-      border-radius: 12px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
     .input-field, .btn {
       width: 100%;
-      margin: 0.5rem 0;
-      padding: 0.75rem;
-      border-radius: 6px;
+      margin: 0.6rem 0;
+      padding: 0.8rem;
+      border-radius: 8px;
       border: none;
+      font-size: 1rem;
     }
     .input-field {
       background: #2a2a2a;
@@ -85,9 +91,10 @@
       cursor: pointer;
       font-weight: bold;
       font-family: 'Montserrat', sans-serif;
+      transition: background 0.3s;
     }
     .btn:hover {
-      opacity: 0.85;
+      background-color: #b8001b;
     }
     h2, h3 {
       font-family: 'Montserrat', sans-serif;
@@ -96,38 +103,42 @@
     .highlight-links {
       display: flex;
       gap: 1rem;
-      margin: 1rem 0;
+      margin: 1.5rem 0;
       flex-wrap: wrap;
     }
     .highlight-links span {
       background: #333;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
     }
     .search-bar {
       width: 100%;
-      padding: 0.6rem;
+      padding: 0.75rem;
       margin: 1rem 0;
-      border-radius: 6px;
+      border-radius: 8px;
       border: none;
       background: #2a2a2a;
       color: white;
+      font-size: 1rem;
     }
     .tagline {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       margin-bottom: 1rem;
       color: #ccc;
       text-align: center;
+      font-style: italic;
     }
     .section {
-      margin-top: 2rem;
+      margin-top: 2.5rem;
     }
     .link-list li {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
     }
     .link-list a {
       color: var(--gsu-red);
       text-decoration: underline;
+      font-weight: 500;
     }
     .link-list a:hover {
       opacity: 0.85;
@@ -137,7 +148,7 @@
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_Logo.png" alt="GSU Logo" />
+      <img src="/assets/GSU_Logo.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -151,166 +162,166 @@
   </header>
 
   <div class="main-container">
-    <!-- Left Sidebar -->
-    <div class="box">
-      <h2>Create Account or Sign In</h2>
-      <input type="email" id="loginEmail" class="input-field" placeholder="Email" />
-      <input type="password" id="loginPassword" class="input-field" placeholder="Password" />
-      <button class="btn" onclick="signIn()">Sign In</button>
-      <p style="margin-top:1rem; font-size:0.9rem;">Become a member? <a href="#" onclick="showCreateModal()" style="color: var(--gsu-red);">Create Account</a></p>
-      <div class="section">
-        <h3>Recent Uploads</h3>
-        <p style="font-size:0.85rem; color:#aaa;">[Your gameplay clips will show up here]</p>
-      </div>
-    </div>
-
-    <!-- Center Content -->
-    <div class="box">
-      <h2 style="text-align:center;">Welcome to GameSync Union</h2>
-      <p class="tagline">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
-      <button class="btn" style="margin:1rem auto; display:block; max-width:200px;">Get Started</button>
-      <input type="text" class="search-bar" placeholder="Search guides, uploads, art, users, or trophies...">
-      <div class="highlight-links">
-        <span>🔥 Trending Topics</span>
-        <span>📹 Latest Uploads</span>
-        <span>🎨 Fan Art<br><small>[Showcase user-submitted art here]</small></span>
-      </div>
-
-      <div class="section">
-        <h3>Game Guides</h3>
-        <p style="font-size:0.95rem;">Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
-        <ul class="link-list">
-          <li><a href="#">Boss Fight Strategies</a></li>
-          <li><a href="#">Gameplay Tutorials</a></li>
-          <li><a href="#">Enjoyable Gameplay Videos from the Community</a></li>
-          <li><a href="#">Combo Guides for Fighting Games</a></li>
-          <li><a href="#">Tips for Acquiring Trophies and Achievements</a></li>
-          <li><a href="#">Guide Discussion & Community Chat</a></li>
-        </ul>
-      </div>
-
-      <div class="section">
-        <h3>Your Trophies</h3>
-        <p style="font-size:0.95rem;">[View trophies and compare achievements]</p>
-      </div>
-    </div>
-
-    <!-- Right Sidebar -->
-    <div class="box">
-      <h2>Your Profile</h2>
-      <p id="displayUsername">Username: —</p>
-      <p id="displayConsole">Console: —</p>
-      <p id="displayTrophies">Trophies: —</p>
-      <p id="displayGames">Recent Games: —</p>
-
-      <div class="section">
-        <h3>Upcoming Games & Events</h3>
-        <ul style="font-size: 0.9rem; line-height: 1.6;">
-          <li>🆕 Recently Announced Games</li>
-          <li>🚀 Upcoming Game Releases</li>
-          <li>📅 Countdown to Launch & Events</li>
-          <li>🛠️ Major Patch Notes & Updates</li>
-          <li>📺 Gaming Conventions & Streams</li>
-        </ul>
-        <p style="font-size:0.8rem; margin-top:1rem; color:#ccc;">*This section automatically pulls the latest game info, updates, and events using APIs from trusted gaming databases like RAWG and IGDB. <a href="#" style="color: var(--gsu-red); text-decoration: underline;">Learn more</a>.</p>
-      </div>
+  <!-- Left Column -->
+  <div class="box">
+    <h2>Create Account or Sign In</h2>
+    <input type="email" id="loginEmail" class="input-field" placeholder="Email" />
+    <input type="password" id="loginPassword" class="input-field" placeholder="Password" />
+    <button class="btn" onclick="signIn()">Sign In</button>
+    <p style="margin-top:1rem; font-size:0.9rem;">Become a member? <a href="#" onclick="showCreateModal()" style="color: var(--gsu-red);">Create Account</a></p>
+    <div class="section">
+      <h3>Recent Uploads</h3>
+      <p style="font-size:0.85rem; color:#aaa;">[Your gameplay clips will show up here]</p>
     </div>
   </div>
 
-  <!-- Create Account Modal -->
-  <div id="createAccountModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:#1f1f1f; padding:2rem; border-radius:12px; width:95%; max-width:620px;">
-      <h2 style="color:var(--gsu-red); text-align:center;">Create GSU Account</h2>
-      <input type="email" id="regEmail" class="input-field" placeholder="GSU Email" />
-      <input type="password" id="regPassword" class="input-field" placeholder="Create Password" />
-      <input type="text" id="regUsername" class="input-field" placeholder="Username" />
-      <input type="text" id="regConsole" class="input-field" placeholder="Console (PS5, Xbox, etc.)" />
-      <input type="text" id="regTrophies" class="input-field" placeholder="Trophy Stats" />
-      <input type="text" id="regRecent" class="input-field" placeholder="Recent Games Played (comma separated)" />
-      <div style="display:flex; justify-content:space-between; gap:1rem; margin-top:1rem;">
-        <button class="btn" onclick="register()">Create Account</button>
-        <button class="btn" style="background:#888;" onclick="document.getElementById('createAccountModal').style.display='none'">Cancel</button>
-      </div>
+  <!-- Center Column -->
+  <div class="box">
+    <h2 style="text-align:center;">Welcome to GameSync Union</h2>
+    <p class="tagline">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
+    <button class="btn" style="margin:1rem auto; display:block; max-width:200px;">Get Started</button>
+    <input type="text" class="search-bar" placeholder="Search guides, uploads, art, users, or trophies...">
+    <div class="highlight-links">
+      <span>🔥 Trending Topics</span>
+      <span>📹 Latest Uploads</span>
+      <span>🎨 Fan Art</span>
+    </div>
+
+    <div class="section">
+      <h3>Game Guides</h3>
+      <p style="font-size:0.95rem;">Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
+      <ul class="link-list">
+        <li><a href="#">Boss Fight Strategies</a></li>
+        <li><a href="#">Gameplay Tutorials</a></li>
+        <li><a href="#">Enjoyable Gameplay Videos from the Community</a></li>
+        <li><a href="#">Combo Guides for Fighting Games</a></li>
+        <li><a href="#">Tips for Acquiring Trophies and Achievements</a></li>
+        <li><a href="#">Guide Discussion & Community Chat</a></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>Your Trophies</h3>
+      <p style="font-size:0.95rem;">[View trophies and compare achievements]</p>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <!-- Right Column -->
+  <div class="box">
+    <h2>Your Profile</h2>
+    <p id="displayUsername">Username: —</p>
+    <p id="displayConsole">Console: —</p>
+    <p id="displayTrophies">Trophies: —</p>
+    <p id="displayGames">Recent Games: —</p>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "qBMwNM2oGO30dVBhODSC"
-    };
+    <div class="section">
+      <h3>Upcoming Games & Events</h3>
+      <ul style="font-size: 0.9rem; line-height: 1.6;">
+        <li>🆕 Recently Announced Games</li>
+        <li>🚀 Upcoming Game Releases</li>
+        <li>📅 Countdown to Launch & Events</li>
+        <li>🛠️ Major Patch Notes & Updates</li>
+        <li>📺 Gaming Conventions & Streams</li>
+      </ul>
+      <p style="font-size:0.8rem; margin-top:1rem; color:#ccc;">*This section automatically pulls the latest game info, updates, and events using APIs from trusted gaming databases like RAWG and IGDB.</p>
+    </div>
+  </div>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+<!-- Modal -->
+<div id="createAccountModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#1f1f1f; padding:2rem; border-radius:12px; width:95%; max-width:620px;">
+    <h2 style="color:var(--gsu-red); text-align:center;">Create GSU Account</h2>
+    <input type="email" id="regEmail" class="input-field" placeholder="GSU Email" />
+    <input type="password" id="regPassword" class="input-field" placeholder="Create Password" />
+    <input type="text" id="regUsername" class="input-field" placeholder="Username" />
+    <input type="text" id="regConsole" class="input-field" placeholder="Console (PS5, Xbox, etc.)" />
+    <input type="text" id="regTrophies" class="input-field" placeholder="Trophy Stats" />
+    <input type="text" id="regRecent" class="input-field" placeholder="Recent Games Played" />
+    <div style="display:flex; justify-content:space-between; gap:1rem; margin-top:1rem;">
+      <button class="btn" onclick="register()">Create Account</button>
+      <button class="btn" style="background:#888;" onclick="document.getElementById('createAccountModal').style.display='none'">Cancel</button>
+    </div>
+  </div>
+</div>
 
-    window.showCreateModal = () => {
-      document.getElementById("createAccountModal").style.display = "flex";
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    window.register = async () => {
-      const email = document.getElementById("regEmail").value.trim();
-      const password = document.getElementById("regPassword").value;
-      const username = document.getElementById("regUsername").value.trim();
-      const console = document.getElementById("regConsole").value.trim();
-      const trophies = document.getElementById("regTrophies").value.trim();
-      const recent = document.getElementById("regRecent").value.trim();
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "488911705365",
+    appId: "qBMwNM2oGO30dVBhODSC"
+  };
 
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        const uid = userCred.user.uid;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-        await setDoc(doc(db, "users", uid), {
-          email,
-          username,
-          console,
-          trophies,
-          recentGames: recent
-        });
+  window.showCreateModal = () => {
+    document.getElementById("createAccountModal").style.display = "flex";
+  };
 
-        alert("Account created!");
-        document.getElementById("createAccountModal").style.display = "none";
-        loadProfile(uid);
-      } catch (err) {
-        alert("Failed to create account: " + err.message);
-      }
-    };
+  window.register = async () => {
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPassword").value;
+    const username = document.getElementById("regUsername").value.trim();
+    const console = document.getElementById("regConsole").value.trim();
+    const trophies = document.getElementById("regTrophies").value.trim();
+    const recent = document.getElementById("regRecent").value.trim();
 
-    window.signIn = async () => {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
 
-      try {
-        const userCred = await signInWithEmailAndPassword(auth, email, password);
-        const uid = userCred.user.uid;
-        loadProfile(uid);
-      } catch (err) {
-        alert("Login failed: " + err.message);
-      }
-    };
+      await setDoc(doc(db, "users", uid), {
+        email,
+        username,
+        console,
+        trophies,
+        recentGames: recent
+      });
 
-    async function loadProfile(uid) {
-      const snap = await getDoc(doc(db, "users", uid));
-      if (snap.exists()) {
-        const data = snap.data();
-        document.getElementById("displayUsername").textContent = `Username: ${data.username}`;
-        document.getElementById("displayConsole").textContent = `Console: ${data.console}`;
-        document.getElementById("displayTrophies").textContent = `Trophies: ${data.trophies}`;
-        document.getElementById("displayGames").textContent = `Recent Games: ${data.recentGames}`;
-      }
+      alert("Account created!");
+      document.getElementById("createAccountModal").style.display = "none";
+      loadProfile(uid);
+    } catch (err) {
+      alert("Failed to create account: " + err.message);
     }
+  };
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) loadProfile(user.uid);
-    });
-  </script>
+  window.signIn = async () => {
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      loadProfile(uid);
+    } catch (err) {
+      alert("Login failed: " + err.message);
+    }
+  };
+
+  async function loadProfile(uid) {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      document.getElementById("displayUsername").textContent = `Username: ${data.username}`;
+      document.getElementById("displayConsole").textContent = `Console: ${data.console}`;
+      document.getElementById("displayTrophies").textContent = `Trophies: ${data.trophies}`;
+      document.getElementById("displayGames").textContent = `Recent Games: ${data.recentGames}`;
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) loadProfile(user.uid);
+  });
+</script>
 </body>
 </html>
