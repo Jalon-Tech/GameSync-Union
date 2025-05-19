@@ -109,35 +109,38 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    window.register = async () => {
-      const email = document.getElementById("regEmail").value.trim();
-      const password = document.getElementById("regPassword").value;
-      const username = document.getElementById("regUsername").value.trim();
-      const favoriteGames = document.getElementById("regGames").value.trim().split(',').map(s => s.trim());
-      const favoriteImages = document.getElementById("regImages").value.trim().split(',').map(s => s.trim());
-      const gamesPlayed = document.getElementById("regPlayed").value.trim();
-      const trophyCount = document.getElementById("regTrophies").value.trim();
+   window.register = async () => {
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPassword").value;
+  const username = document.getElementById("regUsername").value.trim();
+  const favoriteGames = document.getElementById("regGames").value.trim().split(',').map(s => s.trim());
+  const favoriteImages = document.getElementById("regImages").value.trim().split(',').map(s => s.trim());
+  const gamesPlayed = document.getElementById("regPlayed").value.trim();
+  const trophyCount = document.getElementById("regTrophies").value.trim();
 
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        const uid = userCred.user.uid;
+  try {
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCred.user.uid;
 
-        await setDoc(doc(db, "users", uid), {
-          email,
-          username,
-          favoriteGames,
-          favoriteImages,
-          gamesPlayed,
-          trophyCount
-        });
+    await setDoc(doc(db, "users", uid), {
+      email,
+      username,
+      favoriteGames,
+      favoriteImages,
+      gamesPlayed,
+      trophyCount
+    });
 
-        alert("Account created!");
-        document.getElementById("createAccountModal").style.display = "none";
-        loadProfile(uid);
-      } catch (err) {
-        alert("Failed to create account: " + err.message);
-      }
-    };
+    alert("Account created!");
+    document.getElementById("createAccountModal").style.display = "none";
+
+    // ✅ Redirect to homepage
+    window.location.href = "index.html";
+  } catch (err) {
+    alert("Failed to create account: " + err.message);
+  }
+};
+
 
     async function loadProfile(uid) {
       const snap = await getDoc(doc(db, "users", uid));
