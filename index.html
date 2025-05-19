@@ -75,6 +75,19 @@
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+    }
+    .box:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
+    }
+    .box li {
+      transition: transform 0.3s ease;
+    }
+    .box:hover li {
+      transform: translateX(6px);
     }
     .box h2 {
       font-family: 'Montserrat', sans-serif;
@@ -172,33 +185,6 @@
         font-size: 0.9rem;
       }
     }
-
-    .box {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  color: var(--white-text);
-}
-
-  .box:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--gsu-red);
-  background-color: var(--black-faded); /* stays consistent */
-  color: var(--white-text); /* ensures text remains white */
-}
-
-  .box li {
-  transition: transform 0.3s ease;
-}
-
-.box:hover li {
-  transform: translateX(6px);
-}
-
-
-
   </style>
 </head>
 <body>
@@ -389,6 +375,86 @@
     }
 
     loadRecentUploads();
+  </script>
+</body>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDKqpzi3FxxxxxxxREALKEY",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "1046524260000",
+      appId: "1:1046524260000:web:xxxxxxxxREALAPPID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.showCreateModal = () => {
+      document.getElementById("createAccountModal").style.display = "flex";
+    };
+
+    window.register = async () => {
+      const email = document.getElementById("regEmail").value.trim();
+      const password = document.getElementById("regPassword").value;
+      const username = document.getElementById("regUsername").value.trim();
+      const console = document.getElementById("regConsole").value.trim();
+      const trophies = document.getElementById("regTrophies").value.trim();
+      const recent = document.getElementById("regRecent").value.trim();
+
+      try {
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+
+        await setDoc(doc(db, "users", uid), {
+          email,
+          username,
+          console,
+          trophies,
+          recentGames: recent
+        });
+
+        alert("Account created!");
+        document.getElementById("createAccountModal").style.display = "none";
+        loadProfile(uid);
+      } catch (err) {
+        alert("Failed to create account: " + err.message);
+      }
+    };
+
+    window.signIn = async () => {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const userCred = await signInWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+        loadProfile(uid);
+      } catch (err) {
+        alert("Login failed: " + err.message);
+      }
+    };
+
+    async function loadProfile(uid) {
+      const snap = await getDoc(doc(db, "users", uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        document.getElementById("displayUsername").textContent = `Username: ${data.username}`;
+        document.getElementById("displayConsole").textContent = `Console: ${data.console}`;
+        document.getElementById("displayTrophies").textContent = `Trophies: ${data.trophies}`;
+        document.getElementById("displayGames").textContent = `Recent Games: ${data.recentGames}`;
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) loadProfile(user.uid);
+    });
   </script>
 </body>
 </html>
