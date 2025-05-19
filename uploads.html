@@ -170,67 +170,68 @@
     </nav>
   </header>
 
-  <main>
-    <div class="section-header">
-      <h1 style="color: var(--gsu-red);">🎮 GameSync Union: Community Uploads</h1>
-      <p>Explore the latest contributions by gamers across PS5, Xbox, PC, and Nintendo Switch.</p>
+  <!-- Responsive Sectioned Layout -->
+<main>
+  <div class="section-header">
+    <h1 style="color: var(--gsu-red);">🎮 GameSync Union: Community Uploads</h1>
+    <p>Explore the latest contributions by gamers across PS5, Xbox, PC, and Nintendo Switch.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="box">
+      <h2>🔥 Featured Uploads</h2>
+      <div class="guides-container" id="featuredUploads"></div>
     </div>
 
     <div class="box">
-      <h2 style="color: var(--gsu-red);">🔥 Featured Uploads</h2>
-      <div class="guides-container" id="featuredUploads">
-        <!-- Firebase will insert featured uploads here -->
-      </div>
+      <h2>🆕 Latest Uploads</h2>
+      <div class="guides-container" id="latestUploads"></div>
+    </div>
+  </div>
+
+  <div class="box" style="margin-top: 3rem;">
+    <h2>🎨 Fan Art Highlights</h2>
+    <div class="guides-container" id="fanArtUploads"></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="box">
+      <h2>🗡️ Boss Fight Strategies</h2>
+      <div class="guides-container" id="bossUploads"></div>
     </div>
 
     <div class="box">
-      <h2 style="color: var(--gsu-red);">🆕 Latest Uploads</h2>
-      <div class="guides-container" id="latestUploads">
-        <!-- Firebase will insert latest uploads here -->
-      </div>
+      <h2>🎮 Gameplay Tutorials</h2>
+      <div class="guides-container" id="tutorialUploads"></div>
     </div>
 
     <div class="box">
-      <h2 style="color: var(--gsu-red);">🎨 Fan Art Highlights</h2>
-      <div class="guides-container" id="fanArtUploads">
-        <!-- Firebase will insert fan art here -->
-      </div>
+      <h2>📹 Community Gameplay Videos</h2>
+      <div class="guides-container" id="communityUploads"></div>
     </div>
-  
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">🗡️ Boss Fight Strategies</h2>
-        <div class="guides-container" id="bossUploads"></div>
-      </div>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">🎮 Gameplay Tutorials</h2>
-        <div class="guides-container" id="tutorialUploads"></div>
-      </div>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">📹 Community Gameplay Videos</h2>
-        <div class="guides-container" id="communityUploads"></div>
-      </div>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">🥊 Combo Guides for Fighting Games</h2>
-        <div class="guides-container" id="comboUploads"></div>
-      </div>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">🏆 Tips for Acquiring Trophies and Achievements</h2>
-        <div class="guides-container" id="trophyUploads"></div>
-      </div>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">💬 Guide Discussion & Community Chat</h2>
-        <div class="guides-container" id="chatUploads"></div>
-      </div>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">🎨 Fan Art Highlights</h2>
-        <div class="guides-container" id="artUploads"></div>
-      </div>
-      <div class="box">
-        <h2 style="color: var(--gsu-red);">🏅 Acquired Trophies & Achievements</h2>
-        <div class="guides-container" id="earnedTrophiesUploads"></div>
-      </div>
 
-  </main>
+    <div class="box">
+      <h2>🥊 Combo Guides for Fighting Games</h2>
+      <div class="guides-container" id="comboUploads"></div>
+    </div>
+
+    <div class="box">
+      <h2>🏆 Trophy & Achievement Tips</h2>
+      <div class="guides-container" id="trophyUploads"></div>
+    </div>
+
+    <div class="box">
+      <h2>💬 Guide Discussion & Community Chat</h2>
+      <div class="guides-container" id="chatUploads"></div>
+    </div>
+
+    <div class="box">
+      <h2>🏅 Earned Trophies</h2>
+      <div class="guides-container" id="earnedTrophiesUploads"></div>
+    </div>
+  </div>
+</main>
+
 
   <footer>
     <div class="platform-icons">
