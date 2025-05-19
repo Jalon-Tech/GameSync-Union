@@ -196,6 +196,40 @@
         <!-- Firebase will insert fan art here -->
       </div>
     </div>
+  
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">🗡️ Boss Fight Strategies</h2>
+        <div class="guides-container" id="bossUploads"></div>
+      </div>
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">🎮 Gameplay Tutorials</h2>
+        <div class="guides-container" id="tutorialUploads"></div>
+      </div>
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">📹 Community Gameplay Videos</h2>
+        <div class="guides-container" id="communityUploads"></div>
+      </div>
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">🥊 Combo Guides for Fighting Games</h2>
+        <div class="guides-container" id="comboUploads"></div>
+      </div>
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">🏆 Tips for Acquiring Trophies and Achievements</h2>
+        <div class="guides-container" id="trophyUploads"></div>
+      </div>
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">💬 Guide Discussion & Community Chat</h2>
+        <div class="guides-container" id="chatUploads"></div>
+      </div>
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">🎨 Fan Art Highlights</h2>
+        <div class="guides-container" id="artUploads"></div>
+      </div>
+      <div class="box">
+        <h2 style="color: var(--gsu-red);">🏅 Acquired Trophies & Achievements</h2>
+        <div class="guides-container" id="earnedTrophiesUploads"></div>
+      </div>
+
   </main>
 
   <footer>
@@ -216,5 +250,55 @@
     card.innerHTML = "<h3>🕹️ Example Clip</h3><p>Platform: PS5</p><p>A sample video submission for display testing.</p>";
     latest.appendChild(card);
   </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  function renderCard(doc, containerId) {
+    const data = doc.data();
+    const container = document.getElementById(containerId);
+    const card = document.createElement("div");
+    card.classList.add("guide-card");
+
+    card.innerHTML = `
+      <h3>${data.title || "Untitled Upload"}</h3>
+      <p><strong>Platform:</strong> ${data.platform || "Unknown"}</p>
+      <p>${data.description || "No description provided."}</p>
+    `;
+
+    container.appendChild(card);
+  }
+
+  // Load from Firestore by category
+  const categories = [
+    "boss", "tutorial", "community", "combo", "trophy",
+    "chat", "art", "earnedTrophies"
+  ];
+
+  categories.forEach(category => {
+    db.collection("uploads")
+      .where("category", "==", category)
+      .limit(6)
+      .get()
+      .then(snapshot => {
+        snapshot.docs.forEach(doc => {
+          renderCard(doc, `${category}Uploads`);
+        });
+      })
+      .catch(err => console.error(`${category} Uploads Error:`, err));
+  });
+</script>
+
 </body>
 </html>
