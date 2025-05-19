@@ -361,26 +361,24 @@
     }
   });
 
-  async function loadProfile(uid) {
-    const snap = await getDoc(doc(db, "users", uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      console.log("User data:", data);
+ async function loadProfile(uid) {
+  const snap = await getDoc(doc(db, "users", uid));
+  if (snap.exists()) {
+    const data = snap.data();
+    console.log("User data:", data);
 
-      // Update the profile section
-      const favGamesEl = document.getElementById("fav-games");
-      const gamesPlayedEl = document.getElementById("games-played");
-      const trophyStatsEl = document.getElementById("trophy-stats");
+    const favGamesEl = document.getElementById("fav-games");
+    const gamesPlayedEl = document.getElementById("games-played");
+    const trophyStatsEl = document.getElementById("trophy-stats");
 
-      if (favGamesEl && gamesPlayedEl && trophyStatsEl) {
-        favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.Favorite_Games) ? data.Favorite_Games.join(", ") : "N/A"}`;
-        gamesPlayedEl.textContent = `🎮 Games Played: ${data.Games_Played || "N/A"}`;
-        trophyStatsEl.textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "N/A"}`;
-      }
-    } else {
-      console.warn("User profile data not found.");
-    }
+    if (favGamesEl) favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+    if (gamesPlayedEl) gamesPlayedEl.textContent = `🎮 Games Played: ${data.gamesPlayed || "N/A"}`;
+    if (trophyStatsEl) trophyStatsEl.textContent = `🏆 Trophy Stats: ${data.trophyStats || "N/A"}`;
+  } else {
+    console.warn("User profile data not found.");
   }
+}
+
 
   onAuthStateChanged(auth, (user) => {
     if (user) loadProfile(user.uid);
