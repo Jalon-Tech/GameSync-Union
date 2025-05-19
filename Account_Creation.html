@@ -88,7 +88,17 @@
       <button class="btn" style="background:#777;" onclick="document.getElementById('createAccountModal').style.display='none'">Cancel</button>
     </div>
   </div>
-
+  
+ <div class="modal-overlay" id="loginModal" style="display: none;">
+  <div class="modal-content">
+    <h2>Log In to GSU</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button class="btn" onclick="login()">Log In</button>
+    <button class="btn" style="background:#777;" onclick="document.getElementById('loginModal').style.display='none'">Cancel</button>
+  </div>
+</div>
+  
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
