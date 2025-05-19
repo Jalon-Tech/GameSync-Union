@@ -470,12 +470,14 @@ if (logoutBtn) {
   future.setDate(future.getDate() + 30);
   const nextMonth = future.toISOString().split('T')[0];
 
-  const corsProxy = "https://corsproxy.io/?";
-  const url = `${corsProxy}https://api.rawg.io/api/games?key=${apiKey}&dates=${today},${nextMonth}&ordering=released`;
+  const rawgURL = `https://api.rawg.io/api/games?key=${apiKey}&dates=${today},${nextMonth}&ordering=released`;
+  const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(rawgURL)}`;
 
   try {
-    const res = await fetch(url);
-    const data = await res.json();
+    const res = await fetch(proxyURL);
+    const dataWrapped = await res.json();
+    const data = JSON.parse(dataWrapped.contents); // unwrap from proxy
+
     const list = document.getElementById('upcoming-events');
     const loader = document.getElementById('upcoming-loader');
     if (loader) loader.style.display = 'none';
@@ -498,6 +500,7 @@ if (logoutBtn) {
 }
 
 fetchUpcomingGames();
+
 
 
 </script>
