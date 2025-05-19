@@ -422,16 +422,20 @@
 
 
 
-  // ✅ Needed to auto-load profile when user is already signed in
   onAuthStateChanged(auth, (user) => {
+  const currentPath = window.location.pathname.toLowerCase();
+  const isLoginPage = currentPath.includes("account_creation.html");
+
   if (user) {
+    // ✅ Load profile for signed-in users
     loadProfile(user.uid);
-  } else {
-    // 🚫 Block access if not signed in
+  } else if (!isLoginPage) {
+    // 🚫 Block access to protected pages if not signed in
     alert("Please log in to access GameSync Union.");
     window.location.href = "Account_Creation.html";
   }
 });
+
 
   const logoutBtn = document.getElementById("logoutBtn");
 
