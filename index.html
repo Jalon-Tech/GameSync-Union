@@ -232,22 +232,31 @@
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
       <div class="box">
-        <h2>Community Highlights</h2>
-        <div class="section-flex">
-  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-    <h3 style="text-align: center;">🔥 Trending Topics</h3>
-    <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
-  </div>
-  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-    <h3 style="text-align: center;">📹 Latest Uploads</h3>
-    <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
-  </div>
-  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-    <h3 style="text-align: center;">🎨 Fan Art</h3>
-    <p>[Showcase user-submitted art here]</p>
+  <h2>Community Highlights</h2>
+  <div class="section-flex">
+    <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+      <h3 style="text-align: center;">🔥 Trending Topics</h3>
+      <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+    </div>
+    <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+      <h3 style="text-align: center;">📹 Latest Uploads</h3>
+      <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+    </div>
+    <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+      <h3 style="text-align: center;">🎨 Fan Art</h3>
+      <p>[Showcase user-submitted art here]</p>
+    </div>
+    <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+      <h3 style="text-align: center;">🗓️ Upcoming Games & Events</h3>
+      <p id="upcoming-loader">Loading upcoming games...</p>
+      <ul id="upcoming-events" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+      <p style="margin-top: 0.8rem; font-size: 0.8rem;">
+        *Pulled from RAWG gaming API. <a href="https://rawg.io/apidocs" target="_blank" style="color: #e60023;">Learn more</a>
+      </p>
+    </div>
   </div>
 </div>
-      </div>
+
 
       <div class="box">
         <h2>Game Guides</h2>
@@ -454,6 +463,41 @@ if (logoutBtn) {
     }
   });
 }
+  async function fetchUpcomingGames() {
+  const apiKey = 'YOUR_RAWG_API_KEY'; // Replace with your RAWG API key
+  const today = new Date().toISOString().split('T')[0];
+  const future = new Date();
+  future.setDate(future.getDate() + 30);
+  const nextMonth = future.toISOString().split('T')[0];
+
+  const url = `https://api.rawg.io/api/games?key=${apiKey}&dates=${today},${nextMonth}&ordering=released`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const list = document.getElementById('upcoming-events');
+    const loader = document.getElementById('upcoming-loader');
+    if (loader) loader.style.display = 'none';
+
+    data.results.slice(0, 5).forEach(game => {
+      const li = document.createElement('li');
+      li.style.marginBottom = '0.6rem';
+      li.innerHTML = `
+        <strong>🆕 ${game.name}</strong><br />
+        📅 Release: ${game.released || 'TBD'}<br />
+        🎮 Platforms: ${game.platforms.map(p => p.platform.name).join(', ')}
+      `;
+      list.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Failed to fetch RAWG games:", err);
+    const list = document.getElementById('upcoming-events');
+    list.innerHTML = '<li>Unable to load data. Please try again later.</li>';
+  }
+}
+
+fetchUpcomingGames();
+
 
 </script>
 
