@@ -313,55 +313,78 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-     const firebaseConfig = {
+  const firebaseConfig = {
     apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
     authDomain: "gamesync-union.firebaseapp.com",
     projectId: "gamesync-union",
-    storageBucket: "gamesync-union.appspot.com", // ✅ CORRECTED
+    storageBucket: "gamesync-union.appspot.com",
     messagingSenderId: "488911705365",
     appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
     measurementId: "G-CP48EXW1EV"
   };
 
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
+  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
+  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
+  const signInBtn = document.querySelector('#auth-box .btn');
 
-    const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
-    const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
-    const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
-    const signInBtn = document.querySelector('#auth-box .btn');
-
-    signInBtn.addEventListener('click', async () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      try {
-        const userCred = await signInWithEmailAndPassword(auth, email, password);
-        const uid = userCred.user.uid;
-        loadProfile(uid);
-        alert("Signed in successfully");
-      } catch (err) {
-        alert("Login failed: " + err.message);
-      }
-    });
-
-    async function loadProfile(uid) {
-      const snap = await getDoc(doc(db, "users", uid));
-      if (snap.exists()) {
-        const data = snap.data();
-        console.log("User data:", data); // You can replace this with UI updates later
-      }
+  signInBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      loadProfile(uid);
+      alert("Signed in successfully");
+    } catch (err) {
+      alert("Login failed: " + err.message);
     }
+  });
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) loadProfile(user.uid);
-    });
-  </script>
+  async function loadProfile(uid) {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      console.log("User data:", data);
+
+      // Update the profile section
+      const favGamesEl = document.getElementById("fav-games");
+      const gamesPlayedEl = document.getElementById("games-played");
+      const trophyStatsEl = document.getElementById("trophy-stats");
+
+      if (favGamesEl && gamesPlayedEl && trophyStatsEl) {
+        favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.Favorite_Games) ? data.Favorite_Games.join(", ") : "N/A"}`;
+        gamesPlayedEl.textContent = `🎮 Games Played: ${data.Games_Played || "N/A"}`;
+        trophyStatsEl.textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "N/A"}`;
+      }
+    } else {
+      console.warn("User profile data not found.");
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) loadProfile(user.uid);
+  });
+</script>
+
 </body>
 </html>
