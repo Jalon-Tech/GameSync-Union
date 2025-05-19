@@ -203,6 +203,7 @@
       <a href="game-guides.html">Guides</a>
       <a href="uploads.html">Community Uploads</a>
     </nav>
+     <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
   </header>
 
   <div class="main-container">
@@ -423,8 +424,29 @@
 
   // ✅ Needed to auto-load profile when user is already signed in
   onAuthStateChanged(auth, (user) => {
-    if (user) loadProfile(user.uid);
+  if (user) {
+    loadProfile(user.uid);
+  } else {
+    // 🚫 Block access if not signed in
+    alert("Please log in to access GameSync Union.");
+    window.location.href = "Account_Creation.html";
+  }
+});
+
+  const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await auth.signOut();
+      alert("You have been logged out.");
+      window.location.href = "Account_Creation.html"; // redirect to login or sign-up page
+    } catch (err) {
+      alert("Error signing out: " + err.message);
+    }
   });
+}
+
 </script>
 
 
