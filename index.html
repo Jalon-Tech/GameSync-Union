@@ -289,20 +289,41 @@
 
 
       <div class="box">
-        <h2>Upcoming Games & Events</h2>
-        <p>Stay updated on everything new in gaming:</p>
-        <ul>
-          <li>🆕 Recently Announced Games</li>
-          <li>🚀 Upcoming Game Releases</li>
-          <li>📆 Countdown to Launch & Events</li>
-          <li>🛠 Major Patch Notes & Updates</li>
-          <li>🎮 Gaming Conventions & Streams</li>
-        </ul>
-        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
-          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
-          <a href="#" style="color: #e60023;">Learn more</a>
-        </p>
-      </div>
+  <h2>Upcoming Games & Events</h2>
+  <p>Stay updated on everything new in gaming:</p>
+
+  <div style="margin-bottom: 1rem;">
+    <h3 style="color: #e60023;">🆕 Recently Announced Games</h3>
+    <ul id="announced-list" style="list-style: none; padding-left: 0;"></ul>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <h3 style="color: #e60023;">🚀 Upcoming Game Releases</h3>
+    <ul id="releases-list" style="list-style: none; padding-left: 0;"></ul>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <h3 style="color: #e60023;">📆 Countdown to Launch & Events</h3>
+    <ul id="countdown-list" style="list-style: none; padding-left: 0;"></ul>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <h3 style="color: #e60023;">🛠 Major Patch Notes & Updates</h3>
+    <ul id="patches-list" style="list-style: none; padding-left: 0;"></ul>
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    <h3 style="color: #e60023;">🎮 Gaming Conventions & Streams</h3>
+    <ul id="conventions-list" style="list-style: none; padding-left: 0;"></ul>
+  </div>
+
+  <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+    *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+    <a href="#" style="color: #e60023;">Learn more</a>
+  </p>
+</div>
+
+
     </aside>
   </div>
 
@@ -454,6 +475,54 @@ if (logoutBtn) {
     }
   });
 }
+import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+// grab your ULs
+const announcedList   = document.getElementById("announced-list");
+const releasesList    = document.getElementById("releases-list");
+const countdownList   = document.getElementById("countdown-list");
+const patchesList     = document.getElementById("patches-list");
+const conventionsList = document.getElementById("conventions-list");
+
+// listen to the single doc
+const upcomingDocRef = doc(db, "upcoming", "global");
+onSnapshot(upcomingDocRef, (snap) => {
+  if (!snap.exists()) return;
+  const data = snap.data();
+
+  // helper to render array into a list
+  function render(arr, container, formatter) {
+    container.innerHTML = "";
+    (arr || []).forEach(item => {
+      const li = document.createElement("li");
+      li.innerHTML = formatter(item);
+      container.appendChild(li);
+    });
+  }
+
+  render(data.recentlyAnnounced, announcedList, item =>
+    `🆕 <a href="${item.url}" style="color:var(--gsu-red)">${item.title}</a> (${item.date})`
+  );
+
+  render(data.upcomingReleases, releasesList, item =>
+    `🚀 ${item.title} — Release: ${item.date}`
+  );
+
+  render(data.countdowns, countdownList, item => {
+    const diff = Math.max(0,
+      Math.ceil((new Date(item.date) - new Date())/ (1000*60*60*24))
+    );
+    return `📆 ${item.label}: ${diff} day${diff!==1?"s":""} to go`;
+  });
+
+  render(data.patchNotes, patchesList, item =>
+    `🛠 <a href="${item.url}" style="color:var(--gsu-red)">${item.title}</a> (${item.date})`
+  );
+
+  render(data.conventions, conventionsList, item =>
+    `🎮 ${item.name} — ${item.date}`
+  );
+});
 
 </script>
 
