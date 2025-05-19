@@ -470,17 +470,30 @@ if (logoutBtn) {
   future.setDate(future.getDate() + 30);
   const nextMonth = future.toISOString().split('T')[0];
 
+  // ✅ Use a known-to-work CORS proxy (via thingproxy)
   const rawgURL = `https://api.rawg.io/api/games?key=${apiKey}&dates=${today},${nextMonth}&ordering=released`;
-  const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(rawgURL)}`;
+  const proxyURL = `https://thingproxy.freeboard.io/fetch/${rawgURL}`;
+
+  const list = document.getElementById('upcoming-events');
+  const loader = document.getElementById('upcoming-loader');
 
   try {
     const res = await fetch(proxyURL);
-    const dataWrapped = await res.json();
-    const data = JSON.parse(dataWrapped.contents); // unwrap from proxy
+    console.log("Response status:", res.status);
 
-    const list = document.getElementById('upcoming-events');
-    const loader = document.getElementById('upcoming-loader');
+    if (!res.ok) {
+      throw new Error("Failed to fetch from RAWG");
+    }
+
+    const data = await res.json();
+    console.log("RAWG data:", data);
+
     if (loader) loader.style.display = 'none';
+
+    if (!data.results || data.results.length === 0) {
+      list.innerHTML = '<li>No upcoming games found.</li>';
+      return;
+    }
 
     data.results.slice(0, 5).forEach(game => {
       const li = document.createElement('li');
@@ -493,13 +506,13 @@ if (logoutBtn) {
       list.appendChild(li);
     });
   } catch (err) {
-    console.error("Failed to fetch RAWG games:", err);
-    const list = document.getElementById('upcoming-events');
+    console.error("Error loading upcoming games:", err);
     list.innerHTML = '<li>Unable to load data. Please try again later.</li>';
   }
 }
 
 fetchUpcomingGames();
+
 
 
 
