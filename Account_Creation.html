@@ -77,6 +77,9 @@
   <div class="modal-overlay" id="createAccountModal">
     <div class="modal-content">
       <h2>Create GSU Account</h2>
+      <p style="text-align:center; color: #ccc; margin-bottom: 1rem;">
+        Already have an account? <a href="#" style="color: var(--gsu-red);" onclick="switchToLogin()">Log in here</a>
+      </p>
       <input type="email" id="regEmail" placeholder="Email">
       <input type="password" id="regPassword" placeholder="Password">
       <input type="text" id="regUsername" placeholder="Username">
@@ -88,69 +91,84 @@
       <button class="btn" style="background:#777;" onclick="document.getElementById('createAccountModal').style.display='none'">Cancel</button>
     </div>
   </div>
-  
- <div class="modal-overlay" id="loginModal" style="display: none;">
-  <div class="modal-content">
-    <h2>Log In to GSU</h2>
-    <input type="email" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPassword" placeholder="Password">
-    <button class="btn" onclick="login()">Log In</button>
-    <button class="btn" style="background:#777;" onclick="document.getElementById('loginModal').style.display='none'">Cancel</button>
+
+  <div class="modal-overlay" id="loginModal" style="display: none;">
+    <div class="modal-content">
+      <h2>Log In to GSU</h2>
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="btn" onclick="login()">Log In</button>
+      <button class="btn" style="background:#777;" onclick="document.getElementById('loginModal').style.display='none'">Cancel</button>
+    </div>
   </div>
-</div>
-  
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
-    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-    authDomain: "gamesync-union.firebaseapp.com",
-    projectId: "gamesync-union",
-    storageBucket: "gamesync-union.appspot.com", // ✅ CORRECTED
-    messagingSenderId: "488911705365",
-    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-    measurementId: "G-CP48EXW1EV"
-  };
-
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+      measurementId: "G-CP48EXW1EV"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-   window.register = async () => {
-  const email = document.getElementById("regEmail").value.trim();
-  const password = document.getElementById("regPassword").value;
-  const username = document.getElementById("regUsername").value.trim();
-  const favoriteGames = document.getElementById("regGames").value.trim().split(',').map(s => s.trim());
-  const favoriteImages = document.getElementById("regImages").value.trim().split(',').map(s => s.trim());
-  const gamesPlayed = document.getElementById("regPlayed").value.trim();
-  const trophyCount = document.getElementById("regTrophies").value.trim();
+    window.register = async () => {
+      const email = document.getElementById("regEmail").value.trim();
+      const password = document.getElementById("regPassword").value;
+      const username = document.getElementById("regUsername").value.trim();
+      const favoriteGames = document.getElementById("regGames").value.trim().split(',').map(s => s.trim());
+      const favoriteImages = document.getElementById("regImages").value.trim().split(',').map(s => s.trim());
+      const gamesPlayed = document.getElementById("regPlayed").value.trim();
+      const trophyCount = document.getElementById("regTrophies").value.trim();
 
-  try {
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    const uid = userCred.user.uid;
+      try {
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
 
-    await setDoc(doc(db, "users", uid), {
-      email,
-      username,
-      favoriteGames,
-      favoriteImages,
-      gamesPlayed,
-      trophyCount
-    });
+        await setDoc(doc(db, "users", uid), {
+          email,
+          username,
+          favoriteGames,
+          favoriteImages,
+          gamesPlayed,
+          trophyCount
+        });
 
-    alert("Account created!");
-    document.getElementById("createAccountModal").style.display = "none";
+        alert("Account created!");
+        document.getElementById("createAccountModal").style.display = "none";
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Failed to create account: " + err.message);
+      }
+    };
 
-    // ✅ Redirect to homepage
-    window.location.href = "index.html";
-  } catch (err) {
-    alert("Failed to create account: " + err.message);
-  }
-};
+    window.login = async () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
 
+      try {
+        const userCred = await signInWithEmailAndPassword(auth, email, password);
+        alert("Login successful!");
+        document.getElementById("loginModal").style.display = "none";
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Login failed: " + err.message);
+      }
+    };
+
+    window.switchToLogin = () => {
+      document.getElementById("createAccountModal").style.display = "none";
+      document.getElementById("loginModal").style.display = "flex";
+    };
 
     async function loadProfile(uid) {
       const snap = await getDoc(doc(db, "users", uid));
@@ -171,7 +189,6 @@
       if (user) loadProfile(user.uid);
     });
 
-    // Make modal visible for testing/demo purposes
     window.onload = () => {
       document.getElementById("createAccountModal").style.display = "flex";
     };
