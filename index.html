@@ -427,14 +427,18 @@
   const isLoginPage = currentPath.includes("account_creation.html");
 
   if (user) {
-    // ✅ Load profile for signed-in users
     loadProfile(user.uid);
-  } else if (!isLoginPage) {
-    // 🚫 Block access to protected pages if not signed in
-    alert("Please log in to access GameSync Union.");
-    window.location.href = "Account_Creation.html";
+    document.getElementById("auth-box").style.display = "none"; // Hide login box
+  } else {
+    document.getElementById("auth-box").style.display = "block"; // Show login box
+    // Don’t redirect unless on a page that *requires* login
+    if (!isLoginPage && currentPath !== "/index.html") {
+      alert("Please log in to access GameSync Union.");
+      window.location.href = "Account_Creation.html";
+    }
   }
 });
+
 
 
   const logoutBtn = document.getElementById("logoutBtn");
