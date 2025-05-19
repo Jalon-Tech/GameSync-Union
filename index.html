@@ -279,11 +279,12 @@
 
     <aside>
     <div class="box" id="profile-box">
-        <h2>Your Profile</h2>
+      <h2>Your Profile</h2>
         <p id="fav-games">🎯 Favorite Games</p>
         <p id="games-played">🎮 Games Played</p>
         <p id="trophy-stats">🏆 Trophy Stats</p>
     </div>
+
 
 
       <div class="box">
@@ -367,23 +368,65 @@
     const data = snap.data();
     console.log("User data:", data);
 
+    const profileBox = document.getElementById("profile-box");
+
+    // ✅ Insert username at the top of the profile card
+    const usernameEl = document.createElement("p");
+    usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+    usernameEl.style.fontWeight = "bold";
+    usernameEl.style.fontSize = "1rem";
+    usernameEl.style.marginBottom = "0.5rem";
+    profileBox.prepend(usernameEl);
+
     const favGamesEl = document.getElementById("fav-games");
     const gamesPlayedEl = document.getElementById("games-played");
     const trophyStatsEl = document.getElementById("trophy-stats");
 
-    if (favGamesEl) favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-    if (gamesPlayedEl) gamesPlayedEl.textContent = `🎮 Games Played: ${data.gamesPlayed || "N/A"}`;
-    if (trophyStatsEl) trophyStatsEl.textContent = `🏆 Trophy Stats: ${data.trophyStats || "N/A"}`;
+    // Create image row if it doesn't exist
+    let imageRow = document.getElementById("fav-images");
+    if (!imageRow) {
+      imageRow = document.createElement("div");
+      imageRow.id = "fav-images";
+      imageRow.style.display = "flex";
+      imageRow.style.flexWrap = "wrap";
+      imageRow.style.gap = "0.5rem";
+      imageRow.style.marginTop = "0.8rem";
+      imageRow.style.justifyContent = "center";
+      profileBox.appendChild(imageRow);
+    }
+    imageRow.innerHTML = "";
+
+    favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+    gamesPlayedEl.textContent = `🎮 Games Played: ${data.gamesPlayed || "N/A"}`;
+    trophyStatsEl.textContent = `🏆 Trophy Stats: ${data.trophyCount || "N/A"}`;
+
+    if (Array.isArray(data.favoriteImages)) {
+      data.favoriteImages.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "Game cover";
+        img.style.height = "60px";
+        img.style.borderRadius = "6px";
+        img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+        img.style.transition = "transform 0.3s";
+        img.onmouseover = () => img.style.transform = "scale(1.05)";
+        img.onmouseout = () => img.style.transform = "scale(1)";
+        imageRow.appendChild(img);
+      });
+    }
   } else {
     console.warn("User profile data not found.");
   }
 }
 
 
+
+  // ✅ Needed to auto-load profile when user is already signed in
   onAuthStateChanged(auth, (user) => {
     if (user) loadProfile(user.uid);
   });
 </script>
+
 
 </body>
 </html>
