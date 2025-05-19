@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameSync Union</title>
-  <link rel="icon" href="/assets/GSU_Logo.png" type="image/png" />
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -12,8 +12,6 @@
       --black-main: #191818;
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
-      --box-bg: #1F1F1F;
-      --gray-box: #2b2b2b;
     }
     * {
       margin: 0;
@@ -31,31 +29,32 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
-      border-bottom: 2px solid var(--gsu-red);
+      flex-wrap: wrap;
     }
     .logo {
       display: flex;
       align-items: center;
+      margin-bottom: 0.5rem;
     }
     .logo img {
       height: 50px;
       margin-right: 1rem;
     }
     .logo-text {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-family: 'Montserrat', sans-serif;
-      color: var(--white-text);
-      font-weight: 600;
     }
     nav {
       display: flex;
-      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
     }
     nav a {
-      color: var(--white-text);
       text-decoration: none;
+      color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
+      transition: color 0.3s ease;
       font-size: 1rem;
     }
     nav a:hover {
@@ -63,92 +62,149 @@
     }
     .main-container {
       display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
-      gap: 2rem;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
       padding: 2rem;
     }
-    .box {
-      background: var(--box-bg);
-      padding: 1.5rem;
-      border-radius: 16px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    aside, main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
     }
-    .input-field, .btn {
-      width: 100%;
-      margin: 0.6rem 0;
-      padding: 0.8rem;
+    .box {
+      background-color: var(--black-faded);
       border-radius: 8px;
-      border: none;
-      font-size: 1rem;
+      padding: 1rem;
+    }
+    .box h2 {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.7rem;
     }
     .input-field {
-      background: #2a2a2a;
-      color: white;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      width: 100%;
+      background-color: #2a2a2a;
+      color: var(--white-text);
     }
     .btn {
       background-color: var(--gsu-red);
-      color: white;
+      border: none;
+      color: var(--white-text);
+      padding: 0.8rem;
+      width: 100%;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
       font-family: 'Montserrat', sans-serif;
-      transition: background 0.3s;
     }
     .btn:hover {
-      background-color: #b8001b;
-    }
-    h2, h3 {
-      font-family: 'Montserrat', sans-serif;
-      margin-bottom: 1rem;
-    }
-    .highlight-links {
-      display: flex;
-      gap: 1rem;
-      margin: 1.5rem 0;
-      flex-wrap: wrap;
-    }
-    .highlight-links span {
-      background: #333;
-      padding: 0.7rem 1rem;
-      border-radius: 10px;
-      font-size: 0.95rem;
-    }
-    .search-bar {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 1rem 0;
-      border-radius: 8px;
-      border: none;
-      background: #2a2a2a;
-      color: white;
-      font-size: 1rem;
-    }
-    .tagline {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      color: #ccc;
-      text-align: center;
-      font-style: italic;
-    }
-    .section {
-      margin-top: 2.5rem;
-    }
-    .link-list li {
-      margin-bottom: 0.6rem;
-    }
-    .link-list a {
-      color: var(--gsu-red);
-      text-decoration: underline;
-      font-weight: 500;
-    }
-    .link-list a:hover {
       opacity: 0.85;
     }
+    footer {
+      background-color: var(--black-faded);
+      text-align: center;
+      padding: 1.2rem 1rem;
+      margin-top: 4rem;
+    }
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
+    }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    .section-flex {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .section-flex div {
+      flex: 1 1 100px;
+      text-align: center;
+    }
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        justify-content: flex-start;
+      }
+      .logo-text {
+        font-size: 1.3rem;
+      }
+      .section-flex {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+    @media (max-width: 600px) {
+      .logo img {
+        height: 40px;
+      }
+      .logo-text {
+        font-size: 1.2rem;
+      }
+      nav a {
+        font-size: 0.9rem;
+      }
+      .btn {
+        padding: 0.7rem;
+      }
+      .input-field {
+        font-size: 0.9rem;
+      }
+    }
+
+    .box {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  color: var(--white-text);
+}
+
+  .box:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--gsu-red);
+  background-color: var(--black-faded); /* stays consistent */
+  color: var(--white-text); /* ensures text remains white */
+}
+
+  .box li {
+  transition: transform 0.3s ease;
+}
+
+.box:hover li {
+  transform: translateX(6px);
+}
+
+
+
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="assets/GSU_Logo.png" alt="GSU Logo" style="height: 60px; width: auto; object-fit: contain; display: block;" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -157,181 +213,182 @@
       <a href="trophies.html">Trophies/Achievements</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">Community Uploads</a>
+      <a href="uploads.html">Upload to GSU community</a>
     </nav>
   </header>
 
   <div class="main-container">
-  <!-- Left Column -->
-  <div class="box">
-    <h2>Create Account or Sign In</h2>
-    <input type="email" id="loginEmail" class="input-field" placeholder="Email" />
-    <input type="password" id="loginPassword" class="input-field" placeholder="Password" />
-    <button class="btn" onclick="signIn()">Sign In</button>
-    <p style="margin-top:1rem; font-size:0.9rem;">Become a member? <a href="#" onclick="showCreateModal()" style="color: var(--gsu-red);">Create Account</a></p>
-    <div class="section">
-      <h3>Recent Uploads</h3>
-      <p style="font-size:0.85rem; color:#aaa;">[Your gameplay clips will show up here]</p>
-    </div>
+    <aside>
+      <div class="box" id="auth-box">
+        <h2>Create Account or Sign In</h2>
+        <input type="text" class="input-field" placeholder="Email" />
+        <input type="text" class="input-field" placeholder="Username" />
+        <input type="password" class="input-field" placeholder="Password" />
+        <button class="btn">Sign In</button>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="#" style="color: #e60023;">Create Account</a></p>
+      </div>
+      <div class="box">
+        <h2>Recent Uploads</h2>
+        <p>[Your gameplay clips will show up here]</p>
+      </div>
+    </aside>
+
+    <main>
+      <div class="box" style="text-align:center;">
+        <h2>Welcome to GameSync Union</h2>
+        <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
+        <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
+      </div>
+
+      <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
+
+      <div class="box">
+        <h2>Community Highlights</h2>
+        <div class="section-flex">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">🔥 Trending Topics</h3>
+    <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
   </div>
-
-  <!-- Center Column -->
-  <div class="box">
-    <h2 style="text-align:center;">Welcome to GameSync Union</h2>
-    <p class="tagline">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
-    <button class="btn" style="margin:1rem auto; display:block; max-width:200px;">Get Started</button>
-    <input type="text" class="search-bar" placeholder="Search guides, uploads, art, users, or trophies...">
-    <div class="highlight-links">
-      <span>🔥 Trending Topics</span>
-      <span>📹 Latest Uploads</span>
-      <span>🎨 Fan Art</span>
-    </div>
-
-    <div class="section">
-      <h3>Game Guides</h3>
-      <p style="font-size:0.95rem;">Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
-      <ul class="link-list">
-        <li><a href="#">Boss Fight Strategies</a></li>
-        <li><a href="#">Gameplay Tutorials</a></li>
-        <li><a href="#">Enjoyable Gameplay Videos from the Community</a></li>
-        <li><a href="#">Combo Guides for Fighting Games</a></li>
-        <li><a href="#">Tips for Acquiring Trophies and Achievements</a></li>
-        <li><a href="#">Guide Discussion & Community Chat</a></li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h3>Your Trophies</h3>
-      <p style="font-size:0.95rem;">[View trophies and compare achievements]</p>
-    </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">📹 Latest Uploads</h3>
+    <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
   </div>
-
-  <!-- Right Column -->
-  <div class="box">
-    <h2>Your Profile</h2>
-    <p id="displayUsername">Username: —</p>
-    <p id="displayConsole">Console: —</p>
-    <p id="displayTrophies">Trophies: —</p>
-    <p id="displayGames">Recent Games: —</p>
-
-    <div class="section">
-      <h3>Upcoming Games & Events</h3>
-      <ul style="font-size: 0.9rem; line-height: 1.6;">
-        <li>🆕 Recently Announced Games</li>
-        <li>🚀 Upcoming Game Releases</li>
-        <li>📅 Countdown to Launch & Events</li>
-        <li>🛠️ Major Patch Notes & Updates</li>
-        <li>📺 Gaming Conventions & Streams</li>
-      </ul>
-      <p style="font-size:0.8rem; margin-top:1rem; color:#ccc;">*This section automatically pulls the latest game info, updates, and events using APIs from trusted gaming databases like RAWG and IGDB.</p>
-    </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">🎨 Fan Art</h3>
+    <p>[Showcase user-submitted art here]</p>
   </div>
 </div>
+      </div>
 
-<!-- Modal -->
-<div id="createAccountModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:#1f1f1f; padding:2rem; border-radius:12px; width:95%; max-width:620px;">
-    <h2 style="color:var(--gsu-red); text-align:center;">Create GSU Account</h2>
-    <input type="email" id="regEmail" class="input-field" placeholder="GSU Email" />
-    <input type="password" id="regPassword" class="input-field" placeholder="Create Password" />
-    <input type="text" id="regUsername" class="input-field" placeholder="Username" />
-    <input type="text" id="regConsole" class="input-field" placeholder="Console (PS5, Xbox, etc.)" />
-    <input type="text" id="regTrophies" class="input-field" placeholder="Trophy Stats" />
-    <input type="text" id="regRecent" class="input-field" placeholder="Recent Games Played" />
-    <div style="display:flex; justify-content:space-between; gap:1rem; margin-top:1rem;">
-      <button class="btn" onclick="register()">Create Account</button>
-      <button class="btn" style="background:#888;" onclick="document.getElementById('createAccountModal').style.display='none'">Cancel</button>
-    </div>
+      <div class="box">
+        <h2>Game Guides</h2>
+        <p>Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
+        <ul>
+          <li><a href="boss-fight-strategies.html" style="color: #e60023;">Boss Fight Strategies</a></li>
+          <li><a href="gameplay-tutorials.html" style="color: #e60023;">Gameplay Tutorials</a></li>
+          <li><a href="community-gameplay-videos.html" style="color: #e60023;">Enjoyable Gameplay Videos from the Community</a></li>
+          <li><a href="combo-guides.html" style="color: #e60023;">Combo Guides for Fighting Games</a></li>
+          <li><a href="trophy-tips.html" style="color: #e60023;">Tips for Acquiring Trophies and Achievements</a></li>
+          <li><a href="guide-discussion.html" style="color: #e60023;">Guide Discussion & Community Chat</a></li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>Your Trophies</h2>
+        <p>[View trophies and compare achievements]</p>
+      </div>
+
+      <div class="box">
+        <h2>User Uploads</h2>
+        <p>[Uploaded game videos and highlight reels]</p>
+      </div>
+
+      <div class="box">
+        <h2>Art Showcase</h2>
+        <p>[In-game screenshots, posters, and original artwork]</p>
+      </div>
+    </main>
+
+    <aside>
+      <div class="box">
+        <h2>Your Profile</h2>
+        <p>🎯 Favorite Games</p>
+        <p>🎮 Games Played</p>
+        <p>🏆 Trophy Stats</p>
+      </div>
+
+      <div class="box">
+        <h2>Upcoming Games & Events</h2>
+        <p>Stay updated on everything new in gaming:</p>
+        <ul>
+          <li>🆕 Recently Announced Games</li>
+          <li>🚀 Upcoming Game Releases</li>
+          <li>📆 Countdown to Launch & Events</li>
+          <li>🛠 Major Patch Notes & Updates</li>
+          <li>🎮 Gaming Conventions & Streams</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+          <a href="#" style="color: #e60023;">Learn more</a>
+        </p>
+      </div>
+    </aside>
   </div>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <footer>
+  <div class="platform-icons">
+    <img src="PS_Logo.png" alt="PlayStation" />
+    <img src="Xbox.png" alt="Xbox" />
+    <img src="Steam.png" alt="PC" />
+    <img src="Switch.png" alt="Nintendo Switch" />
+  </div>
+  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  </footer>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-    authDomain: "gamesync-union.firebaseapp.com",
-    projectId: "gamesync-union",
-    storageBucket: "gamesync-union.appspot.com",
-    messagingSenderId: "488911705365",
-    appId: "qBMwNM2oGO30dVBhODSC"
-  };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyDKqpzi3FxxxxxxxREALKEY",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "1046524260000",
+      appId: "1:1046524260000:web:xxxxxxxxREALAPPID"
+    };
 
-  window.showCreateModal = () => {
-    document.getElementById("createAccountModal").style.display = "flex";
-  };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  window.register = async () => {
-    const email = document.getElementById("regEmail").value.trim();
-    const password = document.getElementById("regPassword").value;
-    const username = document.getElementById("regUsername").value.trim();
-    const console = document.getElementById("regConsole").value.trim();
-    const trophies = document.getElementById("regTrophies").value.trim();
-    const recent = document.getElementById("regRecent").value.trim();
+    async function loadTrendingTopics() {
+      const topicsRef = collection(db, "chatTopics");
+      const uploadsRef = collection(db, "uploads");
+      const q1 = query(topicsRef, orderBy("commentCount", "desc"), limit(3));
+      const q2 = query(uploadsRef, orderBy("timestamp", "desc"), limit(2));
 
-    try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
+      const [topicsSnap, uploadsSnap] = await Promise.all([getDocs(q1), getDocs(q2)]);
 
-      await setDoc(doc(db, "users", uid), {
-        email,
-        username,
-        console,
-        trophies,
-        recentGames: recent
+      const topics = [];
+      topicsSnap.forEach(doc => {
+        topics.push(doc.data().title);
+      });
+      uploadsSnap.forEach(doc => {
+        const data = doc.data();
+        if (data.title) topics.push(data.title);
       });
 
-      alert("Account created!");
-      document.getElementById("createAccountModal").style.display = "none";
-      loadProfile(uid);
-    } catch (err) {
-      alert("Failed to create account: " + err.message);
+      const trendingBox = document.querySelector('.section-flex div:first-child');
+      trendingBox.innerHTML = '<h3>🔥 Trending Topics</h3>';
+      const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+
+      topics.slice(0, 5).forEach(topic => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span style="color: var(--white-text);">• ${topic}</span>`;
+        ul.appendChild(li);
+      });
+      trendingBox.appendChild(ul);
     }
-  };
 
-  window.signIn = async () => {
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
+    loadTrendingTopics();
 
-    try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-      loadProfile(uid);
-    } catch (err) {
-      alert("Login failed: " + err.message);
+    async function loadRecentUploads() {
+      const uploadsRef = collection(db, "uploads");
+      const q = query(uploadsRef, orderBy("timestamp", "desc"), limit(3));
+      const querySnapshot = await getDocs(q);
+      const uploadsList = document.getElementById("uploads-list");
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.username}: ${data.title}`;
+        uploadsList.appendChild(li);
+      });
     }
-  };
 
-  async function loadProfile(uid) {
-    const snap = await getDoc(doc(db, "users", uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      document.getElementById("displayUsername").textContent = `Username: ${data.username}`;
-      document.getElementById("displayConsole").textContent = `Console: ${data.console}`;
-      document.getElementById("displayTrophies").textContent = `Trophies: ${data.trophies}`;
-      document.getElementById("displayGames").textContent = `Recent Games: ${data.recentGames}`;
-    }
-  }
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) loadProfile(user.uid);
-  });
-</script>
-<footer style="background-color: var(--black-faded); color: var(--white-text); text-align: center; padding: 2rem 1rem; border-top: 2px solid var(--gsu-red);">
-  <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1rem;">
-    <img src="assets/PS_Logo.png" alt="PlayStation" style="height: 36px; object-fit: contain;" />
-    <img src="assets/Xbox.png" alt="Xbox" style="height: 36px; object-fit: contain;" />
-    <img src="assets/Steam.png" alt="Steam" style="height: 36px; object-fit: contain;" />
-    <img src="assets/Switch.png" alt="Nintendo Switch" style="height: 36px; object-fit: contain;" />
-  </div>
-  <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif;">&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-</footer>
-
+    loadRecentUploads();
+  </script>
 </body>
 </html>
