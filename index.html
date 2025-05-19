@@ -470,7 +470,8 @@ if (logoutBtn) {
   future.setDate(future.getDate() + 30);
   const nextMonth = future.toISOString().split('T')[0];
 
-  const url = `https://api.rawg.io/api/games?key=${apiKey}&dates=${today},${nextMonth}&ordering=released`;
+  const corsProxy = "https://corsproxy.io/?";
+  const url = `${corsProxy}https://api.rawg.io/api/games?key=${apiKey}&dates=${today},${nextMonth}&ordering=released`;
 
   try {
     const res = await fetch(url);
