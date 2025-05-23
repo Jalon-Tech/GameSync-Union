@@ -131,11 +131,20 @@
       padding: 1rem;
       border-radius: 6px;
       width: calc(33.3% - 1rem);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .trophy-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.3), 0 0 6px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
     }
 
     .trophy-card img {
       width: 100%;
-      height: auto;
+      max-height: 160px;
+      object-fit: cover;
       border-radius: 6px;
       margin-bottom: 0.5rem;
     }
@@ -217,6 +226,7 @@
 
       <div class="box">
         <h2>Add Trophy/Achievement To Your GSU Profile</h2>
+        <input type="text" class="input-field" id="username" placeholder="Your GSU Username" />
         <input type="text" class="input-field" id="trophyTitle" placeholder="Trophy Title" />
         <input type="text" class="input-field" id="gameName" placeholder="Game Name" />
         <input type="text" class="input-field" id="coverURL" placeholder="Game Cover Image URL" />
@@ -252,17 +262,19 @@
     const db = firebase.firestore();
 
     function uploadTrophy() {
+      const username = document.getElementById("username").value;
       const title = document.getElementById("trophyTitle").value;
       const game = document.getElementById("gameName").value;
       const cover = document.getElementById("coverURL").value;
       const description = document.getElementById("description").value;
 
-      if (!title || !game || !cover) {
+      if (!username || !title || !game || !cover) {
         alert("Please fill in all required fields.");
         return;
       }
 
       db.collection("community_trophies").add({
+        username: username,
         title: title,
         game: game,
         cover: cover,
@@ -288,6 +300,7 @@
             <img src="${data.cover}" alt="${data.game}" />
             <h3>${data.title} – ${data.game}</h3>
             <p>${data.description || "No description provided."}</p>
+            <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
           `;
           list.appendChild(card);
         });
