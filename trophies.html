@@ -16,25 +16,75 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
     }
-    header { background-color: var(--black-faded); display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; }
-    .logo { display: flex; align-items: center; }
-    .logo img { height: 60px; margin-right: 1rem; }
-    .logo-text { font-size: 1.6rem; font-family: 'Montserrat', sans-serif; }
-    nav a { margin: 0 1rem; text-decoration: none; color: var(--white-text); font-family: 'Montserrat', sans-serif; transition: color 0.3s ease; }
-    nav a:hover { color: var(--gsu-red); }
-    .main-container { display: flex; flex-direction: column; padding: 2rem; gap: 2rem; }
-    .box { background-color: var(--black-faded); border-radius: 8px; padding: 1rem; transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease; color: var(--white-text); }
+
+    header {
+      background-color: var(--black-faded);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 60px;
+      margin-right: 1rem;
+    }
+
+    .logo-text {
+      font-size: 1.6rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--gsu-red);
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      gap: 2rem;
+    }
+
+    .box {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+    }
+
     .box:hover {
       transform: translateY(-6px) scale(1.01);
       box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
       border: 1px solid var(--gsu-red);
     }
+
     .input-field {
       padding: 0.6rem;
       border: none;
@@ -44,6 +94,7 @@
       background-color: #2a2a2a;
       color: var(--white-text);
     }
+
     .btn {
       background-color: var(--gsu-red);
       border: none;
@@ -54,54 +105,80 @@
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
     }
-    .btn:hover { opacity: 0.85; }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
     .trophy-list {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
     }
+
     .trophy-card {
       background-color: #2a2a2a;
       padding: 1rem;
       border-radius: 6px;
       width: calc(33.3% - 1rem);
     }
+
     .trophy-card img {
       width: 100%;
       height: auto;
       border-radius: 6px;
       margin-bottom: 0.5rem;
     }
+
     .trophy-card h3 {
       font-family: 'Montserrat', sans-serif;
       margin-bottom: 0.3rem;
     }
+
     .trophy-card p {
       font-size: 0.9rem;
       opacity: 0.8;
     }
+
     footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1.2rem 1rem;
-      margin-top: 4rem;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
     .platform-icons {
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-wrap: wrap;
       gap: 1.5rem;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.8rem;
     }
+
     .platform-icons img {
       height: 32px;
       width: auto;
-      opacity: 0.9;
+      opacity: 0.85;
+      transition: transform 0.2s ease, opacity 0.2s ease;
     }
+
+    .platform-icons img:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
     footer p {
       color: #ccc;
       font-size: 1rem;
       font-family: 'Roboto', sans-serif;
+      margin-top: 0.4rem;
     }
   </style>
 </head>
@@ -139,13 +216,15 @@
   </div>
 
   <footer>
-    <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
+    <div class="footer-container">
+      <div class="platform-icons">
+        <img src="PS_Logo.png" alt="PlayStation" title="PlayStation" />
+        <img src="Xbox.png" alt="Xbox" title="Xbox" />
+        <img src="Steam.png" alt="PC" title="Steam" />
+        <img src="Switch.png" alt="Nintendo Switch" title="Nintendo Switch" />
+      </div>
+      <p>&copy; 2025 <strong>GameSync Union</strong> — Built for gamers, by gamers.</p>
     </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
   <script>
