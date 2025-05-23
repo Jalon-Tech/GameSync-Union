@@ -23,20 +23,10 @@
       box-sizing: border-box;
     }
 
-    html, body {
-      height: 100%;
-    }
-
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
-    }
-
-    .page-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
     }
 
     header {
@@ -75,10 +65,9 @@
     }
 
     .main-container {
-      flex: 1;
+      padding: 2rem;
       display: flex;
       flex-direction: column;
-      padding: 2rem;
       gap: 2rem;
     }
 
@@ -86,33 +75,26 @@
       background-color: var(--black-faded);
       border-radius: 8px;
       padding: 1rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-      color: var(--white-text);
-    }
-
-    .box:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 5px 14px rgba(230, 0, 35, 0.3);
-      border: 1px solid var(--gsu-red);
+      transition: 0.3s ease all;
     }
 
     .input-field {
       padding: 0.6rem;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 0.6rem;
       width: 100%;
+      margin-bottom: 0.6rem;
+      border-radius: 6px;
+      border: none;
       background-color: #2a2a2a;
       color: var(--white-text);
     }
 
     .btn {
       background-color: var(--gsu-red);
-      border: none;
       color: var(--white-text);
       padding: 0.8rem;
       width: 100%;
       border-radius: 6px;
+      border: none;
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
     }
@@ -128,134 +110,125 @@
     }
 
     .trophy-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
       background-color: #2a2a2a;
-      padding: 1rem;
       border-radius: 6px;
+      padding: 1rem;
       width: calc(33.3% - 1rem);
-      overflow: hidden;
+      transition: 0.3s ease all;
       border: 1px solid transparent;
-      transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
     }
 
     .trophy-card:hover {
-      transform: translateY(-3px);
       border: 1px solid var(--gsu-red);
       box-shadow: 0 0 8px rgba(230, 0, 35, 0.3);
+      transform: translateY(-3px);
     }
 
     .trophy-card img {
       display: block;
       width: 100%;
-      max-width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      height: auto;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
     }
 
     .trophy-card h3 {
       font-family: 'Montserrat', sans-serif;
       margin: 0.5rem 0 0.3rem 0;
-      font-size: 1rem;
     }
 
     .trophy-card p {
       font-size: 0.85rem;
-      line-height: 1.4;
       opacity: 0.85;
-      margin-bottom: 0.3rem;
+    }
+
+    .delete-btn {
+      background: transparent;
+      color: #e60023;
+      border: 1px solid #e60023;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      transition: 0.2s;
+    }
+
+    .delete-btn:hover {
+      background-color: #e60023;
+      color: white;
     }
 
     footer {
       background-color: var(--black-faded);
       text-align: center;
-      padding: 1.2rem 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .footer-container {
-      max-width: 1200px;
-      margin: 0 auto;
+      padding: 1.2rem;
+      margin-top: 4rem;
     }
 
     .platform-icons {
       display: flex;
       justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
       gap: 1.5rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.6rem;
     }
 
     .platform-icons img {
       height: 32px;
       width: auto;
-      opacity: 0.85;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-
-    .platform-icons img:hover {
-      opacity: 1;
-      transform: scale(1.05);
+      opacity: 0.9;
     }
 
     footer p {
       color: #ccc;
-      font-size: 1rem;
       font-family: 'Roboto', sans-serif;
-      margin-top: 0.4rem;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
-  <div class="page-wrapper">
-    <header>
-      <div class="logo">
-        <img src="GSU_LOGO.png" alt="GSU Logo" />
-        <div class="logo-text">GAMESYNC UNION</div>
-      </div>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="games.html">Games</a>
-        <a href="trophies.html">Trophies/Achievements</a>
-        <a href="art.html">Art</a>
-        <a href="game-guides.html">Guides</a>
-        <a href="uploads.html">Community Uploads</a>
-      </nav>
-    </header>
+  <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <div class="logo-text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">Trophies/Achievements</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">Guides</a>
+      <a href="uploads.html">Community Uploads</a>
+    </nav>
+  </header>
 
-    <div class="main-container">
-      <div class="box">
-        <h2>Community Trophies/Achievements Showcase</h2>
-        <p>Highlighting the rarest and most skill-based trophies earned by GameSync Union players.</p>
-        <div class="trophy-list" id="trophyList"></div>
-      </div>
+  <div class="main-container">
+    <div class="box">
+      <h2>Community Trophies/Achievements Showcase</h2>
+      <p>Highlighting the rarest and most skill-based trophies earned by GameSync Union players.</p>
+      <div class="trophy-list" id="trophyList"></div>
+    </div>
 
-      <div class="box">
-        <h2>Add Trophy/Achievement To Your GSU Profile</h2>
-        <input type="text" class="input-field" id="trophyTitle" placeholder="Trophy Title" />
-        <input type="text" class="input-field" id="gameName" placeholder="Game Name" />
-        <input type="text" class="input-field" id="coverURL" placeholder="Game Cover Image URL" />
-        <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
-        <button class="btn" onclick="uploadTrophy()">Upload Trophy</button>
-      </div>
+    <div class="box">
+      <h2>Add Trophy/Achievement To Your GSU Profile</h2>
+      <input type="text" class="input-field" id="trophyTitle" placeholder="Trophy Title" />
+      <input type="text" class="input-field" id="gameName" placeholder="Game Name" />
+      <input type="text" class="input-field" id="coverURL" placeholder="Game Cover Image URL" />
+      <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
+      <button class="btn" onclick="uploadTrophy()">Upload Trophy</button>
     </div>
   </div>
 
   <footer>
-    <div class="footer-container">
-      <div class="platform-icons">
-        <img src="PS_Logo.png" alt="PlayStation" title="PlayStation" />
-        <img src="Xbox.png" alt="Xbox" title="Xbox" />
-        <img src="Steam.png" alt="PC" title="Steam" />
-        <img src="Switch.png" alt="Nintendo Switch" title="Nintendo Switch" />
-      </div>
-      <p>&copy; 2025 <strong>GameSync Union</strong> — Built for gamers, by gamers.</p>
+    <div class="platform-icons">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
     </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
   <script>
@@ -279,6 +252,7 @@
         db.collection("users").doc(user.uid).get().then(doc => {
           currentUsername = doc.data().username || "Unknown";
         });
+        loadTrophies(user);
       }
     });
 
@@ -287,28 +261,38 @@
       const game = document.getElementById("gameName").value;
       const cover = document.getElementById("coverURL").value;
       const description = document.getElementById("description").value;
+      const user = auth.currentUser;
 
-      if (!currentUsername || !title || !game || !cover) {
-        alert("Please make sure all fields are filled in.");
+      if (!user || !currentUsername || !title || !game || !cover) {
+        alert("Please fill in all fields.");
         return;
       }
 
       db.collection("community_trophies").add({
         username: currentUsername,
-        title: title,
-        game: game,
-        cover: cover,
-        description: description,
+        userId: user.uid,
+        title,
+        game,
+        cover,
+        description,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         alert("Trophy uploaded!");
         location.reload();
       }).catch((error) => {
-        console.error("Error adding trophy: ", error);
+        console.error("Error adding trophy:", error);
       });
     }
 
-    function loadTrophies() {
+    function deleteTrophy(id) {
+      db.collection("community_trophies").doc(id).delete().then(() => {
+        alert("Trophy deleted!");
+      }).catch((error) => {
+        console.error("Error deleting trophy: ", error);
+      });
+    }
+
+    function loadTrophies(user) {
       const list = document.getElementById("trophyList");
       db.collection("community_trophies").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
         list.innerHTML = "";
@@ -321,13 +305,12 @@
             <h3>${data.title} – ${data.game}</h3>
             <p>${data.description || "No description provided."}</p>
             <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
+            ${user && user.uid === data.userId ? `<button class="delete-btn" onclick="deleteTrophy('${doc.id}')">Delete</button>` : ""}
           `;
           list.appendChild(card);
         });
       });
     }
-
-    window.onload = loadTrophies;
   </script>
 </body>
 </html>
