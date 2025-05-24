@@ -184,26 +184,37 @@
     }
     footer {
       background-color: var(--black-faded);
-      text-align: center;
+      color: var(--white-text);
       padding: 2rem 1rem;
       margin-top: 3rem;
+      text-align: center;
+      font-family: 'Roboto', sans-serif;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
     }
     .platform-icons {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 1.5rem;
-      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
     }
     .platform-icons img {
       height: 32px;
       width: auto;
       opacity: 0.9;
+      transition: transform 0.3s;
+    }
+    .platform-icons img:hover {
+      transform: scale(1.1);
     }
     footer p {
-      color: #ccc;
       font-size: 1rem;
-      font-family: 'Roboto', sans-serif;
+      margin-top: 1rem;
     }
   </style>
 </head>
@@ -239,15 +250,6 @@
     </div>
   </main>
 
-  <footer>
-    <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
-    </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
@@ -286,5 +288,17 @@
       }
     });
   </script>
+
+  <footer>
+    <div class="footer-content">
+      <div class="platform-icons">
+        <img src="PS_Logo.png" alt="PlayStation" />
+        <img src="Xbox.png" alt="Xbox" />
+        <img src="Steam.png" alt="PC" />
+        <img src="Switch.png" alt="Nintendo Switch" />
+      </div>
+      <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+    </div>
+  </footer>
 </body>
 </html>
