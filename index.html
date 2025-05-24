@@ -145,6 +145,32 @@
       background: var(--accent-light);
       transform: translateY(-2px);
     }
+    #user-card {
+      display: none;
+      background: #2a2a2a;
+      color: var(--white-text);
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+      margin-top: 2rem;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #user-card h2 {
+      margin-bottom: 0.5rem;
+      color: var(--gsu-red);
+    }
+    .game-images {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .game-images img {
+      height: 60px;
+      border-radius: 6px;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -241,6 +267,15 @@
       <button class="btn" onclick="window.location.href='Account_Creation.html'">Sign Up / Sign In</button>
     </section>
 
+    <div id="user-card">
+      <h2>Your Profile</h2>
+      <p><strong>Username:</strong> <span id="user-name">Loading...</span></p>
+      <p><strong>Trophies:</strong> <span id="trophy-count">0</span></p>
+      <p><strong>Games Played:</strong> <span id="games-played">0</span></p>
+      <p><strong>Favorite Games:</strong></p>
+      <div class="game-images" id="favorite-images"></div>
+    </div>
+
     <div class="slider">
       <div class="slider-item">🔥 Trending Now</div>
       <div class="slider-item">🎮 New Releases</div>
@@ -250,7 +285,6 @@
     </div>
   </main>
 
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import {
@@ -258,6 +292,11 @@
       onAuthStateChanged,
       signOut
     } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AmUjlBCM31e66w8OQ2lD",
@@ -270,6 +309,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     document.getElementById("logoutBtn")?.addEventListener("click", async () => {
       try {
@@ -280,11 +320,28 @@
       }
     });
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("User signed in:", user.email);
+        document.getElementById("user-card").style.display = "block";
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          document.getElementById("user-name").textContent = data.username || "N/A";
+          document.getElementById("trophy-count").textContent = data.trophyCount || "0";
+          document.getElementById("games-played").textContent = data.gamesPlayed || "0";
+          const imageContainer = document.getElementById("favorite-images");
+          imageContainer.innerHTML = "";
+          if (Array.isArray(data.favoriteImages)) {
+            data.favoriteImages.slice(0, 3).forEach(url => {
+              const img = document.createElement("img");
+              img.src = url;
+              img.alt = "Favorite Game";
+              imageContainer.appendChild(img);
+            });
+          }
+        }
       } else {
-        console.log("No user signed in.");
+        document.getElementById("user-card").style.display = "none";
       }
     });
   </script>
