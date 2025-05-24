@@ -171,6 +171,23 @@
       transform: scale(1.05);
       background-color: #333;
     }
+    #profile-box {
+      display: none;
+      background: var(--black-faded);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 2rem auto;
+      text-align: center;
+      color: var(--white-text);
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      max-width: 600px;
+    }
+    #fav-images img {
+      height: 60px;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(255,255,255,0.1);
+      transition: transform 0.3s;
+    }
     footer {
       background-color: var(--black-faded);
       color: var(--white-text);
@@ -230,7 +247,7 @@
       <button class="btn" onclick="window.location.href='Account_Creation.html'">Sign Up / Sign In</button>
     </section>
 
-    <div class="box" id="profile-box" style="display:none">
+    <div class="box" id="profile-box">
       <h2>Your Profile</h2>
       <p id="user-name"></p>
       <p id="fav-games">🎯 Favorite Games:</p>
@@ -286,19 +303,15 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", async () => {
-        try {
-          await signOut(auth);
-          alert("You have been logged out.");
-          location.reload();
-        } catch (err) {
-          alert("Error signing out: " + err.message);
-        }
-      });
-    }
+    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        alert("You have been logged out.");
+        location.reload();
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
+    });
 
     onAuthStateChanged(auth, async (user) => {
       const profileBox = document.getElementById("profile-box");
@@ -319,12 +332,6 @@
               const img = document.createElement("img");
               img.src = url;
               img.alt = "Game cover";
-              img.style.height = "60px";
-              img.style.borderRadius = "6px";
-              img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
-              img.style.transition = "transform 0.3s";
-              img.onmouseover = () => img.style.transform = "scale(1.05)";
-              img.onmouseout = () => img.style.transform = "scale(1)";
               imageRow.appendChild(img);
             });
           }
