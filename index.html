@@ -1,15 +1,14 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GameSync Union</title>
-<link href="GSU_Logo.png" rel="icon" type="image/png"/>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&amp;family=Roboto&amp;display=swap" rel="stylesheet">
-<style>
-    :root {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameSync Union</title>
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    /* CSS REMAINS UNCHANGED */
+      :root {
       --gsu-red: #e60023;
       --black-main: #191818;
       --black-faded: #1F1F1F;
@@ -84,6 +83,12 @@
       transform: translateY(-6px) scale(1.01);
       box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
       border: 1px solid var(--gsu-red);
+    }
+    .box li {
+      transition: transform 0.3s ease;
+    }
+    .box:hover li {
+      transform: translateX(6px);
     }
     .box h2 {
       font-family: 'Montserrat', sans-serif;
@@ -182,513 +187,276 @@
       }
     }
   </style>
-</link></head>
+</head>
 <body>
-<header>
-<div class="logo">
-<img alt="GSU Logo" src="GSU_LOGO.png"/>
-<div class="logo-text">GAMESYNC UNION</div>
-</div>
-<nav>
-<a href="index.html">Home</a>
-<a href="games.html">Games</a>
-<a href="trophies.html">Trophies/Achievements</a>
-<a href="art.html">Art</a>
-<a href="game-guides.html">Guides</a>
-<a href="uploads.html">Community Uploads</a>
-</nav>
-<button class="btn" id="logoutBtn" style="max-width: 120px; background-color: #777;">Log Out</button>
-<a href="Account_Creation.html" class="btn" id="loginBtn" style="max-width: 140px; background-color: var(--gsu-red);;">Login / Sign Up</a>
-</header>
-<div class="main-container">
-<aside>
-<div class="box" id="daily-challenge">
-<h2>🎮 Challenge of the Day</h2>
-<p id="challenge-text" style="margin-top: 0.6rem;"></p>
-<p style="margin-top: 0.6rem; font-size: 0.9rem; color: #ccc;">
-          Share your completion with the community in the uploads section!
-        </p>
-</div>
+  <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
+    <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <div class="logo-text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">Trophies/Achievements</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">Guides</a>
+      <a href="uploads.html">Community Uploads</a>
+    </nav>
+     <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
+  </header>
 
-<div class="box">
-<h2>Recent Uploads</h2>
-<p>[Your gameplay clips will show up here]</p>
-</div>
-</aside>
-<main>
-<div class="box" style="text-align:center;">
-<h2>Welcome to GameSync Union</h2>
-<p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
-<a class="btn" href="Account_Creation.html" style="display:inline-block; text-align:center;">Get Started</a>
-</div>
-<input class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." type="text"/>
-<div class="box">
+  <div class="main-container">
+    <aside>
+      <div class="box" id="auth-box">
+        <h2>Create Account or Sign In</h2>
+        <input type="text" class="input-field" placeholder="Email" />
+        <input type="text" class="input-field" placeholder="Username" />
+        <input type="password" class="input-field" placeholder="Password" />
+        <button class="btn">Sign In</button>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.HTML" style="color: #e60023;">Create Account</a></p>
+      </div>
+      <div class="box">
+        <h2>Recent Uploads</h2>
+        <p>[Your gameplay clips will show up here]</p>
+      </div>
+    </aside>
 
-<h2>Community Highlights</h2>
-<div class="section-flex">
-  <div class="box" style="flex: 1; background-color: #2a2a2a; color: white; padding: 1rem; border-radius: 8px;">
+    <main>
+      <div class="box" style="text-align:center;">
+        <h2>Welcome to GameSync Union</h2>
+        <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
+        <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
+      </div>
+
+      <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
+
+      <div class="box">
+        <h2>Community Highlights</h2>
+        <div class="section-flex">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
     <h3 style="text-align: center;">🔥 Trending Topics</h3>
-    <ul id="trending-list" style="list-style: none; padding-left: 0;"></ul>
+    <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
   </div>
-  <div class="box" style="flex: 1; background-color: #2a2a2a; color: white; padding: 1rem; border-radius: 8px;">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
     <h3 style="text-align: center;">📹 Latest Uploads</h3>
-    <ul id="uploads-list" style="list-style: none; padding-left: 0;"></ul>
+    <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
   </div>
-  <div class="box" style="flex: 1; background-color: #2a2a2a; color: white; padding: 1rem; border-radius: 8px;">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
     <h3 style="text-align: center;">🎨 Fan Art</h3>
     <p>[Showcase user-submitted art here]</p>
   </div>
 </div>
+      </div>
 
-</div>
-<div class="box">
-<h2>Game Guides</h2>
-<ul>
-<li><a href="boss-fight-strategies.html" style="color: #e60023;">Boss Fight Strategies</a></li>
-<li><a href="gameplay-tutorials.html" style="color: #e60023;">Gameplay Tutorials</a></li>
-<li><a href="community-gameplay-videos.html" style="color: #e60023;">Gameplay Videos</a></li>
-<li><a href="combo-guides.html" style="color: #e60023;">Combo Guides</a></li>
-<li><a href="trophy-tips.html" style="color: #e60023;">Trophy Tips</a></li>
-<li><a href="guide-discussion.html" style="color: #e60023;">Discussion &amp; Chat</a></li>
-</ul>
-</div>
-</main>
-<aside>
-<div class="box" id="profile-box">
-<h2>Your Profile</h2>
-<p id="fav-games">🎯 Favorite Games</p>
-<p id="games-played">🎮 Games Played</p>
-<p id="trophy-stats">🏆 Trophy Stats</p>
-</div>
-<div class="box">
-<h2>Upcoming Games &amp; Events</h2>
-<ul>
-<li>🆕 Recently Announced</li>
-<li>🚀 Game Releases</li>
-<li>📆 Launch Countdowns</li>
-<li>🛠 Patch Notes</li>
-<li>🎮 Conventions &amp; Streams</li>
-</ul>
-</div>
-</aside>
-</div>
-<footer>
-<div class="platform-icons">
-<img alt="PlayStation" src="PS_Logo.png"/>
-<img alt="Xbox" src="Xbox.png"/>
-<img alt="Steam" src="Steam.png"/>
-<img alt="Nintendo Switch" src="Switch.png"/>
-</div>
-<p>© 2025 GameSync Union. Built for gamers, by gamers.</p>
-</footer>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const challenges = [
-        "Beat a boss using only melee attacks. No projectiles.",
-        "Play one match with no HUD or UI elements enabled.",
-        "Win a game without taking damage.",
-        "Use your least favorite character and win.",
-        "Complete a level using only stealth.",
-        "Beat any boss with only basic attacks.",
-        "Upload a combo you discovered today.",
-        "Get a win in ranked mode without blocking.",
-        "Land 3 perfect parries in one match.",
-        "Draw your character and upload it to the fan art section.",
-        "Use random select for 5 online matches.",
-        "Play a match with no sound.",
-        "Win a round with a comeback under 10% HP.",
-        "Help a new player in multiplayer or forums.",
-        "Score a 10-hit combo or higher.",
-        "Upload your favorite gaming moment.",
-        "Upload a match with your least favorite character. While staying hidden.",
-        "Explore a match with your least favorite character. No damage taken.",
-        "Upload a stealth mission undetected. No power-ups.",
-        "Beat a boss using only melee attacks. No power-ups.",
-        "Upload a boss using only melee attacks. Using a random character.",
-        "Beat a fight with inverted controls. On your hardest difficulty.",
-        "Win a fight with inverted controls. While staying hidden.",
-        "Land a match without blocking. On your hardest difficulty.",
-        "Upload a level with no UI. Without dying.",
-        "Land a match with your least favorite character. No projectiles.",
-        "Win a map with no HUD. Using a random character.",
-        "Complete a match with your least favorite character. No power-ups.",
-        "Upload a combo with no special moves. Without healing items.",
-        "Play an entire game without healing. Without dying.",
-        "Upload a match with your least favorite character. With default gear.",
-        "Beat a level with no UI. No projectiles.",
-        "Win a stealth mission undetected. No sound.",
-        "Perform a round under 10% HP. While staying hidden.",
-        "Survive a round under 10% HP. Without healing items.",
-        "Play a stealth mission undetected. No damage taken.",
-        "Explore a level with no UI. Using a random character.",
-        "Explore a map with no HUD. No damage taken.",
-        "Perform an entire game without healing. Without dying.",
-        "Complete a fight with inverted controls. No damage taken.",
-        "Play a match with your least favorite character. On your hardest difficulty.",
-        "Survive a boss using only melee attacks. No power-ups.",
-        "Upload a boss using only melee attacks. No sound.",
-        "Play a boss using only melee attacks. No damage taken.",
-        "Land a fight with inverted controls. No sound.",
-        "Land a match with your least favorite character. Using a random character.",
-        "Complete a match without blocking. Using a random character.",
-        "Perform an entire game without healing. While staying hidden.",
-        "Upload a fight with inverted controls. No projectiles.",
-        "Land a match without blocking. No sound.",
-        "Complete a level with no UI. Using a random character.",
-        "Survive an entire game without healing. No power-ups.",
-        "Play a combo with no special moves. With default gear.",
-        "Survive an entire game without healing. Without dying.",
-        "Win a round under 10% HP. No power-ups.",
-        "Score a match with your least favorite character. Using a random character.",
-        "Upload a round under 10% HP. With default gear.",
-        "Land a boss using only melee attacks. With default gear.",
-        "Survive a round under 10% HP. No power-ups.",
-        "Score a match with your least favorite character. Without healing items.",
-        "Upload an entire game without healing. No projectiles.",
-        "Win a level with no UI. Without dying.",
-        "Perform a match without blocking. No power-ups.",
-        "Land a fight with inverted controls. Without healing items.",
-        "Win a combo with no special moves. On your hardest difficulty.",
-        "Perform an entire game without healing. No damage taken.",
-        "Score a level with no UI. While staying hidden.",
-        "Play a stealth mission undetected. No projectiles.",
-        "Explore a fight with inverted controls. No sound.",
-        "Beat a round under 10% HP. Without healing items.",
-        "Upload a boss using only melee attacks. No power-ups.",
-        "Score a round under 10% HP. With default gear.",
-        "Survive a round under 10% HP. No damage taken.",
-        "Land a round under 10% HP. No power-ups.",
-        "Explore a level with no UI. No power-ups.",
-        "Beat a match with your least favorite character. No sound.",
-        "Perform a stealth mission undetected. No damage taken.",
-        "Land a fight with inverted controls. While staying hidden.",
-        "Complete a match without blocking. No power-ups.",
-        "Upload a boss using only melee attacks. With default gear.",
-        "Upload a round under 10% HP. No power-ups.",
-        "Land a combo with no special moves. No damage taken.",
-        "Perform a level with no UI. With default gear.",
-        "Beat a combo with no special moves. No projectiles.",
-        "Land a match without blocking. With default gear.",
-        "Win a round under 10% HP. No projectiles.",
-        "Land a match with your least favorite character. While staying hidden.",
-        "Beat a boss using only melee attacks. With default gear.",
-        "Play a fight with inverted controls. Without dying.",
-        "Play a round under 10% HP. Using a random character.",
-        "Upload a fight with inverted controls. Without dying.",
-        "Play a match with your least favorite character. No damage taken.",
-        "Upload an entire game without healing. Without dying.",
-        "Win a map with no HUD. No damage taken.",
-        "Upload a match without blocking. Without healing items.",
-        "Score a stealth mission undetected. With default gear.",
-        "Upload a stealth mission undetected. Without dying.",
-        "Perform a stealth mission undetected. No projectiles.",
-        "Perform a round under 10% HP. No damage taken.",
-        "Beat a combo with no special moves. No power-ups.",
-        "Score a map with no HUD. Without healing items.",
-        "Win a match with your least favorite character. While staying hidden.",
-        "Land a level with no UI. No power-ups.",
-        "Land a match with your least favorite character. With default gear.",
-        "Complete a stealth mission undetected. While staying hidden.",
-        "Beat a match without blocking. No projectiles.",
-        "Explore an entire game without healing. No sound.",
-        "Complete a combo with no special moves. Using a random character.",
-        "Beat a boss using only melee attacks. While staying hidden.",
-        "Land a boss using only melee attacks. Without dying.",
-        "Complete a round under 10% HP. On your hardest difficulty.",
-        "Land an entire game without healing. Using a random character.",
-        "Survive an entire game without healing. On your hardest difficulty.",
-        "Complete a match without blocking. Without healing items.",
-        "Score a round under 10% HP. While staying hidden.",
-        "Play an entire game without healing. No power-ups.",
-        "Beat a round under 10% HP. No sound.",
-        "Score a combo with no special moves. Without dying.",
-        "Explore a level with no UI. With default gear.",
-        "Land a map with no HUD. No sound.",
-        "Survive a match with your least favorite character. Using a random character.",
-        "Survive a fight with inverted controls. No power-ups.",
-        "Upload a stealth mission undetected. No sound.",
-        "Survive a match with your least favorite character. While staying hidden.",
-        "Score a match without blocking. Without dying.",
-        "Explore a stealth mission undetected. No sound.",
-        "Upload a boss using only melee attacks. Without dying.",
-        "Perform a stealth mission undetected. No sound.",
-        "Explore a boss using only melee attacks. While staying hidden.",
-        "Play a fight with inverted controls. No projectiles.",
-        "Perform a map with no HUD. While staying hidden.",
-        "Survive a level with no UI. No projectiles.",
-        "Perform a fight with inverted controls. With default gear.",
-        "Survive a match with your least favorite character. With default gear.",
-        "Play a level with no UI. No sound.",
-        "Play a fight with inverted controls. On your hardest difficulty.",
-        "Play a stealth mission undetected. Without healing items.",
-        "Complete a map with no HUD. With default gear.",
-        "Perform a boss using only melee attacks. While staying hidden.",
-        "Win a map with no HUD. With default gear.",
-        "Win a fight with inverted controls. No power-ups.",
-        "Play a match without blocking. Without dying.",
-        "Explore a boss using only melee attacks. No damage taken.",
-        "Survive a stealth mission undetected. Using a random character.",
-        "Land a boss using only melee attacks. No projectiles.",
-        "Win a match without blocking. With default gear.",
-        "Survive a level with no UI. Without dying.",
-        "Survive a boss using only melee attacks. With default gear.",
-        "Survive a combo with no special moves. Without healing items.",
-        "Land a boss using only melee attacks. No power-ups.",
-        "Explore a stealth mission undetected. While staying hidden.",
-        "Beat an entire game without healing. While staying hidden.",
-        "Score a map with no HUD. No damage taken.",
-        "Upload a match without blocking. No damage taken.",
-        "Perform a stealth mission undetected. Without dying.",
-        "Upload a round under 10% HP. While staying hidden.",
-        "Survive a map with no HUD. While staying hidden.",
-        "Play a fight with inverted controls. No power-ups.",
-        "Beat a round under 10% HP. On your hardest difficulty.",
-        "Complete a match with your least favorite character. Using a random character.",
-        "Win a boss using only melee attacks. On your hardest difficulty.",
-        "Play a round under 10% HP. While staying hidden.",
-        "Complete a match without blocking. On your hardest difficulty.",
-        "Play a fight with inverted controls. Using a random character.",
-        "Land a boss using only melee attacks. Using a random character.",
-        "Survive a level with no UI. With default gear.",
-        "Beat a stealth mission undetected. With default gear.",
-        "Win a boss using only melee attacks. Using a random character.",
-        "Land a fight with inverted controls. No damage taken.",
-        "Land a level with no UI. No projectiles.",
-        "Play a map with no HUD. With default gear.",
-        "Explore a match without blocking. On your hardest difficulty.",
-        "Win a stealth mission undetected. No projectiles.",
-        "Complete an entire game without healing. Without healing items.",
-        "Score a level with no UI. No damage taken.",
-        "Play a match without blocking. Using a random character.",
-        "Perform a map with no HUD. Without dying.",
-        "Complete a match with your least favorite character. On your hardest difficulty.",
-        "Play a match without blocking. On your hardest difficulty.",
-        "Score a map with no HUD. No projectiles.",
-        "Land a round under 10% HP. No damage taken.",
-        "Beat a level with no UI. Without dying.",
-        "Score a stealth mission undetected. On your hardest difficulty.",
-        "Survive a match without blocking. Without dying.",
-        "Complete a fight with inverted controls. Without dying.",
-        "Beat a combo with no special moves. No damage taken.",
-        "Win a combo with no special moves. With default gear.",
-        "Upload a combo with no special moves. While staying hidden.",
-        "Win an entire game without healing. No sound.",
-        "Survive a match without blocking. No damage taken.",
-        "Beat a level with no UI. No damage taken.",
-        "Play a level with no UI. Without dying.",
-        "Survive a stealth mission undetected. With default gear.",
-        "Survive a fight with inverted controls. On your hardest difficulty.",
-        "Score an entire game without healing. While staying hidden.",
-        "Upload a combo with no special moves. Using a random character.",
-        "Score a match without blocking. No sound.",
-        "Perform a match without blocking. Without healing items.",
-        "Complete a level with no UI. No power-ups.",
-        "Win a stealth mission undetected. Without dying.",
-        "Explore a fight with inverted controls. With default gear.",
-        "Play a match without blocking. Without healing items.",
-        "Play a round under 10% HP. No sound.",
-        "Land a boss using only melee attacks. On your hardest difficulty.",
-        "Perform a level with no UI. While staying hidden.",
-        "Score a combo with no special moves. Using a random character.",
-        "Complete an entire game without healing. Using a random character.",
-        "Survive a fight with inverted controls. With default gear.",
-        "Upload a match with your least favorite character. Without dying.",
-        "Survive a match with your least favorite character. No damage taken.",
-        "Explore a fight with inverted controls. Without dying.",
-        "Complete a map with no HUD. Without healing items.",
-        "Survive a level with no UI. No sound.",
-        "Land a stealth mission undetected. No sound.",
-        "Win a stealth mission undetected. No damage taken.",
-        "Explore a match with your least favorite character. No projectiles.",
-        "Score a match with your least favorite character. While staying hidden.",
-        "Survive a round under 10% HP. Using a random character.",
-        "Upload a match without blocking. No projectiles.",
-        "Complete a match without blocking. No sound.",
-        "Score a round under 10% HP. No sound.",
-        "Beat a map with no HUD. Using a random character.",
-        "Play a level with no UI. Using a random character.",
-        "Upload a combo with no special moves. On your hardest difficulty.",
-        "Explore a stealth mission undetected. On your hardest difficulty.",
-        "Upload a stealth mission undetected. No projectiles.",
-        "Explore an entire game without healing. No projectiles.",
-        "Upload a match without blocking. On your hardest difficulty.",
-        "Survive a stealth mission undetected. On your hardest difficulty.",
-        "Win an entire game without healing. While staying hidden.",
-        "Win a match with your least favorite character. Without healing items.",
-        "Upload a level with no UI. With default gear.",
-        "Explore a match with your least favorite character. Without healing items.",
-        "Score a fight with inverted controls. No power-ups.",
-        "Perform a map with no HUD. Using a random character.",
-        "Upload an entire game without healing. Without healing items.",
-        "Win a stealth mission undetected. Using a random character.",
-        "Beat a fight with inverted controls. Using a random character.",
-        "Win a boss using only melee attacks. While staying hidden.",
-        "Upload a round under 10% HP. Using a random character.",
-        "Complete a stealth mission undetected. Using a random character.",
-        "Explore a fight with inverted controls. No projectiles.",
-        "Play a fight with inverted controls. With default gear.",
-        "Play a match without blocking. No damage taken.",
-        "Explore an entire game without healing. While staying hidden.",
-        "Survive a map with no HUD. Without dying.",
-        "Upload a match without blocking. While staying hidden.",
-        "Perform a fight with inverted controls. No power-ups.",
-        "Land a match with your least favorite character. Without dying.",
-        "Perform a level with no UI. No projectiles.",
-        "Beat a stealth mission undetected. While staying hidden.",
-        "Play a round under 10% HP. With default gear.",
-        "Win a level with no UI. No power-ups.",
-        "Win a match with your least favorite character. No projectiles.",
-        "Upload a combo with no special moves. No power-ups.",
-        "Land a match without blocking. While staying hidden.",
-        "Upload a map with no HUD. Without dying.",
-        "Beat a stealth mission undetected. No damage taken.",
-        "Score a map with no HUD. With default gear.",
-        "Complete a match without blocking. No projectiles.",
-        "Beat a match with your least favorite character. Without healing items.",
-        "Complete a map with no HUD. Using a random character.",
-        "Complete a match with your least favorite character. Without dying.",
-        "Survive a combo with no special moves. No damage taken.",
-        "Play a map with no HUD. While staying hidden.",
-        "Play a stealth mission undetected. On your hardest difficulty.",
-        "Upload a fight with inverted controls. Without healing items.",
-        "Upload a match with your least favorite character. Using a random character.",
-        "Explore an entire game without healing. No power-ups.",
-        "Score a boss using only melee attacks. No damage taken.",
-        "Perform a boss using only melee attacks. On your hardest difficulty.",
-        "Win a level with no UI. Using a random character.",
-        "Score a level with no UI. Without healing items.",
-        "Land a match with your least favorite character. No damage taken.",
-        "Land a round under 10% HP. Without healing items.",
-        "Score an entire game without healing. No power-ups.",
-        "Land a level with no UI. Without dying.",
-        "Beat a match with your least favorite character. With default gear.",
-        "Perform a combo with no special moves. Without healing items.",
-        "Score an entire game without healing. With default gear.",
-        "Survive a boss using only melee attacks. While staying hidden.",
-        "Win a match without blocking. No projectiles.",
-        "Beat a stealth mission undetected. No sound.",
-        "Survive a round under 10% HP. On your hardest difficulty.",
-        "Survive a boss using only melee attacks. No sound.",
-        "Play a round under 10% HP. Without healing items.",
-        "Explore a match without blocking. No power-ups.",
-        "Score a round under 10% HP. Using a random character.",
-        "Complete a boss using only melee attacks. No power-ups.",
-        "Win a stealth mission undetected. While staying hidden.",
-        "Perform a map with no HUD. No projectiles.",
-        "Win an entire game without healing. With default gear.",
-        "Upload a stealth mission undetected. While staying hidden.",
-        "Land a level with no UI. No damage taken.",
-        "Complete a level with no UI. Without dying.",
-        "Beat a match with your least favorite character. No power-ups.",
-        "Survive a combo with no special moves. No power-ups.",
-        "Explore a boss using only melee attacks. No power-ups.",
-        "Upload a fight with inverted controls. No damage taken.",
-        "Survive a stealth mission undetected. No sound.",
-        "Perform a boss using only melee attacks. Without dying.",
-        "Upload a fight with inverted controls. No power-ups.",
-        "Upload a round under 10% HP. Without dying.",
-        "Beat an entire game without healing. Using a random character.",
-        "Complete a combo with no special moves. No damage taken.",
-        "Land a boss using only melee attacks. No sound.",
-        "Play a boss using only melee attacks. Without healing items.",
-        "Beat a combo with no special moves. No sound.",
-        "Survive a combo with no special moves. Using a random character.",
-        "Explore an entire game without healing. Without dying.",
-        "Win a level with no UI. On your hardest difficulty.",
-        "Complete a match with your least favorite character. While staying hidden.",
-        "Upload a fight with inverted controls. On your hardest difficulty.",
-        "Survive a fight with inverted controls. Without healing items.",
-        "Land a map with no HUD. With default gear.",
-        "Complete a fight with inverted controls. No sound.",
-        "Complete an entire game without healing. No sound.",
-        "Survive an entire game without healing. Without healing items.",
-        "Upload a map with no HUD. No power-ups.",
-        "Complete a boss using only melee attacks. No projectiles.",
-        "Score a stealth mission undetected. No damage taken.",
-        "Explore a round under 10% HP. While staying hidden.",
-        "Score a stealth mission undetected. Without dying.",
-        "Land a match without blocking. No projectiles.",
-        "Upload a fight with inverted controls. No sound.",
-        "Play a combo with no special moves. On your hardest difficulty.",
-        "Beat a map with no HUD. With default gear.",
-        "Explore an entire game without healing. No damage taken.",
-        "Beat a level with no UI. Using a random character.",
-        "Perform a stealth mission undetected. On your hardest difficulty.",
-        "Survive a match without blocking. Using a random character.",
-        "Win a stealth mission undetected. Without healing items.",
-        "Beat an entire game without healing. On your hardest difficulty.",
-        "Complete a boss using only melee attacks. On your hardest difficulty.",
-        "Survive a map with no HUD. No damage taken.",
-        "Explore a fight with inverted controls. Using a random character.",
-        "Win a fight with inverted controls. Without dying.",
-        "Survive a round under 10% HP. With default gear.",
-        "Survive a map with no HUD. On your hardest difficulty.",
-        "Perform a map with no HUD. With default gear.",
-        "Explore a boss using only melee attacks. With default gear.",
-        "Land an entire game without healing. With default gear.",
-        "Land a stealth mission undetected. With default gear.",
-        "Upload a map with no HUD. Without healing items.",
-        "Explore a combo with no special moves. No sound.",
-        "Play a match with your least favorite character. With default gear.",
-        "Complete a boss using only melee attacks. Without healing items.",
-        "Land a round under 10% HP. On your hardest difficulty.",
-        "Play a map with no HUD. No projectiles.",
-        "Complete a match without blocking. No damage taken.",
-        "Play a map with no HUD. Without dying.",
-        "Play a stealth mission undetected. With default gear.",
-        "Perform a stealth mission undetected. While staying hidden.",
-        "Perform a match with your least favorite character. No damage taken.",
-        "Land a match without blocking. Without healing items.",
-        "Score a stealth mission undetected. While staying hidden.",
-        "Complete a boss using only melee attacks. With default gear.",
-        "Survive a match with your least favorite character. No projectiles.",
-        "Score a match without blocking. With default gear.",
-        "Upload an entire game without healing. On your hardest difficulty.",
-        "Score an entire game without healing. On your hardest difficulty.",
-        "Beat a match without blocking. With default gear.",
-        "Score a level with no UI. With default gear.",
-        "Play a boss using only melee attacks. On your hardest difficulty.",
-        "Upload a level with no UI. No projectiles."
-      ];
-      const today = new Date();
-      const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-      const index = dayOfYear % challenges.length;
-      document.getElementById("challenge-text").textContent = challenges[index];
-    });
-  </script>
-    <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+      <div class="box">
+        <h2>Game Guides</h2>
+        <p>Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
+        <ul>
+          <li><a href="boss-fight-strategies.html" style="color: #e60023;">Boss Fight Strategies</a></li>
+          <li><a href="gameplay-tutorials.html" style="color: #e60023;">Gameplay Tutorials</a></li>
+          <li><a href="community-gameplay-videos.html" style="color: #e60023;">Enjoyable Gameplay Videos from the Community</a></li>
+          <li><a href="combo-guides.html" style="color: #e60023;">Combo Guides for Fighting Games</a></li>
+          <li><a href="trophy-tips.html" style="color: #e60023;">Tips for Acquiring Trophies and Achievements</a></li>
+          <li><a href="guide-discussion.html" style="color: #e60023;">Guide Discussion & Community Chat</a></li>
+        </ul>
+      </div>
 
-const firebaseConfig = {
-  apiKey: "L6ApfdntEZb7jldKPaS071ZeLe23",
-  authDomain: "gamesync-union.firebaseapp.com",
-  projectId: "gamesync-union",
-  storageBucket: "gamesync-union.appspot.com",
-  messagingSenderId: "488911705365",
-  appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-  measurementId: "G-CP48EXW1EV"
-};
+      <div class="box">
+        <h2>Your Trophies</h2>
+        <p>[View trophies and compare achievements]</p>
+      </div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+      <div class="box">
+        <h2>User Uploads</h2>
+        <p>[Uploaded game videos and highlight reels]</p>
+      </div>
 
-onAuthStateChanged(auth, async (user) => {
-  const loginBtn = document.getElementById("loginBtn");
-  if (user && loginBtn) {
-    loginBtn.style.display = "none";
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      document.getElementById("fav-games").textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-      document.getElementById("games-played").textContent = `🎮 Games Played: ${data.gamesPlayed || "N/A"}`;
-      document.getElementById("trophy-stats").textContent = `🏆 Trophy Stats: ${data.trophyCount || "N/A"}`;
+      <div class="box">
+        <h2>Art Showcase</h2>
+        <p>[In-game screenshots, posters, and original artwork]</p>
+      </div>
+    </main>
+
+    <aside>
+    <div class="box" id="profile-box">
+      <h2>Your Profile</h2>
+        <p id="fav-games">🎯 Favorite Games</p>
+        <p id="games-played">🎮 Games Played</p>
+        <p id="trophy-stats">🏆 Trophy Stats</p>
+    </div>
+
+
+
+      <div class="box">
+        <h2>Upcoming Games & Events</h2>
+        <p>Stay updated on everything new in gaming:</p>
+        <ul>
+          <li>🆕 Recently Announced Games</li>
+          <li>🚀 Upcoming Game Releases</li>
+          <li>📆 Countdown to Launch & Events</li>
+          <li>🛠 Major Patch Notes & Updates</li>
+          <li>🎮 Gaming Conventions & Streams</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+          <a href="#" style="color: #e60023;">Learn more</a>
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="platform-icons">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  </footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "488911705365",
+    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+    measurementId: "G-CP48EXW1EV"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
+  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
+  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
+  const signInBtn = document.querySelector('#auth-box .btn');
+
+  signInBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      loadProfile(uid);
+      alert("Signed in successfully");
+    } catch (err) {
+      alert("Login failed: " + err.message);
+    }
+  });
+
+ async function loadProfile(uid) {
+  const snap = await getDoc(doc(db, "users", uid));
+  if (snap.exists()) {
+    const data = snap.data();
+    console.log("User data:", data);
+
+    const profileBox = document.getElementById("profile-box");
+
+    // ✅ Insert username at the top of the profile card
+    const usernameEl = document.createElement("p");
+    usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+    usernameEl.style.fontWeight = "bold";
+    usernameEl.style.fontSize = "1rem";
+    usernameEl.style.marginBottom = "0.5rem";
+    profileBox.prepend(usernameEl);
+
+    const favGamesEl = document.getElementById("fav-games");
+    const gamesPlayedEl = document.getElementById("games-played");
+    const trophyStatsEl = document.getElementById("trophy-stats");
+
+    // Create image row if it doesn't exist
+    let imageRow = document.getElementById("fav-images");
+    if (!imageRow) {
+      imageRow = document.createElement("div");
+      imageRow.id = "fav-images";
+      imageRow.style.display = "flex";
+      imageRow.style.flexWrap = "wrap";
+      imageRow.style.gap = "0.5rem";
+      imageRow.style.marginTop = "0.8rem";
+      imageRow.style.justifyContent = "center";
+      profileBox.appendChild(imageRow);
+    }
+    imageRow.innerHTML = "";
+
+    favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+    gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+    trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+
+    if (Array.isArray(data.favoriteImages)) {
+      data.favoriteImages.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "Game cover";
+        img.style.height = "60px";
+        img.style.borderRadius = "6px";
+        img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+        img.style.transition = "transform 0.3s";
+        img.onmouseover = () => img.style.transform = "scale(1.05)";
+        img.onmouseout = () => img.style.transform = "scale(1)";
+        imageRow.appendChild(img);
+      });
+    }
+  } else {
+    console.warn("User profile data not found.");
+  }
+}
+
+
+
+  onAuthStateChanged(auth, (user) => {
+  const currentPath = window.location.pathname.toLowerCase();
+  const isLoginPage = currentPath.includes("account_creation.html");
+
+  if (user) {
+    loadProfile(user.uid);
+    document.getElementById("auth-box").style.display = "none"; // Hide login box
+  } else {
+    document.getElementById("auth-box").style.display = "block"; // Show login box
+    // Don’t redirect unless on a page that *requires* login
+    if (!isLoginPage && currentPath !== "/index.html") {
+      alert("Please log in to access GameSync Union.");
+      window.location.href = "Account_Creation.html";
     }
   }
 });
+
+
+
+  const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await auth.signOut();
+      alert("You have been logged out.");
+      window.location.href = "Account_Creation.html"; // redirect to login or sign-up page
+    } catch (err) {
+      alert("Error signing out: " + err.message);
+    }
+  });
+}
+
 </script>
+
 
 </body>
 </html>
