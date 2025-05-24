@@ -145,6 +145,32 @@
       background: var(--accent-light);
       transform: translateY(-2px);
     }
+    .slider {
+      margin-top: 3rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .slider-item {
+      flex: 1 1 180px;
+      max-width: 240px;
+      height: 140px;
+      background: #2a2a2a;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-family: 'Montserrat', sans-serif;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      transition: transform 0.3s;
+    }
+    .slider-item:hover {
+      transform: scale(1.05);
+      background-color: #333;
+    }
     #user-card {
       display: none;
       background: var(--black-faded);
@@ -171,32 +197,6 @@
       height: 60px;
       border-radius: 6px;
       box-shadow: 0 0 6px rgba(255,255,255,0.1);
-    }
-    .slider {
-      margin-top: 3rem;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-    }
-    .slider-item {
-      flex: 1 1 180px;
-      max-width: 240px;
-      height: 140px;
-      background: #2a2a2a;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-family: 'Montserrat', sans-serif;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
-      transition: transform 0.3s;
-    }
-    .slider-item:hover {
-      transform: scale(1.05);
-      background-color: #333;
     }
     footer {
       background-color: var(--black-faded);
@@ -235,7 +235,7 @@
   </style>
 </head>
 <body>
-<header>
+  <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GameSync Union</div>
@@ -274,67 +274,6 @@
       <div class="slider-item">🎨 Fan Showcase</div>
     </div>
   </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AmUjlBCM31e66w8OQ2lD",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        alert("You have been logged out.");
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
-    });
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        document.getElementById("user-card").style.display = "block";
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) {
-          const data = snap.data();
-          document.getElementById("user-name").textContent = data.username || "N/A";
-          document.getElementById("trophy-count").textContent = data.trophyCount || "0";
-          document.getElementById("games-played").textContent = data.gamesPlayed || "0";
-          const imageContainer = document.getElementById("favorite-images");
-          imageContainer.innerHTML = "";
-          if (Array.isArray(data.favoriteImages)) {
-            data.favoriteImages.slice(0, 3).forEach(url => {
-              const img = document.createElement("img");
-              img.src = url;
-              img.alt = "Favorite Game";
-              imageContainer.appendChild(img);
-            });
-          }
-        }
-      } else {
-        document.getElementById("user-card").style.display = "none";
-      }
-    });
-  </script>
 
   <footer>
     <div class="footer-content">
