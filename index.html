@@ -198,6 +198,7 @@
 <a href="uploads.html">Community Uploads</a>
 </nav>
 <button class="btn" id="logoutBtn" style="max-width: 120px; background-color: #777;">Log Out</button>
+<a href="Account_Creation.html" class="btn" id="loginBtn" style="max-width: 140px; background-color: #444;">Login / Sign Up</a>
 </header>
 <div class="main-container">
 <aside>
@@ -655,5 +656,39 @@
       document.getElementById("challenge-text").textContent = challenges[index];
     });
   </script>
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "L6ApfdntEZb7jldKPaS071ZeLe23",
+  authDomain: "gamesync-union.firebaseapp.com",
+  projectId: "gamesync-union",
+  storageBucket: "gamesync-union.appspot.com",
+  messagingSenderId: "488911705365",
+  appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+  measurementId: "G-CP48EXW1EV"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  const loginBtn = document.getElementById("loginBtn");
+  if (user && loginBtn) {
+    loginBtn.style.display = "none";
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      document.getElementById("fav-games").textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+      document.getElementById("games-played").textContent = `🎮 Games Played: ${data.gamesPlayed || "N/A"}`;
+      document.getElementById("trophy-stats").textContent = `🏆 Trophy Stats: ${data.trophyCount || "N/A"}`;
+    }
+  }
+});
+</script>
+
 </body>
 </html>
