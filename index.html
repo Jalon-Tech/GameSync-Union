@@ -189,8 +189,7 @@
   </style>
 </head>
 <body>
-  <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
-    <header>
+  <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
@@ -210,20 +209,16 @@
     <aside>
       <div class="box" id="auth-box">
         <h2>Create Account or Sign In</h2>
-        <input type="text" class="input-field" placeholder="Email" />
-        <input type="text" class="input-field" placeholder="Username" />
-        <input type="password" class="input-field" placeholder="Password" />
-        <button class="btn">Sign In</button>
-        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.HTML" style="color: #e60023;">Create Account</a></p>
-      </div>
-      <div class="box">
-        <h2>Recent Uploads</h2>
-        <p>[Your gameplay clips will show up here]</p>
+        <input type="text" class="input-field" placeholder="Email" id="email" />
+        <input type="text" class="input-field" placeholder="Username" id="username" />
+        <input type="password" class="input-field" placeholder="Password" id="password" />
+        <button class="btn" id="signInBtn">Sign In</button>
+        <button class="btn" id="deleteAccountBtn" style="background-color: #444; margin-top: 0.6rem;">Delete Account</button>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
     </aside>
-
     <main>
-      <div class="box" style="text-align:center;">
+       <div class="box" style="text-align:center;">
         <h2>Welcome to GameSync Union</h2>
         <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
         <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
@@ -277,37 +272,10 @@
         <p>[In-game screenshots, posters, and original artwork]</p>
       </div>
     </main>
-
-    <aside>
-    <div class="box" id="profile-box">
-      <h2>Your Profile</h2>
-        <p id="fav-games">🎯 Favorite Games</p>
-        <p id="games-played">🎮 Games Played</p>
-        <p id="trophy-stats">🏆 Trophy Stats</p>
-    </div>
-
-
-
-      <div class="box">
-        <h2>Upcoming Games & Events</h2>
-        <p>Stay updated on everything new in gaming:</p>
-        <ul>
-          <li>🆕 Recently Announced Games</li>
-          <li>🚀 Upcoming Game Releases</li>
-          <li>📆 Countdown to Launch & Events</li>
-          <li>🛠 Major Patch Notes & Updates</li>
-          <li>🎮 Gaming Conventions & Streams</li>
-        </ul>
-        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
-          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
-          <a href="#" style="color: #e60023;">Learn more</a>
-        </p>
-      </div>
-    </aside>
   </div>
 
   <footer>
-    <div class="platform-icons">
+     <div class="platform-icons">
       <img src="PS_Logo.png" alt="PlayStation" />
       <img src="Xbox.png" alt="Xbox" />
       <img src="Steam.png" alt="PC" />
@@ -316,147 +284,90 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    setDoc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      deleteUser
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-    authDomain: "gamesync-union.firebaseapp.com",
-    projectId: "gamesync-union",
-    storageBucket: "gamesync-union.appspot.com",
-    messagingSenderId: "488911705365",
-    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-    measurementId: "G-CP48EXW1EV"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
-  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
-  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
-  const signInBtn = document.querySelector('#auth-box .btn');
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const usernameInput = document.getElementById("username");
+    const signInBtn = document.getElementById("signInBtn");
+    const deleteAccountBtn = document.getElementById("deleteAccountBtn");
 
-  signInBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-      loadProfile(uid);
-      alert("Signed in successfully");
-    } catch (err) {
-      alert("Login failed: " + err.message);
+    signInBtn.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      try {
+        const userCred = await signInWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+        loadProfile(uid);
+        alert("Signed in successfully");
+      } catch (err) {
+        alert("Login failed: " + err.message);
+      }
+    });
+
+    deleteAccountBtn.addEventListener("click", async () => {
+      const confirmation = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+      if (!confirmation) return;
+
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await deleteDoc(doc(db, "users", user.uid));
+          await deleteUser(user);
+          alert("Your account has been fully deleted.");
+          window.location.href = "index.html";
+        } catch (err) {
+          alert("Error deleting account: " + err.message);
+        }
+      } else {
+        alert("No user is currently signed in.");
+      }
+    });
+
+    async function loadProfile(uid) {
+      const snap = await getDoc(doc(db, "users", uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        // Populate profile UI here
+      }
     }
-  });
 
- async function loadProfile(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  if (snap.exists()) {
-    const data = snap.data();
-    console.log("User data:", data);
-
-    const profileBox = document.getElementById("profile-box");
-
-    // ✅ Insert username at the top of the profile card
-    const usernameEl = document.createElement("p");
-    usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
-    usernameEl.style.fontWeight = "bold";
-    usernameEl.style.fontSize = "1rem";
-    usernameEl.style.marginBottom = "0.5rem";
-    profileBox.prepend(usernameEl);
-
-    const favGamesEl = document.getElementById("fav-games");
-    const gamesPlayedEl = document.getElementById("games-played");
-    const trophyStatsEl = document.getElementById("trophy-stats");
-
-    // Create image row if it doesn't exist
-    let imageRow = document.getElementById("fav-images");
-    if (!imageRow) {
-      imageRow = document.createElement("div");
-      imageRow.id = "fav-images";
-      imageRow.style.display = "flex";
-      imageRow.style.flexWrap = "wrap";
-      imageRow.style.gap = "0.5rem";
-      imageRow.style.marginTop = "0.8rem";
-      imageRow.style.justifyContent = "center";
-      profileBox.appendChild(imageRow);
-    }
-    imageRow.innerHTML = "";
-
-    favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-    gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-    trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
-
-    if (Array.isArray(data.favoriteImages)) {
-      data.favoriteImages.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.alt = "Game cover";
-        img.style.height = "60px";
-        img.style.borderRadius = "6px";
-        img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
-        img.style.transition = "transform 0.3s";
-        img.onmouseover = () => img.style.transform = "scale(1.05)";
-        img.onmouseout = () => img.style.transform = "scale(1)";
-        imageRow.appendChild(img);
-      });
-    }
-  } else {
-    console.warn("User profile data not found.");
-  }
-}
-
-
-
-  onAuthStateChanged(auth, (user) => {
-  const currentPath = window.location.pathname.toLowerCase();
-  const isLoginPage = currentPath.includes("account_creation.html");
-
-  if (user) {
-    loadProfile(user.uid);
-    document.getElementById("auth-box").style.display = "none"; // Hide login box
-  } else {
-    document.getElementById("auth-box").style.display = "block"; // Show login box
-    // Don’t redirect unless on a page that *requires* login
-    if (!isLoginPage && currentPath !== "/index.html") {
-      alert("Please log in to access GameSync Union.");
-      window.location.href = "Account_Creation.html";
-    }
-  }
-});
-
-
-
-  const logoutBtn = document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    try {
-      await auth.signOut();
-      alert("You have been logged out.");
-      window.location.href = "Account_Creation.html"; // redirect to login or sign-up page
-    } catch (err) {
-      alert("Error signing out: " + err.message);
-    }
-  });
-}
-
-</script>
-
-
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loadProfile(user.uid);
+        document.getElementById("auth-box").style.display = "none";
+      } else {
+        document.getElementById("auth-box").style.display = "block";
+      }
+    });
+  </script>
 </body>
 </html>
