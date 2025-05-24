@@ -76,6 +76,15 @@
     nav a:hover::after {
       width: 100%;
     }
+    #logoutBtn {
+      background-color: #777;
+      padding: 0.6rem 1rem;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
     .main-container {
       padding: 3rem 2rem;
       text-align: center;
@@ -86,7 +95,7 @@
     }
     .hero {
       padding: 4rem 2rem;
-      background: #222 url('banner_bg.jpg') center/cover no-repeat;
+      background: url('banner_bg.jpg') center/cover no-repeat;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       animation: fadeIn 1.2s ease-in-out;
@@ -129,6 +138,8 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s, transform 0.3s;
+      display: block;
+      margin: 0.5rem auto;
     }
     .hero .btn:hover {
       background: var(--accent-light);
@@ -209,13 +220,15 @@
       <a href="#">Uploads</a>
       <a href="#">Community</a>
     </nav>
+    <button id="logoutBtn">Log Out</button>
   </header>
 
   <main class="main-container">
     <section class="hero">
       <h1>Welcome to GameSync Union</h1>
       <p>No pause. No kink. Just raw sync — the gaming hub where real players link.</p>
-      <button class="btn" onclick="document.getElementById('auth-box')?.scrollIntoView({ behavior: 'smooth' })">Sign In</button>
+      <button class="btn" id="scrollToAuth">Sign In</button>
+      <button class="btn" onclick="window.location.href='Account_Creation.html'">Sign Up</button>
     </section>
 
     <div class="slider">
@@ -242,6 +255,7 @@
     import {
       getAuth,
       onAuthStateChanged,
+      signInWithEmailAndPassword,
       signOut
     } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
@@ -257,7 +271,19 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Example Auth State Observer
+    document.getElementById("scrollToAuth")?.addEventListener("click", () => {
+      document.getElementById("auth-box")?.scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        alert("You have been logged out.");
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User signed in:", user.email);
