@@ -1,14 +1,15 @@
+
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GameSync Union</title>
-  <link rel="icon" href="GSU_Logo.png" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-  <style>
-    /* CSS REMAINS UNCHANGED */
-      :root {
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GameSync Union</title>
+<link href="GSU_Logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&amp;family=Roboto&amp;display=swap" rel="stylesheet">
+<style>
+    :root {
       --gsu-red: #e60023;
       --black-main: #191818;
       --black-faded: #1F1F1F;
@@ -83,12 +84,6 @@
       transform: translateY(-6px) scale(1.01);
       box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
       border: 1px solid var(--gsu-red);
-    }
-    .box li {
-      transition: transform 0.3s ease;
-    }
-    .box:hover li {
-      transform: translateX(6px);
     }
     .box h2 {
       font-family: 'Montserrat', sans-serif;
@@ -187,277 +182,107 @@
       }
     }
   </style>
-</head>
+</link></head>
 <body>
-  <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
-    <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text">GAMESYNC UNION</div>
-    </div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">Trophies/Achievements</a>
-      <a href="art.html">Art</a>
-      <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">Community Uploads</a>
-    </nav>
-     <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
-  </header>
-
- <div class="box" id="daily-challenge">
-  <h2>🎮 Challenge of the Day</h2>
-  <p id="challenge-text" style="margin-top: 0.6rem;"></p>
-  <p style="margin-top: 0.6rem; font-size: 0.9rem; color: #ccc;">
-    Share your completion with the community in the uploads section!
-  </p>
+<header>
+<div class="logo">
+<img alt="GSU Logo" src="GSU_LOGO.png"/>
+<div class="logo-text">GAMESYNC UNION</div>
+</div>
+<nav>
+<a href="index.html">Home</a>
+<a href="games.html">Games</a>
+<a href="trophies.html">Trophies/Achievements</a>
+<a href="art.html">Art</a>
+<a href="game-guides.html">Guides</a>
+<a href="uploads.html">Community Uploads</a>
+</nav>
+<button class="btn" id="logoutBtn" style="max-width: 120px; background-color: #777;">Log Out</button>
+</header>
+<div class="main-container">
+<aside>
+<div class="box" id="daily-challenge">
+<h2>🎮 Challenge of the Day</h2>
+<p id="challenge-text" style="margin-top: 0.6rem;"></p>
+<p style="margin-top: 0.6rem; font-size: 0.9rem; color: #ccc;">
+          Share your completion with the community in the uploads section!
+        </p>
 </div>
 
-      
-      <div class="box">
-        <h2>Recent Uploads</h2>
-        <p>[Your gameplay clips will show up here]</p>
-      </div>
-    </aside>
+<div class="box">
+<h2>Recent Uploads</h2>
+<p>[Your gameplay clips will show up here]</p>
+</div>
+</aside>
+<main>
+<div class="box" style="text-align:center;">
+<h2>Welcome to GameSync Union</h2>
+<p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
+<a class="btn" href="Account_Creation.html" style="display:inline-block; text-align:center;">Get Started</a>
+</div>
+<input class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." type="text"/>
+<div class="box">
 
-    <main>
-      <div class="box" style="text-align:center;">
-        <h2>Welcome to GameSync Union</h2>
-        <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
-        <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
-      </div>
-
-      <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
-
-      <div class="box">
-        <h2>Community Highlights</h2>
-        <div class="section-flex">
-  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+<h2>Community Highlights</h2>
+<div class="section-flex">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; color: white; padding: 1rem; border-radius: 8px;">
     <h3 style="text-align: center;">🔥 Trending Topics</h3>
-    <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+    <ul id="trending-list" style="list-style: none; padding-left: 0;"></ul>
   </div>
-  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; color: white; padding: 1rem; border-radius: 8px;">
     <h3 style="text-align: center;">📹 Latest Uploads</h3>
-    <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+    <ul id="uploads-list" style="list-style: none; padding-left: 0;"></ul>
   </div>
-  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; color: white; padding: 1rem; border-radius: 8px;">
     <h3 style="text-align: center;">🎨 Fan Art</h3>
     <p>[Showcase user-submitted art here]</p>
   </div>
 </div>
-      </div>
 
-      <div class="box">
-        <h2>Game Guides</h2>
-        <p>Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
-        <ul>
-          <li><a href="boss-fight-strategies.html" style="color: #e60023;">Boss Fight Strategies</a></li>
-          <li><a href="gameplay-tutorials.html" style="color: #e60023;">Gameplay Tutorials</a></li>
-          <li><a href="community-gameplay-videos.html" style="color: #e60023;">Enjoyable Gameplay Videos from the Community</a></li>
-          <li><a href="combo-guides.html" style="color: #e60023;">Combo Guides for Fighting Games</a></li>
-          <li><a href="trophy-tips.html" style="color: #e60023;">Tips for Acquiring Trophies and Achievements</a></li>
-          <li><a href="guide-discussion.html" style="color: #e60023;">Guide Discussion & Community Chat</a></li>
-        </ul>
-      </div>
-
-      <div class="box">
-        <h2>Your Trophies</h2>
-        <p>[View trophies and compare achievements]</p>
-      </div>
-
-      <div class="box">
-        <h2>User Uploads</h2>
-        <p>[Uploaded game videos and highlight reels]</p>
-      </div>
-
-      <div class="box">
-        <h2>Art Showcase</h2>
-        <p>[In-game screenshots, posters, and original artwork]</p>
-      </div>
-    </main>
-
-    <aside>
-    <div class="box" id="profile-box">
-      <h2>Your Profile</h2>
-        <p id="fav-games">🎯 Favorite Games</p>
-        <p id="games-played">🎮 Games Played</p>
-        <p id="trophy-stats">🏆 Trophy Stats</p>
-    </div>
-
-
-
-      <div class="box">
-        <h2>Upcoming Games & Events</h2>
-        <p>Stay updated on everything new in gaming:</p>
-        <ul>
-          <li>🆕 Recently Announced Games</li>
-          <li>🚀 Upcoming Game Releases</li>
-          <li>📆 Countdown to Launch & Events</li>
-          <li>🛠 Major Patch Notes & Updates</li>
-          <li>🎮 Gaming Conventions & Streams</li>
-        </ul>
-        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
-          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
-          <a href="#" style="color: #e60023;">Learn more</a>
-        </p>
-      </div>
-    </aside>
-  </div>
-
-  <footer>
-    <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
-    </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-  </footer>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    setDoc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "L6ApfdntEZb7jldKPaS071ZeLe23",
-    authDomain: "gamesync-union.firebaseapp.com",
-    projectId: "gamesync-union",
-    storageBucket: "gamesync-union.appspot.com",
-    messagingSenderId: "488911705365",
-    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-    measurementId: "G-CP48EXW1EV"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
-  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
-  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
-  const signInBtn = document.querySelector('#auth-box .btn');
-
-  signInBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-      loadProfile(uid);
-      alert("Signed in successfully");
-    } catch (err) {
-      alert("Login failed: " + err.message);
-    }
-  });
-
- async function loadProfile(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  if (snap.exists()) {
-    const data = snap.data();
-    console.log("User data:", data);
-
-    const profileBox = document.getElementById("profile-box");
-
-    // ✅ Insert username at the top of the profile card
-    const usernameEl = document.createElement("p");
-    usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
-    usernameEl.style.fontWeight = "bold";
-    usernameEl.style.fontSize = "1rem";
-    usernameEl.style.marginBottom = "0.5rem";
-    profileBox.prepend(usernameEl);
-
-    const favGamesEl = document.getElementById("fav-games");
-    const gamesPlayedEl = document.getElementById("games-played");
-    const trophyStatsEl = document.getElementById("trophy-stats");
-
-    // Create image row if it doesn't exist
-    let imageRow = document.getElementById("fav-images");
-    if (!imageRow) {
-      imageRow = document.createElement("div");
-      imageRow.id = "fav-images";
-      imageRow.style.display = "flex";
-      imageRow.style.flexWrap = "wrap";
-      imageRow.style.gap = "0.5rem";
-      imageRow.style.marginTop = "0.8rem";
-      imageRow.style.justifyContent = "center";
-      profileBox.appendChild(imageRow);
-    }
-    imageRow.innerHTML = "";
-
-    favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-    gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-    trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
-
-    if (Array.isArray(data.favoriteImages)) {
-      data.favoriteImages.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.alt = "Game cover";
-        img.style.height = "60px";
-        img.style.borderRadius = "6px";
-        img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
-        img.style.transition = "transform 0.3s";
-        img.onmouseover = () => img.style.transform = "scale(1.05)";
-        img.onmouseout = () => img.style.transform = "scale(1)";
-        imageRow.appendChild(img);
-      });
-    }
-  } else {
-    console.warn("User profile data not found.");
-  }
-}
-
-
-
-  onAuthStateChanged(auth, (user) => {
-  const currentPath = window.location.pathname.toLowerCase();
-  const isLoginPage = currentPath.includes("account_creation.html");
-
-  if (user) {
-    loadProfile(user.uid);
-    document.getElementById("auth-box").style.display = "none"; // Hide login box
-  } else {
-    document.getElementById("auth-box").style.display = "block"; // Show login box
-    // Don’t redirect unless on a page that *requires* login
-    if (!isLoginPage && currentPath !== "/index.html") {
-      alert("Please log in to access GameSync Union.");
-      window.location.href = "Account_Creation.html";
-    }
-  }
-});
-
-
-
-  const logoutBtn = document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    try {
-      await auth.signOut();
-      alert("You have been logged out.");
-      window.location.href = "Account_Creation.html"; // redirect to login or sign-up page
-    } catch (err) {
-      alert("Error signing out: " + err.message);
-    }
-  });
-}
-
-</script>
-
+</div>
+<div class="box">
+<h2>Game Guides</h2>
+<ul>
+<li><a href="boss-fight-strategies.html" style="color: #e60023;">Boss Fight Strategies</a></li>
+<li><a href="gameplay-tutorials.html" style="color: #e60023;">Gameplay Tutorials</a></li>
+<li><a href="community-gameplay-videos.html" style="color: #e60023;">Gameplay Videos</a></li>
+<li><a href="combo-guides.html" style="color: #e60023;">Combo Guides</a></li>
+<li><a href="trophy-tips.html" style="color: #e60023;">Trophy Tips</a></li>
+<li><a href="guide-discussion.html" style="color: #e60023;">Discussion &amp; Chat</a></li>
+</ul>
+</div>
+</main>
+<aside>
+<div class="box" id="profile-box">
+<h2>Your Profile</h2>
+<p id="fav-games">🎯 Favorite Games</p>
+<p id="games-played">🎮 Games Played</p>
+<p id="trophy-stats">🏆 Trophy Stats</p>
+</div>
+<div class="box">
+<h2>Upcoming Games &amp; Events</h2>
+<ul>
+<li>🆕 Recently Announced</li>
+<li>🚀 Game Releases</li>
+<li>📆 Launch Countdowns</li>
+<li>🛠 Patch Notes</li>
+<li>🎮 Conventions &amp; Streams</li>
+</ul>
+</div>
+</aside>
+</div>
+<footer>
+<div class="platform-icons">
+<img alt="PlayStation" src="PS_Logo.png"/>
+<img alt="Xbox" src="Xbox.png"/>
+<img alt="Steam" src="Steam.png"/>
+<img alt="Nintendo Switch" src="Switch.png"/>
+</div>
+<p>© 2025 GameSync Union. Built for gamers, by gamers.</p>
+</footer>
 <script>
-  const challenges = [
+    document.addEventListener("DOMContentLoaded", () => {
+      const challenges = [
         "Beat a boss using only melee attacks. No projectiles.",
         "Play one match with no HUD or UI elements enabled.",
         "Win a game without taking damage.",
@@ -823,19 +648,12 @@ if (logoutBtn) {
         "Score a level with no UI. With default gear.",
         "Play a boss using only melee attacks. On your hardest difficulty.",
         "Upload a level with no UI. No projectiles."
-  ];
-
-  function getDailyChallenge() {
-    const today = new Date();
-    const dayOfYear = Math.floor(
-      (today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24
-    );
-    const index = dayOfYear % challenges.length;
-    return challenges[index];
-  }
-
-  document.getElementById("challenge-text").textContent = getDailyChallenge();
-</script>
-
+      ];
+      const today = new Date();
+      const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+      const index = dayOfYear % challenges.length;
+      document.getElementById("challenge-text").textContent = challenges[index];
+    });
+  </script>
 </body>
 </html>
