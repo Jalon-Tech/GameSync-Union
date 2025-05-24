@@ -214,11 +214,11 @@
       <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">Trophies</a>
-      <a href="uploads.html">Uploads</a>
-      <a href="community-gameplay-videos.html">Community</a>
+      <a href="#">Home</a>
+      <a href="#">Games</a>
+      <a href="#">Trophies</a>
+      <a href="#">Uploads</a>
+      <a href="#">Community</a>
     </nav>
     <button id="logoutBtn">Log Out</button>
   </header>
@@ -227,8 +227,7 @@
     <section class="hero">
       <h1>Welcome to GameSync Union</h1>
       <p>No pause. No kink. Just raw sync — the gaming hub where real players link.</p>
-      <button class="btn" id="scrollToAuth">Sign In</button>
-      <button class="btn" onclick="window.location.href='Account_Creation.html'">Sign Up</button>
+      <button class="btn" onclick="window.location.href='Account_Creation.html'">Sign In / Sign Up</button>
     </section>
 
     <div class="slider">
@@ -255,7 +254,6 @@
     import {
       getAuth,
       onAuthStateChanged,
-      signInWithEmailAndPassword,
       signOut
     } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
@@ -270,10 +268,6 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
-    document.getElementById("scrollToAuth")?.addEventListener("click", () => {
-      document.getElementById("auth-box")?.scrollIntoView({ behavior: "smooth" });
-    });
 
     document.getElementById("logoutBtn")?.addEventListener("click", async () => {
       try {
