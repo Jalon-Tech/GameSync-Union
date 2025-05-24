@@ -286,5 +286,69 @@
       <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
     </div>
   </footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AmUjlBCM31e66w8OQ2lD",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        alert("You have been logged out.");
+        location.reload();
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const card = document.getElementById("user-card");
+        card.style.display = "block";
+
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          document.getElementById("user-name").textContent = data.username || "N/A";
+          document.getElementById("trophy-count").textContent = data.trophyCount || "0";
+          document.getElementById("games-played").textContent = data.gamesPlayed || "0";
+
+          const imageContainer = document.getElementById("favorite-images");
+          imageContainer.innerHTML = "";
+          if (Array.isArray(data.favoriteImages)) {
+            data.favoriteImages.slice(0, 3).forEach(url => {
+              const img = document.createElement("img");
+              img.src = url;
+              img.alt = "Favorite Game";
+              imageContainer.appendChild(img);
+            });
+          }
+        }
+      } else {
+        document.getElementById("user-card").style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>
