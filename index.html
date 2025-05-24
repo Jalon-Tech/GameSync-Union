@@ -171,33 +171,6 @@
       transform: scale(1.05);
       background-color: #333;
     }
-    #user-card {
-      display: none;
-      background: var(--black-faded);
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin: 2rem auto;
-      text-align: center;
-      color: var(--white-text);
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      max-width: 600px;
-    }
-    #user-card h2 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    #favorite-images {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-    #favorite-images img {
-      height: 60px;
-      border-radius: 6px;
-      box-shadow: 0 0 6px rgba(255,255,255,0.1);
-    }
     footer {
       background-color: var(--black-faded);
       color: var(--white-text);
@@ -257,13 +230,13 @@
       <button class="btn" onclick="window.location.href='Account_Creation.html'">Sign Up / Sign In</button>
     </section>
 
-    <div id="user-card">
+    <div class="box" id="profile-box" style="display:none">
       <h2>Your Profile</h2>
-      <p><strong>Username:</strong> <span id="user-name">Loading...</span></p>
-      <p><strong>Trophies:</strong> <span id="trophy-count">0</span></p>
-      <p><strong>Games Played:</strong> <span id="games-played">0</span></p>
-      <p><strong>Favorite Games:</strong></p>
-      <div class="game-images" id="favorite-images"></div>
+      <p id="user-name"></p>
+      <p id="fav-games">🎯 Favorite Games:</p>
+      <p id="games-played">🎮 Games Played:</p>
+      <p id="trophy-stats">🏆 Trophy Stats:</p>
+      <div id="fav-images" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;"></div>
     </div>
 
     <div class="slider">
@@ -286,6 +259,7 @@
       <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
     </div>
   </footer>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import {
@@ -312,41 +286,51 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    document.getElementById("logoutBtn")?.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        alert("You have been logged out.");
-        location.reload();
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
-    });
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+          alert("You have been logged out.");
+          location.reload();
+        } catch (err) {
+          alert("Error signing out: " + err.message);
+        }
+      });
+    }
 
     onAuthStateChanged(auth, async (user) => {
+      const profileBox = document.getElementById("profile-box");
       if (user) {
-        const card = document.getElementById("user-card");
-        card.style.display = "block";
-
+        profileBox.style.display = "block";
         const snap = await getDoc(doc(db, "users", user.uid));
         if (snap.exists()) {
           const data = snap.data();
-          document.getElementById("user-name").textContent = data.username || "N/A";
-          document.getElementById("trophy-count").textContent = data.trophyCount || "0";
-          document.getElementById("games-played").textContent = data.gamesPlayed || "0";
+          document.getElementById("user-name").textContent = `👤 Username: ${data.username || "N/A"}`;
+          document.getElementById("fav-games").textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+          document.getElementById("games-played").textContent = `🎮 Games Played: ${data.gamesPlayed || "0"}`;
+          document.getElementById("trophy-stats").textContent = `🏆 Trophy Stats: ${data.trophyCount || "0"}`;
 
-          const imageContainer = document.getElementById("favorite-images");
-          imageContainer.innerHTML = "";
+          const imageRow = document.getElementById("fav-images");
+          imageRow.innerHTML = "";
           if (Array.isArray(data.favoriteImages)) {
-            data.favoriteImages.slice(0, 3).forEach(url => {
+            data.favoriteImages.forEach(url => {
               const img = document.createElement("img");
               img.src = url;
-              img.alt = "Favorite Game";
-              imageContainer.appendChild(img);
+              img.alt = "Game cover";
+              img.style.height = "60px";
+              img.style.borderRadius = "6px";
+              img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+              img.style.transition = "transform 0.3s";
+              img.onmouseover = () => img.style.transform = "scale(1.05)";
+              img.onmouseout = () => img.style.transform = "scale(1)";
+              imageRow.appendChild(img);
             });
           }
         }
       } else {
-        document.getElementById("user-card").style.display = "none";
+        profileBox.style.display = "none";
       }
     });
   </script>
