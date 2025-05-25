@@ -392,15 +392,23 @@ window.addFriend = addFriend;
   <script>
 let currentDMUser = "";
 
+function getChatRoomId(uid1, uid2) {
+  return [uid1, uid2].sort().join("_");
+}
+
 function openDM(friendId, friendUsername) {
   currentDMUser = friendId;
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const roomId = getChatRoomId(user.uid, friendId);
   document.getElementById("dmTitle").innerText = `💬 Chat with @${friendUsername}`;
   document.getElementById("dmModal").style.display = "block";
 
   const chatBox = document.getElementById("dmMessages");
   chatBox.innerHTML = "";
 
-  db.collection("dms").doc(friendId).collection("messages")
+  db.collection("dms").doc(roomId).collection("messages")
     .orderBy("timestamp")
     .onSnapshot(snapshot => {
       chatBox.innerHTML = "";
@@ -412,13 +420,14 @@ function openDM(friendId, friendUsername) {
 }
 
 function sendDM() {
-  const msg = document.getElementById("dmInput").value;
+  const msg = document.getElementById("dmInput").value.trim();
   const user = firebase.auth().currentUser;
   if (!msg || !currentDMUser || !user) return;
 
   const senderName = localStorage.getItem("gsuUsername") || "Anonymous";
+  const roomId = getChatRoomId(user.uid, currentDMUser);
 
-  db.collection("dms").doc(currentDMUser).collection("messages").add({
+  db.collection("dms").doc(roomId).collection("messages").add({
     sender: senderName,
     text: msg,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -426,6 +435,7 @@ function sendDM() {
 
   document.getElementById("dmInput").value = "";
 }
+
 
 
 function closeDM() {
@@ -511,6 +521,13 @@ function removeFriend(targetId, username) {
   });
 }
 
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    console.warn("🚫 Not logged in.");
+  } else {
+    console.log("✅ Logged in as:", user.email);
+  }
+});
 
 
 firebase.auth().onAuthStateChanged(authUser => {
@@ -664,23 +681,29 @@ function showFeedback(message, bgColor = '#e60023') {
 
 </script>
   <script>
-function sendMessage() {
-  const input = document.getElementById("chatMessage");
-  const message = input.value.trim();
-  const sender = localStorage.getItem("gsuUsername") || "Anonymous";
-
-  if (!message) return;
-
-  db.collection("chat").add({
-    sender: sender,
-    text: message,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    input.value = "";
-  }).catch((error) => {
-    console.error("Error sending message:", error);
-  });
-}
+    function sendMessage() {
+      const input = document.getElementById("chatMessage");
+      const message = input.value.trim();
+      const sender = localStorage.getItem("gsuUsername") || "Anonymous";
+      const user = firebase.auth().currentUser;
+    
+      if (!message) return;
+      if (!user) {
+        alert("You must be logged in to send a message.");
+        return;
+      }
+    
+      db.collection("chat").add({
+        sender: sender,
+        text: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        input.value = "";
+      }).catch((error) => {
+        console.error("Error sending message:", error);
+      });
+    }
+    
 
 // Real-time listener to show new messages
 db.collection("chat").orderBy("timestamp").onSnapshot(snapshot => {
