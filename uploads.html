@@ -138,18 +138,20 @@
       gap: 1.5rem;
     }
     .upload-card {
-      background-color: #222;
+      background-color: #1f1f1f;
       border: 1px solid #333;
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 12px;
+      padding: 1.2rem;
       color: var(--white-text);
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
     .upload-card:hover {
-      transform: scale(1.02);
+      transform: scale(1.015);
       border-color: var(--gsu-red);
-      box-shadow: 0 4px 12px rgba(230, 0, 35, 0.3);
+      box-shadow: 0 8px 24px rgba(230, 0, 35, 0.25);
     }
+    
     .upload-meta {
       display: flex;
       justify-content: space-between;
@@ -514,16 +516,25 @@ function removeFriend(targetId, username) {
 firebase.auth().onAuthStateChanged(authUser => {
   db.collection("users").orderBy("username").onSnapshot(snapshot => {
     const container = document.getElementById("connectPlayers");
-    if (!container) return;
+    if (!container) {
+      console.warn("❌ Missing #connectPlayers container");
+      return;
+    }    
     container.innerHTML = "";
 
+    if (snapshot.empty) {
+      container.innerHTML = `<p style="color:#ccc; text-align:center;">No GSU players found yet. Be the first to show out!</p>`;
+      return;
+    }
+    
+    
     snapshot.forEach(doc => {
       const user = doc.data();
       const userId = doc.id;
       const isCurrentUser = authUser && authUser.uid === userId;
       const isFriend = user.friends?.includes(authUser.uid);
-      const sentRequest = user.pendingRequests?.includes(authUser.uid);
-      const receivedRequest = user.friendRequests?.includes(authUser.uid);
+      const sentRequest = (authUser && (user.pendingRequests || []).includes(authUser.uid));
+      const receivedRequest = (user.friendRequests || []).includes(authUser.uid);
       const status = user.online ? 'online' : 'offline';
 
       let friendActions = "";
@@ -535,7 +546,7 @@ firebase.auth().onAuthStateChanged(authUser => {
           `;
         } else if (user.pendingRequests?.includes(authUser.uid)) {
           friendActions = `<span style="color: var(--gsu-red); font-weight: bold;">🔴 Pending Request</span>`;
-        } else if (receivedRequest?.includes(userId)) {
+        } else if (receivedRequest) {
           friendActions = `
             <button onclick="acceptFriend('${userId}')">✅ Accept</button>
             <button onclick="declineFriend('${userId}')">❌ Decline</button>
@@ -558,7 +569,11 @@ firebase.auth().onAuthStateChanged(authUser => {
         <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
           ${user.favoriteImages?.map(url => `<img src="${url}" style="height:50px; border-radius:6px;" />`).join("") || ""}
         </div>
-        <div style="margin-top: 0.5rem;">${friendActions}</div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+          ${friendActions}
+        </div>
+
+
       `;
 
       container.appendChild(div);
