@@ -320,14 +320,12 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
   import {
     getAuth,
-    createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
   import {
     getFirestore,
     doc,
-    setDoc,
     getDoc
   } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
@@ -363,100 +361,94 @@
     }
   });
 
- async function loadProfile(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  if (snap.exists()) {
-    const data = snap.data();
-    console.log("User data:", data);
+  async function loadProfile(uid) {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      console.log("User data:", data);
 
-    const profileBox = document.getElementById("profile-box");
+      const profileBox = document.getElementById("profile-box");
 
-    // ✅ Insert username at the top of the profile card
-    const usernameEl = document.createElement("p");
-    usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
-    usernameEl.style.fontWeight = "bold";
-    usernameEl.style.fontSize = "1rem";
-    usernameEl.style.marginBottom = "0.5rem";
-    profileBox.prepend(usernameEl);
+      const usernameEl = document.createElement("p");
+      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+      usernameEl.style.fontWeight = "bold";
+      usernameEl.style.fontSize = "1rem";
+      usernameEl.style.marginBottom = "0.5rem";
+      profileBox.prepend(usernameEl);
 
-    const favGamesEl = document.getElementById("fav-games");
-    const gamesPlayedEl = document.getElementById("games-played");
-    const trophyStatsEl = document.getElementById("trophy-stats");
+      const platformEl = document.createElement("p");
+      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
+      platformEl.style.fontSize = "0.95rem";
+      platformEl.style.marginBottom = "0.5rem";
+      profileBox.insertBefore(platformEl, usernameEl.nextSibling);
 
-    // Create image row if it doesn't exist
-    let imageRow = document.getElementById("fav-images");
-    if (!imageRow) {
-      imageRow = document.createElement("div");
-      imageRow.id = "fav-images";
-      imageRow.style.display = "flex";
-      imageRow.style.flexWrap = "wrap";
-      imageRow.style.gap = "0.5rem";
-      imageRow.style.marginTop = "0.8rem";
-      imageRow.style.justifyContent = "center";
-      profileBox.appendChild(imageRow);
+      const favGamesEl = document.getElementById("fav-games");
+      const gamesPlayedEl = document.getElementById("games-played");
+      const trophyStatsEl = document.getElementById("trophy-stats");
+
+      let imageRow = document.getElementById("fav-images");
+      if (!imageRow) {
+        imageRow = document.createElement("div");
+        imageRow.id = "fav-images";
+        imageRow.style.display = "flex";
+        imageRow.style.flexWrap = "wrap";
+        imageRow.style.gap = "0.5rem";
+        imageRow.style.marginTop = "0.8rem";
+        imageRow.style.justifyContent = "center";
+        profileBox.appendChild(imageRow);
+      }
+      imageRow.innerHTML = "";
+
+      favGamesEl.textContent = `🌯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+
+      if (Array.isArray(data.favoriteImages)) {
+        data.favoriteImages.forEach(url => {
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = "Game cover";
+          img.style.height = "60px";
+          img.style.borderRadius = "6px";
+          img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+          img.style.transition = "transform 0.3s";
+          img.onmouseover = () => img.style.transform = "scale(1.05)";
+          img.onmouseout = () => img.style.transform = "scale(1)";
+          imageRow.appendChild(img);
+        });
+      }
+    } else {
+      console.warn("User profile data not found.");
     }
-    imageRow.innerHTML = "";
-
-    favGamesEl.textContent = `🎯 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-    gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-    trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
-
-    if (Array.isArray(data.favoriteImages)) {
-      data.favoriteImages.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.alt = "Game cover";
-        img.style.height = "60px";
-        img.style.borderRadius = "6px";
-        img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
-        img.style.transition = "transform 0.3s";
-        img.onmouseover = () => img.style.transform = "scale(1.05)";
-        img.onmouseout = () => img.style.transform = "scale(1)";
-        imageRow.appendChild(img);
-      });
-    }
-  } else {
-    console.warn("User profile data not found.");
   }
-}
-
-
 
   onAuthStateChanged(auth, (user) => {
-  const currentPath = window.location.pathname.toLowerCase();
-  const isLoginPage = currentPath.includes("account_creation.html");
+    const currentPath = window.location.pathname.toLowerCase();
+    const isLoginPage = currentPath.includes("account_creation.html");
 
-  if (user) {
-    loadProfile(user.uid);
-    document.getElementById("auth-box").style.display = "none"; // Hide login box
-  } else {
-    document.getElementById("auth-box").style.display = "block"; // Show login box
-    // Don’t redirect unless on a page that *requires* login
-    if (!isLoginPage && currentPath !== "/index.html") {
-      alert("Please log in to access GameSync Union.");
-      window.location.href = "Account_Creation.html";
+    if (user) {
+      loadProfile(user.uid);
+      document.getElementById("auth-box").style.display = "none";
+    } else {
+      document.getElementById("auth-box").style.display = "block";
+      if (!isLoginPage && currentPath !== "/index.html") {
+        alert("Please log in to access GameSync Union.");
+        window.location.href = "Account_Creation.html";
+      }
     }
-  }
-});
-
-
+  });
 
   const logoutBtn = document.getElementById("logoutBtn");
 
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    try {
-      await auth.signOut();
-      alert("You have been logged out.");
-      window.location.href = "Account_Creation.html"; // redirect to login or sign-up page
-    } catch (err) {
-      alert("Error signing out: " + err.message);
-    }
-  });
-}
-
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await auth.signOut();
+        alert("You have been logged out.");
+        window.location.href = "Account_Creation.html";
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
+    });
+  }
 </script>
-
-
-</body>
-</html>
