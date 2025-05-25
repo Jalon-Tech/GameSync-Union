@@ -47,7 +47,8 @@
       text-align: center;
       margin-bottom: 1rem;
     }
-    .modal-content input {
+    .modal-content input,
+    .modal-content select {
       margin-bottom: 0.8rem;
       width: 100%;
       padding: 0.6rem;
@@ -83,6 +84,14 @@
       <input type="email" id="regEmail" placeholder="Email">
       <input type="password" id="regPassword" placeholder="Password">
       <input type="text" id="regUsername" placeholder="Username">
+      <select id="regPlatform">
+        <option value="">Select Your Platform</option>
+        <option value="PlayStation 5">PlayStation 5</option>
+        <option value="Xbox Series X|S">Xbox Series X|S</option>
+        <option value="Nintendo Switch">Nintendo Switch</option>
+        <option value="PC">PC</option>
+        <option value="Multiple Platforms">Multiple Platforms</option>
+      </select>
       <input type="text" id="regGames" placeholder="3 Favorite Game Titles (comma separated)">
       <input type="text" id="regImages" placeholder="Image URLs for your 3 favorite games (comma separated)">
       <input type="number" id="regPlayed" placeholder="Games Played">
@@ -125,6 +134,7 @@
       const email = document.getElementById("regEmail").value.trim();
       const password = document.getElementById("regPassword").value;
       const username = document.getElementById("regUsername").value.trim();
+      const platform = document.getElementById("regPlatform").value;
       const favoriteGames = document.getElementById("regGames").value.trim().split(',').map(s => s.trim());
       const favoriteImages = document.getElementById("regImages").value.trim().split(',').map(s => s.trim());
       const gamesPlayed = document.getElementById("regPlayed").value.trim();
@@ -137,6 +147,7 @@
         await setDoc(doc(db, "users", uid), {
           email,
           username,
+          platform,
           favoriteGames,
           favoriteImages,
           gamesPlayed,
@@ -177,6 +188,7 @@
         const profileBox = document.querySelector("aside .box");
         profileBox.innerHTML = `
           <h2>Your Profile</h2>
+          <p><strong>Platform:</strong> ${data.platform}</p>
           <p>🎯 Favorite Games:</p>
           <ul>${data.favoriteGames.map((game, i) => `<li><img src="${data.favoriteImages[i]}" alt="${game}" style="height:20px; margin-right:6px; vertical-align:middle;"> ${game}</li>`).join('')}</ul>
           <p>🎮 Games Played: ${data.gamesPlayed}</p>
