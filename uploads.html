@@ -533,12 +533,9 @@ firebase.auth().onAuthStateChanged(authUser => {
             <button onclick="openDM('${userId}', '${user.username}')">💬 DM</button>
             <button onclick="removeFriend('${userId}', '${user.username}')">🗑️ Remove</button>
           `;
-        } else if (sentRequest) {
-          friendActions = `<button disabled>⏳ Request Sent</button>`;
-        }else if (receivedRequest && receivedRequest.includes(userId))  {
-          // Prevent showing actions to sender, only receiver
+        } else if (user.pendingRequests?.includes(authUser.uid)) {
           friendActions = `<span style="color: var(--gsu-red); font-weight: bold;">🔴 Pending Request</span>`;
-        } else if (receivedRequest) {
+        } else if (receivedRequest?.includes(userId)) {
           friendActions = `
             <button onclick="acceptFriend('${userId}')">✅ Accept</button>
             <button onclick="declineFriend('${userId}')">❌ Decline</button>
@@ -546,8 +543,8 @@ firebase.auth().onAuthStateChanged(authUser => {
         } else {
           friendActions = `<button onclick="sendFriendRequest('${userId}')">➕ Add Friend</button>`;
         }
-        
       }
+      
 
       const div = document.createElement("div");
       div.classList.add("upload-card");
