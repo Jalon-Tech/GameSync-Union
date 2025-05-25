@@ -546,6 +546,16 @@ firebase.auth().onAuthStateChanged(authUser => {
       container.innerHTML = `<p style="color:#ccc; text-align:center;">No GSU players found yet. Be the first to show out!</p>`;
       return;
     }
+
+    // Update lastActive every 30 seconds while user is active
+    if (authUser) {
+      const userRef = db.collection("users").doc(authUser.uid);
+
+      setInterval(() => {
+        userRef.update({ lastActive: firebase.firestore.FieldValue.serverTimestamp() });
+      }, 30000); // 30 seconds
+    }
+
     
     
     snapshot.forEach(doc => {
@@ -555,7 +565,11 @@ firebase.auth().onAuthStateChanged(authUser => {
       const isFriend = user.friends?.includes(authUser.uid);
       const sentRequest = (authUser && (user.pendingRequests || []).includes(authUser.uid));
       const receivedRequest = (user.friendRequests || []).includes(authUser.uid);
-      const status = user.online ? 'online' : 'offline';
+      const lastActive = user.lastActive?.toDate();
+      const now = new Date();
+      const secondsAgo = lastActive ? (now - lastActive) / 1000 : Infinity;
+      const status = secondsAgo < 90 ? 'online' : 'offline';
+
 
       let friendActions = "";
       if (!isCurrentUser) {
