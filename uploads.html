@@ -440,17 +440,20 @@ db.collection("users")
 
       div.innerHTML = `
         <h3>🎮 @${user.username}</h3>
-        <p><strong>Platform:</strong> ${user.platform || "Not listed"}</p>
-        <p><strong>Status:</strong> ${user.status || "Looking to connect"}</p>
-        <p><strong>Bio:</strong> ${user.bio || "No bio provided."}</p>
-        <p><strong>Favorite Games:</strong> ${user.Favorite_Games?.join(", ") || "None listed"}</p>
-        <p><strong>Games Played:</strong> ${user.Games_Played?.join(", ") || "Not tracked"}</p>
-        <p><strong>Trophy Stats:</strong> ${user.Trophy_Stats || "N/A"}</p>
+        <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
+        <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
+        <p><strong>Trophy Stats (Trophy Count):</strong> ${user.trophyCount || "N/A"}</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+          ${user.favoriteImages?.map(url => `
+            <img src="${url}" alt="Game Cover" style="height: 50px; width: auto; border-radius: 6px;" />
+          `).join("")}
+        </div>
       `;
 
       container.appendChild(div);
     });
   });
+
 
   </script>
 </body>
