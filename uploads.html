@@ -36,6 +36,13 @@
       min-height: 100vh;
     }
 
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem 4rem;
+    }
+
     header {
       background-color: var(--black-faded);
       display: flex;
@@ -70,13 +77,6 @@
 
     nav a:hover {
       color: var(--gsu-red);
-    }
-
-    main {
-      flex: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem 2rem 4rem;
     }
 
     .section-header {
@@ -115,6 +115,17 @@
       gap: 1.5rem;
     }
 
+    .shoutout-card {
+      background-color: #2a2a2a;
+      border-left: 4px solid var(--gsu-red);
+      padding: 0.8rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color: #eee;
+      box-shadow: 0 0 8px rgba(230, 0, 35, 0.15);
+    }
+
     footer {
       background-color: var(--black-faded);
       padding: 2rem 1rem;
@@ -143,27 +154,6 @@
       color: var(--gsu-red);
       font-weight: bold;
     }
-
-    @media (max-width: 600px) {
-      footer {
-        padding: 1rem 0.5rem;
-      }
-
-      footer .platform-icons,
-      footer div {
-        flex-direction: column;
-        gap: 0.8rem;
-      }
-
-      footer .platform-icons img {
-        height: 28px;
-      }
-
-      footer p {
-        font-size: 0.85rem;
-        padding: 0 1rem;
-      }
-    }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -171,17 +161,14 @@
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
       authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "425458221497",
-      appId: "1:425458221497:web:b97f6f7c0b5e3ae0513f48"
+      projectId: "gamesync-union"
     };
     firebase.initializeApp(firebaseConfig);
   </script>
 </head>
 <body>
   <div class="page-wrapper">
-    <header>
+   <header>
       <div class="logo">
         <img src="GSU_LOGO.png" alt="GSU Logo" />
         <div class="logo-text" style="color: white;">GAMESYNC UNION</div>
@@ -237,6 +224,7 @@
 <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
 <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
 
+
     <footer>
       <div class="platform-icons">
         <img src="PS_Logo.png" alt="PlayStation" />
@@ -251,53 +239,21 @@
 
   <script>
     const db = firebase.firestore();
+    const shoutoutBanner = document.getElementById("shoutout-banner");
 
-    db.collection("uploads").orderBy("timestamp", "desc").limit(5).get().then(snapshot => {
-      const shoutouts = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return `💬 @${data.username} just posted: "${data.title}"`;
+    db.collection("uploads")
+      .orderBy("timestamp", "desc")
+      .limit(5)
+      .get()
+      .then(snapshot => {
+        snapshot.docs.forEach(doc => {
+          const data = doc.data();
+          const shout = document.createElement("div");
+          shout.className = "shoutout-card";
+          shout.textContent = `💬 @${data.username} shared: "${data.title}"`;
+          shoutoutBanner.appendChild(shout);
+        });
       });
-      let current = 0;
-      setInterval(() => {
-        document.getElementById("shoutout-text").textContent = shoutouts[current];
-        current = (current + 1) % shoutouts.length;
-      }, 5000);
-    });
-
-    db.collection("uploads").get().then(snapshot => {
-      const users = {};
-      snapshot.docs.forEach(doc => {
-        const data = doc.data();
-        const user = data.username;
-        if (!users[user]) users[user] = { count: 0, reactions: 0 };
-        users[user].count++;
-        users[user].reactions += (data.reactions?.fire || 0);
-      });
-      const sorted = Object.entries(users).sort((a, b) => b[1].count - a[1].count).slice(0, 3);
-      const topCreatorsContainer = document.getElementById("topCreators");
-      sorted.forEach(([username, stats]) => {
-        const div = document.createElement("div");
-        div.style.minWidth = "140px";
-        div.style.textAlign = "center";
-        div.innerHTML = `
-          <img src="default-avatar.png" alt="User Avatar" style="height: 64px; width: 64px; border-radius: 50%; border: 2px solid var(--gsu-red);" />
-          <p style="margin-top: 0.5rem; font-weight: bold;">@${username}</p>
-          <p style="font-size: 0.8rem; color: #aaa;">🔥 ${stats.reactions} 🔁 ${stats.count} uploads</p>`;
-        topCreatorsContainer.appendChild(div);
-      });
-    });
-
-    db.collection("uploads").where("category", "==", "chat").orderBy("timestamp", "desc").limit(5).get().then(snapshot => {
-      const chatContainer = document.getElementById("chatPreview");
-      snapshot.docs.forEach(doc => {
-        const data = doc.data();
-        const p = document.createElement("p");
-        p.textContent = `💬 @${data.username}: "${data.description.slice(0, 100)}"`;
-        p.style.fontSize = "0.95rem";
-        p.style.color = "#eee";
-        chatContainer.appendChild(p);
-      });
-    });
   </script>
 </body>
 </html>
