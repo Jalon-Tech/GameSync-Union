@@ -424,38 +424,6 @@
           }
         });
     });
-    // Display player profiles from the users collection
-db.collection("users")
-  .orderBy("username")
-  .onSnapshot(snapshot => {
-    const container = document.getElementById("connectPlayers");
-    if (!container) return;
-
-    container.innerHTML = ""; // Clear before re-rendering
-
-    snapshot.forEach(doc => {
-      const user = doc.data();
-      const div = document.createElement("div");
-      div.classList.add("upload-card");
-
-      div.innerHTML = `
-  <h3>🎮 @${user.username}</h3>
-  <p><strong>Platform:</strong> ${user.platform || "Not listed"}</p>
-  <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
-  <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
-  <p><strong>Trophy Stats (Trophy Count):</strong> ${user.trophyCount || "N/A"}</p>
-  <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-    ${user.favoriteImages?.map(url => `
-      <img src="${url}" alt="Game Cover" style="height: 50px; width: auto; border-radius: 6px;" />
-    `).join("")}
-  </div>
-`;
-
-
-
-      container.appendChild(div);
-    });
-  });
 
   ...
 window.sendMessageToUser = sendMessageToUser;
@@ -471,6 +439,11 @@ firebase.auth().onAuthStateChanged(authUser => {
       if (!container) return;
 
       container.innerHTML = "";
+
+      if (snapshot.empty) {
+        container.innerHTML = "<p style='color:#aaa;'>No players to show yet. Be the first to connect with others!</p>";
+        return;
+      }
 
       snapshot.forEach(doc => {
         const user = doc.data();
@@ -502,6 +475,7 @@ firebase.auth().onAuthStateChanged(authUser => {
       });
     });
 });
+
 
 // Add friend function
 function addFriend(targetUserId) {
