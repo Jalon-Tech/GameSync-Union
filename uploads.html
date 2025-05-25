@@ -229,9 +229,12 @@
 
 <main>
   <div class="section-header">
-    <h1 style="color: var(--gsu-red);">🎮 GameSync Union: Community Uploads</h1>
-    <p>Explore the latest contributions by gamers across PS5, Xbox, PC, and Nintendo Switch.</p>
-  </div>
+  <h1 style="color: var(--gsu-red); font-size: 2.8rem;">🚀 GameSync Union: Community Flex Zone</h1>
+  <p style="color: #bbb; font-size: 1.1rem;">
+    Welcome to the squad hub. Post up, show out, and explore what gamers like YOU are bringing to the table across 🎮 PS5, 🟢 Xbox, 💻 PC, and 🔴 Switch.
+  </p>
+</div>
+
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
     <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
@@ -241,27 +244,72 @@
   <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    <div class="box"><h2>🗡️ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
-    <div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
-    <div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
-    <div class="box"><h2>🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
-    <div class="box"><h2>🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
-    <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
-    <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
+    
+    <!-- 📢 Community Shoutout Banner -->
+<div id="shoutout-banner" style="background-color: #2a2a2a; color: #fff; text-align: center; padding: 0.6rem 1rem; font-size: 0.95rem; font-family: 'Montserrat', sans-serif;">
+  <span id="shoutout-text">💬 @QuantumX_95 just hit 50 uploads — respect the grind!</span>
+</div>
+
+<!-- 🏅 Top Creators of the Week -->
+<div class="box">
+  <h2>🏅 Top Creators of the Week</h2>
+  <div style="display: flex; overflow-x: auto; gap: 1rem; padding: 1rem 0;">
+    <div style="min-width: 140px; text-align: center;">
+      <img src="default-avatar.png" alt="User Avatar" style="height: 64px; width: 64px; border-radius: 50%; border: 2px solid var(--gsu-red);" />
+      <p style="margin-top: 0.5rem; font-weight: bold;">@QuantumX_95</p>
+      <p style="font-size: 0.8rem; color: #aaa;">🔥 22 Reactions</p>
+    </div>
+    <div style="min-width: 140px; text-align: center;">
+      <img src="default-avatar.png" alt="User Avatar" style="height: 64px; width: 64px; border-radius: 50%; border: 2px solid var(--gsu-red);" />
+      <p style="margin-top: 0.5rem; font-weight: bold;">@BladeBeast</p>
+      <p style="font-size: 0.8rem; color: #aaa;">🎯 18 Uploads</p>
+    </div>
+    <div style="min-width: 140px; text-align: center;">
+      <img src="default-avatar.png" alt="User Avatar" style="height: 64px; width: 64px; border-radius: 50%; border: 2px solid var(--gsu-red);" />
+      <p style="margin-top: 0.5rem; font-weight: bold;">@PixelNinja</p>
+      <p style="font-size: 0.8rem; color: #aaa;">🖼️ Fan Art MVP</p>
+    </div>
+  </div>
+</div>
+
+<!-- 💬 Live Chat Preview -->
+<div class="box">
+  <h2>📣 Latest from the Community Chat</h2>
+  <div style="background-color: #262626; padding: 1rem; border-radius: 8px;">
+    <p style="font-size: 0.95rem; color: #eee;">💬 @HyperDash: "Anyone else stuck on the PS5 Demon's Trial boss?"</p>
+    <p style="font-size: 0.95rem; color: #eee;">💬 @MysticMage: "Just posted a full breakdown on that strat!"</p>
+    <p style="font-size: 0.95rem; color: #eee;">💬 @AkariEdge: "Combo tip for Tekken 8's Lars — posted it!"</p>
+  </div>
+</div>
+
+<!-- Regular Upload Sections -->
+<div class="box"><h2>🗡️ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
+<div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
+<div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
+<div class="box"><h2>🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
+<div class="box"><h2>🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
+<div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
+<div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
+
   </div>
 </main>
 
 <a href="upload-form.html" class="upload-float-btn">📤 Upload Now</a>
 
-<footer>
-  <div class="platform-icons">
-    <img src="PS_Logo.png" alt="PlayStation" />
-    <img src="Xbox.png" alt="Xbox" />
-    <img src="Steam.png" alt="PC" />
-    <img src="Switch.png" alt="Nintendo Switch" />
+<footer style="background-color: var(--black-faded); margin-top: 4rem; padding: 2rem 1rem 1rem; text-align: center;">
+  <div style="margin-bottom: 1rem;">
+    <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: var(--gsu-red); margin-bottom: 0.5rem;">Powered by Gamers 🎮</h2>
+    <p style="color: #ccc; font-size: 0.95rem;">Connecting the community across PS5, Xbox, Switch & PC.</p>
   </div>
-  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  <div style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin-top: 1rem; margin-bottom: 1rem;">
+    <img src="PS_Logo.png" alt="PlayStation" style="height: 32px;" />
+    <img src="Xbox.png" alt="Xbox" style="height: 32px;" />
+    <img src="Steam.png" alt="PC" style="height: 32px;" />
+    <img src="Switch.png" alt="Nintendo Switch" style="height: 32px;" />
+  </div>
+  <p style="color: #777; font-size: 0.85rem;">&copy; 2025 GameSync Union — All rights reserved.</p>
 </footer>
+
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -322,6 +370,8 @@
   db.collection("uploads").where("featured", "==", true).orderBy("timestamp", "desc").limit(6).get().then(snapshot => {
     snapshot.docs.forEach(doc => renderCard(doc, "featuredUploads"));
   });
+  <span class="platform-tag" style="background-color: #444;">${data.badge || "🎮 Member"}</span>
+
 </script>
 </body>
 </html>
