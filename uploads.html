@@ -97,36 +97,31 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
     }
-    .shoutout-card {
-      background-color: #2a2a2a;
-      border-left: 4px solid var(--gsu-red);
-      padding: 0.8rem 1rem;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      color: #eee;
-      box-shadow: 0 0 8px rgba(230, 0, 35, 0.15);
-    }
-    #liveChat {
-      background-color: #1c1c1c;
-      padding: 1rem;
+    .chat-box {
+      background-color: #262626;
       border-radius: 8px;
-      margin-top: 1rem;
+      padding: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
     }
-    #liveChat input {
+    .chat-input {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chat-input input {
+      flex: 1;
       padding: 0.6rem;
-      width: 80%;
       border: none;
       border-radius: 6px;
-      margin-right: 0.5rem;
-      background: #333;
-      color: #fff;
+      background-color: #2a2a2a;
+      color: var(--white-text);
     }
-    #liveChat button {
-      padding: 0.6rem 1rem;
-      background: var(--gsu-red);
-      color: white;
+    .chat-input button {
+      background-color: var(--gsu-red);
       border: none;
+      color: var(--white-text);
+      padding: 0.6rem 1rem;
       border-radius: 6px;
       cursor: pointer;
     }
@@ -162,14 +157,13 @@
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
   <div class="page-wrapper">
     <header>
       <div class="logo">
         <img src="GSU_LOGO.png" alt="GSU Logo" />
-        <div class="logo-text" style="color: white;">GAMESYNC UNION</div>
+        <div class="logo-text" style="color: var(--white-text);">GAMESYNC UNION</div>
       </div>
       <nav>
         <a href="index.html">Home</a>
@@ -185,14 +179,31 @@
         <h1>🚀 GameSync Union: Community Flex Zone</h1>
         <p>Welcome to the squad hub. Post up, show out, and explore what gamers like YOU are bringing to the table across 🎮 PS5, 🟢 Xbox, 💻 PC, and 🔴 Switch.</p>
       </div>
+
       <div class="box">
-        <h2>📣 Live Community Chat</h2>
-        <div id="chatMessages"></div>
-        <div id="liveChat">
-          <input type="text" id="chatInput" placeholder="Type your message...">
-          <button onclick="sendChatMessage()">Send</button>
+        <h2>💬 Live GSU Community Chat</h2>
+        <div class="chat-box" id="liveChat"></div>
+        <div class="chat-input">
+          <input type="text" id="chatMessage" placeholder="Type your message...">
+          <button onclick="sendMessage()">Send</button>
         </div>
       </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
+        <div class="box"><h2>🆕 Latest Uploads</h2><div class="guides-container" id="latestUploads"></div></div>
+      </div>
+
+      <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
+
+      <div class="box"><h2>🏅 Top Creators of the Week</h2><div class="guides-container" id="topCreators"></div></div>
+      <div class="box"><h2>✊ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
+      <div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
+      <div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
+      <div class="box"><h2>🏋️🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
+      <div class="box"><h2>✅🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
+      <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
+      <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
     </main>
     <footer>
       <div class="platform-icons">
@@ -213,44 +224,31 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const auth = firebase.auth();
 
-    let currentUsername = "Anonymous";
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        db.collection("users").doc(user.uid).get().then(doc => {
-          if (doc.exists) {
-            currentUsername = doc.data().username || "User";
-          }
-        });
-      }
-    });
+    let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
-    function sendChatMessage() {
-      const input = document.getElementById("chatInput");
-      const message = input.value.trim();
-      if (message) {
+    function sendMessage() {
+      const message = document.getElementById("chatMessage").value.trim();
+      if (message !== "") {
         db.collection("chat").add({
-          username: currentUsername,
-          message,
+          username: username,
+          message: message,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-        input.value = "";
+        document.getElementById("chatMessage").value = "";
       }
     }
 
-    db.collection("chat").orderBy("timestamp", "asc")
-      .onSnapshot(snapshot => {
-        const chatContainer = document.getElementById("chatMessages");
-        chatContainer.innerHTML = "";
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const msg = document.createElement("p");
-          msg.innerHTML = `<strong>@${data.username || 'User'}:</strong> ${data.message}`;
-          msg.style.marginBottom = "0.4rem";
-          chatContainer.appendChild(msg);
-        });
+    db.collection("chat").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
+      const chatBox = document.getElementById("liveChat");
+      chatBox.innerHTML = "";
+      snapshot.docs.reverse().forEach(doc => {
+        const data = doc.data();
+        const div = document.createElement("div");
+        div.textContent = `@${data.username || "Unknown"}: ${data.message}`;
+        chatBox.appendChild(div);
       });
+    });
   </script>
 </body>
 </html>
