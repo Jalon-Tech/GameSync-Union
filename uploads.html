@@ -20,10 +20,20 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
+    }
+
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -62,6 +72,13 @@
       color: var(--gsu-red);
     }
 
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem 4rem;
+    }
+
     .section-header {
       text-align: center;
       margin: 2rem 0 1rem;
@@ -69,18 +86,13 @@
 
     .section-header h1 {
       font-family: 'Montserrat', sans-serif;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
+      color: var(--gsu-red);
     }
 
     .section-header p {
       font-size: 1.1rem;
-      color: #ccc;
-    }
-
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem 2rem 4rem;
+      color: #bbb;
     }
 
     .box {
@@ -97,224 +109,135 @@
       border: 1px solid var(--gsu-red);
     }
 
-    .box h2 {
-      font-family: 'Montserrat', sans-serif;
-      margin-bottom: 0.7rem;
-    }
-
     .guides-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
     }
 
-    .guide-card {
-      background: linear-gradient(145deg, #1c1c1c, #232323);
-      border-radius: 12px;
-      padding: 1.2rem;
-      border: 1px solid transparent;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+    footer {
+      background-color: var(--black-faded);
+      padding: 2rem 1rem;
+      text-align: center;
+      border-top: 1px solid #333;
     }
 
-    .guide-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #e60023, transparent);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      z-index: -1;
+    footer .platform-icons {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
     }
 
-    .guide-card:hover::before {
-      opacity: 0.15;
+    footer .platform-icons img {
+      height: 34px;
     }
 
-    .guide-card:hover {
-      transform: translateY(-6px) scale(1.015);
-      border-color: var(--gsu-red);
-      box-shadow: 0 10px 30px rgba(230, 0, 35, 0.25);
-    }
-
-    .guide-card h3 {
-      font-size: 1.25rem;
-      font-family: 'Montserrat', sans-serif;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-
-    .guide-card p {
-      font-size: 0.95rem;
+    footer p {
       color: #ccc;
+      font-size: 0.95rem;
     }
 
-    .user-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      margin: 0.4rem 0;
-      color: #aaa;
-    }
-
-    .user-avatar {
-      height: 24px;
-      width: 24px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .platform-tag {
-      background-color: #333;
-      border-radius: 4px;
-      padding: 0 6px;
-      font-size: 0.75rem;
-      color: #eee;
-    }
-
-    .reactions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 0.8rem;
-      font-size: 0.85rem;
-      color: #eee;
-    }
-
-    .reactions span {
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-
-    .reactions span:hover {
+    footer p span {
       color: var(--gsu-red);
-    }
-
-    .upload-float-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background-color: var(--gsu-red);
-      color: white;
-      padding: 0.75rem 1.2rem;
-      border-radius: 40px;
       font-weight: bold;
-      z-index: 999;
-      box-shadow: 0 0 12px rgba(230, 0, 35, 0.6);
     }
 
-    .upload-float-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.2), 0 0 12px var(--gsu-red);
+    @media (max-width: 600px) {
+      footer {
+        padding: 1rem 0.5rem;
+      }
+
+      footer .platform-icons,
+      footer div {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+
+      footer .platform-icons img {
+        height: 28px;
+      }
+
+      footer p {
+        font-size: 0.85rem;
+        padding: 0 1rem;
+      }
     }
-      @media (max-width: 600px) {
-  footer {
-    padding: 1rem 0.5rem;
-  }
-
-  footer .platform-icons,
-  footer div {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  footer .platform-icons img {
-    height: 28px;
-  }
-
-  footer p {
-    font-size: 0.85rem;
-    padding: 0 1rem;
-  }
-}
   </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "425458221497",
+      appId: "1:425458221497:web:b97f6f7c0b5e3ae0513f48"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </head>
 <body>
-  <header>
-  <div class="logo">
-    <img src="GSU_LOGO.png" alt="GSU Logo" />
-    <div class="logo-text" style="color: white;">GAMESYNC UNION</div>
+  <div class="page-wrapper">
+    <header>
+      <div class="logo">
+        <img src="GSU_LOGO.png" alt="GSU Logo" />
+        <div class="logo-text" style="color: white;">GAMESYNC UNION</div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="games.html">Games</a>
+        <a href="trophies.html">Trophies/Achievements</a>
+        <a href="art.html">Art</a>
+        <a href="game-guides.html">Guides</a>
+        <a href="uploads.html">Community Uploads</a>
+      </nav>
+    </header>
+    <main>
+      <div class="section-header">
+        <h1>🚀 GameSync Union: Community Flex Zone</h1>
+        <p>Welcome to the squad hub. Post up, show out, and explore what gamers like YOU are bringing to the table across 🎮 PS5, 🟢 Xbox, 💻 PC, and 🔴 Switch.</p>
+      </div>
 
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
+        <div class="box"><h2>🆕 Latest Uploads</h2><div class="guides-container" id="latestUploads"></div></div>
+      </div>
+      <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
+
+      <div id="shoutout-banner" style="background-color: #e60023; color: #fff; text-align: center; padding: 1rem 1.5rem; font-size: 1.05rem; font-family: 'Montserrat', sans-serif; font-weight: 700; border-radius: 14px; box-shadow: 0 0 25px rgba(230, 0, 35, 0.5); margin-bottom: 2rem; letter-spacing: 0.5px; position: relative;">
+        <span id="shoutout-text" style="animation: pulse 2.4s infinite ease-in-out; display: inline-block; text-shadow: 0 0 4px #fff, 0 0 10px #fff">Loading shoutouts...</span>
+      </div>
+
+      <div class="box"><h2>🏅 Top Creators of the Week</h2><div id="topCreators" style="display: flex; overflow-x: auto; gap: 1rem; padding: 1rem 0;"></div></div>
+      <div class="box"><h2>📣 Latest from the Community Chat</h2><div id="chatPreview" style="background-color: #262626; padding: 1rem; border-radius: 8px;"></div></div>
+
+      <div class="box"><h2>✊ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
+      <div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
+      <div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
+      <div class="box"><h2>🏋️🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
+      <div class="box"><h2>✅🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
+      <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
+      <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
+    </main>
+    <footer>
+      <div class="platform-icons">
+        <img src="PS_Logo.png" alt="PlayStation" />
+        <img src="Xbox.png" alt="Xbox" />
+        <img src="Steam.png" alt="PC" />
+        <img src="Switch.png" alt="Nintendo Switch" />
+      </div>
+      <p>&copy; 2025 <span>GameSync Union</span>. Built for gamers, by gamers.</p>
+      <p style="color: #777; font-size: 0.8rem;">Powered by Firebase | Designed with 💻 and 🎮</p>
+    </footer>
   </div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="games.html">Games</a>
-    <a href="trophies.html">Trophies/Achievements</a>
-    <a href="art.html">Art</a>
-    <a href="game-guides.html">Guides</a>
-    <a href="uploads.html">Community Uploads</a>
-  </nav>
-</header>
 
-<main>
-  <div class="section-header">
-  <h1 style="color: var(--gsu-red); font-size: 2.8rem;">🚀 GameSync Union: Community Flex Zone</h1>
-  <p style="color: #bbb; font-size: 1.1rem;">
-    Welcome to the squad hub. Post up, show out, and explore what gamers like YOU are bringing to the table across 🎮 PS5, 🟢 Xbox, 💻 PC, and 🔴 Switch.
-  </p>
-</div>
+  <script>
+    const db = firebase.firestore();
 
-
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
-    <div class="box"><h2>🆕 Latest Uploads</h2><div class="guides-container" id="latestUploads"></div></div>
-  </div>
-
-  <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
-
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    
-   <!-- 📢 Community Shoutout Banner (Dynamic & Styled) -->
-<div id="shoutout-banner" style="background-color: #e60023; color: #fff; text-align: center; padding: 1rem 1.5rem; font-size: 1.05rem; font-family: 'Montserrat', sans-serif; font-weight: 700; border-radius: 14px; box-shadow: 0 0 25px rgba(230, 0, 35, 0.5); margin-bottom: 2rem; letter-spacing: 0.5px; position: relative; overflow: hidden;">
-  <span id="shoutout-text" style="animation: pulse 2.4s infinite ease-in-out; display: inline-block; text-shadow: 0 0 4px #fff, 0 0 10px #fff">Loading shoutouts...</span>
-</div>
-
-
-<!-- 🏅 Top Creators of the Week (Live) -->
-<div class="box">
-  <h2>🏅 Top Creators of the Week</h2>
-  <div id="topCreators" style="display: flex; overflow-x: auto; gap: 1rem; padding: 1rem 0;"></div>
-</div>
-
-<!-- 💬 Live Chat Preview (Live) -->
-<div class="box">
-  <h2>📣 Latest from the Community Chat</h2>
-  <div id="chatPreview" style="background-color: #262626; padding: 1rem; border-radius: 8px;"></div>
-</div>
-
-<!-- Regular Upload Sections -->
-<div class="box"><h2>✊ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
-<div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
-<div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
-<div class="box"><h2>🏋️🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
-<div class="box"><h2>✅🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
-<div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
-<div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
-
-<footer style="background-color: var(--black-faded); padding: 2rem 1rem; text-align: center; margin-top: 4rem; border-top: 1px solid #333;">
-  <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
-    <img src="PS_Logo.png" alt="PlayStation" style="height: 34px;" />
-    <img src="Xbox.png" alt="Xbox" style="height: 34px;" />
-    <img src="Steam.png" alt="PC" style="height: 34px;" />
-    <img src="Switch.png" alt="Nintendo Switch" style="height: 34px;" />
-  </div>
-  <p style="color: #ccc; font-size: 0.95rem; margin-bottom: 0.5rem;">&copy; 2025 <span style="color: var(--gsu-red); font-weight: bold;">GameSync Union</span>. Built for gamers, by gamers.</p>
-  <p style="color: #777; font-size: 0.8rem;">Powered by Firebase | Designed with 💻 and 🎮</p>
-</footer>
-
-
-
-<script>
-  const db = firebase.firestore();
-
-  // Dynamic Shoutouts
-  db.collection("uploads")
-    .orderBy("timestamp", "desc")
-    .limit(5)
-    .get()
-    .then(snapshot => {
+    db.collection("uploads").orderBy("timestamp", "desc").limit(5).get().then(snapshot => {
       const shoutouts = snapshot.docs.map(doc => {
         const data = doc.data();
         return `💬 @${data.username} just posted: "${data.title}"`;
@@ -326,10 +249,7 @@
       }, 5000);
     });
 
-  // Top Creators of the Week
-  db.collection("uploads")
-    .get()
-    .then(snapshot => {
+    db.collection("uploads").get().then(snapshot => {
       const users = {};
       snapshot.docs.forEach(doc => {
         const data = doc.data();
@@ -338,9 +258,7 @@
         users[user].count++;
         users[user].reactions += (data.reactions?.fire || 0);
       });
-      const sorted = Object.entries(users)
-        .sort((a, b) => b[1].count - a[1].count)
-        .slice(0, 3);
+      const sorted = Object.entries(users).sort((a, b) => b[1].count - a[1].count).slice(0, 3);
       const topCreatorsContainer = document.getElementById("topCreators");
       sorted.forEach(([username, stats]) => {
         const div = document.createElement("div");
@@ -349,31 +267,22 @@
         div.innerHTML = `
           <img src="default-avatar.png" alt="User Avatar" style="height: 64px; width: 64px; border-radius: 50%; border: 2px solid var(--gsu-red);" />
           <p style="margin-top: 0.5rem; font-weight: bold;">@${username}</p>
-          <p style="font-size: 0.8rem; color: #aaa;">🔥 ${stats.reactions} 🔁 ${stats.count} uploads</p>
-        `;
+          <p style="font-size: 0.8rem; color: #aaa;">🔥 ${stats.reactions} 🔁 ${stats.count} uploads</p>`;
         topCreatorsContainer.appendChild(div);
       });
     });
 
-  // Live Community Chat Preview
-  db.collection("uploads")
-    .where("category", "==", "chat")
-    .orderBy("timestamp", "desc")
-    .limit(5)
-    .get()
-    .then(snapshot => {
+    db.collection("uploads").where("category", "==", "chat").orderBy("timestamp", "desc").limit(5).get().then(snapshot => {
       const chatContainer = document.getElementById("chatPreview");
       snapshot.docs.forEach(doc => {
         const data = doc.data();
         const p = document.createElement("p");
-        p.textContent = `💬 @${data.username}: \"${data.description.slice(0, 100)}\"`;
+        p.textContent = `💬 @${data.username}: "${data.description.slice(0, 100)}"`;
         p.style.fontSize = "0.95rem";
         p.style.color = "#eee";
         chatContainer.appendChild(p);
       });
     });
-</script>
-
-
-
-
+  </script>
+</body>
+</html>
