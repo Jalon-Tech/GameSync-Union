@@ -422,9 +422,10 @@ function openDM(friendId, friendUsername) {
 function sendDM() {
   const msg = document.getElementById("dmInput").value.trim();
   const user = firebase.auth().currentUser;
-  if (!msg || !currentDMUser || !user) return;
+if (!msg || !currentDMUser || !user) return;
 
-  const senderName = localStorage.getItem("gsuUsername") || "Anonymous";
+db.collection("users").doc(user.uid).get().then(doc => {
+  const senderName = doc.data()?.username || "Anonymous";
   const roomId = getChatRoomId(user.uid, currentDMUser);
 
   db.collection("dms").doc(roomId).collection("messages").add({
@@ -434,6 +435,8 @@ function sendDM() {
   });
 
   document.getElementById("dmInput").value = "";
+});
+
 }
 
 
@@ -684,25 +687,25 @@ function showFeedback(message, bgColor = '#e60023') {
     function sendMessage() {
       const input = document.getElementById("chatMessage");
       const message = input.value.trim();
-      const sender = localStorage.getItem("gsuUsername") || "Anonymous";
       const user = firebase.auth().currentUser;
     
-      if (!message) return;
-      if (!user) {
-        alert("You must be logged in to send a message.");
-        return;
-      }
+      if (!message || !user) return;
     
-      db.collection("chat").add({
-        sender: sender,
-        text: message,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        input.value = "";
-      }).catch((error) => {
-        console.error("Error sending message:", error);
+      db.collection("users").doc(user.uid).get().then(doc => {
+        const sender = doc.data()?.username || "Anonymous"; // fallback only if absolutely no username exists
+    
+        db.collection("chat").add({
+          sender: sender,
+          text: message,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          input.value = "";
+        }).catch((error) => {
+          console.error("Error sending message:", error);
+        });
       });
     }
+    
     
 
 // Real-time listener to show new messages
@@ -723,11 +726,34 @@ db.collection("chat").orderBy("timestamp").onSnapshot(snapshot => {
 
   chatBox.scrollTop = chatBox.scrollHeight;
 });
+function clearDMChat() {
+  const user = firebase.auth().currentUser;
+  if (!currentDMUser || !user) return;
+
+  if (confirm("Are you sure you want to clear this DM conversation?")) {
+    const roomId = getChatRoomId(user.uid, currentDMUser);
+    const chatBox = document.getElementById("dmMessages");
+
+    Array.from(chatBox.children).forEach((msg, index) => {
+      setTimeout(() => {
+        msg.classList.add("fade-out");
+      }, index * 50);
+    });
+
+    setTimeout(() => {
+      db.collection("dms").doc(roomId).collection("messages").get().then(snapshot => {
+        snapshot.forEach(doc => doc.ref.delete());
+      });
+    }, 600); // after animation
+  }
+}
+
 </script>
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
   <div id="dmMessages" style="height:80%; overflow-y:auto; margin-bottom:1rem; background:#2a2a2a; padding:1rem; border-radius:8px;"></div>
+  <button onclick="clearDMChat()" style="margin-bottom:1rem; background:#444; color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px;">Clear Chat</button>
   <input id="dmInput" type="text" placeholder="Type your message..." style="width:80%; padding:0.5rem; border-radius:6px;" />
   <button onclick="sendDM()">Send</button>
   <button onclick="closeDM()" style="float:right; background:#e60023;">Close</button>
