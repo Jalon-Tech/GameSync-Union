@@ -424,6 +424,34 @@
           }
         });
     });
+    // Display player profiles from the users collection
+db.collection("users")
+  .orderBy("username")
+  .onSnapshot(snapshot => {
+    const container = document.getElementById("connectPlayers");
+    if (!container) return;
+
+    container.innerHTML = ""; // Clear before re-rendering
+
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      const div = document.createElement("div");
+      div.classList.add("upload-card");
+
+      div.innerHTML = `
+        <h3>🎮 @${user.username}</h3>
+        <p><strong>Platform:</strong> ${user.platform || "Not listed"}</p>
+        <p><strong>Status:</strong> ${user.status || "Looking to connect"}</p>
+        <p><strong>Bio:</strong> ${user.bio || "No bio provided."}</p>
+        <p><strong>Favorite Games:</strong> ${user.Favorite_Games?.join(", ") || "None listed"}</p>
+        <p><strong>Games Played:</strong> ${user.Games_Played?.join(", ") || "Not tracked"}</p>
+        <p><strong>Trophy Stats:</strong> ${user.Trophy_Stats || "N/A"}</p>
+      `;
+
+      container.appendChild(div);
+    });
+  });
+
   </script>
 </body>
 </html>
