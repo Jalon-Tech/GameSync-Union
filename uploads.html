@@ -13,36 +13,30 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     html, body {
       height: 100%;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
     }
-
     .page-wrapper {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
-
     main {
       flex: 1;
       max-width: 1200px;
       margin: 0 auto;
       padding: 1rem 2rem 4rem;
     }
-
     header {
       background-color: var(--black-faded);
       display: flex;
@@ -50,23 +44,19 @@
       align-items: center;
       padding: 1rem 2rem;
     }
-
     .logo {
       display: flex;
       align-items: center;
     }
-
     .logo img {
       height: 60px;
       margin-right: 1rem;
     }
-
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--gsu-red);
     }
-
     nav a {
       margin: 0 1rem;
       text-decoration: none;
@@ -74,27 +64,22 @@
       font-family: 'Montserrat', sans-serif;
       transition: color 0.3s ease;
     }
-
     nav a:hover {
       color: var(--gsu-red);
     }
-
     .section-header {
       text-align: center;
       margin: 2rem 0 1rem;
     }
-
     .section-header h1 {
       font-family: 'Montserrat', sans-serif;
       font-size: 2.8rem;
       color: var(--gsu-red);
     }
-
     .section-header p {
       font-size: 1.1rem;
       color: #bbb;
     }
-
     .box {
       background-color: var(--black-faded);
       border-radius: 8px;
@@ -102,19 +87,16 @@
       margin-bottom: 2rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
     }
-
     .box:hover {
       transform: translateY(-4px) scale(1.01);
       box-shadow: 0 6px 16px rgba(230, 0, 35, 0.3), 0 0 8px rgba(255, 255, 255, 0.05);
       border: 1px solid var(--gsu-red);
     }
-
     .guides-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
     }
-
     .shoutout-card {
       background-color: #2a2a2a;
       border-left: 4px solid var(--gsu-red);
@@ -125,31 +107,54 @@
       color: #eee;
       box-shadow: 0 0 8px rgba(230, 0, 35, 0.15);
     }
-
+    #liveChat {
+      background-color: #1c1c1c;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    #liveChat input {
+      padding: 0.6rem;
+      width: 80%;
+      border: none;
+      border-radius: 6px;
+      margin-right: 0.5rem;
+      background: #333;
+      color: #fff;
+    }
+    #liveChat button {
+      padding: 0.6rem 1rem;
+      background: var(--gsu-red);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
     footer {
+      margin-top: auto;
       background-color: var(--black-faded);
-      padding: 2rem 1rem;
+      padding: 1.2rem 1rem;
       text-align: center;
       border-top: 1px solid #333;
     }
-
-    footer .platform-icons {
+    .platform-icons {
       display: flex;
       justify-content: center;
-      gap: 2rem;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
       flex-wrap: wrap;
-      margin-bottom: 1rem;
     }
-
-    footer .platform-icons img {
-      height: 34px;
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
     }
-
     footer p {
       color: #ccc;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
     }
-
     footer p span {
       color: var(--gsu-red);
       font-weight: bold;
@@ -157,18 +162,11 @@
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
   <div class="page-wrapper">
-   <header>
+    <header>
       <div class="logo">
         <img src="GSU_LOGO.png" alt="GSU Logo" />
         <div class="logo-text" style="color: white;">GAMESYNC UNION</div>
@@ -187,64 +185,16 @@
         <h1>🚀 GameSync Union: Community Flex Zone</h1>
         <p>Welcome to the squad hub. Post up, show out, and explore what gamers like YOU are bringing to the table across 🎮 PS5, 🟢 Xbox, 💻 PC, and 🔴 Switch.</p>
       </div>
-
-       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
-    <div class="box"><h2>🆕 Latest Uploads</h2><div class="guides-container" id="latestUploads"></div></div>
-  </div>
-
-  <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
-
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    
-   <!-- 📢 Community Shoutout Banner (Dynamic & Styled) -->
-<div id="shoutout-banner" style="background-color: #e60023; color: #fff; text-align: center; padding: 1rem 1.5rem; font-size: 1.05rem; font-family: 'Montserrat', sans-serif; font-weight: 700; border-radius: 14px; box-shadow: 0 0 25px rgba(230, 0, 35, 0.5); margin-bottom: 2rem; letter-spacing: 0.5px; position: relative; overflow: hidden;">
-  <span id="shoutout-text" style="animation: pulse 2.4s infinite ease-in-out; display: inline-block; text-shadow: 0 0 4px #fff, 0 0 10px #fff">Loading shoutouts...</span>
-</div>
-
-
-<!-- 🏅 Top Creators of the Week (Live) -->
-<div class="box">
-  <h2>🏅 Top Creators of the Week</h2>
-  <div id="topCreators" style="display: flex; overflow-x: auto; gap: 1rem; padding: 1rem 0;"></div>
-</div>
-
-<!-- 💬 Live Chat Preview (Live) -->
-<div class="box">
-  <h2>📣 Latest from the Community Chat</h2>
-  <div id="chatPreview" style="background-color: #262626; padding: 1rem; border-radius: 8px;"></div>
-</div>
-
-<!-- Regular Upload Sections -->
-<div class="box"><h2>✊ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
-<div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
-<div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
-<div class="box"><h2>🏋️🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
-<div class="box"><h2>✅🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
-<div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
-<div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div>
-  
-  </div>
-
-  <script>
-    const db = firebase.firestore();
-    const shoutoutBanner = document.getElementById("shoutout-banner");
-
-    db.collection("uploads")
-      .orderBy("timestamp", "desc")
-      .limit(5)
-      .get()
-      .then(snapshot => {
-        snapshot.docs.forEach(doc => {
-          const data = doc.data();
-          const shout = document.createElement("div");
-          shout.className = "shoutout-card";
-          shout.textContent = `💬 @${data.username} shared: "${data.title}"`;
-          shoutoutBanner.appendChild(shout);
-        });
-      });
-  </script>
-     <footer>
+      <div class="box">
+        <h2>📣 Live Community Chat</h2>
+        <div id="chatMessages"></div>
+        <div id="liveChat">
+          <input type="text" id="chatInput" placeholder="Type your message...">
+          <button onclick="sendChatMessage()">Send</button>
+        </div>
+      </div>
+    </main>
+    <footer>
       <div class="platform-icons">
         <img src="PS_Logo.png" alt="PlayStation" />
         <img src="Xbox.png" alt="Xbox" />
@@ -254,5 +204,53 @@
       <p>&copy; 2025 <span>GameSync Union</span>. Built for gamers, by gamers.</p>
       <p style="color: #777; font-size: 0.8rem;">Powered by Firebase | Designed with 💻 and 🎮</p>
     </footer>
+  </div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    let currentUsername = "Anonymous";
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        db.collection("users").doc(user.uid).get().then(doc => {
+          if (doc.exists) {
+            currentUsername = doc.data().username || "User";
+          }
+        });
+      }
+    });
+
+    function sendChatMessage() {
+      const input = document.getElementById("chatInput");
+      const message = input.value.trim();
+      if (message) {
+        db.collection("chat").add({
+          username: currentUsername,
+          message,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        input.value = "";
+      }
+    }
+
+    db.collection("chat").orderBy("timestamp", "asc")
+      .onSnapshot(snapshot => {
+        const chatContainer = document.getElementById("chatMessages");
+        chatContainer.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const msg = document.createElement("p");
+          msg.innerHTML = `<strong>@${data.username || 'User'}:</strong> ${data.message}`;
+          msg.style.marginBottom = "0.4rem";
+          chatContainer.appendChild(msg);
+        });
+      });
+  </script>
 </body>
 </html>
