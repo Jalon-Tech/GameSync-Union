@@ -209,6 +209,26 @@
       transform: scale(1.05);
       box-shadow: 0 0 18px rgba(255, 255, 255, 0.2), 0 0 12px var(--gsu-red);
     }
+      @media (max-width: 600px) {
+  footer {
+    padding: 1rem 0.5rem;
+  }
+
+  footer .platform-icons,
+  footer div {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  footer .platform-icons img {
+    height: 28px;
+  }
+
+  footer p {
+    font-size: 0.85rem;
+    padding: 0 1rem;
+  }
+}
   </style>
 </head>
 <body>
@@ -251,13 +271,6 @@
   <span id="shoutout-text" style="animation: pulse 2.4s infinite ease-in-out; display: inline-block; text-shadow: 0 0 4px #fff, 0 0 10px #fff">Loading shoutouts...</span>
 </div>
 
-<style>
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.08); opacity: 0.85; }
-  100% { transform: scale(1); opacity: 1; }
-}
-</style>
 
 <!-- 🏅 Top Creators of the Week (Live) -->
 <div class="box">
@@ -275,21 +288,22 @@
 <div class="box"><h2>✊ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
 <div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
 <div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
-<div class="box"><h2>🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
+<div class="box"><h2>🏋️ Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
 <div class="box"><h2>✅🏆Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
 <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
 <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
 
-<!-- Updated Footer to Match Homepage -->
-<footer style="background-color: var(--black-faded); text-align: center; padding: 1.2rem 1rem; margin-top: 4rem;">
-  <div class="platform-icons" style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin-bottom: 0.6rem;">
-    <img src="PS_Logo.png" alt="PlayStation" style="height: 32px; width: auto; opacity: 0.9;" />
-    <img src="Xbox.png" alt="Xbox" style="height: 32px; width: auto; opacity: 0.9;" />
-    <img src="Steam.png" alt="PC" style="height: 32px; width: auto; opacity: 0.9;" />
-    <img src="Switch.png" alt="Nintendo Switch" style="height: 32px; width: auto; opacity: 0.9;" />
+<!-- Footer (Matched with Homepage) -->
+<footer style="background-color: var(--black-faded); text-align: center; padding: 1.5rem 1rem; margin-top: 4rem;">
+  <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; margin-bottom: 1rem;">
+    <img src="PS_Logo.png" alt="PlayStation" style="height: 32px; width: auto; filter: brightness(0.9);" />
+    <img src="Xbox.png" alt="Xbox" style="height: 32px; width: auto; filter: brightness(0.9);" />
+    <img src="Steam.png" alt="PC" style="height: 32px; width: auto; filter: brightness(0.9);" />
+    <img src="Switch.png" alt="Nintendo Switch" style="height: 32px; width: auto; filter: brightness(0.9);" />
   </div>
   <p style="color: #ccc; font-size: 1rem; font-family: 'Roboto', sans-serif;">&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
 </footer>
+
 
 <script>
   const db = firebase.firestore();
