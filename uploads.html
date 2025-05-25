@@ -273,106 +273,105 @@
   </div>
 </div>
 
-<!-- 💬 Live Chat Preview -->
+<!-- 📢 Community Shoutout Banner (Dynamic & Styled) -->
+<div id="shoutout-banner" style="background: linear-gradient(90deg, #e60023, #ff4d4d); color: #fff; text-align: center; padding: 1rem 1.5rem; font-size: 1rem; font-family: 'Montserrat', sans-serif; font-weight: bold; border-radius: 12px; box-shadow: 0 0 15px rgba(230, 0, 35, 0.4); margin-bottom: 2rem;">
+  <span id="shoutout-text" style="animation: pulse 2s infinite ease-in-out; display: inline-block;">Loading shoutouts...</span>
+</div>
+
+<style>
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
+
+<!-- 🏅 Top Creators of the Week (Live) -->
+<div class="box">
+  <h2>🏅 Top Creators of the Week</h2>
+  <div id="topCreators" style="display: flex; overflow-x: auto; gap: 1rem; padding: 1rem 0;"></div>
+</div>
+
+<!-- 💬 Live Chat Preview (Live) -->
 <div class="box">
   <h2>📣 Latest from the Community Chat</h2>
-  <div style="background-color: #262626; padding: 1rem; border-radius: 8px;">
-    <p style="font-size: 0.95rem; color: #eee;">💬 @HyperDash: "Anyone else stuck on the PS5 Demon's Trial boss?"</p>
-    <p style="font-size: 0.95rem; color: #eee;">💬 @MysticMage: "Just posted a full breakdown on that strat!"</p>
-    <p style="font-size: 0.95rem; color: #eee;">💬 @AkariEdge: "Combo tip for Tekken 8's Lars — posted it!"</p>
-  </div>
+  <div id="chatPreview" style="background-color: #262626; padding: 1rem; border-radius: 8px;"></div>
 </div>
 
 <!-- Regular Upload Sections -->
-<div class="box"><h2>🗡️ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
+<div class="box"><h2>🖑️ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
 <div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
 <div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
 <div class="box"><h2>🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
-<div class="box"><h2>🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
+<div class="box"><h2>🏌️ Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
 <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
 <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
 
-  </div>
-</main>
-
-<a href="upload-form.html" class="upload-float-btn">📤 Upload Now</a>
-
-<footer style="background-color: var(--black-faded); margin-top: 4rem; padding: 2rem 1rem 1rem; text-align: center;">
-  <div style="margin-bottom: 1rem;">
-    <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: var(--gsu-red); margin-bottom: 0.5rem;">Powered by Gamers 🎮</h2>
-    <p style="color: #ccc; font-size: 0.95rem;">Connecting the community across PS5, Xbox, Switch & PC.</p>
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin-top: 1rem; margin-bottom: 1rem;">
-    <img src="PS_Logo.png" alt="PlayStation" style="height: 32px;" />
-    <img src="Xbox.png" alt="Xbox" style="height: 32px;" />
-    <img src="Steam.png" alt="PC" style="height: 32px;" />
-    <img src="Switch.png" alt="Nintendo Switch" style="height: 32px;" />
-  </div>
-  <p style="color: #777; font-size: 0.85rem;">&copy; 2025 GameSync Union — All rights reserved.</p>
-</footer>
-
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
-  };
-
-  firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  function renderCard(doc, containerId) {
-    const data = doc.data();
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    const card = document.createElement("div");
-    card.classList.add("guide-card");
-    card.innerHTML = `
-      <h3>${data.title || "Untitled Upload"}</h3>
-      <div class="user-meta">
-        <img src="${data.profileImageURL || 'default-avatar.png'}" class="user-avatar" />
-        <span>@${data.username || "GSU_Player"}</span>
-        <span class="platform-tag">${data.platform || "N/A"}</span>
-      </div>
-      <p>${data.description || "No description provided."}</p>
-      <div class="reactions">
-        <span>🔥 ${data.reactions?.fire || 0}</span>
-        <span>💬 ${data.reactions?.comments || 0}</span>
-      </div>
-    `;
-    container.appendChild(card);
-  }
-
-  const categories = ["boss", "tutorial", "community", "combo", "trophy", "chat", "art", "earnedTrophies"];
-
-  categories.forEach(category => {
-    db.collection("uploads")
-      .where("category", "==", category)
-      .orderBy("timestamp", "desc")
-      .limit(6)
-      .get()
-      .then(snapshot => {
-        snapshot.docs.forEach(doc => renderCard(doc, `${category}Uploads`));
+  // Dynamic Shoutouts
+  db.collection("uploads")
+    .orderBy("timestamp", "desc")
+    .limit(5)
+    .get()
+    .then(snapshot => {
+      const shoutouts = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return `💬 @${data.username} just posted: "${data.title}"`;
       });
-  });
+      let current = 0;
+      setInterval(() => {
+        document.getElementById("shoutout-text").textContent = shoutouts[current];
+        current = (current + 1) % shoutouts.length;
+      }, 5000);
+    });
 
-  db.collection("uploads").orderBy("timestamp", "desc").limit(6).get().then(snapshot => {
-    snapshot.docs.forEach(doc => renderCard(doc, "latestUploads"));
-  });
+  // Top Creators of the Week (Based on Upload Count)
+  db.collection("uploads")
+    .get()
+    .then(snapshot => {
+      const users = {};
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const user = data.username;
+        if (!users[user]) users[user] = { count: 0, reactions: 0 };
+        users[user].count++;
+        users[user].reactions += (data.reactions?.fire || 0);
+      });
+      const sorted = Object.entries(users)
+        .sort((a, b) => b[1].count - a[1].count)
+        .slice(0, 3);
+      const topCreatorsContainer = document.getElementById("topCreators");
+      sorted.forEach(([username, stats]) => {
+        const div = document.createElement("div");
+        div.style.minWidth = "140px";
+        div.style.textAlign = "center";
+        div.innerHTML = `
+          <img src="default-avatar.png" alt="User Avatar" style="height: 64px; width: 64px; border-radius: 50%; border: 2px solid var(--gsu-red);" />
+          <p style="margin-top: 0.5rem; font-weight: bold;">@${username}</p>
+          <p style="font-size: 0.8rem; color: #aaa;">🔥 ${stats.reactions} 🔁 ${stats.count} uploads</p>
+        `;
+        topCreatorsContainer.appendChild(div);
+      });
+    });
 
-  db.collection("uploads").where("featured", "==", true).orderBy("timestamp", "desc").limit(6).get().then(snapshot => {
-    snapshot.docs.forEach(doc => renderCard(doc, "featuredUploads"));
-  });
-  <span class="platform-tag" style="background-color: #444;">${data.badge || "🎮 Member"}</span>
-
+  // Live Community Chat Preview
+  db.collection("uploads")
+    .where("category", "==", "chat")
+    .orderBy("timestamp", "desc")
+    .limit(5)
+    .get()
+    .then(snapshot => {
+      const chatContainer = document.getElementById("chatPreview");
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const p = document.createElement("p");
+        p.textContent = `💬 @${data.username}: \"${data.description.slice(0, 100)}\"`;
+        p.style.fontSize = "0.95rem";
+        p.style.color = "#eee";
+        chatContainer.appendChild(p);
+      });
+    });
 </script>
-</body>
-</html>
+
