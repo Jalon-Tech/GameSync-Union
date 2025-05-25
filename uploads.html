@@ -7,6 +7,18 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    .fade-out {
+        opacity: 1;
+        animation: fadeOut 0.5s ease-out forwards;
+      }
+      
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+      }
+      
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -229,6 +241,8 @@
         <div class="chat-input">
           <input type="text" id="chatMessage" placeholder="Type your message...">
           <button onclick="sendMessage()">Send</button>
+          <button onclick="clearChat()" style="background:#e60023; color:#fff; border: 1px solid #777; border-radius: 6px; padding: 0.6rem 1rem; margin-left: auto;"> Clear Chat</button>
+
         </div>
       </div>
 
@@ -261,6 +275,26 @@
   </div>
 
   <script>
+    function clearChat() {
+        if (confirm("Are you sure you want to delete all chat messages?")) {
+          const chatBox = document.getElementById("liveChat");
+          if (chatBox) {
+            Array.from(chatBox.children).forEach((msg, index) => {
+              setTimeout(() => {
+                msg.classList.add("fade-out");
+              }, index * 50);
+            });
+      
+            setTimeout(() => {
+              db.collection("chat").get().then(snapshot => {
+                snapshot.forEach(doc => doc.ref.delete());
+              });
+            }, 600); // wait for animation to finish before deleting
+          }
+        }
+      }
+      
+      
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
       authDomain: "gamesync-union.firebaseapp.com",
