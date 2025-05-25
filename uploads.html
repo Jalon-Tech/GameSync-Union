@@ -663,6 +663,45 @@ function showFeedback(message, bgColor = '#e60023') {
 
 
 </script>
+  <script>
+function sendMessage() {
+  const input = document.getElementById("chatMessage");
+  const message = input.value.trim();
+  const sender = localStorage.getItem("gsuUsername") || "Anonymous";
+
+  if (!message) return;
+
+  db.collection("chat").add({
+    sender: sender,
+    text: message,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    input.value = "";
+  }).catch((error) => {
+    console.error("Error sending message:", error);
+  });
+}
+
+// Real-time listener to show new messages
+db.collection("chat").orderBy("timestamp").onSnapshot(snapshot => {
+  const chatBox = document.getElementById("liveChat");
+  chatBox.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const msg = doc.data();
+    const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "";
+    chatBox.innerHTML += `
+      <div class="chat-message">
+        <span>@${msg.sender}</span> ${msg.text}
+        <span style="float:right; font-size: 0.75rem; color:#aaa;">${time}</span>
+      </div>
+    `;
+  });
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+</script>
+
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
   <div id="dmMessages" style="height:80%; overflow-y:auto; margin-bottom:1rem; background:#2a2a2a; padding:1rem; border-radius:8px;"></div>
