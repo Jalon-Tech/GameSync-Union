@@ -201,27 +201,42 @@
         <p>Welcome to the squad hub. Post up, show out, and explore what gamers like YOU are bringing to the table across 🎮 PS5, 🟢 Xbox, 💻 PC, and 🔴 Switch.</p>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
-        <div class="box"><h2>🆕 Latest Uploads</h2><div class="guides-container" id="latestUploads"></div></div>
-      </div>
-      <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
+       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
+    <div class="box"><h2>🆕 Latest Uploads</h2><div class="guides-container" id="latestUploads"></div></div>
+  </div>
 
-      <div id="shoutout-banner" style="background-color: #e60023; color: #fff; text-align: center; padding: 1rem 1.5rem; font-size: 1.05rem; font-family: 'Montserrat', sans-serif; font-weight: 700; border-radius: 14px; box-shadow: 0 0 25px rgba(230, 0, 35, 0.5); margin-bottom: 2rem; letter-spacing: 0.5px; position: relative;">
-        <span id="shoutout-text" style="animation: pulse 2.4s infinite ease-in-out; display: inline-block; text-shadow: 0 0 4px #fff, 0 0 10px #fff">Loading shoutouts...</span>
-      </div>
+  <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
 
-      <div class="box"><h2>🏅 Top Creators of the Week</h2><div id="topCreators" style="display: flex; overflow-x: auto; gap: 1rem; padding: 1rem 0;"></div></div>
-      <div class="box"><h2>📣 Latest from the Community Chat</h2><div id="chatPreview" style="background-color: #262626; padding: 1rem; border-radius: 8px;"></div></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    
+   <!-- 📢 Community Shoutout Banner (Dynamic & Styled) -->
+<div id="shoutout-banner" style="background-color: #e60023; color: #fff; text-align: center; padding: 1rem 1.5rem; font-size: 1.05rem; font-family: 'Montserrat', sans-serif; font-weight: 700; border-radius: 14px; box-shadow: 0 0 25px rgba(230, 0, 35, 0.5); margin-bottom: 2rem; letter-spacing: 0.5px; position: relative; overflow: hidden;">
+  <span id="shoutout-text" style="animation: pulse 2.4s infinite ease-in-out; display: inline-block; text-shadow: 0 0 4px #fff, 0 0 10px #fff">Loading shoutouts...</span>
+</div>
 
-      <div class="box"><h2>✊ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
-      <div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
-      <div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
-      <div class="box"><h2>🏋️🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
-      <div class="box"><h2>✅🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
-      <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
-      <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
-    </main>
+
+<!-- 🏅 Top Creators of the Week (Live) -->
+<div class="box">
+  <h2>🏅 Top Creators of the Week</h2>
+  <div id="topCreators" style="display: flex; overflow-x: auto; gap: 1rem; padding: 1rem 0;"></div>
+</div>
+
+<!-- 💬 Live Chat Preview (Live) -->
+<div class="box">
+  <h2>📣 Latest from the Community Chat</h2>
+  <div id="chatPreview" style="background-color: #262626; padding: 1rem; border-radius: 8px;"></div>
+</div>
+
+<!-- Regular Upload Sections -->
+<div class="box"><h2>✊ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
+<div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
+<div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
+<div class="box"><h2>🏋️🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
+<div class="box"><h2>✅🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
+<div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
+<div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
+
     <footer>
       <div class="platform-icons">
         <img src="PS_Logo.png" alt="PlayStation" />
