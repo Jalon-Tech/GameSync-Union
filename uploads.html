@@ -424,77 +424,37 @@
           }
         });
     });
+    // Display player profiles from the users collection
+db.collection("users")
+  .orderBy("username")
+  .onSnapshot(snapshot => {
+    const container = document.getElementById("connectPlayers");
+    if (!container) return;
 
-  ...
-window.sendMessageToUser = sendMessageToUser;
+    container.innerHTML = ""; // Clear before re-rendering
 
-// ⬇️ PLACE THE CODE RIGHT HERE ⬇️
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      const div = document.createElement("div");
+      div.classList.add("upload-card");
 
-// Display player profiles from the users collection
-firebase.auth().onAuthStateChanged(authUser => {
-  db.collection("users")
-    .orderBy("username")
-    .onSnapshot(snapshot => {
-      const container = document.getElementById("connectPlayers");
-      if (!container) return;
+      div.innerHTML = `
+        <h3>🎮 @${user.username}</h3>
+        <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
+        <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
+        <p><strong>Trophy Stats (Trophy Count):</strong> ${user.trophyCount || "N/A"}</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+          ${user.favoriteImages?.map(url => `
+            <img src="${url}" alt="Game Cover" style="height: 50px; width: auto; border-radius: 6px;" />
+          `).join("")}
+        </div>
+      `;
 
-      container.innerHTML = "";
-
-      if (snapshot.empty) {
-        container.innerHTML = "<p style='color:#aaa;'>No players to show yet. Be the first to connect with others!</p>";
-        return;
-      }
-
-      snapshot.forEach(doc => {
-        const user = doc.data();
-        const userId = doc.id;
-        const isCurrentUser = authUser && authUser.uid === userId;
-        const friendCount = user.friends ? user.friends.length : 0;
-        const friendListHTML = user.friends && user.friends.length > 0
-          ? `<details style="margin-top: 0.5rem;"><summary style="cursor: pointer; color: var(--gsu-red); font-weight: bold;">👥 View Friends (${friendCount})</summary><ul style="margin-left: 1rem; color: #aaa; padding-top: 0.3rem;">${user.friends.map(f => `<li>@${f}</li>`).join("")}</ul></details>`
-          : "<p>No friends yet.</p>";
-
-        const div = document.createElement("div");
-        div.classList.add("upload-card");
-
-        div.innerHTML = `
-          <h3>🎮 @${user.username}</h3>
-          <p><strong>Platform:</strong> ${user.platform || "Not listed"}</p>
-          <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
-          <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
-          <p><strong>Trophy Stats (Trophy Count):</strong> ${user.trophyCount || "N/A"}</p>
-          <p><strong>Friends:</strong> ${friendCount}</p>
-          ${friendListHTML}
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-            ${user.favoriteImages?.map(url => `<img src="${url}" alt="Game Cover" style="height: 50px; width: auto; border-radius: 6px;" />`).join("")}
-          </div>
-          ${!isCurrentUser ? `<button onclick="addFriend('${userId}')" style="margin-top: 0.6rem; background-color: var(--gsu-red); border: none; padding: 0.5rem 1rem; border-radius: 6px; color: white; cursor: pointer;">➕ Add Friend</button>` : ""}
-        `;
-
-        container.appendChild(div);
-      });
+      container.appendChild(div);
     });
-});
-
-
-// Add friend function
-function addFriend(targetUserId) {
-  const user = firebase.auth().currentUser;
-  if (!user || user.uid === targetUserId) return;
-
-  const userRef = db.collection("users").doc(user.uid);
-  userRef.update({
-    friends: firebase.firestore.FieldValue.arrayUnion(targetUserId)
-  }).then(() => {
-    alert("Friend added!");
-  }).catch(err => {
-    console.error("Error adding friend:", err);
-    alert("Failed to add friend.");
   });
-}
-window.addFriend = addFriend;
 
-</script>
 
+  </script>
 </body>
 </html>
