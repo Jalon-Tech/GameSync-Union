@@ -7,6 +7,20 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    details summary {
+        outline: none;
+        list-style: none;
+      }
+      
+      details[open] summary::after {
+        content: " 🔽";
+      }
+      summary::after {
+        content: " ▶️";
+        float: right;
+        font-size: 0.9rem;
+      }
+    
     .fade-out {
         opacity: 1;
         animation: fadeOut 0.5s ease-out forwards;
@@ -335,124 +349,77 @@
 
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        firebase.firestore().collection("users").doc(user.uid).get().then(doc => {
-          if (doc.exists && doc.data().username) {
-            username = doc.data().username;
-            localStorage.setItem("gsuUsername", username);
-          } else {
-            username = "Anonymous";
-          }
-        });
-      } else {
-        alert("Please log in to chat and submit content.");
-        const chatInput = document.getElementById("chatMessage");
-        if (chatInput) chatInput.disabled = true;
-      }
-    });
+  firebase.auth().onAuthStateChanged(authUser => {
+  db.collection("users")
+    .orderBy("username")
+    .onSnapshot(snapshot => {
+      const container = document.getElementById("connectPlayers");
+      if (!container) return;
 
-    function sendMessage() {
-      const messageInput = document.getElementById("chatMessage");
-      if (!messageInput) return;
-      const message = messageInput.value.trim();
-      if (message !== "") {
-        db.collection("chat").add({
-          username: username,
-          message: message,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        messageInput.value = "";
-      }
-    }
+      container.innerHTML = ""; // Clear before re-rendering
 
-    const chatBox = document.getElementById("liveChat");
-    if (chatBox) {
-      db.collection("chat").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
-        chatBox.innerHTML = "";
-        snapshot.docs.reverse().forEach(doc => {
-          const data = doc.data();
-          const div = document.createElement("div");
-          div.classList.add("chat-message");
-          div.innerHTML = `<span>@${data.username || "Unknown"}:</span> ${data.message}`;
-          chatBox.appendChild(div);
-        });
-        chatBox.scrollTop = chatBox.scrollHeight;
-      });
-    }
+      snapshot.forEach(doc => {
+        const user = doc.data();
+        const userId = doc.id;
+        const isCurrentUser = authUser && authUser.uid === userId;
 
-    const sectionMappings = {
-      featuredUploads: "featured",
-      latestUploads: "latest",
-      artUploads: "art",
-      topCreators: "top",
-      bossUploads: "boss",
-      tutorialUploads: "tutorial",
-      communityUploads: "community",
-      comboUploads: "combo",
-      trophyUploads: "trophy",
-      chatUploads: "chat",
-      earnedTrophiesUploads: "challenge"
-    };
+        const friendCount = user.friends ? user.friends.length : 0;
+        const friendListHTML = user.friends && user.friends.length > 0
+          ? `<details style="margin-top: 0.5rem;">
+               <summary style="cursor: pointer; color: var(--gsu-red); font-weight: bold;">👥 View Friends (${friendCount})</summary>
+               <ul style="margin-left: 1rem; color: #aaa; padding-top: 0.3rem;">
+                 ${user.friends.map(friend => `<li>@${friend}</li>`).join("")}
+               </ul>
+             </details>`
+          : "<p>No friends yet.</p>";
 
-    function renderUploadCard(data) {
-      return `
-        <div class="upload-card">
-          <h3>${data.title}</h3>
-          <p>${data.description}</p>
-          <div class="upload-meta">
-            <span class="uploader">@${data.username}</span>
-            <span class="badge">${data.badge || "🎮 Member"}</span>
+        const div = document.createElement("div");
+        div.classList.add("upload-card");
+
+        div.innerHTML = `
+          <h3>🎮 @${user.username}</h3>
+          <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
+          <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
+          <p><strong>Trophy Stats (Trophy Count):</strong> ${user.trophyCount || "N/A"}</p>
+          <p><strong>Friends:</strong> ${friendCount}</p>
+          ${friendListHTML}
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            ${user.favoriteImages?.map(url => `
+              <img src="${url}" alt="Game Cover" style="height: 50px; width: auto; border-radius: 6px;" />
+            `).join("")}
           </div>
-        </div>
-      `;
-    }
+          ${!isCurrentUser ? `
+            <button onclick="addFriend('${userId}', '${user.username}')" 
+              style="margin-top: 0.6rem; background-color: var(--gsu-red); 
+              border: none; padding: 0.5rem 1rem; border-radius: 6px; 
+              color: white; cursor: pointer;">➕ Add Friend</button>
+          ` : ""}
+        `;
 
-    Object.entries(sectionMappings).forEach(([containerId, type]) => {
-      db.collection("uploads")
-        .where("type", "==", type)
-        .orderBy("timestamp", "desc")
-        .limit(8)
-        .onSnapshot(snapshot => {
-          const container = document.getElementById(containerId);
-          if (container) {
-            container.innerHTML = "";
-            snapshot.forEach(doc => {
-              const data = doc.data();
-              container.innerHTML += renderUploadCard(data);
-            });
-          }
-        });
+        container.appendChild(div);
+      });
     });
-    // Display player profiles from the users collection
-db.collection("users")
-  .orderBy("username")
-  .onSnapshot(snapshot => {
-    const container = document.getElementById("connectPlayers");
-    if (!container) return;
+});
+    function addFriend(targetUserId, targetUsername) {
+  const user = firebase.auth().currentUser;
+  if (!user || user.uid === targetUserId) return;
 
-    container.innerHTML = ""; // Clear before re-rendering
+  const userRef = db.collection("users").doc(user.uid);
+  const friendUsername = targetUsername;
 
-    snapshot.forEach(doc => {
-      const user = doc.data();
-      const div = document.createElement("div");
-      div.classList.add("upload-card");
-
-      div.innerHTML = `
-        <h3>🎮 @${user.username}</h3>
-        <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
-        <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
-        <p><strong>Trophy Stats (Trophy Count):</strong> ${user.trophyCount || "N/A"}</p>
-        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-          ${user.favoriteImages?.map(url => `
-            <img src="${url}" alt="Game Cover" style="height: 50px; width: auto; border-radius: 6px;" />
-          `).join("")}
-        </div>
-      `;
-
-      container.appendChild(div);
-    });
+  // Add the username of the friend to the 'friends' array
+  userRef.update({
+    friends: firebase.firestore.FieldValue.arrayUnion(friendUsername)
+  }).then(() => {
+    alert(`You added @${friendUsername} as a friend!`);
+  }).catch(err => {
+    console.error("Error adding friend:", err);
+    alert("Something went wrong adding your friend.");
   });
+}
+window.addFriend = addFriend;
+
+
 
 
   </script>
