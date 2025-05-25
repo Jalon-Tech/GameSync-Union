@@ -414,8 +414,10 @@ function sendDM() {
   const user = firebase.auth().currentUser;
   if (!msg || !currentDMUser || !user) return;
 
+  const senderName = localStorage.getItem("gsuUsername") || "Anonymous";
+
   db.collection("dms").doc(currentDMUser).collection("messages").add({
-    sender: user.displayName,
+    sender: senderName,
     text: msg,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
@@ -423,17 +425,20 @@ function sendDM() {
   document.getElementById("dmInput").value = "";
 }
 
+
 function closeDM() {
   document.getElementById("dmModal").style.display = "none";
 }
 
 function sendFriendRequest(targetId) {
   const user = firebase.auth().currentUser;
-  if (!user) return;
+  if (!user || user.uid === targetId) return; // prevent sending to self
+
   db.collection("users").doc(targetId).update({
     friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
   });
 }
+
 
 function acceptFriend(targetId) {
   const user = firebase.auth().currentUser;
@@ -455,10 +460,21 @@ function declineFriend(targetId) {
 
 function removeFriend(targetId, username) {
   const user = firebase.auth().currentUser;
-  db.collection("users").doc(user.uid).update({
-    friends: firebase.firestore.FieldValue.arrayRemove(username)
+  if (!user) return;
+
+  const currentUserRef = db.collection("users").doc(user.uid);
+  const targetUserRef = db.collection("users").doc(targetId);
+
+  // Remove each other as friends
+  currentUserRef.update({
+    friends: firebase.firestore.FieldValue.arrayRemove(targetId)
+  });
+
+  targetUserRef.update({
+    friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
   });
 }
+
 
 firebase.auth().onAuthStateChanged(authUser => {
   db.collection("users").orderBy("username").onSnapshot(snapshot => {
