@@ -7,6 +7,20 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .online {
+      background-color: #4CAF50;
+    }
+    .offline {
+      background-color: #999;
+    }
+
     details summary {
         outline: none;
         list-style: none;
@@ -349,57 +363,7 @@
 
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
-  firebase.auth().onAuthStateChanged(authUser => {
-  db.collection("users")
-    .orderBy("username")
-    .onSnapshot(snapshot => {
-      const container = document.getElementById("connectPlayers");
-      if (!container) return;
-
-      container.innerHTML = ""; // Clear before re-rendering
-
-      snapshot.forEach(doc => {
-        const user = doc.data();
-        const userId = doc.id;
-        const isCurrentUser = authUser && authUser.uid === userId;
-
-        const friendCount = user.friends ? user.friends.length : 0;
-        const friendListHTML = user.friends && user.friends.length > 0
-          ? `<details style="margin-top: 0.5rem;">
-               <summary style="cursor: pointer; color: var(--gsu-red); font-weight: bold;">👥 View Friends (${friendCount})</summary>
-               <ul style="margin-left: 1rem; color: #aaa; padding-top: 0.3rem;">
-                 ${user.friends.map(friend => `<li>@${friend}</li>`).join("")}
-               </ul>
-             </details>`
-          : "<p>No friends yet.</p>";
-
-        const div = document.createElement("div");
-        div.classList.add("upload-card");
-
-        div.innerHTML = `
-          <h3>🎮 @${user.username}</h3>
-          <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
-          <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
-          <p><strong>Trophy Stats (Trophy Count):</strong> ${user.trophyCount || "N/A"}</p>
-          <p><strong>Friends:</strong> ${friendCount}</p>
-          ${friendListHTML}
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-            ${user.favoriteImages?.map(url => `
-              <img src="${url}" alt="Game Cover" style="height: 50px; width: auto; border-radius: 6px;" />
-            `).join("")}
-          </div>
-          ${!isCurrentUser ? `
-            <button onclick="addFriend('${userId}', '${user.username}')" 
-              style="margin-top: 0.6rem; background-color: var(--gsu-red); 
-              border: none; padding: 0.5rem 1rem; border-radius: 6px; 
-              color: white; cursor: pointer;">➕ Add Friend</button>
-          ` : ""}
-        `;
-
-        container.appendChild(div);
-      });
-    });
-});
+  
     function addFriend(targetUserId, targetUsername) {
   const user = firebase.auth().currentUser;
   if (!user || user.uid === targetUserId) return;
@@ -423,5 +387,166 @@ window.addFriend = addFriend;
 
 
   </script>
+  <script>
+let currentDMUser = "";
+
+function openDM(friendId, friendUsername) {
+  currentDMUser = friendId;
+  document.getElementById("dmTitle").innerText = `💬 Chat with @${friendUsername}`;
+  document.getElementById("dmModal").style.display = "block";
+
+  const chatBox = document.getElementById("dmMessages");
+  chatBox.innerHTML = "";
+
+  db.collection("dms").doc(friendId).collection("messages")
+    .orderBy("timestamp")
+    .onSnapshot(snapshot => {
+      chatBox.innerHTML = "";
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        chatBox.innerHTML += `<p><strong>${msg.sender}:</strong> ${msg.text}</p>`;
+      });
+    });
+}
+
+function sendDM() {
+  const msg = document.getElementById("dmInput").value;
+  const user = firebase.auth().currentUser;
+  if (!msg || !currentDMUser || !user) return;
+
+  db.collection("dms").doc(currentDMUser).collection("messages").add({
+    sender: user.displayName,
+    text: msg,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  document.getElementById("dmInput").value = "";
+}
+
+function closeDM() {
+  document.getElementById("dmModal").style.display = "none";
+}
+
+function sendFriendRequest(targetId) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  db.collection("users").doc(targetId).update({
+    friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+  });
+}
+
+function acceptFriend(targetId) {
+  const user = firebase.auth().currentUser;
+  db.collection("users").doc(user.uid).update({
+    friends: firebase.firestore.FieldValue.arrayUnion(targetId),
+    friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
+  });
+  db.collection("users").doc(targetId).update({
+    friends: firebase.firestore.FieldValue.arrayUnion(user.uid)
+  });
+}
+
+function declineFriend(targetId) {
+  const user = firebase.auth().currentUser;
+  db.collection("users").doc(user.uid).update({
+    friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
+  });
+}
+
+function removeFriend(targetId, username) {
+  const user = firebase.auth().currentUser;
+  db.collection("users").doc(user.uid).update({
+    friends: firebase.firestore.FieldValue.arrayRemove(username)
+  });
+}
+
+firebase.auth().onAuthStateChanged(authUser => {
+  db.collection("users").orderBy("username").onSnapshot(snapshot => {
+    const container = document.getElementById("connectPlayers");
+    if (!container) return;
+    container.innerHTML = "";
+
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      const userId = doc.id;
+      const isCurrentUser = authUser && authUser.uid === userId;
+      const isFriend = user.friends?.includes(authUser.uid);
+      const sentRequest = user.pendingRequests?.includes(authUser.uid);
+      const receivedRequest = user.friendRequests?.includes(authUser.uid);
+      const status = user.online ? 'online' : 'offline';
+
+      let friendActions = "";
+      if (!isCurrentUser) {
+        if (isFriend) {
+          friendActions = `
+            <button onclick="openDM('${userId}', '${user.username}')">💬 DM</button>
+            <button onclick="removeFriend('${userId}', '${user.username}')">🗑️ Remove</button>
+          `;
+        } else if (sentRequest) {
+          friendActions = `<button disabled>⏳ Request Sent</button>`;
+        } else if (receivedRequest) {
+          friendActions = `
+            <button onclick="acceptFriend('${userId}')">✅ Accept</button>
+            <button onclick="declineFriend('${userId}')">❌ Decline</button>
+          `;
+        } else {
+          friendActions = `<button onclick="sendFriendRequest('${userId}')">➕ Add Friend</button>`;
+        }
+      }
+
+      const div = document.createElement("div");
+      div.classList.add("upload-card");
+
+      div.innerHTML = `
+        <h3><span class="status-dot ${status}"></span>🎮 @${user.username}</h3>
+        <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
+        <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
+        <p><strong>Trophy Stats:</strong> ${user.trophyCount || "N/A"}</p>
+        <p><strong>Friends:</strong> ${user.friends?.length || 0}</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+          ${user.favoriteImages?.map(url => `<img src="${url}" style="height:50px; border-radius:6px;" />`).join("") || ""}
+        </div>
+        <div style="margin-top: 0.5rem;">${friendActions}</div>
+      `;
+
+      container.appendChild(div);
+    });
+  });
+  if (authUser) {
+    const userRef = db.collection("users").doc(authUser.uid);
+  
+    // Set online true immediately
+    userRef.update({ online: true }).catch(err => console.error("Error setting online:", err));
+  
+    // On tab close or refresh
+    window.addEventListener("beforeunload", () => {
+      userRef.update({ online: false });
+    });
+  
+    // On logout
+    firebase.auth().onIdTokenChanged(user => {
+      if (!user) {
+        userRef.update({ online: false });
+      }
+    });
+  
+    // (Optional) Ensure user doc exists with default field
+    userRef.set({
+      online: true
+    }, { merge: true });
+  }
+  
+});
+
+
+</script>
+  <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
+  <h3 id="dmTitle">💬 Chat with ...</h3>
+  <div id="dmMessages" style="height:80%; overflow-y:auto; margin-bottom:1rem; background:#2a2a2a; padding:1rem; border-radius:8px;"></div>
+  <input id="dmInput" type="text" placeholder="Type your message..." style="width:80%; padding:0.5rem; border-radius:6px;" />
+  <button onclick="sendDM()">Send</button>
+  <button onclick="closeDM()" style="float:right; background:#e60023;">Close</button>
+</div>
+
 </body>
 </html>
