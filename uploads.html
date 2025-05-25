@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Community Uploads Hub | GameSync Union</title>
@@ -154,9 +155,41 @@
       color: var(--gsu-red);
       font-weight: bold;
     }
+    .upload-card {
+  background-color: #222;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  color: var(--white-text);
+  transition: transform 0.3s ease;
+}
+
+.upload-card:hover {
+  transform: scale(1.02);
+  border-color: var(--gsu-red);
+  box-shadow: 0 4px 12px rgba(230, 0, 35, 0.3);
+}
+
+.upload-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #aaa;
+}
+
+.upload-meta .badge {
+  background-color: var(--gsu-red);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.75rem;
+}
+
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
   <div class="page-wrapper">
@@ -217,38 +250,95 @@
     </footer>
   </div>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    let username = localStorage.getItem("gsuUsername") || "Anonymous";
+  let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
-    function sendMessage() {
-      const message = document.getElementById("chatMessage").value.trim();
-      if (message !== "") {
-        db.collection("chat").add({
-          username: username,
-          message: message,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        document.getElementById("chatMessage").value = "";
-      }
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      username = user.displayName || user.email.split("@")[0];
+      localStorage.setItem("gsuUsername", username);
+    } else {
+      alert("Please log in to chat and submit content.");
+      document.getElementById("chatMessage").disabled = true;
     }
+  });
 
-    db.collection("chat").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
-      const chatBox = document.getElementById("liveChat");
-      chatBox.innerHTML = "";
-      snapshot.docs.reverse().forEach(doc => {
-        const data = doc.data();
-        const div = document.createElement("div");
-        div.textContent = `@${data.username || "Unknown"}: ${data.message}`;
-        chatBox.appendChild(div);
+  function sendMessage() {
+    const message = document.getElementById("chatMessage").value.trim();
+    if (message !== "") {
+      db.collection("chat").add({
+        username: username,
+        message: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
+      document.getElementById("chatMessage").value = "";
+    }
+  }
+
+  db.collection("chat").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
+    const chatBox = document.getElementById("liveChat");
+    chatBox.innerHTML = "";
+    snapshot.docs.reverse().forEach(doc => {
+      const data = doc.data();
+      const div = document.createElement("div");
+      div.textContent = `@${data.username || "Unknown"}: ${data.message}`;
+      chatBox.appendChild(div);
     });
-  </script>
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  const sectionMappings = {
+    featuredUploads: "featured",
+    latestUploads: "latest",
+    artUploads: "art",
+    topCreators: "top",
+    bossUploads: "boss",
+    tutorialUploads: "tutorial",
+    communityUploads: "community",
+    comboUploads: "combo",
+    trophyUploads: "trophy",
+    chatUploads: "chat",
+    earnedTrophiesUploads: "challenge"
+  };
+
+  function renderUploadCard(data) {
+    return `
+      <div class="upload-card">
+        <h3>${data.title}</h3>
+        <p>${data.description}</p>
+        <div class="upload-meta">
+          <span class="uploader">@${data.username}</span>
+          <span class="badge">${data.badge || "🎮 Member"}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  Object.entries(sectionMappings).forEach(([containerId, type]) => {
+    db.collection("uploads")
+      .where("type", "==", type)
+      .orderBy("timestamp", "desc")
+      .limit(8)
+      .onSnapshot(snapshot => {
+        const container = document.getElementById(containerId);
+        if (container) {
+          container.innerHTML = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            container.innerHTML += renderUploadCard(data);
+          });
+        }
+      });
+  });
+</script>
+
+
 </body>
 </html>
