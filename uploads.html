@@ -535,6 +535,9 @@ firebase.auth().onAuthStateChanged(authUser => {
           `;
         } else if (sentRequest) {
           friendActions = `<button disabled>⏳ Request Sent</button>`;
+        }else if (receivedRequest && receivedRequest.includes(userId))  {
+          // Prevent showing actions to sender, only receiver
+          friendActions = `<span style="color: var(--gsu-red); font-weight: bold;">🔴 Pending Request</span>`;
         } else if (receivedRequest) {
           friendActions = `
             <button onclick="acceptFriend('${userId}')">✅ Accept</button>
@@ -543,6 +546,7 @@ firebase.auth().onAuthStateChanged(authUser => {
         } else {
           friendActions = `<button onclick="sendFriendRequest('${userId}')">➕ Add Friend</button>`;
         }
+        
       }
 
       const div = document.createElement("div");
@@ -585,6 +589,42 @@ firebase.auth().onAuthStateChanged(authUser => {
     userRef.set({
       online: true
     }, { merge: true });
+
+    // Display friend requests sent TO this user
+db.collection("users").doc(authUser.uid).get().then(doc => {
+  const userData = doc.data();
+  const incomingRequests = userData.friendRequests || [];
+
+  if (incomingRequests.length > 0) {
+    const banner = document.createElement("div");
+    banner.style.background = "#e60023";
+    banner.style.padding = "12px";
+    banner.style.marginBottom = "1rem";
+    banner.style.borderRadius = "8px";
+    banner.style.color = "#fff";
+    banner.innerHTML = `<strong>📥 Friend Requests:</strong><br />`;
+
+    incomingRequests.forEach(requesterId => {
+      db.collection("users").doc(requesterId).get().then(reqDoc => {
+        const reqUser = reqDoc.data();
+        const username = reqUser?.username || "Unknown";
+
+        const row = document.createElement("div");
+        row.style.marginTop = "6px";
+        row.innerHTML = `
+          🔔 <strong>@${username}</strong> 
+          <button onclick="acceptFriend('${requesterId}')">✅ Accept</button>
+          <button onclick="declineFriend('${requesterId}')">❌ Decline</button>
+        `;
+        banner.appendChild(row);
+      });
+    });
+
+    const parent = document.getElementById("connectPlayers");
+    if (parent) parent.prepend(banner);
+  }
+});
+
   }
   
 });
