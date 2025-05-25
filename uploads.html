@@ -89,7 +89,6 @@
       padding: 1rem;
       margin-bottom: 2rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-      color: var(--white-text);
     }
 
     .box:hover {
@@ -110,98 +109,124 @@
     }
 
     .guide-card {
-  background: linear-gradient(145deg, #1c1c1c, #232323);
-  border-radius: 12px;
-  padding: 1.2rem;
-  border: 1px solid transparent;
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.guide-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #e60023, transparent);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: -1;
-}
-
-.guide-card:hover::before {
-  opacity: 0.15;
-}
-
-.guide-card:hover {
-  transform: translateY(-6px) scale(1.015);
-  border-color: var(--gsu-red);
-  box-shadow: 0 10px 30px rgba(230, 0, 35, 0.25), 0 0 10px rgba(255, 255, 255, 0.03);
-}
-
-.guide-card h3 {
-  font-size: 1.25rem;
-  font-family: 'Montserrat', sans-serif;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-  text-shadow: 0 0 3px rgba(230, 0, 35, 0.3);
-}
-
-.guide-card p {
-  font-size: 0.95rem;
-  color: #ccc;
-  line-height: 1.4;
-}
-
-    footer {
-      background-color: var(--black-faded);
-      text-align: center;
-      padding: 1.2rem 1rem;
-      margin-top: 4rem;
+      background: linear-gradient(145deg, #1c1c1c, #232323);
+      border-radius: 12px;
+      padding: 1.2rem;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .platform-icons {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 0.6rem;
+    .guide-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #e60023, transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
     }
 
-    .platform-icons img {
-      height: 32px;
-      width: auto;
-      opacity: 0.9;
+    .guide-card:hover::before {
+      opacity: 0.15;
     }
 
-    footer p {
+    .guide-card:hover {
+      transform: translateY(-6px) scale(1.015);
+      border-color: var(--gsu-red);
+      box-shadow: 0 10px 30px rgba(230, 0, 35, 0.25);
+    }
+
+    .guide-card h3 {
+      font-size: 1.25rem;
+      font-family: 'Montserrat', sans-serif;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .guide-card p {
+      font-size: 0.95rem;
       color: #ccc;
-      font-size: 1rem;
-      font-family: 'Roboto', sans-serif;
+    }
+
+    .user-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      margin: 0.4rem 0;
+      color: #aaa;
+    }
+
+    .user-avatar {
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .platform-tag {
+      background-color: #333;
+      border-radius: 4px;
+      padding: 0 6px;
+      font-size: 0.75rem;
+      color: #eee;
+    }
+
+    .reactions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      color: #eee;
+    }
+
+    .reactions span {
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .reactions span:hover {
+      color: var(--gsu-red);
+    }
+
+    .upload-float-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--gsu-red);
+      color: white;
+      padding: 0.75rem 1.2rem;
+      border-radius: 40px;
+      font-weight: bold;
+      z-index: 999;
+      box-shadow: 0 0 12px rgba(230, 0, 35, 0.6);
+    }
+
+    .upload-float-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.2), 0 0 12px var(--gsu-red);
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text" style="color: white;">GAMESYNC UNION</div>
+  <div class="logo">
+    <img src="GSU_LOGO.png" alt="GSU Logo" />
+    <div class="logo-text">GAMESYNC UNION</div>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="trophies.html">Trophies/Achievements</a>
+    <a href="art.html">Art</a>
+    <a href="game-guides.html">Guides</a>
+    <a href="uploads.html">Community Uploads</a>
+  </nav>
+</header>
 
-    </div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">Trophies/Achievements</a>
-      <a href="art.html">Art</a>
-      <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">Community Uploads</a>
-    </nav>
-  </header>
-
-  <!-- Responsive Sectioned Layout -->
 <main>
   <div class="section-header">
     <h1 style="color: var(--gsu-red);">🎮 GameSync Union: Community Uploads</h1>
@@ -209,75 +234,38 @@
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    <div class="box">
-      <h2>🔥 Featured Uploads</h2>
-      <div class="guides-container" id="featuredUploads"></div>
-    </div>
-
-    <div class="box">
-      <h2>🆕 Latest Uploads</h2>
-      <div class="guides-container" id="latestUploads"></div>
-    </div>
+    <div class="box"><h2>🔥 Featured Uploads</h2><div class="guides-container" id="featuredUploads"></div></div>
+    <div class="box"><h2>🆕 Latest Uploads</h2><div class="guides-container" id="latestUploads"></div></div>
   </div>
 
-  <div class="box" style="margin-top: 3rem;">
-    <h2>🎨 Fan Art Highlights</h2>
-    <div class="guides-container" id="fanArtUploads"></div>
-  </div>
+  <div class="box"><h2>🎨 Fan Art Highlights</h2><div class="guides-container" id="artUploads"></div></div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    <div class="box">
-      <h2>🗡️ Boss Fight Strategies</h2>
-      <div class="guides-container" id="bossUploads"></div>
-    </div>
-
-    <div class="box">
-      <h2>🎮 Gameplay Tutorials</h2>
-      <div class="guides-container" id="tutorialUploads"></div>
-    </div>
-
-    <div class="box">
-      <h2>📹 Community Gameplay Videos</h2>
-      <div class="guides-container" id="communityUploads"></div>
-    </div>
-
-    <div class="box">
-      <h2>🥊 Combo Guides for Fighting Games</h2>
-      <div class="guides-container" id="comboUploads"></div>
-    </div>
-
-    <div class="box">
-      <h2>🏆 Trophy & Achievement Tips</h2>
-      <div class="guides-container" id="trophyUploads"></div>
-    </div>
-
-    <div class="box">
-      <h2>💬 Guide Discussion & Community Chat</h2>
-      <div class="guides-container" id="chatUploads"></div>
-    </div>
-
-    <div class="box">
-      <h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2>
-      <div class="guides-container" id="earnedTrophiesUploads"></div>
-    </div>
+    <div class="box"><h2>🗡️ Boss Fight Strategies</h2><div class="guides-container" id="bossUploads"></div></div>
+    <div class="box"><h2>🎮 Gameplay Tutorials</h2><div class="guides-container" id="tutorialUploads"></div></div>
+    <div class="box"><h2>📹 Community Gameplay Videos</h2><div class="guides-container" id="communityUploads"></div></div>
+    <div class="box"><h2>🥊 Combo Guides for Fighting Games</h2><div class="guides-container" id="comboUploads"></div></div>
+    <div class="box"><h2>🏆 Trophy & Achievement Tips</h2><div class="guides-container" id="trophyUploads"></div></div>
+    <div class="box"><h2>💬 Guide Discussion & Community Chat</h2><div class="guides-container" id="chatUploads"></div></div>
+    <div class="box"><h2>🔥 Challenge of the Day Completions | GSU Community Highlights 🎮🏆</h2><div class="guides-container" id="earnedTrophiesUploads"></div></div>
   </div>
 </main>
 
+<a href="upload-form.html" class="upload-float-btn">📤 Upload Now</a>
 
-  <footer>
-    <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
-    </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-  </footer>
+<footer>
+  <div class="platform-icons">
+    <img src="PS_Logo.png" alt="PlayStation" />
+    <img src="Xbox.png" alt="Xbox" />
+    <img src="Steam.png" alt="PC" />
+    <img src="Switch.png" alt="Nintendo Switch" />
+  </div>
+  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+</footer>
 
- <!-- Firebase SDKs -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
 <script>
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
@@ -300,38 +288,21 @@
     card.classList.add("guide-card");
     card.innerHTML = `
       <h3>${data.title || "Untitled Upload"}</h3>
-      <p><strong>Platform:</strong> ${data.platform || "Unknown"}</p>
+      <div class="user-meta">
+        <img src="${data.profileImageURL || 'default-avatar.png'}" class="user-avatar" />
+        <span>@${data.username || "GSU_Player"}</span>
+        <span class="platform-tag">${data.platform || "N/A"}</span>
+      </div>
       <p>${data.description || "No description provided."}</p>
+      <div class="reactions">
+        <span>🔥 ${data.reactions?.fire || 0}</span>
+        <span>💬 ${data.reactions?.comments || 0}</span>
+      </div>
     `;
     container.appendChild(card);
   }
 
-  // 🎯 Latest Uploads (across all categories)
-  db.collection("uploads")
-    .orderBy("timestamp", "desc")
-    .limit(6)
-    .get()
-    .then(snapshot => {
-      snapshot.docs.forEach(doc => renderCard(doc, "latestUploads"));
-    })
-    .catch(err => console.error("Latest Uploads Error:", err));
-
-  // 🌟 Featured Uploads (flagged in Firebase)
-  db.collection("uploads")
-    .where("featured", "==", true)
-    .orderBy("timestamp", "desc")
-    .limit(6)
-    .get()
-    .then(snapshot => {
-      snapshot.docs.forEach(doc => renderCard(doc, "featuredUploads"));
-    })
-    .catch(err => console.error("Featured Uploads Error:", err));
-
-  // 📂 Category-Based Uploads (normal flow)
-  const categories = [
-    "boss", "tutorial", "community", "combo", "trophy",
-    "chat", "art", "earnedTrophies"
-  ];
+  const categories = ["boss", "tutorial", "community", "combo", "trophy", "chat", "art", "earnedTrophies"];
 
   categories.forEach(category => {
     db.collection("uploads")
@@ -341,11 +312,16 @@
       .get()
       .then(snapshot => {
         snapshot.docs.forEach(doc => renderCard(doc, `${category}Uploads`));
-      })
-      .catch(err => console.error(`${category} Uploads Error:`, err));
+      });
+  });
+
+  db.collection("uploads").orderBy("timestamp", "desc").limit(6).get().then(snapshot => {
+    snapshot.docs.forEach(doc => renderCard(doc, "latestUploads"));
+  });
+
+  db.collection("uploads").where("featured", "==", true).orderBy("timestamp", "desc").limit(6).get().then(snapshot => {
+    snapshot.docs.forEach(doc => renderCard(doc, "featuredUploads"));
   });
 </script>
-
-
 </body>
 </html>
