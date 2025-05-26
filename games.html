@@ -550,21 +550,34 @@
     const container = document.querySelector('main .box:last-of-type');
     container.innerHTML = '<h2>User-Suggested Games</h2>';
     const list = document.createElement('div');
-    const data = JSON.parse(localStorage.getItem(suggestedGamesKey)) || [];
-
+    const data = JSON.parse(localStorage.getItem('gsu_suggested_games')) || [];
+  
     if (!data.length) {
       list.innerHTML = '<p>No suggestions yet.</p>';
     } else {
-      list.innerHTML = data.map(game => `
-        <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
-          <strong>${game.title}</strong> (${game.platform})<br />
-          <small style="color:#aaa;">"${game.review}"<br />– <em>${game.user}</em></small>
-        </div>
-      `).join('');
+      list.innerHTML = data.map((game, index) => {
+        const isOwner = game.user === localStorage.getItem('gsu_username');
+        return `
+          <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
+            <strong>${game.title}</strong> (${game.platform})<br />
+            <small style="color:#aaa;">"${game.review}"</small><br />
+            <small>– <span style="color: var(--gsu-red); font-weight: bold;">${game.user}</span></small><br />
+            ${isOwner ? `<button onclick="removeSuggestion(${index})" class="btn" style="margin-top:4px; width:auto; padding:4px 10px;">🗑️ Remove</button>` : ''}
+          </div>
+        `;
+      }).join('');
     }
-
+  
     container.appendChild(list);
   }
+  
+  function removeSuggestion(index) {
+    const data = JSON.parse(localStorage.getItem(suggestedGamesKey)) || [];
+    data.splice(index, 1);
+    localStorage.setItem(suggestedGamesKey, JSON.stringify(data));
+    displaySuggestions();
+  }
+  
 
   function loadMoreGames() {
     currentPage++;
