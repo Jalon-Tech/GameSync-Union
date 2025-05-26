@@ -513,17 +513,28 @@
     document.querySelector('#suggestReview').value = '';
   }
 
-  function displaySuggestions() {
+  async function displaySuggestions() {
     const container = document.querySelector('main .box:last-child');
-    const list = document.createElement('div');
-    list.innerHTML = suggestedGames.map(game => `
-      <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
-        <strong>${game.title}</strong> (${game.platform})<br />
-        <small style="color:#aaa;">"${game.review}"</small>
-      </div>
-    `).join('');
-    container.appendChild(list);
+    container.innerHTML = `<h2>User-Suggested Games</h2>`;
+  
+    const snapshot = await db.collection('suggestedGames').orderBy('upvotes', 'desc').get();
+    snapshot.forEach(doc => {
+      const game = doc.data();
+      const div = document.createElement('div');
+      const icon = getPlatformIcon(game.platform);
+      div.style.marginBottom = '1rem';
+      div.style.borderBottom = '1px solid #444';
+      div.style.paddingBottom = '0.6rem';
+      div.innerHTML = `
+        <strong>${icon} ${game.title}</strong> <small style="color:#999;">(${game.platform})</small><br />
+        <small style="color:#aaa;">"${game.review}"</small><br />
+        <small style="color:#888;">— Submitted by <b>${game.submittedBy || 'Anonymous'}</b></small><br />
+        <button onclick="upvote('${doc.id}')" style="margin-top:4px;" class="btn">👍 Upvote (${game.upvotes})</button>
+      `;
+      container.appendChild(div);
+    });
   }
+  
 
   document.addEventListener('DOMContentLoaded', () => {
     fetchGames();
