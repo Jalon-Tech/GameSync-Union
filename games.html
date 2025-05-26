@@ -566,6 +566,7 @@
           </div>
         `;
       }).join('');
+      
     }
   
     container.appendChild(list);
@@ -584,6 +585,19 @@
     fetchGames(true);
   }
 
+  
+ // ✅ First: set username before anything else loads
+firebase.auth().onAuthStateChanged(async (user) => {
+    if (user) {
+      const uid = user.uid;
+      const userDoc = await firebase.firestore().collection("users").doc(uid).get();
+      const username = userDoc.exists ? userDoc.data().username : "Anonymous";
+  
+      localStorage.setItem('gsu_username', username);
+    }
+  });
+  
+  // ✅ Then trigger content setup
   document.addEventListener('DOMContentLoaded', () => {
     fetchGames();
     fetchTrendingGames();
@@ -591,6 +605,8 @@
     const suggestBtn = document.querySelector('button.btn[style*="margin-top"]');
     if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
   });
+  
+  
 </script>
 
 
