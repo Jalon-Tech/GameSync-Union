@@ -390,7 +390,7 @@
   let currentPage = 1;
   const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
   const shownGameIds = new Set();
-  const suggestedGames = [];
+  const suggestedGamesKey = 'gsu_suggested_games';
 
   async function fetchGames(loadMore = false) {
     const search = document.getElementById('searchInput')?.value.trim();
@@ -401,7 +401,7 @@
 
     if (!loadMore) {
       grid.innerHTML = '';
-      currentPage = 1;
+      currentPage = Math.floor(Math.random() * 10) + 1;
       shownGameIds.clear();
     }
 
@@ -424,7 +424,6 @@
         return;
       }
 
-      data.results.sort(() => Math.random() - 0.5);
       data.results.forEach(renderGameCard);
       document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
     } catch (e) {
@@ -458,7 +457,8 @@
     const cacheKey = 'gsu_weekly_trending';
     const cacheDateKey = 'gsu_weekly_date';
     const now = new Date();
-    const weekId = `${now.getFullYear()}-W${Math.floor((now.getDate() - 1) / 7) + 1}`;
+    const monday = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+    const weekId = monday.toISOString().split('T')[0];
     const cachedData = localStorage.getItem(cacheKey);
     const cachedWeek = localStorage.getItem(cacheDateKey);
 
@@ -503,13 +503,17 @@
     const title = document.getElementById('suggestTitle').value.trim();
     const platform = document.getElementById('suggestPlatform').value.trim();
     const review = document.getElementById('suggestReview').value.trim();
+    const user = localStorage.getItem('gsu_username') || 'Anonymous';
 
     if (!title || !platform || !review) {
       alert("Please fill out all fields.");
       return;
     }
 
-    suggestedGames.push({ title, platform, review });
+    const existing = JSON.parse(localStorage.getItem(suggestedGamesKey)) || [];
+    existing.push({ title, platform, review, user });
+    localStorage.setItem(suggestedGamesKey, JSON.stringify(existing));
+
     displaySuggestions();
 
     document.getElementById('suggestTitle').value = '';
@@ -518,13 +522,14 @@
   }
 
   function displaySuggestions() {
-    const container = document.querySelector('main .box:last-child');
+    const container = document.getElementById('suggestedGamesBox');
     container.innerHTML = '<h2>User-Suggested Games</h2><p>[This section will list custom games added by users]</p>';
     const list = document.createElement('div');
-    list.innerHTML = suggestedGames.map(game => `
+    const data = JSON.parse(localStorage.getItem(suggestedGamesKey)) || [];
+    list.innerHTML = data.map(game => `
       <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
         <strong>${game.title}</strong> (${game.platform})<br />
-        <small style="color:#aaa;">"${game.review}"</small>
+        <small style="color:#aaa;">"${game.review}"<br />– <em>${game.user}</em></small>
       </div>
     `).join('');
     container.appendChild(list);
@@ -538,6 +543,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     fetchGames();
     fetchTrendingGames();
+    displaySuggestions();
     document.querySelector('button.btn[style*="margin-top"]')?.addEventListener('click', handleGameSuggestion);
   });
 </script>
