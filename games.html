@@ -419,12 +419,14 @@
       const res = await fetch(url);
       const data = await res.json();
 
-      if (!data.results.length) {
+      const results = search ? data.results : shuffleArray(data.results);
+
+      if (!results.length) {
         noResults.style.display = 'block';
         return;
       }
 
-      data.results.forEach(renderGameCard);
+      results.forEach(renderGameCard);
       document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
     } catch (e) {
       console.error('Error fetching games:', e);
@@ -450,6 +452,13 @@
     grid.appendChild(card);
   }
 
+  function shuffleArray(array) {
+    return array
+      .map(value => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+  }
+
   async function fetchTrendingGames() {
     const trendingContainer = document.getElementById('trendingGames');
     trendingContainer.innerHTML = '';
@@ -457,7 +466,8 @@
     const cacheKey = 'gsu_weekly_trending';
     const cacheDateKey = 'gsu_weekly_date';
     const now = new Date();
-    const monday = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+    const monday = new Date(now);
+    monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
     const weekId = monday.toISOString().split('T')[0];
     const cachedData = localStorage.getItem(cacheKey);
     const cachedWeek = localStorage.getItem(cacheDateKey);
@@ -470,13 +480,13 @@
 
     const url = new URL('https://api.rawg.io/api/games');
     url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 10);
+    url.searchParams.append('page_size', 20);
     url.searchParams.append('ordering', '-rating');
 
     try {
       const res = await fetch(url);
       const data = await res.json();
-      const games = data.results.slice(0, 5);
+      const games = shuffleArray(data.results).slice(0, 5);
 
       localStorage.setItem(cacheKey, JSON.stringify(games));
       localStorage.setItem(cacheDateKey, weekId);
@@ -554,6 +564,7 @@
     if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
   });
 </script>
+
   
 </body>
 </html>
