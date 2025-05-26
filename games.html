@@ -510,9 +510,17 @@ console.log('API URL:', url.toString()); // Debug: Log final URL
     }
   
     document.addEventListener('DOMContentLoaded', () => {
-      fetchGames();
-      fetchTrendingGames();
-    });
+  fetchGames();
+  fetchTrendingGames();
+
+  // Extra event bindings for mobile reliability
+  document.getElementById('searchInput').addEventListener('input', fetchGames);
+  document.getElementById('platformFilter').addEventListener('change', fetchGames);
+  document.getElementById('genreFilter').addEventListener('change', fetchGames);
+});
+    document.getElementById('platformFilter').addEventListener('change', fetchGames);
+    document.getElementById('genreFilter').addEventListener('change', fetchGames);
+    document.getElementById('searchInput').addEventListener('input', fetchGames);
   </script>
   
   
