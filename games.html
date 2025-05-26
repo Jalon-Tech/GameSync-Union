@@ -427,44 +427,37 @@
 
     noResults.style.display = 'none';
 
-    let allResults = [];
-    let page = 1;
-    const maxPages = 5; // adjust to fetch more pages if needed
-
-    try {
-      while (page <= maxPages) {
-        const url = new URL('https://api.rawg.io/api/games');
-        url.searchParams.append('key', apiKey);
-        url.searchParams.append('page_size', 40);
-        url.searchParams.append('page', page);
-        if (search) url.searchParams.append('search', search);
-        if (platform) url.searchParams.append('platforms', platform);
-        if (genre) url.searchParams.append('genres', genre);
-
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (data.results.length === 0) break;
-
-        allResults = allResults.concat(data.results);
-        page++;
-      }
-
-      let results = search
-        ? allResults.filter(g => g.name.toLowerCase().includes(search))
-        : shuffleArray(allResults);
-
-      if (!results.length) {
-        noResults.style.display = 'block';
-        return;
-      }
-
-      results.slice(0, 40).forEach(renderGameCard); // limit displayed games
+    const url = new URL('https://api.rawg.io/api/games');
+    url.searchParams.append('key', apiKey);
+    url.searchParams.append('page_size', 40); // only what you need
+    url.searchParams.append('page', currentPage);
+    if (search) {
+      url.searchParams.append('search', search);
+      url.searchParams.append('search_precise', true);
+    }
+    if (platform) url.searchParams.append('platforms', platform);
+    if (genre) url.searchParams.append('genres', genre);
+    
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    const results = data.results || [];
+    
+    if (!results.length) {
+      noResults.style.display = 'block';
+      document.getElementById('loadMoreContainer').style.display = 'none';
+      return;
+    }
+    
+    results.forEach(renderGameCard);
+    document.getElementById('loadMoreContainer').style.display =
+      data.next ? 'block' : 'none';
+    
       document.getElementById('loadMoreContainer').style.display = results.length > 40 ? 'block' : 'none';
     } catch (e) {
       console.error('Error fetching games:', e);
     }
-  }
+  
 
   function renderGameCard(game) {
     if (shownGameIds.has(game.id)) return;
