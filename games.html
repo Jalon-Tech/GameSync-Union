@@ -407,6 +407,20 @@
 
     noResults.style.display = 'none';
 
+    const cacheKey = 'gsu_all_games_cache';
+    const cacheTimeKey = 'gsu_all_games_time';
+    const cachedData = localStorage.getItem(cacheKey);
+    const cacheTimestamp = localStorage.getItem(cacheTimeKey);
+
+    const now = Date.now();
+    const oneHour = 60 * 60 * 1000;
+
+    if (!search && !platform && !genre && cachedData && cacheTimestamp && now - parseInt(cacheTimestamp) < oneHour) {
+      const cached = JSON.parse(cachedData);
+      cached.forEach(renderGameCard);
+      return;
+    }
+
     const url = new URL('https://api.rawg.io/api/games');
     url.searchParams.append('key', apiKey);
     url.searchParams.append('page_size', 20);
@@ -424,20 +438,12 @@
         return;
       }
 
-      data.results.forEach(game => {
-        if (shownGameIds.has(game.id)) return;
-        shownGameIds.add(game.id);
+      if (!search && !platform && !genre) {
+        localStorage.setItem(cacheKey, JSON.stringify(data.results));
+        localStorage.setItem(cacheTimeKey, Date.now().toString());
+      }
 
-        const card = document.createElement('div');
-        card.classList.add('game-card');
-        card.innerHTML = `
-          <img src="${game.background_image || 'https://via.placeholder.com/400x225?text=No+Image'}" alt="${game.name}" />
-          <h3>${game.name}</h3>
-          <p><strong>Rating:</strong> ${game.rating || 'N/A'} / 5</p>
-          <p><strong>Platforms:</strong> ${game.platforms?.map(p => p.platform.name).join(', ') || 'N/A'}</p>
-        `;
-        grid.appendChild(card);
-      });
+      data.results.forEach(renderGameCard);
 
       document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
     } catch (e) {
@@ -445,92 +451,26 @@
     }
   }
 
-  function loadMoreGames() {
-    currentPage++;
-    fetchGames(true);
+  function renderGameCard(game) {
+    if (shownGameIds.has(game.id)) return;
+    shownGameIds.add(game.id);
+
+    const grid = document.getElementById('gameGrid');
+    const platforms = game.platforms?.map(p => p.platform.name).join(', ') || 'N/A';
+    const image = game.background_image || 'https://via.placeholder.com/400x225?text=No+Image';
+
+    const card = document.createElement('div');
+    card.classList.add('game-card');
+    card.innerHTML = `
+      <img src="${image}" alt="${game.name}" />
+      <h3>${game.name}</h3>
+      <p><strong>Rating:</strong> ${game.rating || 'N/A'} / 5</p>
+      <p><strong>Platforms:</strong> ${platforms}</p>
+    `;
+    grid.appendChild(card);
   }
-
-  function fetchTrendingGames() {
-    const trendingContainer = document.getElementById('trendingGames');
-    trendingContainer.innerHTML = '';
-
-    const cacheKey = 'gsu_weekly_trending';
-    const cacheDateKey = 'gsu_weekly_date';
-    const now = new Date();
-    const weekId = `${now.getFullYear()}-W${Math.floor((now.getDate() - 1) / 7) + 1}`;
-    const cachedData = localStorage.getItem(cacheKey);
-    const cachedWeek = localStorage.getItem(cacheDateKey);
-
-    if (cachedData && cachedWeek === weekId) {
-      const games = JSON.parse(cachedData);
-      games.forEach(renderTrendingCard);
-      return;
-    }
-
-    const url = new URL('https://api.rawg.io/api/games');
-    url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 10);
-    url.searchParams.append('ordering', '-rating');
-
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        const games = data.results.slice(0, 5);
-        localStorage.setItem(cacheKey, JSON.stringify(games));
-        localStorage.setItem(cacheDateKey, weekId);
-        games.forEach(renderTrendingCard);
-      })
-      .catch(() => {
-        trendingContainer.innerHTML = '<p style="color:#aaa;">Unable to load trending games.</p>';
-      });
-
-    function renderTrendingCard(game) {
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <img src="${game.background_image || 'https://via.placeholder.com/300x180?text=No+Image'}" alt="${game.name}" style="width:100%; border-radius:4px;" />
-        <strong>${game.name}</strong><br />
-        <small style="color:#aaa;">Rating: ${game.rating || 'N/A'} / 5</small>
-      `;
-      div.style.marginBottom = '1rem';
-      trendingContainer.appendChild(div);
-    }
-  }
-
-  function handleGameSuggestion() {
-    const title = document.getElementById('suggestTitle').value.trim();
-    const platform = document.getElementById('suggestPlatform').value.trim();
-    const review = document.querySelector('#suggestReview')?.value.trim();
-
-    if (!title || !platform || !review) {
-      alert("Please fill out all fields.");
-      return;
-    }
-
-    suggestedGames.push({ title, platform, review });
-    displaySuggestions();
-    document.getElementById('suggestTitle').value = '';
-    document.getElementById('suggestPlatform').value = '';
-    document.querySelector('#suggestReview').value = '';
-  }
-
-  function displaySuggestions() {
-    const container = document.querySelector('main .box:last-child');
-    const list = document.createElement('div');
-    list.innerHTML = suggestedGames.map(game => `
-      <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
-        <strong>${game.title}</strong> (${game.platform})<br />
-        <small style="color:#aaa;">"${game.review}"</small>
-      </div>
-    `).join('');
-    container.appendChild(list);
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    fetchGames();
-    fetchTrendingGames();
-    document.querySelector('.btn[style*="margin-top"]')?.addEventListener('click', handleGameSuggestion);
-  });
 </script>
+
 
 
 
