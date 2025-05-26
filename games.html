@@ -386,7 +386,7 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
- <script>
+<script>
   let currentPage = 1;
   const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
   const shownGameIds = new Set();
@@ -407,33 +407,40 @@
 
     noResults.style.display = 'none';
 
-    const url = new URL('https://api.rawg.io/api/games');
-    url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 40); // larger sample size for more shuffle variety
-    url.searchParams.append('page', currentPage);
-    if (search) url.searchParams.append('search', search);
-    if (platform) url.searchParams.append('platforms', platform);
-    if (genre) url.searchParams.append('genres', genre);
+    let allResults = [];
+    let page = 1;
+    const maxPages = 5; // adjust to fetch more pages if needed
 
     try {
-      const res = await fetch(url);
-      const data = await res.json();
+      while (page <= maxPages) {
+        const url = new URL('https://api.rawg.io/api/games');
+        url.searchParams.append('key', apiKey);
+        url.searchParams.append('page_size', 40);
+        url.searchParams.append('page', page);
+        if (search) url.searchParams.append('search', search);
+        if (platform) url.searchParams.append('platforms', platform);
+        if (genre) url.searchParams.append('genres', genre);
 
-      let results = data.results || [];
+        const res = await fetch(url);
+        const data = await res.json();
 
-      if (!search) {
-        results = shuffleArray(results); // shuffle full list if not searching
-      } else {
-        results = results.filter(g => g.name.toLowerCase().includes(search));
+        if (data.results.length === 0) break;
+
+        allResults = allResults.concat(data.results);
+        page++;
       }
+
+      let results = search
+        ? allResults.filter(g => g.name.toLowerCase().includes(search))
+        : shuffleArray(allResults);
 
       if (!results.length) {
         noResults.style.display = 'block';
         return;
       }
 
-      results.forEach(renderGameCard);
-      document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
+      results.slice(0, 40).forEach(renderGameCard); // limit displayed games
+      document.getElementById('loadMoreContainer').style.display = results.length > 40 ? 'block' : 'none';
     } catch (e) {
       console.error('Error fetching games:', e);
     }
@@ -488,7 +495,7 @@
 
     const url = new URL('https://api.rawg.io/api/games');
     url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 30);
+    url.searchParams.append('page_size', 100);
     url.searchParams.append('ordering', '-rating');
 
     try {
@@ -572,6 +579,7 @@
     if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
   });
 </script>
+
 
   
 </body>
