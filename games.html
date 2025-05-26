@@ -305,27 +305,29 @@
     <aside>
       <div class="box">
         <h2>Filter Games</h2>
-        <input type="text" id="searchInput" class="input-field" placeholder="Search by game title..." />
-        <label for="platformFilter">Platform</label>
-        <select id="platformFilter" class="input-field">
-          <option value="">All Platforms</option>
-          <option value="4">PC</option>
-          <option value="187">PlayStation 5</option>
-          <option value="186">Xbox Series X|S</option>
-          <option value="7">Nintendo Switch</option>
-        </select>
-        <label for="genreFilter">Genre</label>
-        <select id="genreFilter" class="input-field">
-          <option value="">All Genres</option>
-          <option value="action">Action</option>
-          <option value="role-playing-games-rpg">RPG</option>
-          <option value="fighting">Fighting</option>
-          <option value="platformer">Platformer</option>
-          <option value="adventure">Adventure</option>
-          <option value="sports">Sports</option>
-          <option value="racing">Racing</option>
-          <option value="shooter">Shooter</option>
-        </select>
+        <input type="text" id="searchInput" class="input-field" placeholder="Search by game title..." oninput="fetchGames()" />
+
+<label for="platformFilter">Platform</label>
+<select id="platformFilter" class="input-field" onchange="fetchGames()">
+  <option value="">All Platforms</option>
+  <option value="4">PC</option>
+  <option value="187">PlayStation 5</option>
+  <option value="186">Xbox Series X|S</option>
+  <option value="7">Nintendo Switch</option>
+</select>
+
+<label for="genreFilter">Genre</label>
+<select id="genreFilter" class="input-field" onchange="fetchGames()">
+  <option value="">All Genres</option>
+  <option value="action">Action</option>
+  <option value="role-playing-games-rpg">RPG</option>
+  <option value="fighting">Fighting</option>
+  <option value="platformer">Platformer</option>
+  <option value="adventure">Adventure</option>
+  <option value="sports">Sports</option>
+  <option value="racing">Racing</option>
+  <option value="shooter">Shooter</option>
+</select>
         <button class="btn" onclick="fetchGames()">Apply Filters</button>
       </div>
 
@@ -408,10 +410,16 @@
       url.searchParams.append('key', apiKey);
       url.searchParams.append('page_size', 20);
       url.searchParams.append('page', currentPage);
-      if (search) url.searchParams.append('search', search);
-      if (platform) url.searchParams.append('platforms', platform);
-      if (genre) url.searchParams.append('genres', genre);
-  
+      if (search && search.trim() !== "") {
+  url.searchParams.append('search', search.trim());
+}
+if (platform && platform !== "") {
+  url.searchParams.append('platforms', platform);
+}
+if (genre && genre !== "") {
+  url.searchParams.append('genres', genre);
+}
+console.log('API URL:', url.toString()); // Debug: Log final URL
       try {
         const res = await fetch(url);
         const data = await res.json();
@@ -510,3 +518,4 @@
   
 </body>
 </html>
+
