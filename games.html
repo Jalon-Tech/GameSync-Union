@@ -393,7 +393,7 @@
   const suggestedGamesKey = 'gsu_suggested_games';
 
   async function fetchGames(loadMore = false) {
-    const search = document.getElementById('searchInput')?.value.trim();
+    const search = document.getElementById('searchInput')?.value.trim().toLowerCase();
     const platform = document.getElementById('platformFilter')?.value;
     const genre = document.getElementById('genreFilter')?.value;
     const grid = document.getElementById('gameGrid');
@@ -401,7 +401,7 @@
 
     if (!loadMore) {
       grid.innerHTML = '';
-      currentPage = Math.floor(Math.random() * 10) + 1;
+      currentPage = 1;
       shownGameIds.clear();
     }
 
@@ -522,16 +522,22 @@
   }
 
   function displaySuggestions() {
-    const container = document.getElementById('suggestedGamesBox');
-    container.innerHTML = '<h2>User-Suggested Games</h2><p>[This section will list custom games added by users]</p>';
+    const container = document.querySelector('main .box:last-of-type');
+    container.innerHTML = '<h2>User-Suggested Games</h2>';
     const list = document.createElement('div');
     const data = JSON.parse(localStorage.getItem(suggestedGamesKey)) || [];
-    list.innerHTML = data.map(game => `
-      <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
-        <strong>${game.title}</strong> (${game.platform})<br />
-        <small style="color:#aaa;">"${game.review}"<br />– <em>${game.user}</em></small>
-      </div>
-    `).join('');
+
+    if (!data.length) {
+      list.innerHTML = '<p>No suggestions yet.</p>';
+    } else {
+      list.innerHTML = data.map(game => `
+        <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
+          <strong>${game.title}</strong> (${game.platform})<br />
+          <small style="color:#aaa;">"${game.review}"<br />– <em>${game.user}</em></small>
+        </div>
+      `).join('');
+    }
+
     container.appendChild(list);
   }
 
@@ -544,12 +550,10 @@
     fetchGames();
     fetchTrendingGames();
     displaySuggestions();
-    document.querySelector('button.btn[style*="margin-top"]')?.addEventListener('click', handleGameSuggestion);
+    const suggestBtn = document.querySelector('button.btn[style*="margin-top"]');
+    if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
   });
 </script>
-
-
-
-
+  
 </body>
 </html>
