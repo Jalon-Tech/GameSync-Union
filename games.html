@@ -407,20 +407,6 @@
 
     noResults.style.display = 'none';
 
-    const cacheKey = 'gsu_all_games_cache';
-    const cacheTimeKey = 'gsu_all_games_time';
-    const cachedData = localStorage.getItem(cacheKey);
-    const cacheTimestamp = localStorage.getItem(cacheTimeKey);
-
-    const now = Date.now();
-    const oneHour = 60 * 60 * 1000;
-
-    if (!search && !platform && !genre && cachedData && cacheTimestamp && now - parseInt(cacheTimestamp) < oneHour) {
-      const cached = JSON.parse(cachedData);
-      cached.forEach(renderGameCard);
-      return;
-    }
-
     const url = new URL('https://api.rawg.io/api/games');
     url.searchParams.append('key', apiKey);
     url.searchParams.append('page_size', 20);
@@ -438,13 +424,8 @@
         return;
       }
 
-      if (!search && !platform && !genre) {
-        localStorage.setItem(cacheKey, JSON.stringify(data.results));
-        localStorage.setItem(cacheTimeKey, Date.now().toString());
-      }
-
+      data.results.sort(() => Math.random() - 0.5);
       data.results.forEach(renderGameCard);
-
       document.getElementById('loadMoreContainer').style.display = data.next ? 'block' : 'none';
     } catch (e) {
       console.error('Error fetching games:', e);
@@ -469,6 +450,96 @@
     `;
     grid.appendChild(card);
   }
+
+  async function fetchTrendingGames() {
+    const trendingContainer = document.getElementById('trendingGames');
+    trendingContainer.innerHTML = '';
+
+    const cacheKey = 'gsu_weekly_trending';
+    const cacheDateKey = 'gsu_weekly_date';
+    const now = new Date();
+    const weekId = `${now.getFullYear()}-W${Math.floor((now.getDate() - 1) / 7) + 1}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    const cachedWeek = localStorage.getItem(cacheDateKey);
+
+    if (cachedData && cachedWeek === weekId) {
+      const games = JSON.parse(cachedData);
+      games.forEach(renderTrendingCard);
+      return;
+    }
+
+    const url = new URL('https://api.rawg.io/api/games');
+    url.searchParams.append('key', apiKey);
+    url.searchParams.append('page_size', 10);
+    url.searchParams.append('ordering', '-rating');
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const games = data.results.slice(0, 5);
+
+      localStorage.setItem(cacheKey, JSON.stringify(games));
+      localStorage.setItem(cacheDateKey, weekId);
+
+      games.forEach(renderTrendingCard);
+    } catch (e) {
+      trendingContainer.innerHTML = '<p style="color:#aaa;">Unable to load trending games.</p>';
+    }
+  }
+
+  function renderTrendingCard(game) {
+    const trendingContainer = document.getElementById('trendingGames');
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <img src="${game.background_image || 'https://via.placeholder.com/300x180?text=No+Image'}" alt="${game.name}" style="width:100%; border-radius:4px;" />
+      <strong>${game.name}</strong><br />
+      <small style="color:#aaa;">Rating: ${game.rating || 'N/A'} / 5</small>
+    `;
+    div.style.marginBottom = '1rem';
+    trendingContainer.appendChild(div);
+  }
+
+  function handleGameSuggestion() {
+    const title = document.getElementById('suggestTitle').value.trim();
+    const platform = document.getElementById('suggestPlatform').value.trim();
+    const review = document.getElementById('suggestReview').value.trim();
+
+    if (!title || !platform || !review) {
+      alert("Please fill out all fields.");
+      return;
+    }
+
+    suggestedGames.push({ title, platform, review });
+    displaySuggestions();
+
+    document.getElementById('suggestTitle').value = '';
+    document.getElementById('suggestPlatform').value = '';
+    document.getElementById('suggestReview').value = '';
+  }
+
+  function displaySuggestions() {
+    const container = document.querySelector('main .box:last-child');
+    container.innerHTML = '<h2>User-Suggested Games</h2><p>[This section will list custom games added by users]</p>';
+    const list = document.createElement('div');
+    list.innerHTML = suggestedGames.map(game => `
+      <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
+        <strong>${game.title}</strong> (${game.platform})<br />
+        <small style="color:#aaa;">"${game.review}"</small>
+      </div>
+    `).join('');
+    container.appendChild(list);
+  }
+
+  function loadMoreGames() {
+    currentPage++;
+    fetchGames(true);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchGames();
+    fetchTrendingGames();
+    document.querySelector('button.btn[style*="margin-top"]')?.addEventListener('click', handleGameSuggestion);
+  });
 </script>
 
 
