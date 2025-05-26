@@ -351,7 +351,7 @@
 
       <div class="box">
         <h2>User-Suggested Games</h2>
-        <p>[This section will list custom games added by users]</p>
+        <p>🚀 Handpicked by our own squad — these games slap. Want your pick up here? Drop your fav, rep your console, and let the GSU crew know what’s worth the grind. 🎮🔥</p>
       </div>
     </main>
 
@@ -409,7 +409,7 @@
 
     const url = new URL('https://api.rawg.io/api/games');
     url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 20);
+    url.searchParams.append('page_size', 40); // larger sample size for more shuffle variety
     url.searchParams.append('page', currentPage);
     if (search) url.searchParams.append('search', search);
     if (platform) url.searchParams.append('platforms', platform);
@@ -419,7 +419,13 @@
       const res = await fetch(url);
       const data = await res.json();
 
-      const results = search ? data.results : shuffleArray(data.results);
+      let results = data.results || [];
+
+      if (!search) {
+        results = shuffleArray(results); // shuffle full list if not searching
+      } else {
+        results = results.filter(g => g.name.toLowerCase().includes(search));
+      }
 
       if (!results.length) {
         noResults.style.display = 'block';
@@ -453,10 +459,12 @@
   }
 
   function shuffleArray(array) {
-    return array
-      .map(value => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value);
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
   }
 
   async function fetchTrendingGames() {
@@ -480,7 +488,7 @@
 
     const url = new URL('https://api.rawg.io/api/games');
     url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 20);
+    url.searchParams.append('page_size', 30);
     url.searchParams.append('ordering', '-rating');
 
     try {
