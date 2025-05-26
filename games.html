@@ -405,255 +405,89 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
-<script>
-  let currentPage = 1;
-  const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
-  const shownGameIds = new Set();
-  const suggestedGamesKey = 'gsu_suggested_games';
-
-  async function fetchGames(loadMore = false) {
-    const search = document.getElementById('searchInput')?.value.trim().toLowerCase();
-    const platform = document.getElementById('platformFilter')?.value;
-    const genre = document.getElementById('genreFilter')?.value;
-    const grid = document.getElementById('gameGrid');
-    const noResults = document.getElementById('noResults');
-
-    if (!loadMore) {
-      grid.innerHTML = '';
-      currentPage = 1;
-      shownGameIds.clear();
-    }
-
-    noResults.style.display = 'none';
-
-    let allResults = [];
-    let page = 1;
-    const maxPages = 5; // adjust to fetch more pages if needed
-
-    try {
-      while (page <= maxPages) {
+  <script>
+    let currentPage = 1;
+    const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
+    const shownGameIds = new Set();
+  
+    async function fetchGames(loadMore = false) {
+      const search = document.getElementById('searchInput')?.value.trim().toLowerCase();
+      const platform = document.getElementById('platformFilter')?.value;
+      const genre = document.getElementById('genreFilter')?.value;
+      const grid = document.getElementById('gameGrid');
+      const noResults = document.getElementById('noResults');
+  
+      if (!loadMore) {
+        grid.innerHTML = '';
+        currentPage = 1;
+        shownGameIds.clear();
+      }
+  
+      noResults.style.display = 'none';
+  
+      try {
         const url = new URL('https://api.rawg.io/api/games');
         url.searchParams.append('key', apiKey);
-        url.searchParams.append('page_size', 40);
-        url.searchParams.append('page', page);
-        if (search) url.searchParams.append('search', search);
+        url.searchParams.append('page_size', 20);
+        url.searchParams.append('page', currentPage);
+        if (search) {
+          url.searchParams.append('search', search);
+          url.searchParams.append('search_precise', true);
+        }
         if (platform) url.searchParams.append('platforms', platform);
         if (genre) url.searchParams.append('genres', genre);
-
+  
         const res = await fetch(url);
         const data = await res.json();
-
-        if (data.results.length === 0) break;
-
-        allResults = allResults.concat(data.results);
-        page++;
+        const results = data.results || [];
+  
+        if (!results.length) {
+          noResults.style.display = 'block';
+          document.getElementById('loadMoreContainer').style.display = 'none';
+          return;
+        }
+  
+        results.forEach(renderGameCard);
+        document.getElementById('loadMoreContainer').style.display =
+          data.next ? 'block' : 'none';
+  
+      } catch (e) {
+        console.error('Error fetching games:', e);
       }
-
-      let results = search
-        ? allResults.filter(g => g.name.toLowerCase().includes(search))
-        : shuffleArray(allResults);
-
-      if (!results.length) {
-        noResults.style.display = 'block';
-        return;
+    }
+  
+    function loadMoreGames() {
+      currentPage++;
+      fetchGames(true);
+    }
+  
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        const uid = user.uid;
+        const userDoc = await firebase.firestore().collection("users").doc(uid).get();
+        const username = userDoc.exists ? userDoc.data().username : "Anonymous";
+        localStorage.setItem('gsu_username', username);
       }
-
-      results.slice(0, 40).forEach(renderGameCard); // limit displayed games
-      document.getElementById('loadMoreContainer').style.display = results.length > 40 ? 'block' : 'none';
-    } catch (e) {
-      console.error('Error fetching games:', e);
-    }
-  }
-
-  function renderGameCard(game) {
-    if (shownGameIds.has(game.id)) return;
-    shownGameIds.add(game.id);
-
-    const grid = document.getElementById('gameGrid');
-    const platforms = game.platforms?.map(p => p.platform.name).join(', ') || 'N/A';
-    const image = game.background_image || 'https://via.placeholder.com/400x225?text=No+Image';
-
-    const card = document.createElement('div');
-    card.classList.add('game-card');
-    card.innerHTML = `
-      <img src="${image}" alt="${game.name}" />
-      <h3>${game.name}</h3>
-      <p><strong>Rating:</strong> ${game.rating || 'N/A'} / 5</p>
-      <p><strong>Platforms:</strong> ${platforms}</p>
-    `;
-    grid.appendChild(card);
-  }
-
-  function shuffleArray(array) {
-    const copy = [...array];
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy;
-  }
-
-  async function fetchTrendingGames() {
-    const trendingContainer = document.getElementById('trendingGames');
-    trendingContainer.innerHTML = '';
-
-    const cacheKey = 'gsu_weekly_trending';
-    const cacheDateKey = 'gsu_weekly_date';
-    const now = new Date();
-    const monday = new Date(now);
-    monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
-    const weekId = monday.toISOString().split('T')[0];
-    const cachedData = localStorage.getItem(cacheKey);
-    const cachedWeek = localStorage.getItem(cacheDateKey);
-
-    if (cachedData && cachedWeek === weekId) {
-      const games = JSON.parse(cachedData);
-      games.forEach(renderTrendingCard);
-      return;
-    }
-
-    const url = new URL('https://api.rawg.io/api/games');
-    url.searchParams.append('key', apiKey);
-    url.searchParams.append('page_size', 100);
-    url.searchParams.append('ordering', '-rating');
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      const games = shuffleArray(data.results).slice(0, 5);
-
-      localStorage.setItem(cacheKey, JSON.stringify(games));
-      localStorage.setItem(cacheDateKey, weekId);
-
-      games.forEach(renderTrendingCard);
-    } catch (e) {
-      trendingContainer.innerHTML = '<p style="color:#aaa;">Unable to load trending games.</p>';
-    }
-  }
-
-  function renderTrendingCard(game) {
-    const trendingContainer = document.getElementById('trendingGames');
-    const div = document.createElement('div');
-    div.innerHTML = `
-      <img src="${game.background_image || 'https://via.placeholder.com/300x180?text=No+Image'}" alt="${game.name}" style="width:100%; border-radius:4px;" />
-      <strong>${game.name}</strong><br />
-      <small style="color:#aaa;">Rating: ${game.rating || 'N/A'} / 5</small>
-    `;
-    div.style.marginBottom = '1rem';
-    trendingContainer.appendChild(div);
-  }
-
-  async function handleGameSuggestion() {
-    const title = document.getElementById('suggestTitle').value.trim();
-    const platform = document.getElementById('suggestPlatform').value.trim();
-    const review = document.getElementById('suggestReview').value.trim();
-    const user = localStorage.getItem('gsu_username') || 'Anonymous';
+    });
   
-    if (!title || !platform || !review) {
-      alert("Please fill out all fields.");
-      return;
-    }
-  
-    try {
-      await firebase.firestore().collection('suggested_games').add({
-        title,
-        platform,
-        review,
-        user,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-  
-      alert("Suggestion submitted successfully!");
-      displaySuggestions(); // optional: refresh display
-      document.getElementById('suggestTitle').value = '';
-      document.getElementById('suggestPlatform').value = '';
-      document.getElementById('suggestReview').value = '';
-    } catch (e) {
-      console.error("Error submitting suggestion:", e);
-      alert("Failed to submit suggestion.");
-    }
-  }
-  
-
-  async function displaySuggestions() {
-    const container = document.querySelector('main .box:last-of-type');
-    container.innerHTML = '<h2>User-Suggested Games</h2>';
-    const list = document.createElement('div');
-  
-    try {
-      const snapshot = await firebase.firestore()
-        .collection('suggested_games')
-        .orderBy('timestamp', 'desc')
-        .get();
-  
-      if (snapshot.empty) {
-        list.innerHTML = '<p>No suggestions yet.</p>';
-      } else {
-        const username = localStorage.getItem('gsu_username');
-        snapshot.forEach((doc, index) => {
-          const game = doc.data();
-          const isOwner = game.user === username;
-          list.innerHTML += `
-            <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
-              <strong>${game.title}</strong> (${game.platform})<br />
-              <small style="color:#aaa;">"${game.review}"</small><br />
-              <small>– <span style="color: var(--gsu-red); font-weight: bold;">${game.user}</span></small><br />
-              ${isOwner ? `<button onclick="removeSuggestion('${doc.id}')" class="btn" style="margin-top:4px; width:auto; padding:4px 10px;">🗑️ Remove</button>` : ''}
-            </div>
-          `;
-        });
-      }
-  
-      container.appendChild(list);
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-      list.innerHTML = "<p>Couldn't load suggestions.</p>";
-      container.appendChild(list);
-    }
-  }
-  
-  
-  async function removeSuggestion(docId) {
-    try {
-      await firebase.firestore().collection('suggested_games').doc(docId).delete();
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchGames();
+      fetchTrendingGames();
       displaySuggestions();
-    } catch (e) {
-      console.error("Error removing suggestion:", e);
-      alert("Failed to remove suggestion.");
-    }
-  }
   
+      const suggestBtn = document.querySelector('button.btn[style*="margin-top"]');
+      if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
   
-
-  function loadMoreGames() {
-    currentPage++;
-    fetchGames(true);
-  }
-
+      let searchTimeout;
+      document.getElementById('searchInput').addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          fetchGames();
+        }, 500);
+      });
+    });
+  </script>
   
- // ✅ First: set username before anything else loads
-firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      const uid = user.uid;
-      const userDoc = await firebase.firestore().collection("users").doc(uid).get();
-      const username = userDoc.exists ? userDoc.data().username : "Anonymous";
-  
-      localStorage.setItem('gsu_username', username);
-    }
-  });
-  
-  // ✅ Then trigger content setup
-  document.addEventListener('DOMContentLoaded', () => {
-    fetchGames();
-    fetchTrendingGames();
-    displaySuggestions();
-    const suggestBtn = document.querySelector('button.btn[style*="margin-top"]');
-    if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
-  });
-  
-  
-</script>
 
 
   
