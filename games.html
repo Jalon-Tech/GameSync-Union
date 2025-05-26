@@ -385,12 +385,31 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, addDoc, getDocs, query, orderBy, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  
+    const firebaseConfig = {
+      apiKey: "YOUR_KEY",
+      authDomain: "YOUR_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_ID",
+      appId: "YOUR_APP_ID"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const firebase = { auth: getAuth(app) };
+    window.db = db;
+    window.firebase = firebase;
+  </script>
+  
  <script>
   let currentPage = 1;
   const apiKey = 'fc4151d1ff52430e930e7abc2f3893cd';
   const shownGameIds = new Set();
-  const suggestedGames = [];
 
   async function fetchGames(loadMore = false) {
     const search = document.getElementById('searchInput')?.value.trim();
@@ -399,11 +418,11 @@
     const grid = document.getElementById('gameGrid');
     const noResults = document.getElementById('noResults');
 
-    if (!loadMore) {
-      grid.innerHTML = '';
-      currentPage = 1;
-      shownGameIds.clear();
-    }
+    if (!loadMore || currentPage === 1) {
+        grid.innerHTML = '';
+        shownGameIds.clear();
+      }
+      
 
     noResults.style.display = 'none';
 
@@ -496,22 +515,51 @@
     }
   }
 
-  function handleGameSuggestion() {
+  function getPlatformIcon(platform) {
+    switch (platform.toLowerCase()) {
+      case 'pc': return '🖥️';
+      case 'playstation 5': return '🎮';
+      case 'xbox': return '🟩';
+      case 'nintendo switch': return '🎮';
+      default: return '🎯';
+    }
+  }
+  
+
+  async function handleGameSuggestion() {
     const title = document.getElementById('suggestTitle').value.trim();
     const platform = document.getElementById('suggestPlatform').value.trim();
     const review = document.querySelector('#suggestReview')?.value.trim();
-
+  
+    const user = firebase.auth().currentUser;
     if (!title || !platform || !review) {
       alert("Please fill out all fields.");
       return;
     }
-
-    suggestedGames.push({ title, platform, review });
+  
+    let submittedBy = "Anonymous";
+    if (user) {
+      const userDoc = await db.collection('users').doc(user.uid).get();
+      submittedBy = userDoc.exists ? userDoc.data().username : user.email;
+    }
+  
+    await db.collection('suggestedGames').add({
+      title,
+      platform,
+      review,
+      submittedBy,
+      upvotes: 0,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+      
     displaySuggestions();
+  
     document.getElementById('suggestTitle').value = '';
     document.getElementById('suggestPlatform').value = '';
     document.querySelector('#suggestReview').value = '';
   }
+  
 
   async function displaySuggestions() {
     const container = document.querySelector('main .box:last-child');
@@ -537,10 +585,19 @@
   
 
   document.addEventListener('DOMContentLoaded', () => {
-    fetchGames();
+    currentPage = 1; // reset just in case
+    fetchGames(); // this now clears the shown IDs properly
     fetchTrendingGames();
     document.querySelector('.btn[style*="margin-top"]')?.addEventListener('click', handleGameSuggestion);
   });
+  async function upvote(docId) {
+    const ref = db.collection('suggestedGames').doc(docId);
+    await ref.update({
+      upvotes: firebase.firestore.FieldValue.increment(1)
+    });
+    displaySuggestions(); // refresh
+  }
+  
 </script>
 
 
