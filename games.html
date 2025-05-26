@@ -418,19 +418,19 @@
     const genre = document.getElementById('genreFilter')?.value;
     const grid = document.getElementById('gameGrid');
     const noResults = document.getElementById('noResults');
-
+  
     if (!loadMore) {
       grid.innerHTML = '';
       currentPage = 1;
       shownGameIds.clear();
     }
-
+  
     noResults.style.display = 'none';
-
+  
     let allResults = [];
     let page = 1;
-    const maxPages = 5; // adjust to fetch more pages if needed
-
+    const maxPages = 1; // ⚠️ optional: reduce to improve speed
+  
     try {
       while (page <= maxPages) {
         const url = new URL('https://api.rawg.io/api/games');
@@ -440,31 +440,32 @@
         if (search) url.searchParams.append('search', search);
         if (platform) url.searchParams.append('platforms', platform);
         if (genre) url.searchParams.append('genres', genre);
-
+  
         const res = await fetch(url);
         const data = await res.json();
-
+  
         if (data.results.length === 0) break;
-
+  
         allResults = allResults.concat(data.results);
         page++;
       }
-
+  
       let results = search
         ? allResults.filter(g => g.name.toLowerCase().includes(search))
         : shuffleArray(allResults);
-
+  
       if (!results.length) {
         noResults.style.display = 'block';
         return;
       }
-
-      results.slice(0, 40).forEach(renderGameCard); // limit displayed games
+  
+      results.slice(0, 40).forEach(renderGameCard);
       document.getElementById('loadMoreContainer').style.display = results.length > 40 ? 'block' : 'none';
     } catch (e) {
       console.error('Error fetching games:', e);
     }
   }
+  
 
   function renderGameCard(game) {
     if (shownGameIds.has(game.id)) return;
@@ -645,12 +646,14 @@ firebase.auth().onAuthStateChanged(async (user) => {
   
   // ✅ Then trigger content setup
   document.addEventListener('DOMContentLoaded', () => {
-    fetchGames();
+    fetchGames();  // loads first 20
     fetchTrendingGames();
     displaySuggestions();
+  
     const suggestBtn = document.querySelector('button.btn[style*="margin-top"]');
     if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
   });
+  
   
   
 </script>
