@@ -25,6 +25,11 @@
     const storage = firebase.storage();
   </script>
   <style>
+    .editable-title[contenteditable="true"]:hover {
+    outline: 1px dashed var(--gsu-red);
+    cursor: text;
+  }
+
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -174,6 +179,9 @@
       <a href="uploads.html">GSU Player Lounge</a>
     </nav>
   </header>
+  <div id="loadingSpinner" style="display:none;text-align:center;padding:2rem;">
+  <p>Loading fan art gallery...</p>
+</div>
 
   <div class="main-container">
     <div class="box">
@@ -260,40 +268,50 @@
       location.reload();
     }
 
-    function loadFanArt() {
-      const user = firebase.auth().currentUser;
-      if (!user) return;
+   function loadFanArt() {
+  const user = firebase.auth().currentUser;
+  const isMyTab = currentTab === "my";
 
-      let query = db.collection("fan_art").orderBy("timestamp", "desc");
-      if (currentTab === "my") {
-        query = query.where("uid", "==", user.uid);
-      }
+  let query = db.collection("fan_art").orderBy("timestamp", "desc");
+  if (isMyTab && user) {
+    query = query.where("uid", "==", user.uid);
+  } else if (isMyTab && !user) {
+    document.getElementById("fanArtGallery").innerHTML = "<p style='opacity: 0.6; text-align:center;'>Log in to view your uploads.</p>";
+    return;
+  }
 
-      query.onSnapshot(snapshot => {
-        const gallery = document.getElementById("fanArtGallery");
-        gallery.innerHTML = "";
-        if (snapshot.empty) {
-          gallery.innerHTML = "<p style='opacity: 0.6; text-align:center;'>No gaming art uploaded yet.</p>";
-          return;
-        }
-        snapshot.forEach(doc => {
-          const art = doc.data();
-          const isOwner = user.uid === art.uid;
+     query.onSnapshot(snapshot => {
+  const gallery = document.getElementById("fanArtGallery");
+  gallery.innerHTML = "";
+  document.getElementById("loadingSpinner").style.display = "block";
 
-          const card = document.createElement("div");
-          card.className = "art-card";
-          card.innerHTML = `
-            <img src="${art.imageUrl}" alt="${art.title}" />
-            <h3 contenteditable="${isOwner}" onblur="updateTitle('${doc.id}', this.innerText, ${isOwner})">${art.title}</h3>
-            <p>${art.promotedBy 
-              ? `🎨 ${art.artistIG} — Promoted by ${art.promotedBy}` 
-              : `🎨 ${art.artistIG}`}</p>
-            ${isOwner ? `<button onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
-          `;
-          gallery.appendChild(card);
-        });
-      });
-    }
+  if (snapshot.empty) {
+    gallery.innerHTML = "<p style='opacity: 0.6; text-align:center;'>No gaming art uploaded yet.</p>";
+    document.getElementById("loadingSpinner").style.display = "none";
+    return;
+  }
+
+  snapshot.forEach(doc => {
+    const art = doc.data();
+    const isOwner = user && user.uid === art.uid;
+
+    const card = document.createElement("div");
+    card.className = "art-card";
+    card.innerHTML = `
+      <img src="${art.imageUrl}" alt="${art.title}" />
+      <h3 class="editable-title" contenteditable="${isOwner}" onblur="updateTitle('${doc.id}', this.innerText, ${isOwner})" title="${isOwner ? 'Click to edit title' : ''}">${art.title}</h3>
+      <p style="font-size:0.8rem; opacity:0.6;">📅 Uploaded ${art.timestamp?.toDate().toLocaleDateString() || ''}</p>
+      <p>${art.promotedBy 
+        ? `🎨 ${art.artistIG} — Promoted by ${art.promotedBy}` 
+        : `🎨 ${art.artistIG}`}</p>
+      ${isOwner ? `<button onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
+    `;
+    gallery.appendChild(card);
+  });
+
+  // ✅ Moved here
+  document.getElementById("loadingSpinner").style.display = "none";
+});
 
     async function updateTitle(id, newTitle, isOwner) {
       if (!isOwner || newTitle.trim() === "") return;
@@ -308,9 +326,9 @@
     }
 
     firebase.auth().onAuthStateChanged(user => {
-      if (!user) return;
-      loadFanArt();
-    });
+  loadFanArt(); // Always call to allow public view
+  });
+
   </script>
 </body>
 </html>
