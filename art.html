@@ -193,10 +193,17 @@
             <img src="${data.imageURL}" alt="${data.title}" />
             <h3>${data.title}</h3>
             <p>${data.description || "No description provided."}</p>
-            <p style="font-size: 0.8rem; opacity: 0.6;">
-            Uploaded by: <strong style="color: var(--gsu-red);">${data.username || "Unknown"}</strong>
-            ${data.shoutout ? `<br><span style="color: var(--gsu-red); font-size: 0.75rem;"> Shoutout to artist: <strong>@${data.shoutout}</strong></span>` : ""}
-          </p>
+            <div style="margin-top: 0.8rem;">
+            <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-bottom: 0.3rem;">
+              Uploaded by: <span style="font-weight: bold;">${data.username || "Unknown"}</span>
+            </p>
+            ${data.shoutout ? `
+              <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-top: 0.2rem;">
+                 Shoutout to artist: <span style="font-weight: bold;">@${data.shoutout}</span>
+              </p>
+            ` : ""}
+          </div>
+
 
             ${user && user.uid === data.userId ? `<button class="delete-btn" onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
           `;
