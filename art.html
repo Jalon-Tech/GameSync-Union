@@ -125,27 +125,19 @@
 
   <div class="main-container">
     <div class="box">
-      <h2>📤 Upload Your Gaming Art</h2>
-      <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
-      <input type="file" class="input-field" id="artFile" />
-      <textarea class="input-field" id="artDescription" placeholder="Optional description..." rows="3"></textarea>
-      <label for="promoteDropdown">Promoting another artist?</label>
-      <select class="input-field" id="promoteDropdown" onchange="toggleIGInputs()">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-      <input type="text" class="input-field" id="uploaderIG" placeholder="(Optional) @yourIG" />
-      <input type="text" class="input-field" id="artistIG" placeholder="Instagram of promoted artist (@username)" style="display:none;" />
-      <button class="btn" id="uploadBtn">Upload Artwork</button>
+      <h2 style="color: var(--gsu-red);">Fan Art Gallery</h2>
+      <p>Explore original art, in-game captures, and creative works from the GameSync Union community.</p>
+      <div class="art-gallery" id="artGallery"></div>
     </div>
-   <div class="box">
-  <h2>🎨 Fan Art Gallery</h2>
-  <p>Show off your creativity, game-inspired art, and epic screenshots with the GSU community!</p>
-  <div id="loadingSpinner" style="text-align:center; padding:1rem; display:none;">
-    <p>🎨 Loading epic community artwork...</p>
+
+    <div class="box">
+      <h2 style="color: var(--gsu-red);">Upload Your Fan Art</h2>
+      <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
+      <input type="text" class="input-field" id="imageURL" placeholder="Image URL (from web or uploaded image)" />
+      <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
+      <button class="btn" onclick="uploadArt()">Upload Artwork</button>
+    </div>
   </div>
-  <div class="art-gallery" id="fanArtGallery"></div>
-</div>
 
   <footer>
     <div class="platform-icons">
