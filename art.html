@@ -17,9 +17,7 @@
       --white-text: #FFFFFF;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
@@ -55,12 +53,12 @@
       padding: 1rem;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      justify-content: space-between;
     }
     .art-card img {
       width: 100%;
-      max-height: 300px;
-      object-fit: contain;
+      height: 300px;
+      object-fit: cover;
       border-radius: 6px;
       background: #000;
     }
@@ -83,11 +81,13 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.8rem;
+      align-self: center;
     }
     footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1.2rem 1rem;
+      margin-top: auto;
     }
     .platform-icons {
       display: flex;
@@ -135,6 +135,12 @@
       <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
       <input type="text" class="input-field" id="imageURL" placeholder="Image URL (from web or uploaded image)" />
       <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
+      <label for="promoteSelect">Promoting another artist?</label>
+      <select class="input-field" id="promoteSelect" onchange="togglePromoInput()">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+      <input type="text" class="input-field" id="socialHandle" placeholder="Enter the social media profile name of the user you're promoting" style="display:none;" />
       <button class="btn" onclick="uploadArt()">Upload Artwork</button>
     </div>
   </div>
@@ -174,10 +180,18 @@
       }
     });
 
+    function togglePromoInput() {
+      const select = document.getElementById("promoteSelect");
+      const input = document.getElementById("socialHandle");
+      input.style.display = select.value === "yes" ? "block" : "none";
+    }
+
     function uploadArt() {
       const title = document.getElementById("artTitle").value.trim();
       const imageURL = document.getElementById("imageURL").value.trim();
       const description = document.getElementById("description").value.trim();
+      const promote = document.getElementById("promoteSelect").value;
+      const socialHandle = document.getElementById("socialHandle").value.trim();
       const user = auth.currentUser;
 
       if (!user || !currentUsername || !title || !imageURL) {
@@ -191,6 +205,7 @@
         title,
         imageURL,
         description,
+        shoutout: promote === "yes" ? socialHandle : "",
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         alert("Art uploaded!");
@@ -202,24 +217,25 @@
 
     function loadArtGallery() {
       const gallery = document.getElementById("artGallery");
-      const user = auth.currentUser;
+      auth.onAuthStateChanged(user => {
+        db.collection("community_art").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+          gallery.innerHTML = "";
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const isOwner = user && user.uid === data.userId;
 
-      db.collection("community_art").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        gallery.innerHTML = "";
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const isOwner = user && user.uid === data.userId;
-
-          const card = document.createElement("div");
-          card.className = "art-card";
-          card.innerHTML = `
-            <img src="${data.imageURL}" alt="${data.title}" />
-            <h3>${data.title}</h3>
-            <p>${data.description || "No description."}</p>
-            <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
-            ${isOwner ? `<button class='delete-btn' onclick='deleteArt("${doc.id}")'>Delete</button>` : ""}
-          `;
-          gallery.appendChild(card);
+            const card = document.createElement("div");
+            card.className = "art-card";
+            card.innerHTML = `
+              <img src="${data.imageURL}" alt="${data.title}" />
+              <h3>${data.title}</h3>
+              <p>${data.description || "No description."}</p>
+              ${data.shoutout ? `<p style='opacity: 0.75;'>🎨 Shoutout: @${data.shoutout}</p>` : ""}
+              <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
+              ${isOwner ? `<button class='delete-btn' onclick='deleteArt("${doc.id}")'>Delete</button>` : ""}
+            `;
+            gallery.appendChild(card);
+          });
         });
       });
     }
