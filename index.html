@@ -284,6 +284,10 @@
         <p id="fav-games">🎯 Favorite Games</p>
         <p id="games-played">🎮 Games Played</p>
         <p id="trophy-stats">🏆 Trophy Stats</p>
+        <div id="fav-images" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;"></div>
+      <!-- Edit Button -->
+        <button onclick="openEditModal()" class="edit-btn">✏️ Edit Profile</button>
+
     </div>
 
 
@@ -315,19 +319,160 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+  <!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+    <h2>Edit Profile</h2>
+
+    <label>Favorite Games (comma-separated):</label>
+    <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank...">
+
+    <label>Number of Games Played:</label>
+    <input type="number" id="editGamesPlayed" min="0">
+
+    <label>Favorite Game Image URLs (comma-separated):</label>
+    <input type="text" id="editGameImages" placeholder="url1, url2, url3">
+
+    <label>Total Trophy Count:</label>
+    <input type="number" id="editTrophies" min="0">
+
+    <button onclick="saveProfileChanges()">Save Changes</button>
+  </div>
+</div>
+
+<style>
+  .edit-btn {
+    background-color: #ff0055;
+    color: white;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+  }
+
+  .modal-content {
+    background-color: #1a1a1a;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #ff0044;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    color: white;
+  }
+
+  .modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+  }
+
+  .modal-content button {
+    background-color: #ff0044;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  function openEditModal() {
+    document.getElementById('editModal').style.display = 'block';
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  async function saveProfileChanges() {
+  const games = document.getElementById('editGames').value;
+  const gamesPlayed = document.getElementById('editGamesPlayed').value;
+  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
+  const trophies = document.getElementById('editTrophies').value;
+
+  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
+  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
+  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
+
+  const imageRow = document.getElementById("fav-images");
+  imageRow.innerHTML = "";
+  imageUrls.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "Game cover";
+    img.style.height = "60px";
+    img.style.borderRadius = "6px";
+    img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+    img.style.transition = "transform 0.3s";
+    img.onmouseover = () => img.style.transform = "scale(1.05)";
+    img.onmouseout = () => img.style.transform = "scale(1)";
+    imageRow.appendChild(img);
+  });
+
+  // 🔥 Save to Firestore
+  const user = getAuth().currentUser;
+  if (user) {
+    const uid = user.uid;
+    const docRef = doc(db, "users", uid);
+    try {
+      await setDoc(docRef, {
+        favoriteGames: games.split(',').map(s => s.trim()),
+        gamesPlayed: parseInt(gamesPlayed),
+        favoriteImages: imageUrls,
+        trophyCount: parseInt(trophies)
+      }, { merge: true });
+
+      alert("Profile updated successfully.");
+    } catch (err) {
+      console.error("Error saving profile:", err);
+      alert("Error saving changes.");
+    }
+  }
+
+  closeEditModal();
+}
+</script>
+
 
 <script type="module">
+  // Firebase imports + app logic
+</script>
+
+<script type="module">
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
   import {
     getAuth,
     signInWithEmailAndPassword,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -433,7 +578,7 @@
       document.getElementById("auth-box").style.display = "block";
       if (!isLoginPage && currentPath !== "/index.html") {
         alert("Please log in to access GameSync Union.");
-        window.location.href = "Account_Creation.html";
+        window.location.href = "account_creation.html";
       }
     }
   });
@@ -445,7 +590,7 @@
       try {
         await auth.signOut();
         alert("You have been logged out.");
-        window.location.href = "Account_Creation.html";
+        window.location.href = "account_creation.html";
       } catch (err) {
         alert("Error signing out: " + err.message);
       }
