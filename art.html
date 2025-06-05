@@ -1,4 +1,4 @@
-<!-- ===== art.html ===== -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +7,9 @@
   <title>Fan Art | GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <style>
     :root {
       --gsu-red: #e60023;
@@ -28,10 +31,8 @@
     nav a:hover { color: var(--gsu-red); }
     .main-container { display: flex; flex-direction: column; padding: 2rem; gap: 2rem; }
     .box { background-color: var(--black-faded); border-radius: 8px; padding: 1rem; }
-    .box h2 { font-family: 'Montserrat', sans-serif; margin-bottom: 0.7rem; }
     .input-field { padding: 0.6rem; border: none; border-radius: 6px; margin-bottom: 0.6rem; width: 100%; background-color: #2a2a2a; color: var(--white-text); }
     .btn { background-color: var(--gsu-red); border: none; color: var(--white-text); padding: 0.8rem; width: 100%; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; }
-    .btn:hover { opacity: 0.85; }
     .art-gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -51,75 +52,43 @@
       object-fit: cover;
       border-radius: 6px;
     }
-       .art-card h3 {
+    .art-card h3 {
       color: var(--gsu-red);
       font-family: 'Montserrat', sans-serif;
       margin: 0.6rem 0 0.2rem;
-      transition: color 0.3s ease;
-    }
-    
-    .art-card:hover h3 {
-      color: var(--white-text);
     }
     .art-card p {
       font-size: 0.9rem;
       opacity: 0.75;
     }
-     footer {
+    footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1.2rem 1rem;
       margin-top: 4rem;
     }
-
-   .platform-icons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 0.6rem;
-  }
-
-.platform-icons img {
-    height: 32px;
-    width: auto;
-    opacity: 0.9;
-  }
-
-  footer p {
-    color: #ccc;
-    font-size: 1rem;
-    font-family: 'Roboto', sans-serif;
-  }
-   .box {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  color: var(--white-text);
-}
-
-  .box:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--gsu-red);
-  background-color: var(--black-faded); /* stays consistent */
-  color: var(--white-text);
-}
-
-  .box li {
-  transition: transform 0.3s ease;
-}
-
-.box:hover li {
-  transform: translateX(6px);
-}
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
+    }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -136,43 +105,97 @@
     <div class="box">
       <h2 style="color: var(--gsu-red);">Fan Art Gallery</h2>
       <p>Explore original art, in-game captures, and creative works from the GameSync Union community.</p>
-      <div class="art-gallery">
-        <div class="art-card">
-          <img src="placeholder.jpg" alt="Venom Miles" />
-          <h3>Venom Miles Morales</h3>
-          <p>@SketchCrush</p>
-        </div>
-        <div class="art-card">
-          <img src="placeholder.jpg" alt="DBZ Poster" />
-          <h3>Fusion Frenzy</h3>
-          <p>@DBZNova</p>
-        </div>
-        <div class="art-card">
-          <img src="placeholder.jpg" alt="Eve Sky" />
-          <h3>Stellar Skies</h3>
-          <p>@EVEArt</p>
-        </div>
-      </div>
+      <div class="art-gallery" id="artGallery"></div>
     </div>
 
     <div class="box">
       <h2 style="color: var(--gsu-red);">Upload Your Fan Art</h2>
-      <input type="text" class="input-field" placeholder="Title of Artwork" />
-      <input type="file" class="input-field" />
-      <textarea class="input-field" rows="3" placeholder="Optional description..."></textarea>
-      <button class="btn">Upload Artwork</button>
+      <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
+      <input type="text" class="input-field" id="imageURL" placeholder="Image URL" />
+      <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
+      <button class="btn" onclick="uploadArt()">Upload Artwork</button>
     </div>
   </div>
 
-   <footer>
-  <div class="platform-icons">
-    <img src="PS_Logo.png" alt="PlayStation" />
-    <img src="Xbox.png" alt="Xbox" />
-    <img src="Steam.png" alt="PC" />
-    <img src="Switch.png" alt="Nintendo Switch" />
-  </div>
-  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  <footer>
+    <div class="platform-icons">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "YOUR_MSG_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    let currentUsername = null;
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        db.collection("users").doc(user.uid).get().then(doc => {
+          currentUsername = doc.data().username || "Unknown";
+        });
+        loadArtGallery();
+      }
+    });
+
+    function uploadArt() {
+      const title = document.getElementById("artTitle").value;
+      const imageURL = document.getElementById("imageURL").value;
+      const description = document.getElementById("description").value;
+      const user = auth.currentUser;
+
+      if (!user || !currentUsername || !title || !imageURL) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      db.collection("community_art").add({
+        username: currentUsername,
+        userId: user.uid,
+        title,
+        imageURL,
+        description,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        alert("Art uploaded!");
+        location.reload();
+      }).catch((error) => {
+        console.error("Error uploading art:", error);
+      });
+    }
+
+    function loadArtGallery() {
+      const gallery = document.getElementById("artGallery");
+      db.collection("community_art").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        gallery.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "art-card";
+          card.innerHTML = `
+            <img src="${data.imageURL}" alt="${data.title}" />
+            <h3>${data.title}</h3>
+            <p>${data.description || "No description."}</p>
+            <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
+          `;
+          gallery.appendChild(card);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
