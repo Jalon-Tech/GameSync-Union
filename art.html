@@ -42,46 +42,57 @@
     .box { background-color: var(--black-faded); border-radius: 8px; padding: 1rem; }
     .input-field { padding: 0.6rem; border: none; border-radius: 6px; margin-bottom: 0.6rem; width: 100%; background-color: #2a2a2a; color: var(--white-text); }
     .btn { background-color: var(--gsu-red); border: none; color: var(--white-text); padding: 0.8rem; width: 100%; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; }
-    .art-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.2rem;
+    .trophy-list, .art-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.2rem;
     }
     .art-card {
       background-color: #2a2a2a;
       border-radius: 6px;
       padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      width: calc(33.3% - 1rem);
+      transition: 0.3s ease all;
+      border: 1px solid transparent;
+      position: relative;
+    }
+    .art-card:hover {
+      border: 1px solid var(--gsu-red);
+      box-shadow: 0 0 8px rgba(230, 0, 35, 0.3);
+      transform: translateY(-3px);
     }
     .art-card img {
+      display: block;
       width: 100%;
-      height: 300px;
-      object-fit: cover;
+      height: auto;
       border-radius: 6px;
-      background: #000;
+      margin-bottom: 0.6rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
     }
     .art-card h3 {
-      color: var(--gsu-red);
       font-family: 'Montserrat', sans-serif;
-      margin: 0.6rem 0 0.2rem;
+      margin: 0.5rem 0 0.3rem 0;
+      color: var(--gsu-red);
     }
     .art-card p {
-      font-size: 0.9rem;
-      opacity: 0.75;
-      text-align: center;
+      font-size: 0.85rem;
+      opacity: 0.85;
     }
     .delete-btn {
       background: transparent;
-      color: red;
-      border: 1px solid red;
-      padding: 0.3rem 0.8rem;
-      margin-top: 0.5rem;
+      color: #e60023;
+      border: 1px solid #e60023;
+      font-size: 0.75rem;
       border-radius: 4px;
+      margin-top: 0.5rem;
       cursor: pointer;
-      font-size: 0.8rem;
-      align-self: center;
+      padding: 0.3rem 0.6rem;
+      transition: 0.2s;
+    }
+    .delete-btn:hover {
+      background-color: #e60023;
+      color: white;
     }
     footer {
       background-color: var(--black-faded);
@@ -116,7 +127,7 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="games.html">Games</a>
-      <a href="trophies.html">Trophies/Achievements</a>
+      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">Guides</a>
       <a href="uploads.html">GSU Player Lounge</a>
@@ -125,23 +136,24 @@
 
   <div class="main-container">
     <div class="box">
-      <h2 style="color: var(--gsu-red);">Fan Art Gallery</h2>
-      <p>Explore original art, in-game captures, and creative works from the GameSync Union community.</p>
-      <div class="art-gallery" id="artGallery"></div>
+      <h2 style="color: var(--gsu-red);">🎨 Upload Your Fan Art</h2>
+      <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
+      <input type="text" class="input-field" id="imageURL" placeholder="Paste image URL (optional)" />
+      <input type="file" class="input-field" id="imageFile" />
+      <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
+      <select class="input-field" id="promoteDropdown" onchange="toggleSocialFields()">
+        <option value="self">Sharing my own art</option>
+        <option value="shoutout">Shouting out another artist</option>
+      </select>
+      <input type="text" class="input-field" id="userSocial" placeholder="Your @ (optional)" />
+      <input type="text" class="input-field" id="artistSocial" placeholder="@ of artist you're promoting" style="display: none;" />
+      <button class="btn" onclick="uploadArt()">Upload Artwork</button>
     </div>
 
     <div class="box">
-      <h2 style="color: var(--gsu-red);">Upload Your Fan Art</h2>
-      <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
-      <input type="text" class="input-field" id="imageURL" placeholder="Image URL (from web or uploaded image)" />
-      <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
-      <label for="promoteSelect">Promoting another artist?</label>
-      <select class="input-field" id="promoteSelect" onchange="togglePromoInput()">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-      <input type="text" class="input-field" id="socialHandle" placeholder="Enter the social media profile name of the user you're promoting" style="display:none;" />
-      <button class="btn" onclick="uploadArt()">Upload Artwork</button>
+      <h2 style="color: var(--gsu-red);">🔥 Fan Art Gallery</h2>
+      <p>Celebrate creativity with incredible work by the GSU community.</p>
+      <div class="art-gallery" id="artGallery"></div>
     </div>
   </div>
 
@@ -155,98 +167,99 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
       authDomain: "gamesync-union.firebaseapp.com",
       projectId: "gamesync-union",
       storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
+      messagingSenderId: "YOUR_MSG_ID",
+      appId: "YOUR_APP_ID"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
+    const storage = firebase.storage();
 
     let currentUsername = null;
 
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(user => {
       if (user) {
         db.collection("users").doc(user.uid).get().then(doc => {
           currentUsername = doc.data().username || "Unknown";
+          loadArtGallery(user);
         });
-        loadArtGallery();
       }
     });
 
-    function togglePromoInput() {
-      const select = document.getElementById("promoteSelect");
-      const input = document.getElementById("socialHandle");
-      input.style.display = select.value === "yes" ? "block" : "none";
+    function toggleSocialFields() {
+      const isShoutout = document.getElementById("promoteDropdown").value === "shoutout";
+      document.getElementById("artistSocial").style.display = isShoutout ? "block" : "none";
     }
 
     function uploadArt() {
-      const title = document.getElementById("artTitle").value.trim();
-      const imageURL = document.getElementById("imageURL").value.trim();
-      const description = document.getElementById("description").value.trim();
-      const promote = document.getElementById("promoteSelect").value;
-      const socialHandle = document.getElementById("socialHandle").value.trim();
       const user = auth.currentUser;
+      const title = document.getElementById("artTitle").value;
+      const description = document.getElementById("description").value;
+      const imageURL = document.getElementById("imageURL").value;
+      const file = document.getElementById("imageFile").files[0];
+      const promote = document.getElementById("promoteDropdown").value;
+      const userSocial = document.getElementById("userSocial").value;
+      const artistSocial = document.getElementById("artistSocial").value;
 
-      if (!user || !currentUsername || !title || !imageURL) {
-        alert("Please fill in all required fields.");
+      if (!user || !title || (!imageURL && !file)) {
+        alert("Title and image (URL or upload) are required.");
         return;
       }
 
-      db.collection("community_art").add({
-        username: currentUsername,
-        userId: user.uid,
-        title,
-        imageURL,
-        description,
-        shoutout: promote === "yes" ? socialHandle : "",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert("Art uploaded!");
-        location.reload();
-      }).catch((error) => {
-        console.error("Error uploading art:", error);
-      });
+      const saveArt = (imgUrl) => {
+        db.collection("community_art").add({
+          userId: user.uid,
+          username: currentUsername,
+          title,
+          imageURL: imgUrl,
+          description,
+          shoutout: promote === "shoutout" ? artistSocial : userSocial,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => location.reload());
+      };
+
+      if (file) {
+        const refPath = `fan_art/${user.uid}_${Date.now()}_${file.name}`;
+        const storageRef = storage.ref().child(refPath);
+        storageRef.put(file).then(snapshot => {
+          snapshot.ref.getDownloadURL().then(url => saveArt(url));
+        });
+      } else {
+        saveArt(imageURL);
+      }
     }
 
-    function loadArtGallery() {
-      const gallery = document.getElementById("artGallery");
-      auth.onAuthStateChanged(user => {
-        db.collection("community_art").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-          gallery.innerHTML = "";
-          snapshot.forEach((doc) => {
-            const data = doc.data();
-            const isOwner = user && user.uid === data.userId;
-
-            const card = document.createElement("div");
-            card.className = "art-card";
-            card.innerHTML = `
-              <img src="${data.imageURL}" alt="${data.title}" />
-              <h3>${data.title}</h3>
-              <p>${data.description || "No description."}</p>
-              ${data.shoutout ? `<p style='opacity: 0.75;'>🎨 Shoutout: @${data.shoutout}</p>` : ""}
-              <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
-              ${isOwner ? `<button class='delete-btn' onclick='deleteArt("${doc.id}")'>Delete</button>` : ""}
-            `;
-            gallery.appendChild(card);
-          });
+    function loadArtGallery(user) {
+      const container = document.getElementById("artGallery");
+      db.collection("community_art").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+        container.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "art-card";
+          card.innerHTML = `
+            <img src="${data.imageURL}" alt="${data.title}" />
+            <h3>${data.title}</h3>
+            <p>${data.description || "No description provided."}</p>
+            <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
+            ${user && user.uid === data.userId ? `<button class="delete-btn" onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
+          `;
+          container.appendChild(card);
         });
       });
     }
 
-    function deleteArt(docId) {
-      if (confirm("Are you sure you want to delete your artwork?")) {
-        db.collection("community_art").doc(docId).delete().then(() => {
-          alert("Artwork deleted.");
-        }).catch((error) => {
-          console.error("Error deleting artwork:", error);
-        });
+    function deleteArt(id) {
+      if (confirm("Are you sure you want to delete this artwork?")) {
+        db.collection("community_art").doc(id).delete();
       }
     }
   </script>
