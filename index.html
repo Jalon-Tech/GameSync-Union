@@ -438,8 +438,16 @@
 
 <script>
   function openEditModal() {
-    document.getElementById('editModal').style.display = 'block';
-  }
+
+  document.getElementById('editModal').style.display = 'block';
+
+  // 🧠 Auto-fill current profile values
+  document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
+  document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('🎮 Number Of Games Played: ', '');
+  document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('🏆 Trophy Stats (Total Trophies): ', '');
+}
+
+
 
   function closeEditModal() {
     document.getElementById('editModal').style.display = 'none';
@@ -450,6 +458,26 @@
   const gamesPlayed = document.getElementById('editGamesPlayed').value;
   const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
   const trophies = document.getElementById('editTrophies').value;
+  const user = getAuth().currentUser;
+if (user) {
+  const uid = user.uid;
+  const docRef = doc(db, "users", uid);
+  try {
+    await setDoc(docRef, {
+      favoriteGames: games.split(',').map(s => s.trim()),
+      gamesPlayed: parseInt(gamesPlayed),
+      favoriteImages: imageUrls,
+      trophyCount: parseInt(trophies)
+    }, { merge: true });
+
+    alert("Profile updated successfully.");
+  } catch (err) {
+    console.error("Error saving profile:", err);
+    alert("Error saving changes.");
+  }
+}
+
+
 
   document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
   document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
@@ -470,33 +498,9 @@
     imageRow.appendChild(img);
   });
 
-  // 🔥 Save to Firestore
-  const user = getAuth().currentUser;
-  if (user) {
-    const uid = user.uid;
-    const docRef = doc(db, "users", uid);
-    try {
-      await setDoc(docRef, {
-        favoriteGames: games.split(',').map(s => s.trim()),
-        gamesPlayed: parseInt(gamesPlayed),
-        favoriteImages: imageUrls,
-        trophyCount: parseInt(trophies)
-      }, { merge: true });
-
-      alert("Profile updated successfully.");
-    } catch (err) {
-      console.error("Error saving profile:", err);
-      alert("Error saving changes.");
-    }
-  }
 
   closeEditModal();
 }
-</script>
-
-
-<script type="module">
-  // Firebase imports + app logic
 </script>
 
 <script type="module">
@@ -631,4 +635,11 @@
       }
     });
   }
+    // ✅ Expose Firebase services globally
+    window.db = db;
+    window.doc = doc;
+    window.setDoc = setDoc;
+    window.getAuth = getAuth;
+    window.auth = auth;
+
 </script>
