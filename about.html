@@ -90,6 +90,15 @@
       margin-top: 1rem;
       border-radius: 12px;
     }
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 4rem 0 2rem;
+    }
+    .divider img {
+      width: 36px;
+      margin-right: 1rem;
+    }
     .feature-list {
       list-style: none;
       padding-left: 0;
@@ -108,27 +117,17 @@
       font-size: 1.2rem;
       border: 1px solid #444;
     }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-    .stat-box {
-      background: #1a1a1a;
-      padding: 1rem;
+    .faq-box {
+      background: #1e1e1e;
+      padding: 1.5rem;
       border-radius: 12px;
-      text-align: center;
-      border: 2px solid #ff3333;
+      margin-top: 1rem;
     }
-    .stat-box h3 {
-      font-size: 2.5rem;
-      margin: 0;
+    .faq-box h3 {
       color: #ff3333;
     }
-    .stat-box p {
-      margin: 0.5rem 0 0;
-      font-size: 1rem;
+    .faq-box p {
+      margin-bottom: 1rem;
     }
     footer {
       background-color: #1f1f1f;
@@ -181,46 +180,33 @@
     <section class="section reveal">
       <h1>🔥 What Is GameSync Union?</h1>
       <div class="highlight-box">
-        <p><strong>GameSync Union (GSU)</strong> is a live, data-driven platform built by gamers for gamers — to highlight your achievements, content, and identity. Whether you’re earning trophies, posting art, or streaming gameplay, GSU tracks and showcases what’s real. Everything here is driven by actual member uploads, guide activity, profile stats, and trending community data in real time.</p>
+        <p><strong>GameSync Union (GSU)</strong> is the ultimate hub built by and for passionate gamers. It connects you to real-time gameplay stats, fierce community uploads, stunning fan creations, competitive leaderboards, and in-depth guides. Whether you're a trophy hunter, combo king, or lore-loving artist, GSU celebrates your style.</p>
+        <p class="callout">🎮 Squad up, show out, cast your vote — GSU’s the place where gamers don’t choke. Post your wins, drop your heat — Chat, connect, and claim your seat.</p>
       </div>
     </section>
 
+    <div class="divider">
+      <img src="icons/preview.png" alt="Preview Icon" />
+      <h2>🧪 Sneak Peeks from Around the Site</h2>
+    </div>
     <section class="section reveal">
-      <h2>📊 Real-Time Growth</h2>
-      <div class="stats-grid" id="live-stats">
-        <div class="stat-box"><h3 id="upload-count">...</h3><p>Uploads Shared</p></div>
-        <div class="stat-box"><h3 id="game-count">...</h3><p>Games Repped</p></div>
-        <div class="stat-box"><h3>4</h3><p>Platforms Supported</p></div>
-        <div class="stat-box"><h3>Live</h3><p>Community Chat</p></div>
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>🎮 Who’s It For?</h2>
-      <ul class="feature-list">
-        <li>Console warriors and trophy legends</li>
-        <li>PC elite with insane mechanics and mod power</li>
-        <li>Artists, lorekeepers, guide creators</li>
-        <li>Community builders and challenge seekers</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>🚀 Why GSU is Built Different</h2>
       <div class="highlight-box">
-        <ul class="feature-list">
-          <li>Everything you see is from live GSU community activity</li>
-          <li>Dynamic uploads, trophies, art, and leaderboard stats</li>
-          <li>Gamer identity with avatars, badges, console stats</li>
-          <li>Highlight features driven by actual Firestore data</li>
-        </ul>
+        <p><strong>🗡️ Boss Fight Strategies:</strong> Breakdowns, patterns, and survival tips for the toughest bosses in gaming.</p>
+        <p><strong>🎮 Gameplay Tutorials:</strong> Learn mechanics, systems, and progression strategies for new or complex games.</p>
+        <p><strong>📹 Community Gameplay Videos:</strong> Relive epic moments, flawless runs, and funny clips from GameSync players.</p>
+        <p><strong>🥊 Combo Guides for Fighting Games:</strong> Master combo chains, cancels, and setups across the latest competitive fighters.</p>
+        <p><strong>🏆 Tips for Acquiring Trophies and Achievements:</strong> Step-by-step advice for unlocking platinum trophies and hard-to-get achievements.</p>
+        <p><strong>💬 Guide Discussion & Community Chat:</strong> Join the conversation, share feedback, ask questions, or help others with their guides.</p>
       </div>
     </section>
 
-    <section class="section reveal" id="gsu-spotlight">
-      <h2>🏅 GSU Gamer of the Month</h2>
-      <div class="highlight-box" id="spotlight-box">
-        <p><strong>Loading featured gamer...</strong></p>
+    <div class="divider">
+      <img src="icons/community.png" alt="Community Icon" />
+      <h2>🌍 GSU Vision & Future</h2>
+    </div>
+    <section class="section reveal">
+      <div class="highlight-box">
+        <p>GSU isn’t just a site — it’s an evolving network for console, PC, and Switch users who want more than gameplay. We’re building a platform that lets you track growth, earn respect, and get noticed. What’s next? Verified squads, creator earnings, and full tournament hosting. This is just the start.</p>
       </div>
     </section>
   </div>
@@ -234,78 +220,5 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
-  <script>
-    const scrollObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal');
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.section').forEach(section => {
-      section.classList.add('hidden');
-      scrollObserver.observe(section);
-    });
-  </script>
-
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js';
-    import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function updateStatsFromGSU() {
-      try {
-        const uploadsRef = await getDocs(collection(db, 'uploads'));
-        const gamesSet = new Set();
-        uploadsRef.forEach(doc => {
-          const data = doc.data();
-          if (data.gameTitle) gamesSet.add(data.gameTitle);
-        });
-        document.getElementById('upload-count').innerText = uploadsRef.size + '+';
-        document.getElementById('game-count').innerText = gamesSet.size + '+';
-      } catch (err) {
-        console.error("Error loading GSU stats:", err);
-      }
-    }
-
-    async function pickGamerOfTheMonth() {
-      try {
-        const usersRef = collection(db, 'users');
-        const snapshot = await getDocs(usersRef);
-        const users = snapshot.docs.map(doc => doc.data()).filter(user => user.username);
-
-        if (users.length === 0) return;
-        const date = new Date();
-        const seed = date.getFullYear() * 100 + (date.getMonth() + 1);
-        const index = seed % users.length;
-        const gamer = users[index];
-
-        const spotlightBox = document.getElementById('spotlight-box');
-        spotlightBox.innerHTML = `
-          <p><strong>🔥 Gamer of the Month:</strong> <span style="color: #ff3333; font-size: 1.25rem; font-weight: bold;">${gamer.username}</span></p>
-          <p>Platform: <strong>${gamer.platform || 'Unknown'}</strong></p>
-          <p>Games Played: <strong>${gamer.gamesPlayed || 0}</strong> | Trophy Count: <strong>${gamer.trophyCount || 0}</strong></p>
-        `;
-      } catch (error) {
-        console.error("Failed to load Gamer of the Month:", error);
-        document.getElementById('spotlight-box').innerHTML = `<p><strong>Error loading gamer data. Please try again later.</strong></p>`;
-      }
-    }
-
-    updateStatsFromGSU();
-    pickGamerOfTheMonth();
-  </script>
 </body>
 </html>
