@@ -1,37 +1,12 @@
- <!DOCTYPE html>
+<!-- ===== art.html ===== -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fan Art | GameSync Union</title>
-  <link rel="icon" href="GSU_Logo.png" type="image/png" />
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-    import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    window.gsu = {
-      auth: getAuth(app),
-      db: getFirestore(app),
-      storage: getStorage(app)
-    };
-  </script>
-
-  <!-- Removed duplicated <html> and <head> from here forward -->
-
   <style>
     :root {
       --gsu-red: #e60023;
@@ -39,110 +14,118 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
-    html, body {
-      height: 100%;
-      margin: 0;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
-      display: flex;
-      flex-direction: column;
     }
-    header {
-      background-color: var(--black-faded);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-    }
+    header { background-color: var(--black-faded); display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; }
     .logo { display: flex; align-items: center; }
     .logo img { height: 60px; margin-right: 1rem; }
-    .logo-text {
-      font-size: 1.6rem;
-      font-family: 'Montserrat', sans-serif;
-    }
-    nav a {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: var(--white-text);
-      font-family: 'Montserrat', sans-serif;
-      transition: color 0.3s ease;
-    }
+    .logo-text { font-size: 1.6rem; font-family: 'Montserrat', sans-serif; }
+    nav a { margin: 0 1rem; text-decoration: none; color: var(--white-text); font-family: 'Montserrat', sans-serif; transition: color 0.3s ease; }
     nav a:hover { color: var(--gsu-red); }
-    .main-container {
-      flex: 1;
+    .main-container { display: flex; flex-direction: column; padding: 2rem; gap: 2rem; }
+    .box { background-color: var(--black-faded); border-radius: 8px; padding: 1rem; }
+    .box h2 { font-family: 'Montserrat', sans-serif; margin-bottom: 0.7rem; }
+    .input-field { padding: 0.6rem; border: none; border-radius: 6px; margin-bottom: 0.6rem; width: 100%; background-color: #2a2a2a; color: var(--white-text); }
+    .btn { background-color: var(--gsu-red); border: none; color: var(--white-text); padding: 0.8rem; width: 100%; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; }
+    .btn:hover { opacity: 0.85; }
+    .art-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+    .art-card {
+      background-color: #2a2a2a;
+      border-radius: 6px;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
-      padding: 2rem;
-      gap: 2rem;
+      align-items: center;
     }
-    .box {
-      background-color: var(--black-faded);
-      border-radius: 8px;
-      padding: 2rem;
-      max-width: 700px;
-      margin: 0 auto;
-      transition: 0.3s ease all;
+    .art-card img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
     }
-    .box:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--gsu-red);
-    }
-    .box h2 {
-      font-family: 'Montserrat', sans-serif;
+       .art-card h3 {
       color: var(--gsu-red);
-      margin-bottom: 0.6rem;
-    }
-    .input-field {
-      padding: 0.6rem;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 0.6rem;
-      width: 100%;
-      background-color: #2a2a2a;
-      color: var(--white-text);
-    }
-    .btn {
-      background-color: var(--gsu-red);
-      border: none;
-      color: var(--white-text);
-      padding: 0.8rem;
-      width: 100%;
-      border-radius: 6px;
-      cursor: pointer;
       font-family: 'Montserrat', sans-serif;
+      margin: 0.6rem 0 0.2rem;
+      transition: color 0.3s ease;
     }
-    .btn:hover { opacity: 0.85; }
-    footer {
-      background-color: var(--black-faded);
-      padding: 1rem;
-      text-align: center;
-      margin-top: auto;
+    
+    .art-card:hover h3 {
+      color: var(--white-text);
     }
-    .platform-icons {
-      margin-bottom: 0.6rem;
-    }
-    .platform-icons img {
-      height: 28px;
-      margin: 0 0.5rem;
-    }
-    footer p {
+    .art-card p {
       font-size: 0.9rem;
-      color: #ccc;
+      opacity: 0.75;
     }
+     footer {
+      background-color: var(--black-faded);
+      text-align: center;
+      padding: 1.2rem 1rem;
+      margin-top: 4rem;
+    }
+
+   .platform-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+.platform-icons img {
+    height: 32px;
+    width: auto;
+    opacity: 0.9;
+  }
+
+  footer p {
+    color: #ccc;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+  }
+   .box {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  color: var(--white-text);
+}
+
+  .box:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--gsu-red);
+  background-color: var(--black-faded); /* stays consistent */
+  color: var(--white-text);
+}
+
+  .box li {
+  transition: transform 0.3s ease;
+}
+
+.box:hover li {
+  transform: translateX(6px);
+}
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
       <a href="index.html">Home</a>
       <a href="games.html">Games</a>
-      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+      <a href="trophies.html">Trophies/Achievements</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">Guides</a>
       <a href="uploads.html">GSU Player Lounge</a>
@@ -151,280 +134,45 @@
 
   <div class="main-container">
     <div class="box">
-      <h2>📤 Upload Your Gaming Art</h2>
-      <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
-      <input type="file" class="input-field" id="artFile" />
-      <textarea class="input-field" id="artDescription" placeholder="Optional description..." rows="3"></textarea>
-      <label for="promoteDropdown">Promoting another artist?</label>
-      <select class="input-field" id="promoteDropdown" onchange="toggleIGInputs()">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-      <input type="text" class="input-field" id="uploaderIG" placeholder="(Optional) @yourIG" />
-      <input type="text" class="input-field" id="artistIG" placeholder="Instagram of promoted artist (@username)" style="display:none;" />
-      <button class="btn" id="uploadBtn">Upload Artwork</button>
+      <h2 style="color: var(--gsu-red);">Fan Art Gallery</h2>
+      <p>Explore original art, in-game captures, and creative works from the GameSync Union community.</p>
+      <div class="art-gallery">
+        <div class="art-card">
+          <img src="placeholder.jpg" alt="Venom Miles" />
+          <h3>Venom Miles Morales</h3>
+          <p>@SketchCrush</p>
+        </div>
+        <div class="art-card">
+          <img src="placeholder.jpg" alt="DBZ Poster" />
+          <h3>Fusion Frenzy</h3>
+          <p>@DBZNova</p>
+        </div>
+        <div class="art-card">
+          <img src="placeholder.jpg" alt="Eve Sky" />
+          <h3>Stellar Skies</h3>
+          <p>@EVEArt</p>
+        </div>
+      </div>
     </div>
-   <div class="box">
-  <h2>🎨 Fan Art Gallery</h2>
-  <p>Show off your creativity, game-inspired art, and epic screenshots with the GSU community!</p>
-  <div id="loadingSpinner" style="text-align:center; padding:1rem; display:none;">
-    <p>🎨 Loading epic community artwork...</p>
+
+    <div class="box">
+      <h2 style="color: var(--gsu-red);">Upload Your Fan Art</h2>
+      <input type="text" class="input-field" placeholder="Title of Artwork" />
+      <input type="file" class="input-field" />
+      <textarea class="input-field" rows="3" placeholder="Optional description..."></textarea>
+      <button class="btn">Upload Artwork</button>
+    </div>
   </div>
-  <div class="art-gallery" id="fanArtGallery"></div>
-</div>
 
-
-
-
-  <footer style="background:#111; color:#fff; padding:1rem; text-align:center;">
-    <div style="margin-bottom:0.6rem;">
-      <img src="PS_Logo.png" alt="PlayStation" height="28" />
-      <img src="Xbox.png" alt="Xbox" height="28" />
-      <img src="Steam.png" alt="PC" height="28" />
-      <img src="Switch.png" alt="Nintendo Switch" height="28" />
-    </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+   <footer>
+  <div class="platform-icons">
+    <img src="PS_Logo.png" alt="PlayStation" />
+    <img src="Xbox.png" alt="Xbox" />
+    <img src="Steam.png" alt="PC" />
+    <img src="Switch.png" alt="Nintendo Switch" />
+  </div>
+  <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <div id="imageModal" class="full-image-modal" onclick="this.style.display='none'">
-    <img id="modalImage" src="" alt="Full View" />
-  </div>
-
-  <style>
-    .art-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.4rem;
-    }
-    .art-card {
-      background-color: #2a2a2a;
-      border-radius: 6px;
-      padding: 1rem;
-      text-align: center;
-      position: relative;
-      transition: transform 0.3s ease;
-    }
-    .art-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 12px rgba(255,255,255,0.05);
-    }
-    .art-card img {
-      width: 100%;
-      max-height: 200px;
-      object-fit: cover;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .art-actions {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 0.5rem;
-    }
-    .art-actions button {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .comment-box {
-      margin-top: 0.6rem;
-    }
-    .comment-box textarea {
-      width: 100%;
-      padding: 0.4rem;
-      background: #1f1f1f;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 4px;
-    }
-    .comment-box button {
-      margin-top: 0.4rem;
-      padding: 0.4rem 1rem;
-      background-color: var(--gsu-red);
-      border: none;
-      border-radius: 4px;
-      color: white;
-      cursor: pointer;
-    }
-    .full-image-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.9);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
-    .full-image-modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-    }
-  </style>
-
-  <script type="module">
-    import {
-      getAuth, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import {
-  getFirestore, collection, addDoc, query, where, orderBy, onSnapshot,
-  doc, updateDoc, deleteDoc, serverTimestamp, increment, arrayUnion, getDoc
-} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-    import {
-      getStorage, ref, uploadBytes, getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
-
-    const { auth, db, storage } = window.gsu;
-
-    function $(id) {
-      return document.getElementById(id);
-    }
-
-    window.toggleIGInputs = function () {
-      const promote = $("promoteDropdown").value;
-      $("uploaderIG").style.display = promote === "yes" ? "none" : "block";
-      $("artistIG").style.display = promote === "yes" ? "block" : "none";
-    };
-
-    window.uploadArtwork = async function () {
-      const user = auth.currentUser;
-      if (!user) return alert("Please log in first.");
-
-      const title = $("artTitle").value.trim();
-      const file = $("artFile").files[0];
-      const description = $("artDescription").value.trim();
-      const promote = $("promoteDropdown").value;
-      const uploaderIG = $("uploaderIG").value.trim();
-      const artistIG = $("artistIG").value.trim();
-
-      if (!title || !file) return alert("Artwork must have a title and image.");
-
-      const fileRef = ref(storage, fanart/${user.uid}/${Date.now()}_${file.name});
-      await uploadBytes(fileRef, file);
-      const imageUrl = await getDownloadURL(fileRef);
-
-      await addDoc(collection(db, "fan_art"), {
-        uid: user.uid,
-        title,
-        imageUrl,
-        description,
-        artistIG: promote === "yes" ? artistIG : uploaderIG,
-        promotedBy: promote === "yes" ? (user.displayName || user.email) : null,
-        likes: 0,
-        views: 0,
-        likedBy: [],
-        comments: [],
-        timestamp: serverTimestamp()
-      });
-
-      alert("Artwork uploaded successfully!");
-      location.reload();
-    };
-
-    function loadFanArt() {
-  const viewedToday = JSON.parse(sessionStorage.getItem("gsuViews") || "{}");
-
-  onAuthStateChanged(auth, (user) => {
-    const q = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
-    $("loadingSpinner").style.display = "block";
-
-    onSnapshot(q, (snap) => {
-      $("fanArtGallery").innerHTML = "";
-      if (snap.empty) {
-        $("fanArtGallery").innerHTML = "<p style='opacity:0.6;text-align:center;'>No fan art yet. Be the first!</p>";
-        $("loadingSpinner").style.display = "none";
-        return;
-      }
-
-      snap.forEach(docSnap => {
-        const art = docSnap.data();
-        const docId = docSnap.id;
-        const isOwner = user && art.uid === user.uid;
-        const liked = user && art.likedBy.includes(user.uid);
-        const promoted = !!art.promotedBy;
-
-        const card = document.createElement("div");
-        card.className = "art-card";
-        card.innerHTML = 
-          <img src="${art.imageUrl}" alt="${art.title}" onclick="showFullImage('${art.imageUrl}')" />
-          <h3>${art.title}</h3>
-          <p style="font-size: 0.85rem; opacity: 0.8;">
-            ${promoted ? 🔁 Promoted by <b>${art.promotedBy}</b> : 🎨 By <b>${art.artistIG || "Unknown"}</b>}
-          </p>
-          <p style="font-size: 0.8rem; color: #aaa;">📅 ${art.timestamp?.toDate().toLocaleDateString()}</p>
-          <div class="art-actions">
-            <button onclick="likeArt('${docId}')">${liked ? '🔥 Liked' : '🔥 Like'} ${art.likes}</button>
-            <span>📈 ${art.views}</span>
-          </div>
-          <div class="comment-box">
-            <textarea id="comment_${docId}" placeholder="💬 Add a comment..."></textarea>
-            <button onclick="commentArt('${docId}')">Post</button>
-          </div>
-          <div style="margin-top:0.5rem; text-align:left; font-size: 0.9rem;">
-            ${art.comments.slice(-3).map(c =>
-              <div style="border-top:1px solid #333; padding-top:0.3rem; margin-top:0.3rem;">
-                 <b>${c.user}</b>: ${c.text} <span style="font-size:0.7rem; color:#777;">(${new Date(c.time).toLocaleTimeString()})</span>
-               </div>).join("") || "<em>No comments yet</em>"}
-          </div>
-        ;
-        $("fanArtGallery").appendChild(card);
-
-        // Only count views once per session
-        if (!isOwner && !viewedToday[docId]) {
-          addView(docId);
-          viewedToday[docId] = true;
-        }
-      });
-
-      sessionStorage.setItem("gsuViews", JSON.stringify(viewedToday));
-      $("loadingSpinner").style.display = "none";
-    });
-  });
-}
-
-
-    async function commentArt(docId) {
-      const user = auth.currentUser;
-      if (!user) return alert("Log in to comment.");
-      const input = $(comment_${docId});
-      if (!input.value.trim()) return;
-      await updateDoc(doc(db, "fan_art", docId), {
-        comments: arrayUnion({ text: input.value.trim(), user: user.displayName || "Anonymous", time: new Date() })
-      });
-      input.value = "";
-    }
-
-    async function addView(docId) {
-      const docRef = doc(db, "fan_art", docId);
-      await updateDoc(docRef, { views: increment(1) });
-    }
-    async function likeArt(docId) {
-  const user = auth.currentUser;
-  if (!user) return alert("Log in to like.");
-
-  const docRef = doc(db, "fan_art", docId);
-  const snapshot = await getDoc(docRef);
-  const data = snapshot.data();
-
-  if (data.likedBy.includes(user.uid)) return; // Already liked
-
-  await updateDoc(docRef, {
-    likes: increment(1),
-    likedBy: arrayUnion(user.uid)
-  });
-}
-
-    window.showFullImage = function (src) {
-      $("modalImage").src = src;
-      $("imageModal").style.display = "flex";
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      if ($("uploadBtn")) $("uploadBtn").onclick = uploadArtwork;
-      loadFanArt();
-    });
-  </script>
 </body>
 </html>
