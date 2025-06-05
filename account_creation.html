@@ -1,1 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameSync Union</title>
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gsu-red: #e60023;
+      --black-main: #191818;
+      --black-faded: #1F1F1F;
+      --white-text: #FFFFFF;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--black-main);
+      color: var(--white-text);
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal-content {
+      background-color: var(--black-faded);
+      padding: 2rem;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+    }
+    .modal-content h2 {
+      color: var(--gsu-red);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .modal-content input,
+    .modal-content select {
+      margin-bottom: 0.8rem;
+      width: 100%;
+      padding: 0.6rem;
+      background-color: #2a2a2a;
+      border: none;
+      color: var(--white-text);
+      border-radius: 6px;
+    }
+    .btn {
+      background-color: var(--gsu-red);
+      border: none;
+      color: white;
+      padding: 0.8rem;
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      margin-top: 0.5rem;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <!-- Modal for Account Creation -->
+  <div class="modal-overlay" id="createAccountModal">
+    <div class="modal-content">
+      <h2>Create GSU Account</h2>
+      <p style="text-align:center; color: #ccc; margin-bottom: 1rem;">
+        Already have an account? <a href="#" style="color: var(--gsu-red);" onclick="switchToLogin()">Log in here</a>
+      </p>
+      <input type="email" id="regEmail" placeholder="Email">
+      <input type="password" id="regPassword" placeholder="Password">
+      <input type="text" id="regUsername" placeholder="Username">
+      <select id="regPlatform">
+        <option value="">Select Your Platform</option>
+        <option value="PlayStation 5">PlayStation 5</option>
+        <option value="Xbox Series X|S">Xbox Series X|S</option>
+        <option value="Nintendo Switch">Nintendo Switch</option>
+        <option value="PC">PC</option>
+        <option value="Multiple Platforms">Multiple Platforms</option>
+      </select>
+      <input type="text" id="regGames" placeholder="3 Favorite Game Titles (comma separated)">
+      <input type="text" id="regImages" placeholder="Image URLs for your 3 favorite games (comma separated)">
+      <input type="number" id="regPlayed" placeholder="Games Played">
+      <input type="number" id="regTrophies" placeholder="Trophy Count">
+      <button class="btn" onclick="register()">Create Account</button>
+      <button class="btn" style="background:#777;" onclick="document.getElementById('createAccountModal').style.display='none'">Cancel</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="loginModal" style="display: none;">
+    <div class="modal-content">
+      <h2>Log In to GSU</h2>
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="btn" onclick="login()">Log In</button>
+      <button class="btn" style="background:#777;" onclick="document.getElementById('loginModal').style.display='none'">Cancel</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+      measurementId: "G-CP48EXW1EV"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.register = async () => {
+      const email = document.getElementById("regEmail").value.trim();
+      const password = document.getElementById("regPassword").value;
+      const username = document.getElementById("regUsername").value.trim();
+      const platform = document.getElementById("regPlatform").value;
+      const favoriteGames = document.getElementById("regGames").value.trim().split(',').map(s => s.trim());
+      const favoriteImages = document.getElementById("regImages").value.trim().split(',').map(s => s.trim());
+      const gamesPlayed = document.getElementById("regPlayed").value.trim();
+      const trophyCount = document.getElementById("regTrophies").value.trim();
+
+      try {
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+
+        await setDoc(doc(db, "users", uid), {
+          email,
+          username,
+          platform,
+          favoriteGames,
+          favoriteImages,
+          gamesPlayed,
+          trophyCount
+        });
+
+        alert("Account created!");
+        document.getElementById("createAccountModal").style.display = "none";
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Failed to create account: " + err.message);
+      }
+    };
+
+    window.login = async () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const userCred = await signInWithEmailAndPassword(auth, email, password);
+        alert("Login successful!");
+        document.getElementById("loginModal").style.display = "none";
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Login failed: " + err.message);
+      }
+    };
+
+    window.switchToLogin = () => {
+      document.getElementById("createAccountModal").style.display = "none";
+      document.getElementById("loginModal").style.display = "flex";
+    };
+
+    async function loadProfile(uid) {
+      const snap = await getDoc(doc(db, "users", uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        const profileBox = document.querySelector("aside .box");
+        profileBox.innerHTML = `
+          <h2>Your Profile</h2>
+          <p><strong>Platform:</strong> ${data.platform}</p>
+          <p>🎯 Favorite Games:</p>
+          <ul>${data.favoriteGames.map((game, i) => `<li><img src="${data.favoriteImages[i]}" alt="${game}" style="height:20px; margin-right:6px; vertical-align:middle;"> ${game}</li>`).join('')}</ul>
+          <p>🎮 Games Played: ${data.gamesPlayed}</p>
+          <p>🏆 Trophy Stats: ${data.trophyCount}</p>
+        `;
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) loadProfile(user.uid);
+    });
+
+    window.onload = () => {
+      document.getElementById("createAccountModal").style.display = "flex";
+    };
+  </script>
+</body>
+</html>
 
