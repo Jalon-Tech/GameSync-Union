@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,10 +17,16 @@
       --white-text: #FFFFFF;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+    }
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     header { background-color: var(--black-faded); display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; }
     .logo { display: flex; align-items: center; }
@@ -29,7 +34,13 @@
     .logo-text { font-size: 1.6rem; font-family: 'Montserrat', sans-serif; }
     nav a { margin: 0 1rem; text-decoration: none; color: var(--white-text); font-family: 'Montserrat', sans-serif; transition: color 0.3s ease; }
     nav a:hover { color: var(--gsu-red); }
-    .main-container { display: flex; flex-direction: column; padding: 2rem; gap: 2rem; }
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      gap: 2rem;
+      flex: 1;
+    }
     .box { background-color: var(--black-faded); border-radius: 8px; padding: 1rem; }
     .input-field { padding: 0.6rem; border: none; border-radius: 6px; margin-bottom: 0.6rem; width: 100%; background-color: #2a2a2a; color: var(--white-text); }
     .btn { background-color: var(--gsu-red); border: none; color: var(--white-text); padding: 0.8rem; width: 100%; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; }
@@ -48,9 +59,10 @@
     }
     .art-card img {
       width: 100%;
-      max-height: 200px;
-      object-fit: cover;
+      max-height: 300px;
+      object-fit: contain;
       border-radius: 6px;
+      background: #000;
     }
     .art-card h3 {
       color: var(--gsu-red);
@@ -60,12 +72,22 @@
     .art-card p {
       font-size: 0.9rem;
       opacity: 0.75;
+      text-align: center;
+    }
+    .delete-btn {
+      background: transparent;
+      color: red;
+      border: 1px solid red;
+      padding: 0.3rem 0.8rem;
+      margin-top: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
     }
     footer {
       background-color: var(--black-faded);
       text-align: center;
       padding: 1.2rem 1rem;
-      margin-top: 4rem;
     }
     .platform-icons {
       display: flex;
@@ -103,19 +125,27 @@
 
   <div class="main-container">
     <div class="box">
-      <h2 style="color: var(--gsu-red);">Fan Art Gallery</h2>
-      <p>Explore original art, in-game captures, and creative works from the GameSync Union community.</p>
-      <div class="art-gallery" id="artGallery"></div>
-    </div>
-
-    <div class="box">
-      <h2 style="color: var(--gsu-red);">Upload Your Fan Art</h2>
+      <h2>📤 Upload Your Gaming Art</h2>
       <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
-      <input type="text" class="input-field" id="imageURL" placeholder="Image URL" />
-      <textarea class="input-field" id="description" rows="3" placeholder="Optional description..."></textarea>
-      <button class="btn" onclick="uploadArt()">Upload Artwork</button>
+      <input type="file" class="input-field" id="artFile" />
+      <textarea class="input-field" id="artDescription" placeholder="Optional description..." rows="3"></textarea>
+      <label for="promoteDropdown">Promoting another artist?</label>
+      <select class="input-field" id="promoteDropdown" onchange="toggleIGInputs()">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+      <input type="text" class="input-field" id="uploaderIG" placeholder="(Optional) @yourIG" />
+      <input type="text" class="input-field" id="artistIG" placeholder="Instagram of promoted artist (@username)" style="display:none;" />
+      <button class="btn" id="uploadBtn">Upload Artwork</button>
     </div>
+   <div class="box">
+  <h2>🎨 Fan Art Gallery</h2>
+  <p>Show off your creativity, game-inspired art, and epic screenshots with the GSU community!</p>
+  <div id="loadingSpinner" style="text-align:center; padding:1rem; display:none;">
+    <p>🎨 Loading epic community artwork...</p>
   </div>
+  <div class="art-gallery" id="fanArtGallery"></div>
+</div>
 
   <footer>
     <div class="platform-icons">
@@ -133,8 +163,8 @@
       authDomain: "gamesync-union.firebaseapp.com",
       projectId: "gamesync-union",
       storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "YOUR_MSG_ID",
-      appId: "YOUR_APP_ID"
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -153,9 +183,9 @@
     });
 
     function uploadArt() {
-      const title = document.getElementById("artTitle").value;
-      const imageURL = document.getElementById("imageURL").value;
-      const description = document.getElementById("description").value;
+      const title = document.getElementById("artTitle").value.trim();
+      const imageURL = document.getElementById("imageURL").value.trim();
+      const description = document.getElementById("description").value.trim();
       const user = auth.currentUser;
 
       if (!user || !currentUsername || !title || !imageURL) {
@@ -180,10 +210,14 @@
 
     function loadArtGallery() {
       const gallery = document.getElementById("artGallery");
+      const user = auth.currentUser;
+
       db.collection("community_art").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
         gallery.innerHTML = "";
         snapshot.forEach((doc) => {
           const data = doc.data();
+          const isOwner = user && user.uid === data.userId;
+
           const card = document.createElement("div");
           card.className = "art-card";
           card.innerHTML = `
@@ -191,10 +225,21 @@
             <h3>${data.title}</h3>
             <p>${data.description || "No description."}</p>
             <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
+            ${isOwner ? `<button class='delete-btn' onclick='deleteArt("${doc.id}")'>Delete</button>` : ""}
           `;
           gallery.appendChild(card);
         });
       });
+    }
+
+    function deleteArt(docId) {
+      if (confirm("Are you sure you want to delete your artwork?")) {
+        db.collection("community_art").doc(docId).delete().then(() => {
+          alert("Artwork deleted.");
+        }).catch((error) => {
+          console.error("Error deleting artwork:", error);
+        });
+      }
     }
   </script>
 </body>
