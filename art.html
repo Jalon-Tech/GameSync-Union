@@ -145,15 +145,17 @@
       <input type="text" class="input-field" id="artistIG" placeholder="Instagram of promoted artist (@username)" style="display:none;" />
       <button class="btn" id="uploadBtn">Upload Artwork</button>
     </div>
-    <div class="box">
-      <h2>🎨 Fan Art Gallery</h2>
-      <p>Show off your creativity, game-inspired art, and epic screenshots with the GSU community!</p>
-      <div id="loadingSpinner" style="text-align:center; padding:1rem; display:none;">
-        <p>Loading artwork...</p>
-      </div>
-      <div class="art-gallery" id="fanArtGallery"></div>
-    </div>
+   <div class="box">
+  <h2>🎨 Fan Art Gallery</h2>
+  <p>Show off your creativity, game-inspired art, and epic screenshots with the GSU community!</p>
+  <div id="loadingSpinner" style="text-align:center; padding:1rem; display:none;">
+    <p>🎨 Loading epic community artwork...</p>
   </div>
+  <div class="art-gallery" id="fanArtGallery"></div>
+</div>
+
+
+
 
   <footer style="background:#111; color:#fff; padding:1rem; text-align:center;">
     <div style="margin-bottom:0.6rem;">
@@ -247,9 +249,10 @@
       getAuth, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
     import {
-      getFirestore, collection, addDoc, query, where, orderBy, onSnapshot,
-      doc, updateDoc, deleteDoc, serverTimestamp, increment, arrayUnion
-    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  getFirestore, collection, addDoc, query, where, orderBy, onSnapshot,
+  doc, updateDoc, deleteDoc, serverTimestamp, increment, arrayUnion, getDoc
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
     import {
       getStorage, ref, uploadBytes, getDownloadURL
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
@@ -302,56 +305,66 @@
     };
 
     function loadFanArt() {
-      onAuthStateChanged(auth, (user) => {
-        const q = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
-        $("loadingSpinner").style.display = "block";
+  const viewedToday = JSON.parse(sessionStorage.getItem("gsuViews") || "{}");
 
-        onSnapshot(q, (snap) => {
-          $("fanArtGallery").innerHTML = "";
-          if (snap.empty) {
-            $("fanArtGallery").innerHTML = "<p style='opacity:0.6;text-align:center;'>No fan art found.</p>";
-            $("loadingSpinner").style.display = "none";
-            return;
-          }
+  onAuthStateChanged(auth, (user) => {
+    const q = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
+    $("loadingSpinner").style.display = "block";
 
-          snap.forEach(docSnap => {
-            const art = docSnap.data();
-            const docId = docSnap.id;
-            const isOwner = user && art.uid === user.uid;
-            const liked = user && art.likedBy.includes(user.uid);
-            const card = document.createElement("div");
-            card.className = "art-card";
-            card.innerHTML = `
-              <img src="${art.imageUrl}" alt="${art.title}" onclick="showFullImage('${art.imageUrl}')" />
-              <h3>${art.title}</h3>
-              <p style="font-size: 0.8rem; opacity: 0.7;">📅 ${art.timestamp?.toDate().toLocaleDateString()}</p>
-              <p>🎨 ${art.artistIG || "Unknown"}</p>
-              <div class="art-actions">
-                <button onclick="likeArt('${docId}', '${user?.uid}')">🔥 ${art.likes}</button>
-                <span>📈 ${art.views}</span>
-              </div>
-              <div class="comment-box">
-                <textarea id="comment_${docId}" placeholder="💬 Add comment..."></textarea>
-                <button onclick="commentArt('${docId}')">Post</button>
-              </div>
-            `;
-            $("fanArtGallery").appendChild(card);
-            if (!isOwner) addView(docId);
-          });
+    onSnapshot(q, (snap) => {
+      $("fanArtGallery").innerHTML = "";
+      if (snap.empty) {
+        $("fanArtGallery").innerHTML = "<p style='opacity:0.6;text-align:center;'>No fan art yet. Be the first!</p>";
+        $("loadingSpinner").style.display = "none";
+        return;
+      }
 
-          $("loadingSpinner").style.display = "none";
-        });
+      snap.forEach(docSnap => {
+        const art = docSnap.data();
+        const docId = docSnap.id;
+        const isOwner = user && art.uid === user.uid;
+        const liked = user && art.likedBy.includes(user.uid);
+        const promoted = !!art.promotedBy;
+
+        const card = document.createElement("div");
+        card.className = "art-card";
+        card.innerHTML = `
+          <img src="${art.imageUrl}" alt="${art.title}" onclick="showFullImage('${art.imageUrl}')" />
+          <h3>${art.title}</h3>
+          <p style="font-size: 0.85rem; opacity: 0.8;">
+            ${promoted ? `🔁 Promoted by <b>${art.promotedBy}</b>` : `🎨 By <b>${art.artistIG || "Unknown"}</b>`}
+          </p>
+          <p style="font-size: 0.8rem; color: #aaa;">📅 ${art.timestamp?.toDate().toLocaleDateString()}</p>
+          <div class="art-actions">
+            <button onclick="likeArt('${docId}')">${liked ? '🔥 Liked' : '🔥 Like'} ${art.likes}</button>
+            <span>📈 ${art.views}</span>
+          </div>
+          <div class="comment-box">
+            <textarea id="comment_${docId}" placeholder="💬 Add a comment..."></textarea>
+            <button onclick="commentArt('${docId}')">Post</button>
+          </div>
+          <div style="margin-top:0.5rem; text-align:left; font-size: 0.9rem;">
+            ${art.comments.slice(-3).map(c =>
+              `<div style="border-top:1px solid #333; padding-top:0.3rem; margin-top:0.3rem;">
+                 <b>${c.user}</b>: ${c.text} <span style="font-size:0.7rem; color:#777;">(${new Date(c.time).toLocaleTimeString()})</span>
+               </div>`).join("") || "<em>No comments yet</em>"}
+          </div>
+        `;
+        $("fanArtGallery").appendChild(card);
+
+        // Only count views once per session
+        if (!isOwner && !viewedToday[docId]) {
+          addView(docId);
+          viewedToday[docId] = true;
+        }
       });
-    }
 
-    async function likeArt(docId, uid) {
-      if (!uid) return alert("Log in to like.");
-      const docRef = doc(db, "fan_art", docId);
-      await updateDoc(docRef, {
-        likes: increment(1),
-        likedBy: arrayUnion(uid)
-      });
-    }
+      sessionStorage.setItem("gsuViews", JSON.stringify(viewedToday));
+      $("loadingSpinner").style.display = "none";
+    });
+  });
+}
+
 
     async function commentArt(docId) {
       const user = auth.currentUser;
@@ -368,6 +381,21 @@
       const docRef = doc(db, "fan_art", docId);
       await updateDoc(docRef, { views: increment(1) });
     }
+    async function likeArt(docId) {
+  const user = auth.currentUser;
+  if (!user) return alert("Log in to like.");
+
+  const docRef = doc(db, "fan_art", docId);
+  const snapshot = await getDoc(docRef);
+  const data = snapshot.data();
+
+  if (data.likedBy.includes(user.uid)) return; // Already liked
+
+  await updateDoc(docRef, {
+    likes: increment(1),
+    likedBy: arrayUnion(user.uid)
+  });
+}
 
     window.showFullImage = function (src) {
       $("modalImage").src = src;
