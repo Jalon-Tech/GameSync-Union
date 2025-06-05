@@ -608,7 +608,7 @@ if (user) {
 
   onAuthStateChanged(auth, (user) => {
     const currentPath = window.location.pathname.toLowerCase();
-    const isLoginPage = currentPath.includes("Account_Creation.html");
+    const isLoginPage = currentPath.includes("account_creation.html");
 
     if (user) {
       loadProfile(user.uid);
@@ -617,7 +617,7 @@ if (user) {
       document.getElementById("auth-box").style.display = "block";
       if (!isLoginPage && currentPath !== "/index.html") {
         alert("Please log in to access GameSync Union.");
-        window.location.href = "Account_Creation.html";
+        window.location.href = "account_creation.html";
       }
     }
   });
@@ -629,7 +629,7 @@ if (user) {
       try {
         await auth.signOut();
         alert("You have been logged out.");
-        window.location.href = "Account_Creation.html";
+        window.location.href = "account_creation.html";
       } catch (err) {
         alert("Error signing out: " + err.message);
       }
