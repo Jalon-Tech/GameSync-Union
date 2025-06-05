@@ -1,3 +1,4 @@
+<!-- FULLY UPDATED: GameSync Union - Main Page with Firebase Integration -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,21 +14,18 @@
       font-family: 'Montserrat', sans-serif;
       margin: 0;
       padding: 0;
+      scroll-behavior: smooth;
     }
     .reveal { opacity: 1; transform: translateY(0); transition: all 0.8s ease; }
     .hidden { opacity: 0; transform: translateY(50px); }
-    header, footer, .section { animation: fadeInUp 0.8s ease forwards; }
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(40px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
     header {
-      background-color: #1f1f1f;
+      background: radial-gradient(circle, #2b2b2b 0%, #1a1a1a 100%);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
       flex-wrap: wrap;
+      box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
     }
     .logo {
       display: flex;
@@ -41,6 +39,8 @@
     .logo-text {
       font-size: 2rem;
       font-weight: bold;
+      color: #ff3333;
+      text-shadow: 0 0 6px rgba(255, 51, 51, 0.5);
     }
     nav {
       display: flex;
@@ -50,10 +50,14 @@
     nav a {
       text-decoration: none;
       color: #fff;
-      transition: color 0.3s;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
     }
     nav a:hover {
-      color: #ff3333;
+      background-color: #ff3333;
+      color: #fff;
+      transform: scale(1.05);
     }
     .gsu-quote {
       font-style: italic;
@@ -70,9 +74,9 @@
       padding: 3rem 0;
     }
     .hero-video img {
-      width: 240px;
+      width: 260px;
       border-radius: 12px;
-      box-shadow: 0 0 16px rgba(255, 51, 51, 0.5);
+      box-shadow: 0 0 16px rgba(255, 51, 51, 0.7);
     }
     .section {
       padding: 2rem;
@@ -100,258 +104,212 @@
       margin-top: 0.5rem;
       color: #ccc;
     }
-    .feature-list {
-      list-style-type: '\1F3AE';
-      padding-left: 1.5rem;
+    .contributor-list, .featured-uploads {
+      list-style: none;
+      padding-left: 0;
     }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-    .stat {
-      background: #222;
-      padding: 1rem;
-      text-align: center;
-      border-radius: 10px;
-      border: 1px solid #333;
-    }
-    .stat h3 {
-      color: #ff3333;
-      margin-bottom: 0.5rem;
-      font-size: 2rem;
-    }
-    .spotlight-banner {
-      margin-top: 2rem;
-      padding: 1rem 1.5rem;
-      background-color: #1e1e1e;
-      border-left: 6px solid #ff3333;
-      border-radius: 10px;
-      box-shadow: 0 0 12px rgba(255, 51, 51, 0.4);
-    }
-    .spotlight-banner strong {
-      color: #ff3333;
-      font-size: 1.25rem;
-    }
-    footer {
-      background-color: #1f1f1f;
-      text-align: center;
-      padding: 1.5rem 1rem;
-    }
-    .platform-icons {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
+    .contributor-list li, .featured-uploads li {
       margin-bottom: 0.6rem;
-    }
-    .platform-icons img {
-      height: 32px;
-      transition: transform 0.3s ease, filter 0.3s ease;
-    }
-    .platform-icons img:hover {
-      transform: scale(1.2);
-      filter: brightness(1.3) drop-shadow(0 0 6px #ff3333);
-    }
-    footer p {
-      color: #ccc;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
-      <div>
-        <div class="logo-text">GAMESYNC UNION</div>
-        <div class="gsu-quote">“Squad up, show out, cast your vote — GSU’s the place where gamers don’t choke. Post your wins, drop your heat — Chat, connect, and claim your seat.”</div>
-      </div>
+<header>
+  <div class="logo">
+    <img src="GSU_LOGO.png" alt="GSU Logo" />
+    <div>
+      <div class="logo-text">GAMESYNC UNION</div>
+      <div class="gsu-quote">“Squad up, show out, cast your vote — GSU’s the place where gamers don’t choke. Post your wins, drop your heat — Chat, connect, and claim your seat.”</div>
     </div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">GSU Hall of Trophies</a>
-      <a href="art.html">Art</a>
-      <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">GSU Lounge</a>
-    </nav>
-  </header>
-
-  <div class="hero-video">
-    <img src="GSU_LOGO.png" alt="GameSync Union Logo" />
   </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="trophies.html">GSU Hall of Trophies</a>
+    <a href="art.html">Art</a>
+    <a href="game-guides.html">Guides</a>
+    <a href="uploads.html">GSU Lounge</a>
+  </nav>
+</header>
+<div class="hero-video">
+  <img src="GSU_LOGO.png" alt="GameSync Union Logo" />
+</div>
 
-  <section class="section reveal">
-    <h2>🎮 Welcome to GameSync Union</h2>
-    <div class="highlight-box">
-      <p><strong>GameSync Union (GSU)</strong> is your launchpad to show off who you are as a gamer. We’re not here to fake stats or celebrate empty content — this is live, real-time recognition. Real uploads. Real trophies. Real community heat.</p>
-      <p><span>🔥 Post your gameplay, guides, art, or trophy flexes.</span>
-         <span>🔥 Chat with squads, earn spotlight badges, rank up by doing what you already love.</span>
-         <span>🔥 Every section runs on Firebase — meaning it updates with YOU.</span></p>
-    </div>
-  </section>
-
-  <section class="section reveal" id="live-stats">
-    <h2>📊 Real-Time Stats</h2>
-    <div class="stats-grid">
-      <div class="stat"><h3 id="stat-uploads">0</h3><p>Uploads Shared</p></div>
-      <div class="stat"><h3 id="stat-games">0</h3><p>Games Repped</p></div>
-      <div class="stat"><h3 id="stat-users">0</h3><p>Registered Gamers</p></div>
-    </div>
-  </section>
-
- <section class="section reveal">
-  <h2>🌟 GSU Spotlight Stories</h2>
-  <div class="highlight-box" id="spotlight-stories">
-    <p>Loading real GSU stories from the community...</p>
-  </div>
-  <div style="margin-top: 2rem;">
-    <h3 style="color: #ff3333;">Got a story to share?</h3>
-    <form id="storyForm" style="margin-top: 1rem;">
-      <input type="text" id="storyUser" placeholder="Your GSU Username" class="input-field" required />
-      <input type="text" id="storyGame" placeholder="Game Name" class="input-field" required />
-      <textarea id="storyText" placeholder="Tell us your GSU story..." class="input-field" rows="4" required></textarea>
-      <button type="submit" class="btn" style="margin-top: 1rem;">Submit Your Story</button>
-    </form>
+<!-- Dynamic Sections Injected Here -->
+<section class="section reveal">
+  <h2>🏆 Top Contributors</h2>
+  <div class="highlight-box">
+    <ul id="top-contributors" class="contributor-list"><li>Loading...</li></ul>
   </div>
 </section>
+<section class="section reveal">
+  <h2>🎯 Featured Uploads</h2>
+  <div class="highlight-box">
+    <ul id="featured-uploads" class="featured-uploads"><li>Loading...</li></ul>
+  </div>
+</section>
+<section class="section reveal">
+  <h2>👑 Gamer of the Month</h2>
+  <div class="highlight-box" id="gamer-of-month">
+    <p>Loading featured gamer...</p>
+  </div>
+</section>
+<section class="section reveal">
+  <h2>🎮 Welcome to GameSync Union</h2>
+  <div class="highlight-box">
+    <p><strong>GameSync Union (GSU)</strong> is your launchpad to show off who you are as a gamer...</p>
+    <p><span>🔥 Share gameplay, art, or trophy flexes</span>
+       <span>🔥 Chat with squads, earn spotlight badges, and rank up</span>
+       <span>🔥 Firebase-powered: everything updates live with YOU</span></p>
+  </div>
+</section>
+<section class="section reveal" id="live-stats">
+  <h2>📊 Real-Time Stats</h2>
+  <div class="highlight-box">
+    <p><strong>Uploads:</strong> <span id="stat-uploads">Loading...</span></p>
+    <p><strong>Games Repped:</strong> <span id="stat-games">Loading...</span></p>
+    <p><strong>Registered Gamers:</strong> <span id="stat-users">Loading...</span></p>
+  </div>
+</section>
+<section class="section reveal">
+  <h2>🌟 GSU Spotlight Stories</h2>
+  <div class="highlight-box" id="spotlight-stories">
+    <p>Loading stories from the community...</p>
+  </div>
+  <form id="storyForm">
+    <input type="text" id="storyUser" placeholder="Your GSU Username" required />
+    <input type="text" id="storyGame" placeholder="Game Name" required />
+    <textarea id="storyText" placeholder="Tell us your GSU story..." required></textarea>
+    <button type="submit">Submit Your Story</button>
+  </form>
+</section>
 
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
 
-  <div id="main-content"></div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "488911705365",
+    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
+  };
 
-  <footer>
-    <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
-    </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-  </footer>
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js';
-    import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    function animateCounter(id, target, speed = 25) {
-      const element = document.getElementById(id);
-      let count = 0;
-      const increment = Math.ceil(target / 60);
-      const interval = setInterval(() => {
-        count += increment;
-        if (count >= target) {
-          count = target;
-          clearInterval(interval);
-        }
-        element.textContent = count + '+';
-      }, speed);
-    }
-
-    async function loadStats() {
-      const uploads = await getDocs(collection(db, 'uploads'));
-      const users = await getDocs(collection(db, 'users'));
-      const games = new Set();
-      uploads.forEach(doc => {
-        const data = doc.data();
-        if (data.gameTitle) games.add(data.gameTitle);
-      });
-      animateCounter('stat-uploads', uploads.size);
-      animateCounter('stat-games', games.size);
-      animateCounter('stat-users', users.size);
-    }
-
-    async function loadContributorsAndUploads() {
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      const uploadsSnapshot = await getDocs(collection(db, 'uploads'));
-
-      const badgesHTML = Array.from(usersSnapshot.docs.slice(0, 5)).map(doc => {
-        const user = doc.data();
-        return `<div class="badge">🏆 ${user.username}</div>`;
-      }).join('');
-      import { addDoc } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
-
-async function loadSpotlightStories() {
-  const storiesRef = await getDocs(collection(db, 'spotlightStories'));
-  const container = document.getElementById('spotlight-stories');
-  if (storiesRef.empty) {
-    container.innerHTML = '<p>No stories shared yet. Be the first to leave your mark on GSU!</p>';
-    return;
+  async function loadTopContributors() {
+    const uploadsRef = await getDocs(collection(db, 'uploads'));
+    const userContributions = {};
+    uploadsRef.forEach(doc => {
+      const user = doc.data().username;
+      if (user) userContributions[user] = (userContributions[user] || 0) + 1;
+    });
+    const sorted = Object.entries(userContributions).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const list = document.getElementById('top-contributors');
+    list.innerHTML = '';
+    sorted.forEach(([user, count], index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `🥇 ${user} – ${count} uploads`;
+      list.appendChild(li);
+    });
   }
-  container.innerHTML = '';
-  storiesRef.forEach(doc => {
-    const { username, game, story } = doc.data();
-    const p = document.createElement('p');
-    p.innerHTML = `<strong>“${story}”</strong><span>— ${username} (on ${game})</span>`;
-    container.appendChild(p);
-  });
-}
 
-document.getElementById('storyForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('storyUser').value.trim();
-  const game = document.getElementById('storyGame').value.trim();
-  const story = document.getElementById('storyText').value.trim();
-  if (!username || !game || !story) return;
+  async function loadFeaturedUploads() {
+    const uploadsSnap = await getDocs(query(collection(db, 'uploads'), orderBy('likes', 'desc'), limit(5)));
+    const list = document.getElementById('featured-uploads');
+    list.innerHTML = '';
+    uploadsSnap.forEach(doc => {
+      const data = doc.data();
+      const li = document.createElement('li');
+      li.textContent = `${data.username}: ${data.title || 'Untitled Upload'} (${data.likes || 0} likes)`;
+      list.appendChild(li);
+    });
+  }
 
-  await addDoc(collection(db, 'spotlightStories'), { username, game, story });
-  alert('Story submitted! Thanks for sharing!');
-  document.getElementById('storyForm').reset();
-  loadSpotlightStories();
-});
+  async function loadGamerOfTheMonth() {
+    const usersSnap = await getDocs(collection(db, 'users'));
+    const users = [];
+    usersSnap.forEach(doc => users.push(doc.data()));
+    const monthIndex = new Date().getMonth() % users.length;
+    const featured = users[monthIndex];
+    const box = document.getElementById('gamer-of-month');
+    box.innerHTML = `<p><strong>${featured.username}</strong> – ${featured.Favorite_Games?.join(', ') || 'No games listed'}</p>`;
+  }
 
-      const uploadsHTML = Array.from(uploadsSnapshot.docs.slice(0, 5)).map(doc => {
-        const data = doc.data();
-        return `<div class="upload-card">
-          <h3>${data.gameTitle || 'Untitled Game'}</h3>
-          <p>${data.description || 'No description provided.'}</p>
-        </div>`;
-      }).join('');
+  async function loadStats() {
+    const uploads = await getDocs(collection(db, 'uploads'));
+    const users = await getDocs(collection(db, 'users'));
+    const games = new Set();
+    uploads.forEach(doc => {
+      const data = doc.data();
+      if (data.gameTitle) games.add(data.gameTitle);
+    });
+    animateCounter('stat-uploads', uploads.size);
+    animateCounter('stat-games', games.size);
+    animateCounter('stat-users', users.size);
+  }
 
-      document.getElementById('main-content').innerHTML = `
-        <section class="section reveal">
-          <h2>🔥 Top Contributors</h2>
-          <div class="badge-section">
-            <div class="badge-list">${badgesHTML}</div>
-          </div>
-        </section>
-        <section class="section reveal featured-uploads">
-          <h2>🌟 Featured Uploads</h2>
-          ${uploadsHTML}
-        </section>
-      `;
-    }
+  function animateCounter(id, target, speed = 25) {
+    const element = document.getElementById(id);
+    let count = 0;
+    const increment = Math.ceil(target / 60);
+    const interval = setInterval(() => {
+      count += increment;
+      if (count >= target) {
+        count = target;
+        clearInterval(interval);
+      }
+      element.textContent = count + '+';
+    }, speed);
+  }
 
-    function animateSectionsOnScroll() {
-      const reveals = document.querySelectorAll('.reveal');
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('reveal');
-        });
-      }, { threshold: 0.1 });
+  async function loadSpotlightStories() {
+    const storiesRef = await getDocs(collection(db, 'spotlightStories'));
+    const container = document.getElementById('spotlight-stories');
+    container.innerHTML = '';
+    storiesRef.forEach(doc => {
+      const { username, game, story } = doc.data();
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>“${story}”</strong><span> — ${username} (on ${game})</span>`;
+      container.appendChild(p);
+    });
+  }
 
-      reveals.forEach(r => {
-        r.classList.add('hidden');
-        observer.observe(r);
-      });
-    }
-
-    loadStats();
-    loadContributorsAndUploads();
-    animateSectionsOnScroll();
+  document.getElementById('storyForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('storyUser').value.trim();
+    const game = document.getElementById('storyGame').value.trim();
+    const story = document.getElementById('storyText').value.trim();
+    if (!username || !game || !story) return;
+    await addDoc(collection(db, 'spotlightStories'), { username, game, story });
+    alert('Story submitted!');
+    e.target.reset();
     loadSpotlightStories();
+  });
 
+  function animateSectionsOnScroll() {
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('reveal');
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => {
+      r.classList.add('hidden');
+      observer.observe(r);
+    });
+  }
+
+  loadStats();
+  loadTopContributors();
+  loadFeaturedUploads();
+  loadGamerOfTheMonth();
+  loadSpotlightStories();
+  animateSectionsOnScroll();
 </script>
 </body>
 </html>
