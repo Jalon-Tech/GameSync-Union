@@ -1,138 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fan Art | GameSync Union</title>
-  <link rel="icon" href="GSU_Logo.png" type="image/png" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-    import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "your-id",
-      appId: "your-id"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    window.gsu = {
-      auth: getAuth(app),
-      db: getFirestore(app),
-      storage: getStorage(app)
-    };
-  </script>
-
-  <style>
-    :root {
-      --gsu-red: #e60023;
-      --black-main: #191818;
-      --black-faded: #1F1F1F;
-      --white-text: #FFFFFF;
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--black-main);
-      color: var(--white-text);
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      background-color: var(--black-faded);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-    }
-    .logo { display: flex; align-items: center; }
-    .logo img { height: 60px; margin-right: 1rem; }
-    .logo-text {
-      font-size: 1.6rem;
-      font-family: 'Montserrat', sans-serif;
-    }
-    nav a {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: var(--white-text);
-      font-family: 'Montserrat', sans-serif;
-      transition: color 0.3s ease;
-    }
-    nav a:hover { color: var(--gsu-red); }
-    .main-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 2rem;
-      gap: 2rem;
-    }
-    .box {
-      background-color: var(--black-faded);
-      border-radius: 8px;
-      padding: 2rem;
-      max-width: 700px;
-      margin: 0 auto;
-      transition: 0.3s ease all;
-    }
-    .box:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--gsu-red);
-    }
-    .box h2 {
-      font-family: 'Montserrat', sans-serif;
-      color: var(--gsu-red);
-      margin-bottom: 0.6rem;
-    }
-    .input-field {
-      padding: 0.6rem;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 0.6rem;
-      width: 100%;
-      background-color: #2a2a2a;
-      color: var(--white-text);
-    }
-    .btn {
-      background-color: var(--gsu-red);
-      border: none;
-      color: var(--white-text);
-      padding: 0.8rem;
-      width: 100%;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
-    }
-    .btn:hover { opacity: 0.85; }
-    footer {
-      background-color: var(--black-faded);
-      padding: 1rem;
-      text-align: center;
-      margin-top: auto;
-    }
-    .platform-icons {
-      margin-bottom: 0.6rem;
-    }
-    .platform-icons img {
-      height: 28px;
-      margin: 0 0.5rem;
-    }
-    footer p {
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-  </style>
-</head>
-<body>
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -164,6 +30,8 @@
     };
   </script>
 
+  <!-- Removed duplicated <html> and <head> from here forward -->
+
   <style>
     :root {
       --gsu-red: #e60023;
@@ -266,7 +134,7 @@
   </style>
 </head>
 <body>
- <header>
+  <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
@@ -433,7 +301,7 @@
 
       if (!title || !file) return alert("Artwork must have a title and image.");
 
-      const fileRef = ref(storage, `fanart/${user.uid}/${Date.now()}_${file.name}`);
+      const fileRef = ref(storage, fanart/${user.uid}/${Date.now()}_${file.name});
       await uploadBytes(fileRef, file);
       const imageUrl = await getDownloadURL(fileRef);
 
@@ -479,11 +347,11 @@
 
         const card = document.createElement("div");
         card.className = "art-card";
-        card.innerHTML = `
+        card.innerHTML = 
           <img src="${art.imageUrl}" alt="${art.title}" onclick="showFullImage('${art.imageUrl}')" />
           <h3>${art.title}</h3>
           <p style="font-size: 0.85rem; opacity: 0.8;">
-            ${promoted ? `🔁 Promoted by <b>${art.promotedBy}</b>` : `🎨 By <b>${art.artistIG || "Unknown"}</b>`}
+            ${promoted ? 🔁 Promoted by <b>${art.promotedBy}</b> : 🎨 By <b>${art.artistIG || "Unknown"}</b>}
           </p>
           <p style="font-size: 0.8rem; color: #aaa;">📅 ${art.timestamp?.toDate().toLocaleDateString()}</p>
           <div class="art-actions">
@@ -496,11 +364,11 @@
           </div>
           <div style="margin-top:0.5rem; text-align:left; font-size: 0.9rem;">
             ${art.comments.slice(-3).map(c =>
-              `<div style="border-top:1px solid #333; padding-top:0.3rem; margin-top:0.3rem;">
+              <div style="border-top:1px solid #333; padding-top:0.3rem; margin-top:0.3rem;">
                  <b>${c.user}</b>: ${c.text} <span style="font-size:0.7rem; color:#777;">(${new Date(c.time).toLocaleTimeString()})</span>
-               </div>`).join("") || "<em>No comments yet</em>"}
+               </div>).join("") || "<em>No comments yet</em>"}
           </div>
-        `;
+        ;
         $("fanArtGallery").appendChild(card);
 
         // Only count views once per session
@@ -520,7 +388,7 @@
     async function commentArt(docId) {
       const user = auth.currentUser;
       if (!user) return alert("Log in to comment.");
-      const input = $(`comment_${docId}`);
+      const input = $(comment_${docId});
       if (!input.value.trim()) return;
       await updateDoc(doc(db, "fan_art", docId), {
         comments: arrayUnion({ text: input.value.trim(), user: user.displayName || "Anonymous", time: new Date() })
