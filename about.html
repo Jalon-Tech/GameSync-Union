@@ -36,12 +36,11 @@
       align-items: center;
     }
     .logo img {
-      height: 50px;
+      height: 60px;
       margin-right: 1rem;
-      filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);
     }
     .logo-text {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
       color: #fff;
     }
@@ -59,7 +58,7 @@
       transition: color 0.3s ease;
     }
     nav a:hover {
-      color: #ff3333;
+      color: #e60023;
     }
     .btn {
       background-color: #777;
@@ -77,27 +76,22 @@
     }
     h1, h2 {
       font-family: 'Roboto', sans-serif;
-      color: #ff3333;
+      color: #e60023;
       margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2.8rem;
+      text-align: center;
     }
     .section {
       margin-bottom: 4rem;
     }
     .highlight-box {
       background: #1e1e1e;
-      border-left: 5px solid #ff3333;
+      border-left: 5px solid #e60023;
       padding: 1.5rem;
       margin-top: 1rem;
       border-radius: 12px;
-    }
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 4rem 0 2rem;
-    }
-    .divider img {
-      width: 36px;
-      margin-right: 1rem;
     }
     .feature-list {
       list-style: none;
@@ -107,27 +101,30 @@
       content: "\1F3AE";
       margin-right: 0.5rem;
     }
-    .callout {
-      background-color: #2b2b2b;
-      padding: 1rem 1.5rem;
+    .info-card {
+      background-color: #1b1b1b;
+      border: 1px solid #333;
       border-radius: 10px;
-      font-weight: bold;
-      color: #fff;
-      text-align: center;
-      font-size: 1.2rem;
-      border: 1px solid #444;
-    }
-    .faq-box {
-      background: #1e1e1e;
       padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .info-card h3 {
+      color: #e60023;
+      margin-bottom: 0.5rem;
+    }
+    .info-card p {
+      color: #ccc;
+      line-height: 1.6;
+    }
+    .gsu-logo-center {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0 3rem;
+    }
+    .gsu-logo-center img {
+      width: 220px;
+      border: 6px solid #e60023;
       border-radius: 12px;
-      margin-top: 1rem;
-    }
-    .faq-box h3 {
-      color: #ff3333;
-    }
-    .faq-box p {
-      margin-bottom: 1rem;
     }
     footer {
       background-color: #1f1f1f;
@@ -150,7 +147,7 @@
     }
     .platform-icons img:hover {
       transform: scale(1.2);
-      filter: brightness(1.3) drop-shadow(0 0 6px #ff3333);
+      filter: brightness(1.3) drop-shadow(0 0 6px #e60023);
     }
     footer p {
       color: #ccc;
@@ -178,35 +175,47 @@
 
   <div class="container">
     <section class="section reveal">
-      <h1>🔥 What Is GameSync Union?</h1>
-      <div class="highlight-box">
-        <p><strong>GameSync Union (GSU)</strong> is the ultimate hub built by and for passionate gamers. It connects you to real-time gameplay stats, fierce community uploads, stunning fan creations, competitive leaderboards, and in-depth guides. Whether you're a trophy hunter, combo king, or lore-loving artist, GSU celebrates your style.</p>
-        <p class="callout">🎮 Squad up, show out, cast your vote — GSU’s the place where gamers don’t choke. Post your wins, drop your heat — Chat, connect, and claim your seat.</p>
+      <h1>🎮 What Is GameSync Union?</h1>
+      <div class="gsu-logo-center">
+        <img src="GSU_LOGO.png" alt="GameSync Union Logo">
       </div>
-    </section>
-
-    <div class="divider">
-      <img src="icons/preview.png" alt="Preview Icon" />
-      <h2>🧪 Sneak Peeks from Around the Site</h2>
-    </div>
-    <section class="section reveal">
-      <div class="highlight-box">
-        <p><strong>🗡️ Boss Fight Strategies:</strong> Breakdowns, patterns, and survival tips for the toughest bosses in gaming.</p>
-        <p><strong>🎮 Gameplay Tutorials:</strong> Learn mechanics, systems, and progression strategies for new or complex games.</p>
-        <p><strong>📹 Community Gameplay Videos:</strong> Relive epic moments, flawless runs, and funny clips from GameSync players.</p>
-        <p><strong>🥊 Combo Guides for Fighting Games:</strong> Master combo chains, cancels, and setups across the latest competitive fighters.</p>
-        <p><strong>🏆 Tips for Acquiring Trophies and Achievements:</strong> Step-by-step advice for unlocking platinum trophies and hard-to-get achievements.</p>
-        <p><strong>💬 Guide Discussion & Community Chat:</strong> Join the conversation, share feedback, ask questions, or help others with their guides.</p>
+      <div class="info-card">
+        <h3>Core Identity</h3>
+        <p><strong>GameSync Union (GSU)</strong> is your all-in-one gaming universe — a platform where players don’t just play — they post, flex, guide, grind, and connect. GSU is powered by the gamers who breathe life into it, syncing trophy stats, uploads, clips, and guides in real-time.</p>
       </div>
-    </section>
-
-    <div class="divider">
-      <img src="icons/community.png" alt="Community Icon" />
-      <h2>🌍 GSU Vision & Future</h2>
-    </div>
-    <section class="section reveal">
-      <div class="highlight-box">
-        <p>GSU isn’t just a site — it’s an evolving network for console, PC, and Switch users who want more than gameplay. We’re building a platform that lets you track growth, earn respect, and get noticed. What’s next? Verified squads, creator earnings, and full tournament hosting. This is just the start.</p>
+      <div class="info-card">
+        <h3>🔥 Key Features Across the Platform</h3>
+        <ul class="feature-list">
+          <li>🗡️ <strong>Boss Fight Strategies</strong> — Breakdowns, survival tips, and patterns to win</li>
+          <li>🎮 <strong>Gameplay Tutorials</strong> — Deep dives into mechanics and progression</li>
+          <li>📹 <strong>Community Videos</strong> — Legendary moments and funny fails</li>
+          <li>🥊 <strong>Combo Guides</strong> — Advanced chains for every major fighting game</li>
+          <li>🏆 <strong>Trophy Tips</strong> — Step-by-step walkthroughs to platinum success</li>
+          <li>💬 <strong>Community Chat</strong> — Discuss strategies, builds, and more</li>
+          <li>🎨 <strong>Fan Art Gallery</strong> — Upload original art or shout out your favorite creators</li>
+          <li>🎯 <strong>Trending Topics</strong> — Dynamic discussion-driven highlights</li>
+          <li>🕹️ <strong>Game Library</strong> — Explore every game repped on GSU across all platforms</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📈 Live Data and Real Sync</h3>
+        <p>Everything in GSU is powered by Firebase Firestore — meaning uploads, likes, comments, trophies, and user profiles all update instantly across the site. This isn’t a static forum or a curated blog — it’s a living network where your input defines the platform in real time.</p>
+      </div>
+      <div class="info-card">
+        <h3>🎯 Gamer Identity & Profiles</h3>
+        <p>Every gamer gets a public GSU profile. Show your username, platform, favorite games, recent games played, trophy count, uploads, fan art, and earned badges. Compare profiles, earn features, and rep your squad.</p>
+      </div>
+      <div class="info-card">
+        <h3>💡 GSU Motto</h3>
+        <p style="font-style: italic; color: #ccc; font-size: 1.1rem;">“No pause. No kink. Just raw sync — GameSync Union is where gamers link.”</p>
+      </div>
+      <div class="info-card">
+        <h3>📦 Built for Gamers, by Gamers</h3>
+        <p>GSU isn’t a corporate hub — it’s made by real gamers who love trophies, combos, and clean UI. Whether you're dropping a 60-hit juggle in Tekken, flexing platinum trophies, or uploading fan art, GSU is your home base for being seen and celebrated.</p>
+      </div>
+      <div class="info-card">
+        <h3>🔧 Future of GSU</h3>
+        <p>We're just getting started. Upcoming features include Squad Formation Boards, Verified Streamer Badges, Direct Messaging, GSU-exclusive Events & Giveaways, and more. GSU will grow with its community — and you’re a part of that.</p>
       </div>
     </section>
   </div>
