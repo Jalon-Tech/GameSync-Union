@@ -193,7 +193,10 @@
             <img src="${data.imageURL}" alt="${data.title}" />
             <h3>${data.title}</h3>
             <p>${data.description || "No description provided."}</p>
-            <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
+            <p style="font-size: 0.8rem; opacity: 0.6;">
+            Uploaded by: <strong style="color: var(--gsu-red);">${data.username || "Unknown"}</strong>
+          </p>
+
             ${user && user.uid === data.userId ? `<button class="delete-btn" onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
           `;
           container.appendChild(card);
