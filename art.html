@@ -6,11 +6,13 @@
   <title>Fan Art | GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-  <!-- Firebase SDK (modular version) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import {
+      getFirestore, collection, addDoc, query, where, orderBy, onSnapshot,
+      doc, updateDoc, deleteDoc, serverTimestamp, increment, arrayUnion
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
     const firebaseConfig = {
@@ -27,113 +29,10 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    let currentTab = "all";
-
-    window.switchTab = function (tab) {
-      currentTab = tab;
-      document.getElementById("allTab").classList.remove("active");
-      document.getElementById("myTab").classList.remove("active");
-      document.getElementById(tab + "Tab").classList.add("active");
-      loadFanArt();
-    };
-
-    window.toggleIGInputs = function () {
-      const promoting = document.getElementById("promoteDropdown").value;
-      document.getElementById("uploaderIG").style.display = promoting === "yes" ? "none" : "block";
-      document.getElementById("artistIG").style.display = promoting === "yes" ? "block" : "none";
-    };
-
-    window.uploadArtwork = async function () {
-      const user = auth.currentUser;
-      if (!user) return alert("Log in first!");
-
-      const title = document.getElementById("artTitle").value;
-      const file = document.getElementById("artFile").files[0];
-      const description = document.getElementById("artDescription").value;
-      const promoting = document.getElementById("promoteDropdown").value;
-      const uploaderIG = document.getElementById("uploaderIG").value;
-      const artistIG = document.getElementById("artistIG").value;
-
-      if (!title || !file) return alert("Title and image are required.");
-
-      const storageRef = ref(storage, `fanart/${user.uid}/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const imageUrl = await getDownloadURL(storageRef);
-
-      await addDoc(collection(db, "fan_art"), {
-        uid: user.uid,
-        title,
-        description,
-        artistIG: promoting === "yes" ? artistIG : uploaderIG,
-        promotedBy: promoting === "yes" ? user.displayName || user.email : null,
-        imageUrl,
-        timestamp: serverTimestamp()
-      });
-
-      alert("Art uploaded!");
-      location.reload();
-    };
-
-    window.updateTitle = async function (id, newTitle, isOwner) {
-      if (!isOwner || newTitle.trim() === "") return;
-      await updateDoc(doc(db, "fan_art", id), { title: newTitle });
-    };
-
-    window.deleteArt = async function (id) {
-      if (confirm("Are you sure you want to delete this artwork?")) {
-        await deleteDoc(doc(db, "fan_art", id));
-        alert("Artwork deleted.");
-      }
-    };
-
-    function loadFanArt() {
-      onAuthStateChanged(auth, (user) => {
-        const isMyTab = currentTab === "my";
-
-        let q = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
-        if (isMyTab && user) {
-          q = query(collection(db, "fan_art"), where("uid", "==", user.uid), orderBy("timestamp", "desc"));
-        } else if (isMyTab && !user) {
-          document.getElementById("fanArtGallery").innerHTML = "<p style='opacity: 0.6; text-align:center;'>Log in to view your uploads.</p>";
-          return;
-        }
-
-        const gallery = document.getElementById("fanArtGallery");
-        gallery.innerHTML = "";
-        document.getElementById("loadingSpinner").style.display = "block";
-
-        onSnapshot(q, (snapshot) => {
-          gallery.innerHTML = "";
-          if (snapshot.empty) {
-            gallery.innerHTML = "<p style='opacity: 0.6; text-align:center;'>No gaming art uploaded yet.</p>";
-            document.getElementById("loadingSpinner").style.display = "none";
-            return;
-          }
-
-          snapshot.forEach((docSnap) => {
-            const art = docSnap.data();
-            const isOwner = user && user.uid === art.uid;
-
-            const card = document.createElement("div");
-            card.className = "art-card";
-            card.innerHTML = `
-              <img src="${art.imageUrl}" alt="${art.title}" />
-              <h3 class="editable-title" contenteditable="${isOwner}" onblur="updateTitle('${docSnap.id}', this.innerText, ${isOwner})" title="${isOwner ? 'Click to edit title' : ''}">${art.title}</h3>
-              <p style="font-size:0.8rem; opacity:0.6;">📅 Uploaded ${art.timestamp?.toDate().toLocaleDateString() || ''}</p>
-              <p>${art.promotedBy ? `🎨 ${art.artistIG} — Promoted by ${art.promotedBy}` : `🎨 ${art.artistIG}`}</p>
-              ${isOwner ? `<button onclick="deleteArt('${docSnap.id}')">Delete</button>` : ""}
-            `;
-            gallery.appendChild(card);
-          });
-
-          document.getElementById("loadingSpinner").style.display = "none";
-        });
-      });
-    }
-
-    loadFanArt();
+    window.gsu = { auth, db, storage };
   </script>
-<style>
+
+  <style>
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -156,8 +55,8 @@
       align-items: center;
       padding: 1rem 2rem;
     }
-    .logo img { height: 60px; margin-right: 1rem; }
     .logo { display: flex; align-items: center; }
+    .logo img { height: 60px; margin-right: 1rem; }
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
@@ -183,7 +82,7 @@
       padding: 2rem;
       max-width: 700px;
       margin: 0 auto;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      transition: 0.3s ease all;
     }
     .box:hover {
       transform: translateY(-6px) scale(1.01);
@@ -192,8 +91,8 @@
     }
     .box h2 {
       font-family: 'Montserrat', sans-serif;
-      margin-bottom: 0.7rem;
       color: var(--gsu-red);
+      margin-bottom: 0.6rem;
     }
     .tab-toggle {
       display: flex;
@@ -232,71 +131,10 @@
       font-family: 'Montserrat', sans-serif;
     }
     .btn:hover { opacity: 0.85; }
-    .art-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.2rem;
-    }
-    .art-card {
-      background-color: #2a2a2a;
-      border-radius: 6px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .art-card img {
-      width: 100%;
-      max-height: 200px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-    .art-card h3 {
-      color: var(--gsu-red);
-      font-family: 'Montserrat', sans-serif;
-      margin: 0.6rem 0 0.2rem;
-    }
-    .art-card:hover h3 { color: var(--white-text); }
-    .art-card p {
-      font-size: 0.9rem;
-      opacity: 0.75;
-    }
-    .art-card button {
-      margin-top: 0.5rem;
-      padding: 0.4rem 0.6rem;
-      background-color: #e60023;
-      border: none;
-      color: #fff;
-      font-size: 0.8rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    footer {
-      background-color: var(--black-faded);
-      text-align: center;
-      padding: 1.2rem 1rem;
-    }
-    .platform-icons {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 0.6rem;
-    }
-    .platform-icons img { height: 32px; opacity: 0.9; }
-    footer p {
-      color: #ccc;
-      font-size: 1rem;
-      font-family: 'Roboto', sans-serif;
-    }
-    .editable-title[contenteditable="true"]:hover {
-      outline: 1px dashed var(--gsu-red);
-      cursor: text;
-    }
   </style>
 </head>
 <body>
- <header>
+  <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
@@ -310,28 +148,28 @@
       <a href="uploads.html">GSU Player Lounge</a>
     </nav>
   </header>
-  <div id="loadingSpinner" style="display:none;text-align:center;padding:2rem;">
-  <p>Loading fan art gallery...</p>
-</div>
 
   <div class="main-container">
     <div class="box">
-      <h2>Fan Art Gallery</h2>
-      <p>Explore original art, in-game captures, and creative works from the GameSync Union community.</p>
+      <h2>🎨 Fan Art Gallery</h2>
+      <p>Show off your creativity, game-inspired art, and epic screenshots with the GSU community!</p>
       <div class="tab-toggle">
         <button id="allTab" class="active" onclick="switchTab('all')">All Uploads</button>
         <button id="myTab" onclick="switchTab('my')">My Uploads</button>
+      </div>
+      <div id="loadingSpinner" style="text-align:center; padding:1rem; display:none;">
+        <p>Loading artwork...</p>
       </div>
       <div class="art-gallery" id="fanArtGallery"></div>
     </div>
 
     <div class="box">
-      <h2>Upload Your Fan Art</h2>
+      <h2>📤 Upload Your Gaming Art</h2>
       <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
       <input type="file" class="input-field" id="artFile" />
-      <textarea class="input-field" rows="3" id="artDescription" placeholder="Optional description..."></textarea>
-      <label for="promoteDropdown">Promoting the art of another user?</label>
-      <select id="promoteDropdown" class="input-field" onchange="toggleIGInputs()">
+      <textarea class="input-field" id="artDescription" placeholder="Optional description..." rows="3"></textarea>
+      <label for="promoteDropdown">Promoting another artist?</label>
+      <select class="input-field" id="promoteDropdown" onchange="toggleIGInputs()">
         <option value="no">No</option>
         <option value="yes">Yes</option>
       </select>
@@ -351,120 +189,169 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <script>
-    let currentTab = "all";
+  <!-- Full image preview modal -->
+  <div id="imageModal" class="full-image-modal" onclick="this.style.display='none'">
+    <img id="modalImage" src="" alt="Full View" />
+  </div>
+<script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, query, where, orderBy, onSnapshot,
+    doc, updateDoc, deleteDoc, serverTimestamp, increment, arrayUnion
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
-    function switchTab(tab) {
-      currentTab = tab;
-      document.getElementById("allTab").classList.remove("active");
-      document.getElementById("myTab").classList.remove("active");
-      document.getElementById(tab + "Tab").classList.add("active");
-      loadFanArt();
-    }
+  const { auth, db, storage } = window.gsu;
+  let currentTab = "all";
 
-    function toggleIGInputs() {
-      const promoting = document.getElementById("promoteDropdown").value;
-      document.getElementById("uploaderIG").style.display = promoting === "yes" ? "none" : "block";
-      document.getElementById("artistIG").style.display = promoting === "yes" ? "block" : "none";
-    }
-
-    async function uploadArtwork() {
-      const user = auth.currentUser;
-      if (!user) return alert("Log in first!");
-
-      const title = document.getElementById("artTitle").value;
-      const file = document.getElementById("artFile").files[0];
-      const description = document.getElementById("artDescription").value;
-      const promoting = document.getElementById("promoteDropdown").value;
-      const uploaderIG = document.getElementById("uploaderIG").value;
-      const artistIG = document.getElementById("artistIG").value;
-
-      if (!title || !file) return alert("Title and image are required.");
-
-      const storageRef = ref(storage, `fanart/${user.uid}/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const imageUrl = await getDownloadURL(storageRef);
-
-      await addDoc(collection(db, "fan_art"),{
-        uid: user.uid,
-        title,
-        description,
-        artistIG: promoting === "yes" ? artistIG : uploaderIG,
-        promotedBy: promoting === "yes" ? user.displayName || user.email : null,
-        imageUrl,
-        timestamp: serverTimestamp()
-      });
-
-      alert("Art uploaded!");
-      location.reload();
-    }
-
-   function loadFanArt() {
-  const user = auth.currentUser;
-  const isMyTab = currentTab === "my";
-
-  let queryRef = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
-  if (isMyTab && user) {
-    queryRef = query(collection(db, "fan_art"), where("uid", "==", user.uid), orderBy("timestamp", "desc"));
-  } else if (isMyTab && !user) {
-    document.getElementById("fanArtGallery").innerHTML = "<p style='opacity: 0.6; text-align:center;'>Log in to view your uploads.</p>";
-    return;
+  function $(id) {
+    return document.getElementById(id);
   }
 
-     onSnapshot(queryRef, snapshot => {
-  const gallery = document.getElementById("fanArtGallery");
-  gallery.innerHTML = "";
-  document.getElementById("loadingSpinner").style.display = "block";
+  window.switchTab = function(tab) {
+    currentTab = tab;
+    $("allTab").classList.remove("active");
+    $("myTab").classList.remove("active");
+    $(tab + "Tab").classList.add("active");
+    loadFanArt();
+  };
 
-  if (snapshot.empty) {
-    gallery.innerHTML = "<p style='opacity: 0.6; text-align:center;'>No gaming art uploaded yet.</p>";
-    document.getElementById("loadingSpinner").style.display = "none";
-    return;
+  window.toggleIGInputs = function () {
+    const promote = $("promoteDropdown").value;
+    $("uploaderIG").style.display = promote === "yes" ? "none" : "block";
+    $("artistIG").style.display = promote === "yes" ? "block" : "none";
+  };
+
+  async function addLike(docId, userId) {
+    const docRef = doc(db, "fan_art", docId);
+    await updateDoc(docRef, {
+      likes: increment(1),
+      likedBy: arrayUnion(userId)
+    });
   }
 
-  snapshot.forEach(doc => {
-    const art = doc.data();
-    const isOwner = user && user.uid === art.uid;
+  async function addView(docId) {
+    const docRef = doc(db, "fan_art", docId);
+    await updateDoc(docRef, {
+      views: increment(1)
+    });
+  }
 
-    const card = document.createElement("div");
-    card.className = "art-card";
-    card.innerHTML = `
-      <img src="${art.imageUrl}" alt="${art.title}" />
-      <h3 class="editable-title" contenteditable="${isOwner}" onblur="updateTitle('${doc.id}', this.innerText, ${isOwner})" title="${isOwner ? 'Click to edit title' : ''}">${art.title}</h3>
-      <p style="font-size:0.8rem; opacity:0.6;">📅 Uploaded ${art.timestamp?.toDate().toLocaleDateString() || ''}</p>
-      <p>${art.promotedBy 
-        ? `🎨 ${art.artistIG} — Promoted by ${art.promotedBy}` 
-        : `🎨 ${art.artistIG}`}</p>
-      ${isOwner ? `<button onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
-    `;
-    gallery.appendChild(card);
-  });
+  window.uploadArtwork = async function () {
+    const user = auth.currentUser;
+    if (!user) return alert("Log in first!");
 
-  // ✅ Moved here
-  document.getElementById("loadingSpinner").style.display = "none";
-});
+    const title = $("artTitle").value;
+    const file = $("artFile").files[0];
+    const desc = $("artDescription").value;
+    const promote = $("promoteDropdown").value;
+    const uploaderIG = $("uploaderIG").value;
+    const artistIG = $("artistIG").value;
 
-    async function updateTitle(id, newTitle, isOwner) {
-      if (!isOwner || newTitle.trim() === "") return;
-      await updateDoc(doc(db, "fan_art", id),{ title: newTitle });
+    if (!title || !file) return alert("Title and image are required.");
+
+    const refPath = ref(storage, `fanart/${user.uid}/${file.name}`);
+    await uploadBytes(refPath, file);
+    const imageUrl = await getDownloadURL(refPath);
+
+    await addDoc(collection(db, "fan_art"), {
+      uid: user.uid,
+      title,
+      description: desc,
+      imageUrl,
+      timestamp: serverTimestamp(),
+      artistIG: promote === "yes" ? artistIG : uploaderIG,
+      promotedBy: promote === "yes" ? user.displayName || user.email : null,
+      likes: 0,
+      views: 0,
+      likedBy: [],
+      comments: []
+    });
+
+    alert("Art uploaded!");
+    location.reload();
+  };
+
+  window.updateTitle = async function (id, newTitle, isOwner) {
+    if (!isOwner || newTitle.trim() === "") return;
+    await updateDoc(doc(db, "fan_art", id), { title: newTitle });
+  };
+
+  window.deleteArt = async function (id) {
+    if (confirm("Delete this artwork?")) {
+      await deleteDoc(doc(db, "fan_art", id));
     }
+  };
 
-    async function deleteArt(id) {
-      if (confirm("Are you sure you want to delete this artwork?")) {
-        await deleteDoc(doc(db, "fan_art", id));
-        alert("Artwork deleted.");
-      }
-    }
+  window.showFullImage = function (src) {
+    $("modalImage").src = src;
+    $("imageModal").style.display = "flex";
+  };
 
+  window.submitComment = async function (docId) {
+    const user = auth.currentUser;
+    const input = $(`commentInput_${docId}`);
+    if (!input.value) return;
+    await updateDoc(doc(db, "fan_art", docId), {
+      comments: arrayUnion({ text: input.value, user: user?.displayName || "Anonymous", time: new Date() })
+    });
+    input.value = "";
+  };
+
+  function loadFanArt() {
     onAuthStateChanged(auth, (user) => {
-  const uploadBtn = document.getElementById('uploadBtn');
-  if (uploadBtn) {
-    uploadBtn.onclick = uploadArtwork;
+      const isMy = currentTab === "my";
+      let q = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
+      if (isMy && user) {
+        q = query(collection(db, "fan_art"), where("uid", "==", user.uid), orderBy("timestamp", "desc"));
+      } else if (isMy && !user) {
+        $("fanArtGallery").innerHTML = "<p style='opacity:0.6;text-align:center;'>Log in to see your uploads.</p>";
+        return;
+      }
+
+      $("loadingSpinner").style.display = "block";
+
+      onSnapshot(q, (snapshot) => {
+        $("fanArtGallery").innerHTML = "";
+        if (snapshot.empty) {
+          $("fanArtGallery").innerHTML = "<p style='opacity:0.6;text-align:center;'>No fan art yet.</p>";
+          $("loadingSpinner").style.display = "none";
+          return;
+        }
+
+        snapshot.forEach(docSnap => {
+          const art = docSnap.data();
+          const isOwner = user && user.uid === art.uid;
+          const liked = user && art.likedBy?.includes(user.uid);
+          const card = document.createElement("div");
+          card.className = "art-card";
+          card.innerHTML = `
+            <img src="${art.imageUrl}" alt="${art.title}" onclick="showFullImage('${art.imageUrl}')" />
+            <h3 class="editable-title" contenteditable="${isOwner}" onblur="updateTitle('${docSnap.id}', this.innerText, ${isOwner})">${art.title}</h3>
+            <p style="font-size: 0.8rem; opacity: 0.6;">📅 ${art.timestamp?.toDate().toLocaleDateString()}</p>
+            <p>🎨 ${art.promotedBy ? `${art.artistIG} — Promoted by ${art.promotedBy}` : art.artistIG || "Uncredited"}</p>
+            <div class="art-actions">
+              <button onclick="addLike('${docSnap.id}', '${user?.uid}')">🔥 ${art.likes || 0}</button>
+              <span class="view-count">📈 ${art.views || 0}</span>
+              ${isOwner ? `<button onclick="deleteArt('${docSnap.id}')">🗑️</button>` : ""}
+            </div>
+            <div class="comment-box">
+              <textarea id="commentInput_${docSnap.id}" placeholder="💬 Add comment..."></textarea>
+              <button onclick="submitComment('${docSnap.id}')">Post</button>
+            </div>
+          `;
+          $("fanArtGallery").appendChild(card);
+          if (!isOwner) addView(docSnap.id);
+        });
+
+        $("loadingSpinner").style.display = "none";
+      });
+    });
   }
-  loadFanArt();
-});
 
-
-  </script>
-</body>
-</html>
+  onAuthStateChanged(auth, (user) => {
+    const btn = $("uploadBtn");
+    if (btn) btn.onclick = uploadArtwork;
+    loadFanArt();
+  });
+</script>
