@@ -8,20 +8,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
   <style>
     body {
-      background-color: #121212;
+      background: linear-gradient(to bottom, #111, #1a1a1a);
       color: #f0f0f0;
       font-family: 'Montserrat', sans-serif;
       margin: 0;
       padding: 0;
     }
-    .hidden {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-    .reveal {
-      opacity: 1;
-      transform: translateY(0);
+    .reveal { opacity: 1; transform: translateY(0); transition: all 0.8s ease; }
+    .hidden { opacity: 0; transform: translateY(50px); }
+    header, footer, .section { animation: fadeInUp 0.8s ease forwards; }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     header {
       background-color: #1f1f1f;
@@ -38,50 +36,50 @@
     .logo img {
       height: 50px;
       margin-right: 1rem;
-      filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);
     }
     .logo-text {
-      font-size: 1.5rem;
-      font-family: 'Montserrat', sans-serif;
-      color: #fff;
+      font-size: 1.6rem;
+      font-weight: bold;
     }
     nav {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
       gap: 1rem;
-      margin-top: 0.5rem;
+      flex-wrap: wrap;
     }
     nav a {
       text-decoration: none;
       color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      transition: color 0.3s ease;
+      transition: color 0.3s;
     }
     nav a:hover {
       color: #ff3333;
     }
-    .btn {
-      background-color: #777;
-      border: none;
-      color: #fff;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
+    .gsu-quote {
+      font-style: italic;
+      font-size: 1rem;
+      color: #ccc;
+      margin-top: 0.4rem;
     }
-    .container {
-      padding: 3rem 1.5rem;
+    .hero-video {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 2rem;
+    }
+    .hero-video video {
+      max-width: 90%;
+      border: 4px solid #ff3333;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(255, 51, 51, 0.6);
+    }
+    .section {
+      padding: 2rem;
       max-width: 1200px;
       margin: auto;
     }
-    h1, h2 {
-      font-family: 'Roboto', sans-serif;
+    h2 {
       color: #ff3333;
-      margin-bottom: 1rem;
-    }
-    .section {
-      margin-bottom: 4rem;
+      font-family: 'Roboto', sans-serif;
     }
     .highlight-box {
       background: #1e1e1e;
@@ -90,63 +88,48 @@
       margin-top: 1rem;
       border-radius: 12px;
     }
-    .feature-list {
-      list-style: none;
-      padding-left: 0;
-    }
-    .feature-list li::before {
-      content: "\1F3AE";
-      margin-right: 0.5rem;
-    }
-    .callout {
-      background-color: #2b2b2b;
-      padding: 1rem 1.5rem;
-      border-radius: 10px;
-      font-weight: bold;
-      color: #fff;
-      text-align: center;
-      font-size: 1.2rem;
-      border: 1px solid #444;
-    }
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
+      gap: 1.5rem;
+      margin-top: 1rem;
     }
-    .stat-box {
-      background: #1a1a1a;
+    .stat {
+      background: #222;
       padding: 1rem;
-      border-radius: 12px;
       text-align: center;
-      border: 2px solid #ff3333;
+      border-radius: 10px;
+      border: 1px solid #333;
     }
-    .stat-box h3 {
-      font-size: 2.5rem;
-      margin: 0;
+    .stat h3 {
       color: #ff3333;
+      margin-bottom: 0.5rem;
     }
-    .stat-box p {
-      margin: 0.5rem 0 0;
-      font-size: 1rem;
+    .spotlight-banner {
+      margin-top: 2rem;
+      padding: 1rem 1.5rem;
+      background-color: #1e1e1e;
+      border-left: 6px solid #ff3333;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(255, 51, 51, 0.4);
+    }
+    .spotlight-banner strong {
+      color: #ff3333;
+      font-size: 1.25rem;
     }
     footer {
       background-color: #1f1f1f;
       text-align: center;
       padding: 1.5rem 1rem;
-      margin-top: 4rem;
     }
     .platform-icons {
       display: flex;
       justify-content: center;
-      align-items: center;
       gap: 1.5rem;
       margin-bottom: 0.6rem;
     }
     .platform-icons img {
       height: 32px;
-      width: auto;
-      opacity: 0.9;
       transition: transform 0.3s ease, filter 0.3s ease;
     }
     .platform-icons img:hover {
@@ -155,8 +138,6 @@
     }
     footer p {
       color: #ccc;
-      font-size: 1rem;
-      font-family: 'Roboto', sans-serif;
     }
   </style>
 </head>
@@ -164,66 +145,48 @@
   <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" />
-      <div class="logo-text">GAMESYNC UNION</div>
+      <div>
+        <div class="logo-text">GAMESYNC UNION</div>
+        <div class="gsu-quote">“Squad up, show out, cast your vote — GSU’s the place where gamers don’t choke. Post your wins, drop your heat — Chat, connect, and claim your seat.”</div>
+      </div>
     </div>
     <nav>
       <a href="index.html">Home</a>
       <a href="games.html">Games</a>
-      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+      <a href="trophies.html">GSU Hall of Trophies</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">GSU Player Lounge</a>
+      <a href="uploads.html">GSU Lounge</a>
     </nav>
-    <button id="logoutBtn" class="btn">Log Out</button>
   </header>
 
-  <div class="container">
-    <section class="section reveal">
-      <h1>🔥 What Is GameSync Union?</h1>
-      <div class="highlight-box">
-        <p><strong>GameSync Union (GSU)</strong> is a live, data-driven platform built by gamers for gamers — to highlight your achievements, content, and identity. Whether you’re earning trophies, posting art, or streaming gameplay, GSU tracks and showcases what’s real. Everything here is driven by actual member uploads, guide activity, profile stats, and trending community data in real time.</p>
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>📊 Real-Time Growth</h2>
-      <div class="stats-grid" id="live-stats">
-        <div class="stat-box"><h3 id="upload-count">...</h3><p>Uploads Shared</p></div>
-        <div class="stat-box"><h3 id="game-count">...</h3><p>Games Repped</p></div>
-        <div class="stat-box"><h3>4</h3><p>Platforms Supported</p></div>
-        <div class="stat-box"><h3>Live</h3><p>Community Chat</p></div>
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <h2>🎮 Who’s It For?</h2>
-      <ul class="feature-list">
-        <li>Console warriors and trophy legends</li>
-        <li>PC elite with insane mechanics and mod power</li>
-        <li>Artists, lorekeepers, guide creators</li>
-        <li>Community builders and challenge seekers</li>
-      </ul>
-    </section>
-
-    <section class="section reveal">
-      <h2>🚀 Why GSU is Built Different</h2>
-      <div class="highlight-box">
-        <ul class="feature-list">
-          <li>Everything you see is from live GSU community activity</li>
-          <li>Dynamic uploads, trophies, art, and leaderboard stats</li>
-          <li>Gamer identity with avatars, badges, console stats</li>
-          <li>Highlight features driven by actual Firestore data</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section reveal" id="gsu-spotlight">
-      <h2>🏅 GSU Gamer of the Month</h2>
-      <div class="highlight-box" id="spotlight-box">
-        <p><strong>Loading featured gamer...</strong></p>
-      </div>
-    </section>
+  <div class="hero-video">
+    <video controls autoplay muted loop>
+      <source src="/media/gsu-hero-intro.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </div>
+
+  <section class="section reveal">
+    <h2>🔥 What Is GameSync Union?</h2>
+    <div class="highlight-box">
+      <p><strong>GameSync Union</strong> is the ultimate gamer hub for PlayStation, Xbox, Switch, and PC players. Upload gameplay, earn spotlights, conquer challenges, chat live, and show off trophies in real time — all powered by your data, your skill, and your GSU profile. It's not just a platform, it's your arena.</p>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <h2>📈 Live Stats</h2>
+    <div class="stats-grid">
+      <div class="stat"><h3 id="upload-count">Loading...</h3><p>Uploads Shared</p></div>
+      <div class="stat"><h3 id="game-count">Loading...</h3><p>Games Repped</p></div>
+      <div class="stat"><h3 id="member-count">Loading...</h3><p>Total Members</p></div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <h2>🏅 GSU Gamer of the Month</h2>
+    <div id="gamer-of-the-month" class="spotlight-banner">Loading featured gamer...</div>
+  </section>
 
   <footer>
     <div class="platform-icons">
@@ -234,20 +197,6 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
-  <script>
-    const scrollObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal');
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.section').forEach(section => {
-      section.classList.add('hidden');
-      scrollObserver.observe(section);
-    });
-  </script>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js';
@@ -265,47 +214,60 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function updateStatsFromGSU() {
+    async function updateLiveStats() {
       try {
         const uploadsRef = await getDocs(collection(db, 'uploads'));
-        const gamesSet = new Set();
+        const usersRef = await getDocs(collection(db, 'users'));
+        const gameSet = new Set();
+
         uploadsRef.forEach(doc => {
           const data = doc.data();
-          if (data.gameTitle) gamesSet.add(data.gameTitle);
+          if (data.gameTitle) gameSet.add(data.gameTitle);
         });
+
         document.getElementById('upload-count').innerText = uploadsRef.size + '+';
-        document.getElementById('game-count').innerText = gamesSet.size + '+';
-      } catch (err) {
-        console.error("Error loading GSU stats:", err);
+        document.getElementById('game-count').innerText = gameSet.size + '+';
+        document.getElementById('member-count').innerText = usersRef.size + '+';
+      } catch (error) {
+        console.error("Failed to fetch live stats:", error);
       }
     }
 
-    async function pickGamerOfTheMonth() {
+    async function displayGamerOfTheMonth() {
       try {
-        const usersRef = collection(db, 'users');
-        const snapshot = await getDocs(usersRef);
-        const users = snapshot.docs.map(doc => doc.data()).filter(user => user.username);
+        const usersSnap = await getDocs(collection(db, 'users'));
+        const users = usersSnap.docs.map(doc => doc.data()).filter(user => user.username);
 
         if (users.length === 0) return;
-        const date = new Date();
-        const seed = date.getFullYear() * 100 + (date.getMonth() + 1);
+        const now = new Date();
+        const seed = now.getFullYear() * 100 + (now.getMonth() + 1);
         const index = seed % users.length;
-        const gamer = users[index];
+        const user = users[index];
 
-        const spotlightBox = document.getElementById('spotlight-box');
-        spotlightBox.innerHTML = `
-          <p><strong>🔥 Gamer of the Month:</strong> <span style="color: #ff3333; font-size: 1.25rem; font-weight: bold;">${gamer.username}</span></p>
-          <p>Platform: <strong>${gamer.platform || 'Unknown'}</strong></p>
-          <p>Games Played: <strong>${gamer.gamesPlayed || 0}</strong> | Trophy Count: <strong>${gamer.trophyCount || 0}</strong></p>
-        `;
+        document.getElementById('gamer-of-the-month').innerHTML = `
+          <p><strong>${user.username}</strong> is repping GSU as the Gamer of the Month!<br>
+          Platform: <strong>${user.platform || 'Unknown'}</strong> | Games Played: <strong>${user.gamesPlayed || 0}</strong> | Trophies: <strong>${user.trophyCount || 0}</strong></p>`;
       } catch (error) {
-        console.error("Failed to load Gamer of the Month:", error);
-        document.getElementById('spotlight-box').innerHTML = `<p><strong>Error loading gamer data. Please try again later.</strong></p>`;
+        document.getElementById('gamer-of-the-month').innerText = 'Unable to load spotlight at this time.';
       }
     }
 
-    updateStatsFromGSU();
-    pickGamerOfTheMonth();
+    function triggerRevealOnScroll() {
+      const reveals = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('reveal');
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach(r => {
+        r.classList.add('hidden');
+        observer.observe(r);
+      });
+    }
+
+    updateLiveStats();
+    displayGamerOfTheMonth();
+    triggerRevealOnScroll();
   </script>
 </body>
 </html>
