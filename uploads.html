@@ -728,15 +728,21 @@ db.collection("chat").orderBy("timestamp").onSnapshot(snapshot => {
   chatBox.innerHTML = "";
 
   snapshot.forEach(doc => {
-    const msg = doc.data();
-    const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "";
-    chatBox.innerHTML += `
-      <div class="chat-message">
+  const msg = doc.data();
+  const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "";
+
+  chatBox.innerHTML += `
+    <div class="chat-message" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
         <span>@${msg.sender}</span> ${msg.text}
-        <span style="float:right; font-size: 0.75rem; color:#aaa;">${time}</span>
       </div>
-    `;
-  });
+      <div class="chat-time" style="font-size: 0.75rem; color:#aaa; margin-left: 1rem; min-width: 60px; text-align: right;">
+        ${time}
+      </div>
+    </div>
+  `;
+});
+
 
   chatBox.scrollTop = chatBox.scrollHeight;
 });
