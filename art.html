@@ -6,11 +6,13 @@
   <title>Fan Art | GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
-  <script>
+  <!-- Firebase SDK (modular version) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
       authDomain: "gamesync-union.firebaseapp.com",
@@ -19,17 +21,119 @@
       messagingSenderId: "488911705365",
       appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
     };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-  </script>
-  <style>
-    .editable-title[contenteditable="true"]:hover {
-    outline: 1px dashed var(--gsu-red);
-    cursor: text;
-  }
 
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    let currentTab = "all";
+
+    window.switchTab = function (tab) {
+      currentTab = tab;
+      document.getElementById("allTab").classList.remove("active");
+      document.getElementById("myTab").classList.remove("active");
+      document.getElementById(tab + "Tab").classList.add("active");
+      loadFanArt();
+    };
+
+    window.toggleIGInputs = function () {
+      const promoting = document.getElementById("promoteDropdown").value;
+      document.getElementById("uploaderIG").style.display = promoting === "yes" ? "none" : "block";
+      document.getElementById("artistIG").style.display = promoting === "yes" ? "block" : "none";
+    };
+
+    window.uploadArtwork = async function () {
+      const user = auth.currentUser;
+      if (!user) return alert("Log in first!");
+
+      const title = document.getElementById("artTitle").value;
+      const file = document.getElementById("artFile").files[0];
+      const description = document.getElementById("artDescription").value;
+      const promoting = document.getElementById("promoteDropdown").value;
+      const uploaderIG = document.getElementById("uploaderIG").value;
+      const artistIG = document.getElementById("artistIG").value;
+
+      if (!title || !file) return alert("Title and image are required.");
+
+      const storageRef = ref(storage, `fanart/${user.uid}/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const imageUrl = await getDownloadURL(storageRef);
+
+      await addDoc(collection(db, "fan_art"), {
+        uid: user.uid,
+        title,
+        description,
+        artistIG: promoting === "yes" ? artistIG : uploaderIG,
+        promotedBy: promoting === "yes" ? user.displayName || user.email : null,
+        imageUrl,
+        timestamp: serverTimestamp()
+      });
+
+      alert("Art uploaded!");
+      location.reload();
+    };
+
+    window.updateTitle = async function (id, newTitle, isOwner) {
+      if (!isOwner || newTitle.trim() === "") return;
+      await updateDoc(doc(db, "fan_art", id), { title: newTitle });
+    };
+
+    window.deleteArt = async function (id) {
+      if (confirm("Are you sure you want to delete this artwork?")) {
+        await deleteDoc(doc(db, "fan_art", id));
+        alert("Artwork deleted.");
+      }
+    };
+
+    function loadFanArt() {
+      onAuthStateChanged(auth, (user) => {
+        const isMyTab = currentTab === "my";
+
+        let q = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
+        if (isMyTab && user) {
+          q = query(collection(db, "fan_art"), where("uid", "==", user.uid), orderBy("timestamp", "desc"));
+        } else if (isMyTab && !user) {
+          document.getElementById("fanArtGallery").innerHTML = "<p style='opacity: 0.6; text-align:center;'>Log in to view your uploads.</p>";
+          return;
+        }
+
+        const gallery = document.getElementById("fanArtGallery");
+        gallery.innerHTML = "";
+        document.getElementById("loadingSpinner").style.display = "block";
+
+        onSnapshot(q, (snapshot) => {
+          gallery.innerHTML = "";
+          if (snapshot.empty) {
+            gallery.innerHTML = "<p style='opacity: 0.6; text-align:center;'>No gaming art uploaded yet.</p>";
+            document.getElementById("loadingSpinner").style.display = "none";
+            return;
+          }
+
+          snapshot.forEach((docSnap) => {
+            const art = docSnap.data();
+            const isOwner = user && user.uid === art.uid;
+
+            const card = document.createElement("div");
+            card.className = "art-card";
+            card.innerHTML = `
+              <img src="${art.imageUrl}" alt="${art.title}" />
+              <h3 class="editable-title" contenteditable="${isOwner}" onblur="updateTitle('${docSnap.id}', this.innerText, ${isOwner})" title="${isOwner ? 'Click to edit title' : ''}">${art.title}</h3>
+              <p style="font-size:0.8rem; opacity:0.6;">📅 Uploaded ${art.timestamp?.toDate().toLocaleDateString() || ''}</p>
+              <p>${art.promotedBy ? `🎨 ${art.artistIG} — Promoted by ${art.promotedBy}` : `🎨 ${art.artistIG}`}</p>
+              ${isOwner ? `<button onclick="deleteArt('${docSnap.id}')">Delete</button>` : ""}
+            `;
+            gallery.appendChild(card);
+          });
+
+          document.getElementById("loadingSpinner").style.display = "none";
+        });
+      });
+    }
+
+    loadFanArt();
+  </script>
+<style>
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -45,13 +149,27 @@
       display: flex;
       flex-direction: column;
     }
-    header { background-color: var(--black-faded); display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; }
+    header {
+      background-color: var(--black-faded);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
     .logo img { height: 60px; margin-right: 1rem; }
     .logo { display: flex; align-items: center; }
-    .logo-text { font-size: 1.6rem; font-family: 'Montserrat', sans-serif; }
-    nav a { margin: 0 1rem; text-decoration: none; color: var(--white-text); font-family: 'Montserrat', sans-serif; transition: color 0.3s ease; }
+    .logo-text {
+      font-size: 1.6rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+    }
     nav a:hover { color: var(--gsu-red); }
-
     .main-container {
       flex: 1;
       display: flex;
@@ -72,8 +190,11 @@
       box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
       border: 1px solid var(--gsu-red);
     }
-    .box h2 { font-family: 'Montserrat', sans-serif; margin-bottom: 0.7rem; color: var(--gsu-red); }
-
+    .box h2 {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.7rem;
+      color: var(--gsu-red);
+    }
     .tab-toggle {
       display: flex;
       justify-content: center;
@@ -91,7 +212,6 @@
     .tab-toggle button.active {
       background-color: var(--gsu-red);
     }
-
     .input-field {
       padding: 0.6rem;
       border: none;
@@ -137,7 +257,10 @@
       margin: 0.6rem 0 0.2rem;
     }
     .art-card:hover h3 { color: var(--white-text); }
-    .art-card p { font-size: 0.9rem; opacity: 0.75; }
+    .art-card p {
+      font-size: 0.9rem;
+      opacity: 0.75;
+    }
     .art-card button {
       margin-top: 0.5rem;
       padding: 0.4rem 0.6rem;
@@ -161,11 +284,19 @@
       margin-bottom: 0.6rem;
     }
     .platform-icons img { height: 32px; opacity: 0.9; }
-    footer p { color: #ccc; font-size: 1rem; font-family: 'Roboto', sans-serif; }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    .editable-title[contenteditable="true"]:hover {
+      outline: 1px dashed var(--gsu-red);
+      cursor: text;
+    }
   </style>
 </head>
 <body>
-  <header>
+ <header>
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
