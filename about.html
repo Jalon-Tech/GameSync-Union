@@ -56,9 +56,11 @@
     }
     .gsu-quote {
       font-style: italic;
-      font-size: 1rem;
-      color: #ccc;
-      margin-top: 0.4rem;
+      font-size: 1.1rem;
+      color: #ff3333;
+      margin-top: 0.3rem;
+      font-weight: 600;
+      text-shadow: 0 0 4px rgba(255, 51, 51, 0.5);
     }
     .hero-video {
       display: flex;
@@ -88,6 +90,10 @@
       margin-top: 1rem;
       border-radius: 12px;
     }
+    .feature-list {
+      list-style-type: '\1F3AE';
+      padding-left: 1.5rem;
+    }
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -116,6 +122,45 @@
     .spotlight-banner strong {
       color: #ff3333;
       font-size: 1.25rem;
+    }
+    .badge-section {
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .badge-section h2 {
+      margin-bottom: 1rem;
+    }
+    .badge-list {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #333;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 2px solid #ff3333;
+      font-weight: bold;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+    }
+    .featured-uploads {
+      margin-top: 2rem;
+      padding: 2rem;
+      background: #181818;
+      border-top: 4px solid #ff3333;
+      border-radius: 8px;
+    }
+    .featured-uploads h2 {
+      margin-bottom: 1rem;
+    }
+    .upload-card {
+      background: #292929;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      color: #fff;
     }
     footer {
       background-color: #1f1f1f;
@@ -167,26 +212,7 @@
     </video>
   </div>
 
-  <section class="section reveal">
-    <h2>🔥 What Is GameSync Union?</h2>
-    <div class="highlight-box">
-      <p><strong>GameSync Union</strong> is the ultimate gamer hub for PlayStation, Xbox, Switch, and PC players. Upload gameplay, earn spotlights, conquer challenges, chat live, and show off trophies in real time — all powered by your data, your skill, and your GSU profile. It's not just a platform, it's your arena.</p>
-    </div>
-  </section>
-
-  <section class="section reveal">
-    <h2>📈 Live Stats</h2>
-    <div class="stats-grid">
-      <div class="stat"><h3 id="upload-count">Loading...</h3><p>Uploads Shared</p></div>
-      <div class="stat"><h3 id="game-count">Loading...</h3><p>Games Repped</p></div>
-      <div class="stat"><h3 id="member-count">Loading...</h3><p>Total Members</p></div>
-    </div>
-  </section>
-
-  <section class="section reveal">
-    <h2>🏅 GSU Gamer of the Month</h2>
-    <div id="gamer-of-the-month" class="spotlight-banner">Loading featured gamer...</div>
-  </section>
+  <div id="main-content"></div>
 
   <footer>
     <div class="platform-icons">
@@ -214,60 +240,53 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function updateLiveStats() {
-      try {
-        const uploadsRef = await getDocs(collection(db, 'uploads'));
-        const usersRef = await getDocs(collection(db, 'users'));
-        const gameSet = new Set();
+    async function loadContributorsAndUploads() {
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+      const uploadsSnapshot = await getDocs(collection(db, 'uploads'));
 
-        uploadsRef.forEach(doc => {
-          const data = doc.data();
-          if (data.gameTitle) gameSet.add(data.gameTitle);
-        });
+      const badgesHTML = Array.from(usersSnapshot.docs.slice(0, 5)).map(doc => {
+        const user = doc.data();
+        return `<div class="badge">🏆 ${user.username}</div>`;
+      }).join('');
 
-        document.getElementById('upload-count').innerText = uploadsRef.size + '+';
-        document.getElementById('game-count').innerText = gameSet.size + '+';
-        document.getElementById('member-count').innerText = usersRef.size + '+';
-      } catch (error) {
-        console.error("Failed to fetch live stats:", error);
-      }
+      const uploadsHTML = Array.from(uploadsSnapshot.docs.slice(0, 5)).map(doc => {
+        const data = doc.data();
+        return `<div class="upload-card">
+          <h3>${data.gameTitle || 'Untitled Game'}</h3>
+          <p>${data.description || 'No description provided.'}</p>
+        </div>`;
+      }).join('');
+
+      document.getElementById('main-content').innerHTML = `
+        <section class="section reveal">
+          <h2>🔥 Top Contributors</h2>
+          <div class="badge-section">
+            <div class="badge-list">${badgesHTML}</div>
+          </div>
+        </section>
+        <section class="section reveal featured-uploads">
+          <h2>🌟 Featured Uploads</h2>
+          ${uploadsHTML}
+        </section>
+      `;
     }
 
-    async function displayGamerOfTheMonth() {
-      try {
-        const usersSnap = await getDocs(collection(db, 'users'));
-        const users = usersSnap.docs.map(doc => doc.data()).filter(user => user.username);
-
-        if (users.length === 0) return;
-        const now = new Date();
-        const seed = now.getFullYear() * 100 + (now.getMonth() + 1);
-        const index = seed % users.length;
-        const user = users[index];
-
-        document.getElementById('gamer-of-the-month').innerHTML = `
-          <p><strong>${user.username}</strong> is repping GSU as the Gamer of the Month!<br>
-          Platform: <strong>${user.platform || 'Unknown'}</strong> | Games Played: <strong>${user.gamesPlayed || 0}</strong> | Trophies: <strong>${user.trophyCount || 0}</strong></p>`;
-      } catch (error) {
-        document.getElementById('gamer-of-the-month').innerText = 'Unable to load spotlight at this time.';
-      }
-    }
-
-    function triggerRevealOnScroll() {
+    function animateSectionsOnScroll() {
       const reveals = document.querySelectorAll('.reveal');
-      const observer = new IntersectionObserver((entries) => {
+      const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) entry.target.classList.add('reveal');
         });
       }, { threshold: 0.1 });
+
       reveals.forEach(r => {
         r.classList.add('hidden');
         observer.observe(r);
       });
     }
 
-    updateLiveStats();
-    displayGamerOfTheMonth();
-    triggerRevealOnScroll();
+    loadContributorsAndUploads();
+    animateSectionsOnScroll();
   </script>
 </body>
 </html>
