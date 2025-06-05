@@ -392,7 +392,7 @@
         artistIG: promoting === "yes" ? artistIG : uploaderIG,
         promotedBy: promoting === "yes" ? user.displayName || user.email : null,
         imageUrl,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        timestamp: serverTimestamp()
       });
 
       alert("Art uploaded!");
@@ -400,7 +400,7 @@
     }
 
    function loadFanArt() {
-  const user = firebase.auth().currentUser;
+  const user = auth.currentUser;
   const isMyTab = currentTab === "my";
 
   let queryRef = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
@@ -456,13 +456,14 @@
       }
     }
 
-    firebase.auth().onAuthStateChanged(user => {
+    onAuthStateChanged(auth, (user) => {
   const uploadBtn = document.getElementById('uploadBtn');
   if (uploadBtn) {
     uploadBtn.onclick = uploadArtwork;
   }
-  loadFanArt(); // Always call to allow public view
-  });
+  loadFanArt();
+});
+
 
   </script>
 </body>
