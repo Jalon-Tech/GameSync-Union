@@ -1,1 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameSync Union</title>
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    /* CSS REMAINS UNCHANGED */
+      :root {
+      --gsu-red: #e60023;
+      --black-main: #191818;
+      --black-faded: #1F1F1F;
+      --white-text: #FFFFFF;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--black-main);
+      color: var(--white-text);
+    }
+    header {
+      background-color: var(--black-faded);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .logo img {
+      height: 50px;
+      margin-right: 1rem;
+    }
+    .logo-text {
+      font-size: 1.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
+    }
+    nav a:hover {
+      color: var(--gsu-red);
+    }
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
+      padding: 2rem;
+    }
+    aside, main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .box {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+    }
+    .box:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
+    }
+    .box li {
+      transition: transform 0.3s ease;
+    }
+    .box:hover li {
+      transform: translateX(6px);
+    }
+    .box h2 {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.7rem;
+    }
+    .input-field {
+      padding: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      width: 100%;
+      background-color: #2a2a2a;
+      color: var(--white-text);
+    }
+    .btn {
+      background-color: var(--gsu-red);
+      border: none;
+      color: var(--white-text);
+      padding: 0.8rem;
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
+    footer {
+      background-color: var(--black-faded);
+      text-align: center;
+      padding: 1.2rem 1rem;
+      margin-top: 4rem;
+    }
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
+    }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    .section-flex {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .section-flex div {
+      flex: 1 1 100px;
+      text-align: center;
+    }
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        justify-content: flex-start;
+      }
+      .logo-text {
+        font-size: 1.3rem;
+      }
+      .section-flex {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+    @media (max-width: 600px) {
+      .logo img {
+        height: 40px;
+      }
+      .logo-text {
+        font-size: 1.2rem;
+      }
+      nav a {
+        font-size: 0.9rem;
+      }
+      .btn {
+        padding: 0.7rem;
+      }
+      .input-field {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
+    <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <div class="logo-text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">Guides</a>
+      <a href="uploads.html">GSU Player Lounge</a>
+    </nav>
+     <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
+  </header>
+
+  <div class="main-container">
+    <aside>
+      <div class="box" id="auth-box">
+        <h2>Create Account or Sign In</h2>
+        <input type="text" class="input-field" placeholder="Email" />
+        <input type="text" class="input-field" placeholder="Username" />
+        <input type="password" class="input-field" placeholder="Password" />
+        <button class="btn">Sign In</button>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
+      </div>
+      <div class="box">
+        <h2>Recent Uploads</h2>
+        <p>[Your gameplay clips will show up here]</p>
+      </div>
+    </aside>
+
+    <main>
+      <div class="box" style="text-align:center;">
+        <h2>Welcome to GameSync Union</h2>
+        <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
+        <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
+      </div>
+
+      <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
+
+      <div class="box">
+        <h2>Community Highlights</h2>
+        <div class="section-flex">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">🔥 Trending Topics</h3>
+    <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+  </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">📹 Latest Uploads</h3>
+    <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+  </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">🎨 Fan Art</h3>
+    <p>[Showcase user-submitted art here]</p>
+  </div>
+</div>
+      </div>
+
+      <div class="box">
+        <h2>Game Guides</h2>
+        <p>Find gameplay tutorials, boss fight strategies, combo guides for fighting games, tips for acquiring trophies and achievements, and enjoyable gameplay videos from the community.</p>
+        <ul>
+          <li><a href="boss-fight-strategies.html" style="color: #e60023;">Boss Fight Strategies</a></li>
+          <li><a href="gameplay-tutorials.html" style="color: #e60023;">Gameplay Tutorials</a></li>
+          <li><a href="community-gameplay-videos.html" style="color: #e60023;">Enjoyable Gameplay Videos from the Community</a></li>
+          <li><a href="combo-guides.html" style="color: #e60023;">Combo Guides for Fighting Games</a></li>
+          <li><a href="trophy-tips.html" style="color: #e60023;">Tips for Acquiring Trophies and Achievements</a></li>
+          <li><a href="guide-discussion.html" style="color: #e60023;">Guide Discussion & Community Chat</a></li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>Your Trophies</h2>
+        <p>[View trophies and compare achievements]</p>
+      </div>
+
+      <div class="box">
+        <h2>User Uploads</h2>
+        <p>[Uploaded game videos and highlight reels]</p>
+      </div>
+
+      <div class="box">
+        <h2>Art Showcase</h2>
+        <p>[In-game screenshots, posters, and original artwork]</p>
+      </div>
+    </main>
+
+    <aside>
+    <div class="box" id="profile-box">
+      <h2>Your Profile</h2>
+        <p id="fav-games">🎯 Favorite Games</p>
+        <p id="games-played">🎮 Games Played</p>
+        <p id="trophy-stats">🏆 Trophy Stats</p>
+        <div id="fav-images" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;"></div>
+      <!-- Edit Button -->
+        <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
+
+    </div>
+
+
+
+      <div class="box">
+        <h2>Upcoming Games & Events</h2>
+        <p>Stay updated on everything new in gaming:</p>
+        <ul>
+          <li>🆕 Recently Announced Games</li>
+          <li>🚀 Upcoming Game Releases</li>
+          <li>📆 Countdown to Launch & Events</li>
+          <li>🛠 Major Patch Notes & Updates</li>
+          <li>🎮 Gaming Conventions & Streams</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+          <a href="#" style="color: #e60023;">Learn more</a>
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="platform-icons">
+      <img src="PS_Logo.png" alt="PlayStation" />
+      <img src="Xbox.png" alt="Xbox" />
+      <img src="Steam.png" alt="PC" />
+      <img src="Switch.png" alt="Nintendo Switch" />
+    </div>
+    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+  </footer>
+  <!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+    <h2>Update Profile</h2>
+
+    <label>Favorite Games (comma-separated):</label>
+    <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank...">
+
+    <label>Number of Games Played:</label>
+    <input type="number" id="editGamesPlayed" min="0">
+
+    <label>Favorite Game Image URLs (comma-separated):</label>
+    <input type="text" id="editGameImages" placeholder="url1, url2, url3">
+
+    <label>Total Trophy Count:</label>
+    <input type="number" id="editTrophies" min="0">
+
+    <button onclick="saveProfileChanges()">Save Changes</button>
+  </div>
+</div>
+
+<style>
+ .edit-btn {
+  background-color: var(--gsu-red);
+  color: var(--white-text);
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.edit-btn:hover {
+  background-color: #cc001f; /* slightly darker red for hover */
+  transform: scale(1.03);
+}
+
+
+ .modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  background-color: var(--black-faded);
+  margin: 10% auto;
+  padding: 24px;
+  border: 2px solid var(--gsu-red);
+  border-radius: 12px;
+  width: 80%;
+  max-width: 500px;
+  color: var(--white-text);
+  font-family: 'Montserrat', sans-serif;
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
+}
+
+.modal-content label {
+  font-weight: 600;
+  margin-top: 10px;
+  display: block;
+  color: var(--gsu-red);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0 18px;
+  background: #2a2a2a;
+  color: var(--white-text);
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.modal-content button {
+  background-color: var(--gsu-red);
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-content button:hover {
+  background-color: #cc001f;
+  transform: scale(1.03);
+}
+
+.close {
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--gsu-red);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #ff3344;
+}
+
+</style>
+
+<script>
+  function openEditModal() {
+
+  document.getElementById('editModal').style.display = 'block';
+
+  // 🧠 Auto-fill current profile values
+  document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
+  document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('🎮 Number Of Games Played: ', '');
+  document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('🏆 Trophy Stats (Total Trophies): ', '');
+}
+
+
+
+  function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  async function saveProfileChanges() {
+  const games = document.getElementById('editGames').value;
+  const gamesPlayed = document.getElementById('editGamesPlayed').value;
+  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
+  const trophies = document.getElementById('editTrophies').value;
+  const user = getAuth().currentUser;
+if (user) {
+  const uid = user.uid;
+  const docRef = doc(db, "users", uid);
+  try {
+    await setDoc(docRef, {
+      favoriteGames: games.split(',').map(s => s.trim()),
+      gamesPlayed: parseInt(gamesPlayed),
+      favoriteImages: imageUrls,
+      trophyCount: parseInt(trophies)
+    }, { merge: true });
+
+    alert("Profile updated successfully.");
+  } catch (err) {
+    console.error("Error saving profile:", err);
+    alert("Error saving changes.");
+  }
+}
+
+
+
+  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
+  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
+  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
+
+  const imageRow = document.getElementById("fav-images");
+  imageRow.innerHTML = "";
+  imageUrls.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "Game cover";
+    img.style.height = "60px";
+    img.style.borderRadius = "6px";
+    img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+    img.style.transition = "transform 0.3s";
+    img.onmouseover = () => img.style.transform = "scale(1.05)";
+    img.onmouseout = () => img.style.transform = "scale(1)";
+    imageRow.appendChild(img);
+  });
+
+
+  closeEditModal();
+}
+</script>
+
+<script type="module">
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "488911705365",
+    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+    measurementId: "G-CP48EXW1EV"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
+  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
+  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
+  const signInBtn = document.querySelector('#auth-box .btn');
+
+  signInBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      loadProfile(uid);
+      alert("Signed in successfully");
+    } catch (err) {
+      alert("Login failed: " + err.message);
+    }
+  });
+
+  async function loadProfile(uid) {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      console.log("User data:", data);
+
+      const profileBox = document.getElementById("profile-box");
+
+      const usernameEl = document.createElement("p");
+      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+      usernameEl.style.fontWeight = "bold";
+      usernameEl.style.fontSize = "1rem";
+      usernameEl.style.marginBottom = "0.5rem";
+      profileBox.prepend(usernameEl);
+
+      const platformEl = document.createElement("p");
+      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
+      platformEl.style.fontSize = "0.95rem";
+      platformEl.style.marginBottom = "0.5rem";
+      profileBox.insertBefore(platformEl, usernameEl.nextSibling);
+
+      const favGamesEl = document.getElementById("fav-games");
+      const gamesPlayedEl = document.getElementById("games-played");
+      const trophyStatsEl = document.getElementById("trophy-stats");
+
+      let imageRow = document.getElementById("fav-images");
+      if (!imageRow) {
+        imageRow = document.createElement("div");
+        imageRow.id = "fav-images";
+        imageRow.style.display = "flex";
+        imageRow.style.flexWrap = "wrap";
+        imageRow.style.gap = "0.5rem";
+        imageRow.style.marginTop = "0.8rem";
+        imageRow.style.justifyContent = "center";
+        profileBox.appendChild(imageRow);
+      }
+      imageRow.innerHTML = "";
+
+      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+
+      if (Array.isArray(data.favoriteImages)) {
+        data.favoriteImages.forEach(url => {
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = "Game cover";
+          img.style.height = "60px";
+          img.style.borderRadius = "6px";
+          img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+          img.style.transition = "transform 0.3s";
+          img.onmouseover = () => img.style.transform = "scale(1.05)";
+          img.onmouseout = () => img.style.transform = "scale(1)";
+          imageRow.appendChild(img);
+        });
+      }
+    } else {
+      console.warn("User profile data not found.");
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    const currentPath = window.location.pathname.toLowerCase();
+    const isLoginPage = currentPath.includes("account_creation.html");
+
+    if (user) {
+      loadProfile(user.uid);
+      document.getElementById("auth-box").style.display = "none";
+    } else {
+      document.getElementById("auth-box").style.display = "block";
+      if (!isLoginPage && currentPath !== "/index.html") {
+        alert("Please log in to access GameSync Union.");
+        window.location.href = "account_creation.html";
+      }
+    }
+  });
+
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await auth.signOut();
+        alert("You have been logged out.");
+        window.location.href = "account_creation.html";
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
+    });
+  }
+    // ✅ Expose Firebase services globally
+    window.db = db;
+    window.doc = doc;
+    window.setDoc = setDoc;
+    window.getAuth = getAuth;
+    window.auth = auth;
+
+</script>
 
