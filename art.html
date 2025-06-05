@@ -185,6 +185,21 @@
       </div>
       <div class="art-gallery" id="fanArtGallery"></div>
     </div>
+
+    <div class="box">
+      <h2>Upload Your Fan Art</h2>
+      <input type="text" class="input-field" id="artTitle" placeholder="Title of Artwork" />
+      <input type="file" class="input-field" id="artFile" />
+      <textarea class="input-field" rows="3" id="artDescription" placeholder="Optional description..."></textarea>
+      <label for="promoteDropdown">Promoting the art of another user?</label>
+      <select id="promoteDropdown" class="input-field" onchange="toggleIGInputs()">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+      <input type="text" class="input-field" id="uploaderIG" placeholder="(Optional) @yourIG — if this is your gaming art" />
+      <input type="text" class="input-field" id="artistIG" placeholder="Instagram of the gaming artist you're promoting (@username)" style="display:none;" />
+      <button class="btn" onclick="uploadArtwork()">Upload Artwork</button>
+    </div>
   </div>
 
   <footer>
@@ -206,6 +221,43 @@
       document.getElementById("myTab").classList.remove("active");
       document.getElementById(tab + "Tab").classList.add("active");
       loadFanArt();
+    }
+
+    function toggleIGInputs() {
+      const promoting = document.getElementById("promoteDropdown").value;
+      document.getElementById("uploaderIG").style.display = promoting === "yes" ? "none" : "block";
+      document.getElementById("artistIG").style.display = promoting === "yes" ? "block" : "none";
+    }
+
+    async function uploadArtwork() {
+      const user = firebase.auth().currentUser;
+      if (!user) return alert("Log in first!");
+
+      const title = document.getElementById("artTitle").value;
+      const file = document.getElementById("artFile").files[0];
+      const description = document.getElementById("artDescription").value;
+      const promoting = document.getElementById("promoteDropdown").value;
+      const uploaderIG = document.getElementById("uploaderIG").value;
+      const artistIG = document.getElementById("artistIG").value;
+
+      if (!title || !file) return alert("Title and image are required.");
+
+      const storageRef = storage.ref(`fanart/${user.uid}/${file.name}`);
+      await storageRef.put(file);
+      const imageUrl = await storageRef.getDownloadURL();
+
+      await db.collection("fan_art").add({
+        uid: user.uid,
+        title,
+        description,
+        artistIG: promoting === "yes" ? artistIG : uploaderIG,
+        promotedBy: promoting === "yes" ? user.displayName || user.email : null,
+        imageUrl,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Art uploaded!");
+      location.reload();
     }
 
     function loadFanArt() {
