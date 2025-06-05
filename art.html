@@ -337,7 +337,7 @@
       </select>
       <input type="text" class="input-field" id="uploaderIG" placeholder="(Optional) @yourIG — if this is your gaming art" />
       <input type="text" class="input-field" id="artistIG" placeholder="Instagram of the gaming artist you're promoting (@username)" style="display:none;" />
-      <button class="btn" onclick="uploadArtwork()">Upload Artwork</button>
+      <button class="btn" id="uploadBtn">Upload Artwork</button>
     </div>
   </div>
 
@@ -369,7 +369,7 @@
     }
 
     async function uploadArtwork() {
-      const user = firebase.auth().currentUser;
+      const user = auth.currentUser;
       if (!user) return alert("Log in first!");
 
       const title = document.getElementById("artTitle").value;
@@ -381,11 +381,11 @@
 
       if (!title || !file) return alert("Title and image are required.");
 
-      const storageRef = storage.ref(`fanart/${user.uid}/${file.name}`);
-      await storageRef.put(file);
-      const imageUrl = await storageRef.getDownloadURL();
+      const storageRef = ref(storage, `fanart/${user.uid}/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const imageUrl = await getDownloadURL(storageRef);
 
-      await db.collection("fan_art").add({
+      await addDoc(collection(db, "fan_art"),{
         uid: user.uid,
         title,
         description,
@@ -403,15 +403,15 @@
   const user = firebase.auth().currentUser;
   const isMyTab = currentTab === "my";
 
-  let query = db.collection("fan_art").orderBy("timestamp", "desc");
+  let queryRef = query(collection(db, "fan_art"), orderBy("timestamp", "desc"));
   if (isMyTab && user) {
-    query = query.where("uid", "==", user.uid);
+    queryRef = query(collection(db, "fan_art"), where("uid", "==", user.uid), orderBy("timestamp", "desc"));
   } else if (isMyTab && !user) {
     document.getElementById("fanArtGallery").innerHTML = "<p style='opacity: 0.6; text-align:center;'>Log in to view your uploads.</p>";
     return;
   }
 
-     query.onSnapshot(snapshot => {
+     onSnapshot(queryRef, snapshot => {
   const gallery = document.getElementById("fanArtGallery");
   gallery.innerHTML = "";
   document.getElementById("loadingSpinner").style.display = "block";
@@ -446,17 +446,21 @@
 
     async function updateTitle(id, newTitle, isOwner) {
       if (!isOwner || newTitle.trim() === "") return;
-      await db.collection("fan_art").doc(id).update({ title: newTitle });
+      await updateDoc(doc(db, "fan_art", id),{ title: newTitle });
     }
 
     async function deleteArt(id) {
       if (confirm("Are you sure you want to delete this artwork?")) {
-        await db.collection("fan_art").doc(id).delete();
+        await deleteDoc(doc(db, "fan_art", id));
         alert("Artwork deleted.");
       }
     }
 
     firebase.auth().onAuthStateChanged(user => {
+  const uploadBtn = document.getElementById('uploadBtn');
+  if (uploadBtn) {
+    uploadBtn.onclick = uploadArtwork;
+  }
   loadFanArt(); // Always call to allow public view
   });
 
