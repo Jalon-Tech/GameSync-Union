@@ -48,17 +48,17 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1rem;
-      margin-top: 0.5rem;
+      gap: 0.8rem;
     }
     nav a {
       text-decoration: none;
-      color: #fff;
+      color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
       transition: color 0.3s ease;
+      font-size: 1rem;
     }
     nav a:hover {
-      color: #e60023;
+      color: var(--gsu-red);
     }
     .btn {
       background-color: #777;
@@ -159,7 +159,7 @@
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -170,8 +170,9 @@
       <a href="game-guides.html">Guides</a>
       <a href="uploads.html">GSU Player Lounge</a>
     </nav>
-    <button id="logoutBtn" class="btn">Log Out</button>
+     <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
   </header>
+
 
   <div class="container">
     <section class="section reveal">
