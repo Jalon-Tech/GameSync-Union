@@ -7,10 +7,9 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-    <style>
-:root {
-  --gsu-red: #e60023;
-}
+  :root {
+    --gsu-red: #e60023;
+  }
 </style>
 
 <style>
@@ -790,26 +789,13 @@ if (user) {
   }
 });
 
-  onAuthStateChanged(auth, (user) => {
-    const currentPath = window.location.pathname.toLowerCase();
-    const isLoginPage = currentPath.includes("account_creation.html");
-
-    if (user) {
-      loadProfile(user.uid);
-      document.getElementById("auth-box").style.display = "none";
-    } else {
-      document.getElementById("auth-box").style.display = "block";
-      if (!isLoginPage && currentPath !== "/index.html") {
-        alert("Please log in to access GameSync Union.");
-        window.location.href = "account_creation.html";
-      }
-    }
-  });
 
   const YOUTUBE_API_KEY = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // Replace this with your real API key
 
 async function fetchYouTubeVideos(gameTitles = []) {
   const videoResults = [];
+
+  console.log("🧪 Game Titles Passed In:", gameTitles);
 
   for (const title of gameTitles) {
     const query = `${title} gameplay`;
@@ -818,6 +804,10 @@ async function fetchYouTubeVideos(gameTitles = []) {
     try {
       const res = await fetch(apiUrl);
       const data = await res.json();
+
+      console.log(`🎯 Query: "${query}"`);
+      console.log("📦 YouTube API response:", data);
+
       const videoId = data.items?.[0]?.id?.videoId;
 
       if (videoId) {
@@ -826,12 +816,16 @@ async function fetchYouTubeVideos(gameTitles = []) {
           videoId,
           videoTitle: data.items[0].snippet.title,
         });
+      } else {
+        console.warn(`❌ No video found for "${title}"`);
       }
+
     } catch (err) {
-      console.error(`Error fetching YouTube video for ${title}:`, err);
+      console.error(`🔥 Fetch error for "${title}":`, err);
     }
   }
 
+  console.log("✅ Final video list to display:", videoResults);
   return videoResults;
 }
 
