@@ -342,7 +342,13 @@
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🎮 Your Top 3, Spotlighted by GSU</h2>
   <p style="color: #ccc; font-size: 0.95rem; text-align: center;">Gameplay videos and updates based on your favorite 3 games — always fresh, always for you.</p>
   <div id="youtube-videos" style="margin-top: 1rem;"></div>
+  <div class="box" id="gamespot-news-box">
+  <h2 style="color: var(--gsu-red); text-align: center;">📰 GameSpot News</h2>
+  <p style="text-align: center; color: #ccc;">Latest headlines based on your Top 3 games</p>
+  <div id="gamespot-news" style="margin-top: 1rem;"></div>
 </div>
+</div>
+      
 
 </div>
 
@@ -778,6 +784,7 @@ if (user) {
 
     const videos = await fetchYouTubeVideos(favoriteGames.slice(0, 3));
     displayVideos(videos);
+    await fetchGameSpotNews(favoriteGames);
 
     document.getElementById("auth-box").style.display = "none";
   } else {
@@ -856,6 +863,38 @@ videoContainer.innerHTML = `
   <p style="color:#ccc;font-size:0.9rem;margin-top:0.5rem;">${todayVideo.videoTitle}</p>
 `;
   });
+}
+  async function fetchGameSpotNews(favoriteGames) {
+  const container = document.getElementById("gamespot-news");
+  container.innerHTML = "";
+
+  for (const game of favoriteGames.slice(0, 3)) {
+    const searchQuery = encodeURIComponent(game);
+    const rssFeedUrl = `https://www.gamespot.com/feeds/search/?q=${searchQuery}&mode=rss`;
+
+    try {
+      const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssFeedUrl}`);
+      const data = await res.json();
+
+      if (data.items && data.items.length > 0) {
+        const article = data.items[0];
+        const articleBox = document.createElement("div");
+        articleBox.className = "news-card";
+        articleBox.style = "background:#2a2a2a; padding:1rem; margin-bottom:1rem; border-radius:8px;";
+
+        articleBox.innerHTML = `
+          <h3 style="color: var(--gsu-red);">${game}</h3>
+          <a href="${article.link}" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">
+            ${article.title}
+          </a>
+          <p style="color:#aaa; margin-top: 0.5rem;">${article.pubDate}</p>
+        `;
+        container.appendChild(articleBox);
+      }
+    } catch (err) {
+      console.error(`❌ Failed to fetch news for ${game}`, err);
+    }
+  }
 }
   const logoutBtn = document.getElementById("logoutBtn");
 
