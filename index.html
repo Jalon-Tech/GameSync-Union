@@ -238,8 +238,10 @@
       font-family: 'Montserrat', sans-serif;
     }
     .btn:hover {
-      opacity: 0.85;
+      transform: scale(1.03);
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
+
     footer {
       background-color: var(--black-faded);
       text-align: center;
@@ -438,11 +440,12 @@
     <div class="showoff-info">
       <h3>@QuantumX - “One Parry, One Kill”</h3>
       <p>Disrespected the Valkyrie Queen with no HUD in God of War: Ragnarök. Certified GSU moment.</p>
-      <div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
-  <button onclick="window.location.href='uploads.html'" class="btn">
-    See Why Everyone’s Talking
+      <div style="text-align: center; margin-top: 1rem;">
+      <button onclick="window.location.href='uploads.html'" class="btn" style="max-width: 250px;">
+        See Why Everyone’s Talking
       </button>
     </div>
+
 
     </div>
   </div>
