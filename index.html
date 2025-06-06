@@ -876,23 +876,33 @@ videoContainer.innerHTML = `
       const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssFeedUrl}`);
       const data = await res.json();
 
-      if (data.items && data.items.length > 0) {
-        const article = data.items[0];
-        const articleBox = document.createElement("div");
-        articleBox.className = "news-card";
-        articleBox.style = "background:#2a2a2a; padding:1rem; margin-bottom:1rem; border-radius:8px;";
-
-        articleBox.innerHTML = `
-          <h3 style="color: var(--gsu-red);">${game}</h3>
-          <a href="${article.link}" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">
-            ${article.title}
-          </a>
-          <p style="color:#aaa; margin-top: 0.5rem;">${article.pubDate}</p>
-        `;
-        container.appendChild(articleBox);
+      if (!data.items || data.items.length === 0) {
+        const emptyMsg = document.createElement("p");
+        emptyMsg.textContent = `No news found for ${game}`;
+        emptyMsg.style.color = "#aaa";
+        container.appendChild(emptyMsg);
+        continue;
       }
+
+      const article = data.items[0];
+      const articleBox = document.createElement("div");
+      articleBox.className = "news-card";
+      articleBox.style = "background:#2a2a2a; padding:1rem; margin-bottom:1rem; border-radius:8px;";
+
+      articleBox.innerHTML = `
+        <h3 style="color: var(--gsu-red);">${game}</h3>
+        <a href="${article.link}" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">
+          ${article.title}
+        </a>
+        <p style="color:#aaa; margin-top: 0.5rem;">${new Date(article.pubDate).toDateString()}</p>
+      `;
+      container.appendChild(articleBox);
     } catch (err) {
-      console.error(`❌ Failed to fetch news for ${game}`, err);
+      console.error(`❌ Failed to fetch GameSpot news for ${game}`, err);
+      const failMsg = document.createElement("p");
+      failMsg.textContent = `Could not load news for ${game}`;
+      failMsg.style.color = "#ff6666";
+      container.appendChild(failMsg);
     }
   }
 }
