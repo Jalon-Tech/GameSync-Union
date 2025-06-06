@@ -871,17 +871,14 @@ videoContainer.innerHTML = `
   for (const game of favoriteGames.slice(0, 3)) {
     const searchQuery = encodeURIComponent(game);
     const rssFeedUrl = `https://www.gamespot.com/feeds/search/?q=${searchQuery}&mode=rss`;
+    const apiUrl = `https://feed2json.org/convert?url=${rssFeedUrl}`;
 
     try {
-      const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssFeedUrl}`);
+      const res = await fetch(apiUrl);
       const data = await res.json();
 
       if (!data.items || data.items.length === 0) {
-        const emptyMsg = document.createElement("p");
-        emptyMsg.textContent = `No news found for ${game}`;
-        emptyMsg.style.color = "#aaa";
-        container.appendChild(emptyMsg);
-        continue;
+        throw new Error("No items returned for " + game);
       }
 
       const article = data.items[0];
@@ -891,18 +888,40 @@ videoContainer.innerHTML = `
 
       articleBox.innerHTML = `
         <h3 style="color: var(--gsu-red);">${game}</h3>
-        <a href="${article.link}" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">
+        <a href="${article.url}" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">
           ${article.title}
         </a>
-        <p style="color:#aaa; margin-top: 0.5rem;">${new Date(article.pubDate).toDateString()}</p>
+        <p style="color:#aaa; margin-top: 0.5rem;">${new Date(article.date_published).toDateString()}</p>
       `;
       container.appendChild(articleBox);
     } catch (err) {
-      console.error(`❌ Failed to fetch GameSpot news for ${game}`, err);
-      const failMsg = document.createElement("p");
-      failMsg.textContent = `Could not load news for ${game}`;
-      failMsg.style.color = "#ff6666";
-      container.appendChild(failMsg);
+      console.warn(`⚠️ No GameSpot news for "${game}". Using fallback.`, err);
+
+      // Try fallback mashup feed
+      try {
+        const fallbackUrl = `https://feed2json.org/convert?url=https://www.gamespot.com/feeds/mashup/`;
+        const fallbackRes = await fetch(fallbackUrl);
+        const fallbackData = await fallbackRes.json();
+        const fallbackArticle = fallbackData.items[0];
+
+        const fallbackBox = document.createElement("div");
+        fallbackBox.className = "news-card";
+        fallbackBox.style = "background:#2a2a2a; padding:1rem; margin-bottom:1rem; border-radius:8px;";
+
+        fallbackBox.innerHTML = `
+          <h3 style="color: var(--gsu-red);">${game} (Fallback)</h3>
+          <a href="${fallbackArticle.url}" target="_blank" style="color: #fff; text-decoration: none; font-weight: bold;">
+            ${fallbackArticle.title}
+          </a>
+          <p style="color:#aaa; margin-top: 0.5rem;">${new Date(fallbackArticle.date_published).toDateString()}</p>
+        `;
+        container.appendChild(fallbackBox);
+      } catch (fallbackErr) {
+        const failMsg = document.createElement("p");
+        failMsg.textContent = `❌ Couldn't load any news for ${game}`;
+        failMsg.style.color = "#ff6666";
+        container.appendChild(failMsg);
+      }
     }
   }
 }
