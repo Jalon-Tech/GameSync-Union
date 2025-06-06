@@ -345,7 +345,10 @@
 </div>
 
 </div>
-
+<div class="showoff-card" id="gamespot-updates">
+  <h2 style="color:var(--gsu-red); text-align:center;">📰 Latest News on Your Favorites</h2>
+  <div id="news-cards" class="culture-grid"></div>
+</div>
     </aside>
 
     <main>
@@ -592,10 +595,50 @@
 .close:hover {
   color: #ff3344;
 }
-
+.news-card {
+  background: #2a2a2a;
+  border-left: 4px solid var(--gsu-red);
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: left;
+}
+.news-card h4 {
+  color: var(--gsu-red);
+  margin-bottom: 0.5rem;
+}
+.news-card p {
+  color: #ccc;
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+.news-card a {
+  color: #fff;
+  text-decoration: underline;
+}
 </style>
 
 <script>
+  async function loadGameNews(favoriteGames = []) {
+  const cards = document.getElementById('news-cards');
+  cards.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#ccc">Loading news…</p>';
+  const apiToken = 'YOUR_APIFY_TOKEN';
+  const response = await fetch(`https://api.apify.com/v2/acts/easyapi~gamespot-search-scraper/run-sync-get-dataset-items?token=${apiToken}`, {
+    method: 'POST',
+    body: JSON.stringify({ search: favoriteGames })
+  });
+  const data = await response.json();
+  cards.innerHTML = '';
+  data.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    card.innerHTML = `
+      <h4>${item.title}</h4>
+      <p>${item.description?.slice(0,120) || ''}…</p>
+      <a href="${item.url}" target="_blank">Read more</a>
+    `;
+    cards.appendChild(card);
+  });
+}
   function openEditModal() {
 
   document.getElementById('editModal').style.display = 'block';
@@ -856,6 +899,9 @@ videoContainer.innerHTML = `
   <p style="color:#ccc;font-size:0.9rem;margin-top:0.5rem;">${todayVideo.videoTitle}</p>
 `;
   });
+}
+  if (favoriteGames.length) {
+  loadGameNews(favoriteGames.slice(0, 3));
 }
   const logoutBtn = document.getElementById("logoutBtn");
 
