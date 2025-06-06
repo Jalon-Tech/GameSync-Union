@@ -346,27 +346,13 @@ Gameplay videos and updates based on your favorite 3 games — always fresh, alw
 </p>
 </p>
 
-  <!-- Favorite Game 1 -->
-<div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-  <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🕷️🕸️ Spider-Man 2</h3>
-  <iframe width="100%" height="200" src="https://www.youtube.com/embed/KNRVIPQ7rfI" title="Spider-Man 2 Gameplay" frameborder="0" allowfullscreen></iframe>
-  <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">Spider-Men in Sync – Fights, Swings & Cinematics</p>
+  <div class="box" id="youtube-section">
+  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 Your Top 3, Spotlighted by GSU</h2>
+  <p style="color: #ccc; font-size: 0.95rem;">
+    Gameplay videos and updates based on your favorite 3 games — always fresh, always for you.
+  </p>
+  <div id="youtube-videos"></div> <!-- Dynamic videos go here -->
 </div>
-
-<!-- Favorite Game 2 -->
-<div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-  <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🔧🐱🤖 Ratchet & Clank: Rift Apart</h3>
-  <iframe width="100%" height="200" src="https://www.youtube.com/embed/uwz1Pz0HB8g" title="Ratchet & Clank Gameplay" frameborder="0" allowfullscreen></iframe>
-  <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">Dimensional Combat & Rift Traversals</p>
-</div>
-
-<!-- Favorite Game 3 -->
-<div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-  <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">⚔️🪓 God of War: Ragnarök</h3>
-  <iframe width="100%" height="200" src="https://www.youtube.com/embed/WUxIsrHQd2A" title="God of War Ragnarök Gameplay" frameborder="0" allowfullscreen></iframe>
-  <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">Combat Highlights & Cinematic Action</p>
-</div>
-  </div>
 </div>
 
     </aside>
@@ -788,6 +774,30 @@ if (user) {
     }
   }
 
+  onAuthStateChanged(auth, async (user) => {
+  const currentPath = window.location.pathname.toLowerCase();
+  const isLoginPage = currentPath.includes("account_creation.html");
+
+  if (user) {
+    loadProfile(user.uid);
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const data = snap.data();
+    const favoriteGames = data.favoriteGames || [];
+
+    const videos = await fetchYouTubeVideos(favoriteGames.slice(0, 3));
+    displayVideos(videos);
+
+    document.getElementById("auth-box").style.display = "none";
+  } else {
+    document.getElementById("auth-box").style.display = "block";
+    if (!isLoginPage && currentPath !== "/index.html") {
+      alert("Please log in to access GameSync Union.");
+      window.location.href = "account_creation.html";
+    }
+  }
+});
+
   onAuthStateChanged(auth, (user) => {
     const currentPath = window.location.pathname.toLowerCase();
     const isLoginPage = currentPath.includes("account_creation.html");
@@ -803,6 +813,52 @@ if (user) {
       }
     }
   });
+
+  const YOUTUBE_API_KEY = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // Replace this with your real API key
+
+async function fetchYouTubeVideos(gameTitles = []) {
+  const videoResults = [];
+
+  for (const title of gameTitles) {
+    const query = `${title} gameplay`;
+    const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}`;
+
+    try {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      const videoId = data.items?.[0]?.id?.videoId;
+
+      if (videoId) {
+        videoResults.push({
+          title,
+          videoId,
+          videoTitle: data.items[0].snippet.title,
+        });
+      }
+    } catch (err) {
+      console.error(`Error fetching YouTube video for ${title}:`, err);
+    }
+  }
+
+  return videoResults;
+}
+
+function displayVideos(videoList) {
+  const container = document.getElementById("youtube-videos");
+  container.innerHTML = "";
+
+  videoList.forEach(video => {
+    const videoDiv = document.createElement("div");
+    videoDiv.innerHTML = `
+      <div style="background:#2a2a2a;padding:1rem;border-radius:8px;margin-top:1rem;">
+        <h3 style="color:var(--gsu-red);font-family:'Montserrat',sans-serif;">🎮 ${video.title}</h3>
+        <iframe width="100%" height="200" src="https://www.youtube.com/embed/${video.videoId}" 
+          title="${video.videoTitle}" frameborder="0" allowfullscreen></iframe>
+        <p style="color:#ccc;font-size:0.9rem;margin-top:0.5rem;">${video.videoTitle}</p>
+      </div>`;
+    container.appendChild(videoDiv);
+  });
+}
 
   const logoutBtn = document.getElementById("logoutBtn");
 
