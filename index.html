@@ -389,27 +389,41 @@
     <div class="stat-item">🏆 39 new trophies earned</div>
     <div class="stat-item">💬 52 new Lounge posts</div>
   </div>
-  <div style="text-align: center; margin-top: 20px;">
-  <select onchange="if(this.value) window.location.href=this.value;" class="btn" style="padding: 12px 24px; font-size: 16px; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 8px;">
-    <option disabled selected>Jump Into GSU 🔽</option>
-    
+  <div style="text-align: center; margin-top: 1.5rem;">
+  <select onchange="if(this.value) window.location.href=this.value;" style="
+    background-color: var(--gsu-red);
+    color: white;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-width: 300px;
+    width: 100%;
+    transition: transform 0.2s ease;
+  " onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+    <option disabled selected>🔽 Jump Into GSU</option>
+
     <!-- Core Pages -->
     <option value="index.html">🏠 GSU Homepage</option>
     <option value="uploads.html">📤 Community Uploads Hub</option>
     <option value="fanart.html">🎨 Fan Art Gallery</option>
     <option value="trophies.html">🏆 Earned Trophies</option>
-    
+
     <!-- Guide Pages -->
     <option value="gameplay-tutorials.html">🎮 Gameplay Tutorials</option>
     <option value="boss-fights.html">🗡️ Boss Fight Strategies</option>
     <option value="combo-guides.html">🥊 Combo Guides for Fighting Games</option>
     <option value="trophy-tips.html">💡 Trophy Tips & Achievement Help</option>
-    
+
     <!-- Community Pages -->
     <option value="community-chat.html">💬 Guide Discussion & Community Chat</option>
     <option value="lounge.html">🛋️ GSU Lounge (Squad Up)</option>
     <option value="games.html">🎮 Games Only Heat</option>
-    
+
     <!-- Fun & Interactive -->
     <option value="polls.html">📊 Community Polls</option>
     <option value="gamer-of-the-week.html">🌟 GSU Gamer of the Week</option>
