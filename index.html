@@ -7,6 +7,129 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    <style>
+:root {
+  --gsu-red: #e60023;
+}
+</style>
+
+<style>
+.livewire-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.stat-item {
+  background: #2a2a2a;
+  padding: 1rem;
+  border-left: 4px solid var(--gsu-red);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: 'Roboto', sans-serif;
+  transition: transform 0.3s ease;
+}
+.stat-item:hover {
+  transform: scale(1.03);
+  background-color: #333;
+}
+.culture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  text-align: center;
+}
+.culture-tile {
+  background: #2a2a2a;
+  padding: 1.4rem 1rem;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: white;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.culture-tile:hover {
+  background: var(--gsu-red);
+  transform: scale(1.05);
+}
+.tile-hover {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #ddd;
+}
+.showoff-card {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 1rem;
+}
+.showoff-img {
+  width: 200px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.showoff-info h3 {
+  color: var(--gsu-red);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+.showoff-info p {
+  font-size: 0.95rem;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 0.6rem;
+}
+.talk-quote {
+  background: #2a2a2a;
+  padding: 1rem 1.2rem;
+  border-left: 4px solid var(--gsu-red);
+  border-radius: 8px;
+  font-style: italic;
+}
+.talk-quote blockquote {
+  font-size: 1.1rem;
+  color: #eee;
+  margin-bottom: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+.talk-quote p {
+  font-size: 0.95rem;
+  color: #aaa;
+  font-family: 'Roboto', sans-serif;
+}
+.certified-moment {
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+}
+.certified-img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.8rem;
+}
+.certified-caption {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+}
+.incoming-drop {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  color: #ddd;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  list-style-type: square;
+}
+
     /* CSS REMAINS UNCHANGED */
       :root {
       --gsu-red: #e60023;
