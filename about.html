@@ -55,17 +55,22 @@
       justify-content: center;
       gap: 0.8rem;
     }
-    nav a {
-      text-decoration: none;
-      color: var(--white-text);
-      font-family: 'Montserrat', sans-serif;
-      transition: color 0.3s ease;
-      font-size: 1rem;
-    }
-    
-    nav a:hover {
-      color: var(--gsu-red);
-    }
+   nav a {
+    text-decoration: none;
+    color: var(--white-text);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background: transparent;
+  }
+  
+  nav a:hover {
+    color: var(--gsu-red);
+    background: rgba(230, 0, 35, 0.08); /* optional hover bg tint */
+  }
+
 
     .btn {
       background-color: #777;
