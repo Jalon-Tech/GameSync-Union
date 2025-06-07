@@ -273,8 +273,12 @@
 #connectPlayersContainer {
   max-height: 600px;
   overflow-y: auto;
-  padding-right: 8px; /* prevent cutting off right edge */
+  overflow-x: visible;  /* 🛠️ prevent hover clipping */
+  padding-right: 8px;
+  margin-right: -4px;    /* helps avoid double scrollbar */
+  position: relative;    /* to isolate z-index context */
 }
+
 
 #connectPlayersContainer::-webkit-scrollbar {
   width: 6px;
@@ -289,6 +293,24 @@
   background: #2a2a2a;
 }
 
+.upload-card {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.2rem;
+  color: var(--white-text);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  position: relative; /* helps hover elevation inside overflow */
+  z-index: 0;
+}
+
+.upload-card:hover {
+  transform: scale(1.01); /* subtle scale to avoid clipping */
+  border-color: var(--gsu-red);
+  box-shadow: 0 8px 24px rgba(230, 0, 35, 0.25);
+  z-index: 2;
+}
 
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -694,7 +716,7 @@ firebase.auth().onAuthStateChanged(authUser => {
     }, { merge: true });
 
     // Display friend requests sent TO this user
-db.collection("users").doc(authUser.uid).get().then(doc => {
+  db.collection("users").doc(authUser.uid).get().then(doc => {
   const userData = doc.data();
   const incomingRequests = userData.friendRequests || [];
 
