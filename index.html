@@ -342,15 +342,6 @@
   margin-bottom: 1.2rem;
 }
 
-.spotlight-video {
-  background: #2a2a2a;
-  padding: 1.2rem;
-  border-radius: 12px;
-  border: 2px solid transparent;
-  transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
-  max-width: 720px;
-  margin: 0 auto;
-}
 
 .spotlight-video:hover {
   transform: scale(1.02);
@@ -693,14 +684,40 @@ When the Union highlights you — it means something. If your name’s echoing i
   color: #ff3344;
 }
 #fav-game-updates {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding-top: 1rem;
-  max-height: none;
-  overflow-y: visible;
-  padding-right: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+  margin-top: 1rem;
 }
+
+
+.spotlight-video:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 16px rgba(230, 0, 35, 0.4);
+  border: 1px solid var(--gsu-red);
+}
+
+.spotlight-video iframe {
+  width: 100%;
+  height: 200px;
+  border: none;
+  border-radius: 0;
+}
+
+.spotlight-video h3 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--gsu-red);
+  font-size: 1rem;
+  padding: 0.8rem 1rem 0 1rem;
+}
+
+.spotlight-video p {
+  color: #bbb;
+  font-size: 0.9rem;
+  padding: 0 1rem 1rem 1rem;
+}
+
 
 
 #fav-game-updates::-webkit-scrollbar {
@@ -1006,11 +1023,13 @@ async function rotateYouTubeVideosForUser(uid) {
       if (!videoId) throw new Error("No videos found");
 
       return `
-        <div class="spotlight-video">
-          <h3>🎮 ${title}</h3>
-          <iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-          <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Daily gameplay drop powered by YouTube</p>
-        </div>`;
+      <div class="spotlight-video">
+        <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+        <h3>🎮 ${title}</h3>
+        <p>▶️ Daily gameplay drop powered by YouTube</p>
+      </div>
+    `;
+
     } catch (err) {
       console.error(`Error loading video for ${title}:`, err);
       return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
@@ -1039,4 +1058,6 @@ onAuthStateChanged(auth, (user) => {
 </script>
 
 </body>
+
 </html>
+
