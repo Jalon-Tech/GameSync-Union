@@ -237,6 +237,40 @@
       color: var(--gsu-red);
       font-weight: bold;
     }
+    #weeklyPoll {
+  min-height: 180px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.box#weeklyPollBox {
+  height: fit-content;
+  max-height: 300px;
+}
+  @media (max-width: 768px) {
+  .box#weeklyPollBox {
+    max-height: none;
+  }
+
+  #weeklyPoll {
+    max-height: none;
+  }
+}
+
+
+#weeklyPoll::-webkit-scrollbar {
+  width: 6px;
+}
+
+#weeklyPoll::-webkit-scrollbar-thumb {
+  background-color: var(--gsu-red);
+  border-radius: 4px;
+}
+
+#weeklyPoll::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -301,11 +335,12 @@
   <div class="guides-container" id="allUploads"></div>
 </div>
 
-<div class="box">
+<div class="box" id="weeklyPollBox">
   <h2>🗳️ Weekly GSU Poll (Created by You)</h2>
   <p>Each week, a new player is chosen to run the poll. Cast your vote, settle debates, and shape what’s trending.</p>
-  <div class="guides-container" id="weeklyPoll"></div>
+  <div id="weeklyPoll"></div>
 </div>
+
 
 <div class="box">
   <h2>🤝 Connect with GSU Players</h2>
