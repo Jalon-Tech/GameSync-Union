@@ -834,29 +834,34 @@ async function rotateYouTubeVideosForUser(uid) {
 
     spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
 
-    const blocks = await Promise.all(
-      favoriteGames.slice(0, 3).map(async (title) => {
-        const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
-        try {
-          const res = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
-          );
-          const data = await res.json();
-          const video = data.items?.find(item => item.id.videoId);
+   const blocks = await Promise.all(
+  favoriteGames.slice(0, 3).map(async (title) => {
+    const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
+    try {
+      const res = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
+      );
+      const data = await res.json();
 
-          if (!video) throw new Error("No videos found");
+      // ✅ Make sure to check if the structure includes videoId
+      const video = data.items?.find(item => item.id.kind === "youtube#video");
+      const videoId = video?.id?.videoId;
 
-          return `
-            <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-              <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 ${title}</h3>
-              <iframe width="100%" height="200" src="https://www.youtube.com/embed/${video.id.videoId}" frameborder="0" allowfullscreen></iframe>
-              <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Daily gameplay drop powered by YouTube</p>
-            </div>`;
-        } catch (err) {
-          return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
-        }
-      })
-    );
+      if (!videoId) throw new Error("No videos found");
+
+      return `
+        <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+          <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 ${title}</h3>
+          <iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+          <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Daily gameplay drop powered by YouTube</p>
+        </div>`;
+    } catch (err) {
+      console.error(`Error loading video for ${title}:`, err);
+      return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
+    }
+  })
+);
+
 
     spotlightRef.innerHTML = blocks.join("");
   } catch (e) {
