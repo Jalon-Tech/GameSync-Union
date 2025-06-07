@@ -1013,9 +1013,18 @@ async function rotateYouTubeVideosForUser(uid) {
       const data = await res.json();
 
       // ✅ Handle YouTube quota errors here
-      if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
-        return `<div style="color:orange; text-align:center;">🚫 YouTube API quota exceeded. Try again tomorrow.</div>`;
-      }
+    if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
+    return `
+      <div style="color: var(--gsu-red); text-align: center; padding: 1rem;">
+        Today’s video drops are temporarily unavailable. Check back tomorrow for fresh gameplay!
+        <br/><br/>
+        <button onclick="window.location.href='uploads.html'" style="background-color: var(--gsu-red); color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600;">
+          Explore GSU Player Lounge
+        </button>
+      </div>
+    `;
+  }
+
 
       const video = data.items?.find(item => item.id.kind === "youtube#video");
       const videoId = video?.id?.videoId;
