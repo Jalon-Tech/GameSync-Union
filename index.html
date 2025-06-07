@@ -16,19 +16,19 @@
 <style>
   .retro-flashback {
   background-color: var(--black-faded);
-  border-left: 4px solid var(--gsu-red);
   border-radius: 8px;
   padding: 1rem;
   font-family: 'Roboto', sans-serif;
   color: var(--white-text);
-  box-shadow: 0 0 10px rgba(255, 0, 55, 0.15);
+  box-shadow: 0 0 8px rgba(255, 0, 55, 0.12);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .retro-flashback:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.4);
+  box-shadow: 0 0 14px rgba(230, 0, 35, 0.25);
 }
+
 
 .retro-header {
   font-size: 1.1rem;
@@ -60,16 +60,19 @@
 .stat-item {
   background: #2a2a2a;
   padding: 1rem;
-  border-left: 4px solid var(--gsu-red);
   border-radius: 8px;
   font-size: 0.95rem;
   font-family: 'Roboto', sans-serif;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
 }
+
 .stat-item:hover {
   transform: scale(1.03);
   background-color: #333;
+  box-shadow: 0 0 10px rgba(230, 0, 35, 0.25);
 }
+
 .culture-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
