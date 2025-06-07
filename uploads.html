@@ -270,6 +270,25 @@
 #weeklyPoll::-webkit-scrollbar-track {
   background: #2a2a2a;
 }
+#connectPlayersContainer {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 8px; /* prevent cutting off right edge */
+}
+
+#connectPlayersContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+#connectPlayersContainer::-webkit-scrollbar-thumb {
+  background-color: var(--gsu-red);
+  border-radius: 4px;
+}
+
+#connectPlayersContainer::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
 
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -345,8 +364,11 @@
 <div class="box">
   <h2>🤝 Connect with GSU Players</h2>
   <p>Check out gamer profiles, add friends, and see who’s running what. GSU is about linking real players together.</p>
-  <div class="guides-container" id="connectPlayers"></div>
+  <div id="connectPlayersContainer">
+    <div class="guides-container" id="connectPlayers"></div>
+  </div>
 </div>
+
 
 <div class="box">
   <h2>👑 GSU Gamer of the Week Spotlight</h2>
