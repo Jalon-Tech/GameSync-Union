@@ -312,6 +312,29 @@
   z-index: 0 !important;
 }
 
+.gamer-of-week {
+  background-color: #1f1f1f;
+  border: 2px solid var(--gsu-red);
+  box-shadow: 0 0 18px rgba(230, 0, 35, 0.4);
+  text-align: center;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 800px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.gamer-of-week h2 {
+  color: var(--gsu-red);
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.gamer-of-week p {
+  font-size: 1.05rem;
+  color: #ddd;
+  max-width: 700px;
+  margin: 0 auto;
+}
 
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -352,6 +375,12 @@
         </div>
       </div>
 
+      <div class="box gamer-of-week">
+      <h2>👑 GSU Gamer of the Week Spotlight</h2>
+      <p>Every week, one player earns the crown. Based on uploads, chat, shoutouts, and community presence — this is where legends rise.</p>
+      <div class="guides-container" id="gamerOfTheWeek"></div>
+    </div>
+
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
       <div class="box">
   <h2>🎯💪 Find a Squad</h2>
@@ -390,13 +419,6 @@
   <div id="connectPlayersContainer">
     <div class="guides-container" id="connectPlayers"></div>
   </div>
-</div>
-
-
-<div class="box">
-  <h2>👑 GSU Gamer of the Week Spotlight</h2>
-  <p>Every week, one player earns the crown. Based on uploads, chat, shoutouts, and community presence — this is where legends rise.</p>
-  <div class="guides-container" id="gamerOfTheWeek"></div>
 </div>
 
       
