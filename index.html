@@ -861,6 +861,9 @@ async function rotateYouTubeVideosForUser(uid) {
     console.error("Error fetching YouTube videos:", e);
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
   }
+  console.log("Favorite games from Firebase:", favoriteGames);
+  console.log("Calling YouTube API with:", cleanTitle + " gameplay");
+
 }
 
 onAuthStateChanged(auth, (user) => {
