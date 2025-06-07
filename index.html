@@ -804,6 +804,8 @@ if (user) {
 
 </script>
 <script type="module">
+ 
+
   import {
   getFirestore, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -811,8 +813,7 @@ import {
   getAuth, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-const db = getFirestore();
-const auth = getAuth();
+
 const spotlightRef = document.getElementById("fav-game-updates");
 const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // ✅ Your API key
 
@@ -825,6 +826,7 @@ async function rotateYouTubeVideosForUser(uid) {
     }
 
     const { favoriteGames } = snap.data();
+    console.log("Favorite games from Firebase:", favoriteGames);
     if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
       spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
       return;
@@ -861,8 +863,7 @@ async function rotateYouTubeVideosForUser(uid) {
     console.error("Error fetching YouTube videos:", e);
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
   }
-  console.log("Favorite games from Firebase:", favoriteGames);
-  console.log("Calling YouTube API with:", cleanTitle + " gameplay");
+  
 
 }
 
