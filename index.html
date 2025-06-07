@@ -14,6 +14,42 @@
 </style>
 
 <style>
+  .retro-flashback {
+  background: linear-gradient(145deg, #1f1f1f, #111);
+  border-left: 4px solid #ff6b00;
+  border-radius: 10px;
+  padding: 1.2rem 1rem;
+  font-family: 'Courier New', monospace;
+  color: #ffddb0;
+  box-shadow: 0 0 10px rgba(255, 107, 0, 0.4);
+  transition: transform 0.3s ease;
+  margin-top: 1rem;
+}
+
+.retro-flashback:hover {
+  transform: scale(1.02);
+}
+
+.retro-header {
+  font-size: 1.1rem;
+  color: #ffad33;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 0 6px #ff6b00;
+}
+
+.retro-body .game-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff7d1;
+  margin-bottom: 0.4rem;
+}
+
+.retro-body .game-fact {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #fce1c2;
+}
+
 .livewire-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -406,8 +442,19 @@
         <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
       
-
-  
+      <div class="box retro-flashback">
+      <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
+      <p style="font-size: 0.9rem; color: white; font-family: 'Courier New', monospace; margin-bottom: 0.8rem;">
+        Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry — a reminder of where the journey began.
+      </p>
+      
+      <div class="retro-body">
+        <div class="game-title">🎮 Donkey Kong (1981)</div>
+        <div class="game-fact">
+        This classic arcade game introduced the world to Jumpman — who would later become Mario. It defined the platformer genre and helped launch Nintendo's global legacy.
+        </div>
+      </div>
+    </div>
 
     </aside>
 
@@ -1069,4 +1116,3 @@ onAuthStateChanged(auth, (user) => {
 </body>
 
 </html>
-
