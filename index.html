@@ -7,13 +7,14 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-    <style>
-:root {
-  --gsu-red: #e60023;
-}
-</style>
+  
+  :root {
+    --gsu-red: #e60023;
+    --black-main: #191818;
+    --black-faded: #1F1F1F;
+    --white-text: #FFFFFF;
+  }
 
-<style>
 .livewire-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -312,6 +313,321 @@
   </style>
 </head>
 <body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameSync Union</title>
+  <link rel="icon" href="GSU_Logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+ <style>
+    :root {
+    --gsu-red: #e60023;
+    --black-main: #191818;
+    --black-faded: #1F1F1F;
+    --white-text: #FFFFFF;
+  }
+
+.livewire-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.stat-item {
+  background: #2a2a2a;
+  padding: 1rem;
+  border-left: 4px solid var(--gsu-red);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: 'Roboto', sans-serif;
+  transition: transform 0.3s ease;
+}
+.stat-item:hover {
+  transform: scale(1.03);
+  background-color: #333;
+}
+.culture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  text-align: center;
+}
+.culture-tile {
+  background: #2a2a2a;
+  padding: 1.4rem 1rem;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: white;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.culture-tile:hover {
+  background: var(--gsu-red);
+  transform: scale(1.05);
+}
+.tile-hover {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #ddd;
+}
+.showoff-card {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 1rem;
+}
+.showoff-img {
+  width: 200px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.showoff-info h3 {
+  color: var(--gsu-red);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+.showoff-info p {
+  font-size: 0.95rem;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 0.6rem;
+}
+.talk-quote {
+  background: #2a2a2a;
+  padding: 1rem 1.2rem;
+  border-left: 4px solid var(--gsu-red);
+  border-radius: 8px;
+  font-style: italic;
+}
+.talk-quote blockquote {
+  font-size: 1.1rem;
+  color: #eee;
+  margin-bottom: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+.talk-quote p {
+  font-size: 0.95rem;
+  color: #aaa;
+  font-family: 'Roboto', sans-serif;
+}
+.certified-moment {
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+}
+.certified-img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.8rem;
+}
+.certified-caption {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+}
+.incoming-drop {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  color: #ddd;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  list-style-type: square;
+}
+
+    /* CSS REMAINS UNCHANGED */
+      :root {
+      --gsu-red: #e60023;
+      --black-main: #191818;
+      --black-faded: #1F1F1F;
+      --white-text: #FFFFFF;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--black-main);
+      color: var(--white-text);
+    }
+    header {
+      background-color: var(--black-faded);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .logo img {
+      height: 50px;
+      margin-right: 1rem;
+    }
+    .logo-text {
+      font-size: 1.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
+    }
+    nav a:hover {
+      color: var(--gsu-red);
+    }
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
+      padding: 2rem;
+    }
+    aside, main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .box {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+    }
+    .box:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
+    }
+    .box li {
+      transition: transform 0.3s ease;
+    }
+    .box:hover li {
+      transform: translateX(6px);
+    }
+    .box h2 {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.7rem;
+    }
+    .input-field {
+      padding: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      width: 100%;
+      background-color: #2a2a2a;
+      color: var(--white-text);
+    }
+    .btn {
+      background-color: var(--gsu-red);
+      border: none;
+      color: var(--white-text);
+      padding: 0.8rem;
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn:hover {
+      opacity: 0.85;
+    }
+    footer {
+      background-color: var(--black-faded);
+      text-align: center;
+      padding: 1.2rem 1rem;
+      margin-top: 4rem;
+    }
+    .platform-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .platform-icons img {
+      height: 32px;
+      width: auto;
+      opacity: 0.9;
+    }
+    footer p {
+      color: #ccc;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+    }
+    .section-flex {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .section-flex div {
+      flex: 1 1 100px;
+      text-align: center;
+    }
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        justify-content: flex-start;
+      }
+      .logo-text {
+        font-size: 1.3rem;
+      }
+      .section-flex {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+    @media (max-width: 600px) {
+      .logo img {
+        height: 40px;
+      }
+      .logo-text {
+        font-size: 1.2rem;
+      }
+      nav a {
+        font-size: 0.9rem;
+      }
+      .btn {
+        padding: 0.7rem;
+      }
+      .input-field {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
   <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
     <header>
     <div class="logo">
@@ -365,6 +681,9 @@
       <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">👑 No-HUD Challenge, GSU Hall Feature, Dev Clip Review</p>
     </div>
   </div>
+  <div style="text-align:center; margin-top:1rem;">
+  <button onclick="rotateYouTubeVideos()" class="btn">🔁 Refresh Spotlight</button>
+</div>
 </div>
 
     </aside>
@@ -659,9 +978,9 @@ if (user) {
 
 
 
-  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
-  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
-  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
+  document.getElementById('fav-games').textContent = 🔥 Favorite Games: ${games};
+  document.getElementById('games-played').textContent = 🎮 Number Of Games Played: ${gamesPlayed};
+  document.getElementById('trophy-stats').textContent = 🏆 Trophy Stats (Total Trophies): ${trophies};
 
   const imageRow = document.getElementById("fav-images");
   imageRow.innerHTML = "";
@@ -734,14 +1053,14 @@ if (user) {
       const profileBox = document.getElementById("profile-box");
 
       const usernameEl = document.createElement("p");
-      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+      usernameEl.textContent = 👤 Username: ${data.username || "N/A"};
       usernameEl.style.fontWeight = "bold";
       usernameEl.style.fontSize = "1rem";
       usernameEl.style.marginBottom = "0.5rem";
       profileBox.prepend(usernameEl);
 
       const platformEl = document.createElement("p");
-      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
+      platformEl.textContent = 🔹 Platform: ${data.platform || "N/A"};
       platformEl.style.fontSize = "0.95rem";
       platformEl.style.marginBottom = "0.5rem";
       profileBox.insertBefore(platformEl, usernameEl.nextSibling);
@@ -763,9 +1082,9 @@ if (user) {
       }
       imageRow.innerHTML = "";
 
-      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+      favGamesEl.textContent = 🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"};
+      gamesPlayedEl.textContent = 🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"};
+      trophyStatsEl.textContent = 🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"};
 
       if (Array.isArray(data.favoriteImages)) {
         data.favoriteImages.forEach(url => {
@@ -823,3 +1142,72 @@ if (user) {
     window.auth = auth;
 
 </script>
+  <!-- 🔁 GSU Spotlight and Livewire Logic -->
+<script type="module">
+  import { collection, getDocs, query, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+  const livewireRef = document.querySelector(".livewire-stats");
+  const spotlightRef = document.getElementById("fav-game-updates");
+  const authLive = getAuth();
+
+  async function loadLivewireStats() {
+    const stats = [
+      { icon: "📹", label: "uploads" },
+      { icon: "🎨", label: "fanart" },
+      { icon: "🏆", label: "trophies" },
+      { icon: "💬", label: "lounge_posts" },
+    ];
+
+    livewireRef.innerHTML = "";
+    for (let { icon, label } of stats) {
+      const snap = await getDocs(query(collection(db, label)));
+      const div = document.createElement("div");
+      div.className = "stat-item";
+      div.textContent = `${icon} ${snap.size} ${label.replace('_', ' ')} this week`;
+      livewireRef.appendChild(div);
+    }
+  }
+
+  async function rotateYouTubeVideos() {
+    const user = authLive.currentUser;
+    if (!user) return;
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (!snap.exists()) return;
+
+    const { favoriteGames } = snap.data();
+    if (!Array.isArray(favoriteGames)) return;
+
+    const apiKey = "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI";
+    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay videos...</p>";
+
+    spotlightRef.innerHTML = "";
+    for (let title of favoriteGames.slice(0, 3)) {
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&q=${encodeURIComponent(title + ' gameplay')}&maxResults=5`);
+      const data = await res.json();
+      const randomVid = data.items[Math.floor(Math.random() * data.items.length)];
+      const videoId = randomVid?.id?.videoId || "UZ9H9xo0GZQ";
+
+      const block = document.createElement("div");
+      block.innerHTML = `
+        <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+          <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 ${title}</h3>
+          <iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+          <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Video updates from YouTube</p>
+        </div>`;
+      spotlightRef.appendChild(block);
+    }
+  }
+
+  onAuthStateChanged(authLive, (user) => {
+    if (user) {
+      loadLivewireStats();
+      rotateYouTubeVideos();
+      setInterval(() => rotateYouTubeVideos(), 1000 * 60 * 3); // every 3 mins
+    }
+  });
+</script>
+
+</body>
+</html>
