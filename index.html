@@ -805,66 +805,72 @@ if (user) {
 </script>
 <script type="module">
   import {
-    getFirestore, doc, getDoc
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-  import {
-    getAuth, onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  getFirestore, doc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-  const db = getFirestore();
-  const auth = getAuth();
-  const spotlightRef = document.getElementById("fav-game-updates");
-  const apiKey = "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI";
+const db = getFirestore();
+const auth = getAuth();
+const spotlightRef = document.getElementById("fav-game-updates");
+const apiKey = "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI"; // ✅ Your API key
 
-  async function rotateYouTubeVideos() {
-  const user = auth.currentUser;
-  if (!user) return;
+async function rotateYouTubeVideosForUser(uid) {
+  try {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (!snap.exists()) {
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>";
+      return;
+    }
 
-  const userSnap = await getDoc(doc(db, "users", user.uid));
-  if (!userSnap.exists()) return;
+    const { favoriteGames } = snap.data();
+    if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
+      return;
+    }
 
-  const { favoriteGames } = userSnap.data();
-  if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) return;
+    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
 
-  spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay videos...</p>";
+    const blocks = await Promise.all(
+      favoriteGames.slice(0, 3).map(async (title) => {
+        const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
+        try {
+          const res = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
+          );
+          const data = await res.json();
+          const video = data.items?.find(item => item.id.videoId);
 
-  const blocks = await Promise.all(
-    favoriteGames.slice(0, 3).map(async (title) => {
-      const safeQuery = title.replace(/[^\w\s]/gi, "").trim(); // Removes special characters
-      try {
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=10&q=${encodeURIComponent(safeQuery + ' gameplay')}`);
-        const data = await response.json();
-        const video = data?.items?.find(item => item.id.videoId);
+          if (!video) throw new Error("No videos found");
 
-        if (!video) throw new Error("No video found");
+          return `
+            <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+              <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 ${title}</h3>
+              <iframe width="100%" height="200" src="https://www.youtube.com/embed/${video.id.videoId}" frameborder="0" allowfullscreen></iframe>
+              <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Daily gameplay drop powered by YouTube</p>
+            </div>`;
+        } catch (err) {
+          return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
+        }
+      })
+    );
 
-        const videoId = video.id.videoId;
-        return `
-          <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-            <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 ${title}</h3>
-            <iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-            <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Dynamic gameplay drop from YouTube</p>
-          </div>`;
-      } catch (err) {
-        console.error("YouTube fetch error for", title, err);
-        return `<div style="color:red; text-align:center;">❌ Failed to load video for "${title}"</div>`;
-      }
-    })
-  );
-
-  spotlightRef.innerHTML = blocks.join("");
+    spotlightRef.innerHTML = blocks.join("");
+  } catch (e) {
+    console.error("Error fetching YouTube videos:", e);
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
+  }
 }
 
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      rotateYouTubeVideos();
-      setInterval(rotateYouTubeVideos, 1000 * 60 * 3);
-    }
-  });
-
-  // Optional manual refresh button support
-  window.rotateYouTubeVideos = rotateYouTubeVideos;
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
+    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
+  } else {
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
+  }
+});
 </script>
 
 </body>
