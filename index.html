@@ -7,7 +7,7 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-    <style>
+
 :root {
   --gsu-red: #e60023;
 }
@@ -344,28 +344,8 @@
   <p style="text-align:center; font-family: 'Roboto', sans-serif;">Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
 
   <div id="fav-game-updates" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
-    <!-- Favorite Game 1 -->
-    <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-      <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🔥 Spider-Man 2</h3>
-      <iframe width="100%" height="200" src="https://www.youtube.com/embed/UZ9H9xo0GZQ" title="Spider-Man 2 Gameplay" frameborder="0" allowfullscreen></iframe>
-      <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">📰 New Suit Updates, June Patch Notes, and More!</p>
-    </div>
-
-    <!-- Favorite Game 2 -->
-    <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-      <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">💥 Tekken 8</h3>
-      <iframe width="100%" height="200" src="https://www.youtube.com/embed/fOtk1qN8JEI" title="Tekken 8 King Combos" frameborder="0" allowfullscreen></iframe>
-      <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">🎮 King’s Combo Updates, Tournament Round Recaps</p>
-    </div>
-
-    <!-- Favorite Game 3 -->
-    <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-      <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">⚔️ God of War: Ragnarök</h3>
-      <iframe width="100%" height="200" src="https://www.youtube.com/embed/tJrXQsYxVGs" title="GOWR No Damage Run" frameborder="0" allowfullscreen></iframe>
-      <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">👑 No-HUD Challenge, GSU Hall Feature, Dev Clip Review</p>
-    </div>
+  <!-- Will be replaced by YouTube dynamic blocks -->
   </div>
-</div>
 
     </aside>
 
@@ -823,3 +803,62 @@ if (user) {
     window.auth = auth;
 
 </script>
+<script type="module">
+  import {
+    getFirestore, doc, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  import {
+    getAuth, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+  const db = getFirestore();
+  const auth = getAuth();
+  const spotlightRef = document.getElementById("fav-game-updates");
+  const apiKey = "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI";
+
+  async function rotateYouTubeVideos() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userSnap = await getDoc(doc(db, "users", user.uid));
+    if (!userSnap.exists()) return;
+
+    const { favoriteGames } = userSnap.data();
+    if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) return;
+
+    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay videos...</p>";
+
+    const blocks = await Promise.all(favoriteGames.slice(0, 3).map(async (title) => {
+      try {
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&q=${encodeURIComponent(title + ' gameplay')}&maxResults=5`);
+        const data = await response.json();
+        const randomVid = data.items[Math.floor(Math.random() * data.items.length)];
+        const videoId = randomVid?.id?.videoId || "UZ9H9xo0GZQ";
+
+        return `
+          <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+            <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 ${title}</h3>
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+            <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Pulled dynamically from YouTube</p>
+          </div>`;
+      } catch (err) {
+        return `<div style="color:red; text-align:center;">❌ Failed to load video for "${title}"</div>`;
+      }
+    }));
+
+    spotlightRef.innerHTML = blocks.join("");
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      rotateYouTubeVideos();
+      setInterval(rotateYouTubeVideos, 1000 * 60 * 3);
+    }
+  });
+
+  // Optional manual refresh button support
+  window.rotateYouTubeVideos = rotateYouTubeVideos;
+</script>
+
+</body>
+</html>
