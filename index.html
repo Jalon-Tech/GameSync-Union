@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Good?: <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,10 +7,9 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-
-:root {
-  --gsu-red: #e60023;
-}
+  :root {
+    --gsu-red: #e60023;
+  }
 </style>
 
 <style>
@@ -340,12 +339,12 @@
         <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
       <div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🎮 GameSync Spotlight 3</h2>
-  <p style="text-align:center; font-family: 'Roboto', sans-serif;">Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
+  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🎮 Your Top 3, Spotlighted by GSU</h2>
+  <p style="color: #ccc; font-size: 0.95rem; text-align: center;">Gameplay videos and updates based on your favorite 3 games — always fresh, always for you.</p>
+  <div id="youtube-videos" style="margin-top: 1rem;"></div>
+</div>
 
-  <div id="fav-game-updates" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
-  <!-- Will be replaced by YouTube dynamic blocks -->
-  </div>
+</div>
 
     </aside>
 
@@ -363,8 +362,8 @@
   <div class="livewire-stats">
     <div class="stat-item">📹 28 new uploads this week</div>
     <div class="stat-item">🎨 12 fan arts added</div>
-    <div class="stat-item">🏆 39 new trophies earned</div>
-    <div class="stat-item">💬 52 new Lounge posts</div>
+    <div class="stat-item">🏆 Total of 39 new trophies shared withe the GSU community this week</div>
+    <div class="stat-item">🎮 40 new users have joined the GSU family</div>
   </div>
 
 </div>
@@ -375,7 +374,7 @@
     <a href="games.html" class="culture-tile">🎮 Games<div class="tile-hover">Only Heat.</div></a>
     <a href="trophies.html" class="culture-tile">🏆 Trophies<div class="tile-hover">Certified GSU.</div></a>
     <a href="art.html" class="culture-tile">🖼️ Fan Art<div class="tile-hover">Clipped for a Reason.</div></a>
-    <a href="community-gameplay-videos.html" class="culture-tile">🎮 GSU Gameplay Hub<div class="tile-hover">Show Out.</div></a>
+    <a href="game-guides.html" class="culture-tile">🎥 Uploads<div class="tile-hover">Show Out.</div></a>
     <a href="uploads.html" class="culture-tile">💬 Lounge<div class="tile-hover">Squad Up.</div></a>
     <a href="combo-guides.html" class="culture-tile">🥊 Combos<div class="tile-hover">Frame Perfect.</div></a>
   </div>
@@ -422,7 +421,7 @@
     <img src="https://your-image-url.jpg" alt="Moment Screenshot" class="certified-img" />
     <p class="certified-caption">“Left the boss at 1% just to taunt 💀” — <strong>@ThroneSnatcher</strong></p>
     <div style="text-align: center;">
-      <button class="btn" onclick="window.location.href='trophies.html'" style="margin: 0 auto; display: inline-block;">Relive the Moment</button>
+      <button class="btn" onclick="window.location.href='trophies.html'" style="margin: 0 auto; display: inline-block;">Discover all the trophies shared with the GSU community</button>
     </div>
   </div>
 </div>
@@ -766,22 +765,98 @@ if (user) {
     }
   }
 
-  onAuthStateChanged(auth, (user) => {
-    const currentPath = window.location.pathname.toLowerCase();
-    const isLoginPage = currentPath.includes("account_creation.html");
+  onAuthStateChanged(auth, async (user) => {
+  const currentPath = window.location.pathname.toLowerCase();
+  const isLoginPage = currentPath.includes("account_creation.html");
 
-    if (user) {
-      loadProfile(user.uid);
-      document.getElementById("auth-box").style.display = "none";
-    } else {
-      document.getElementById("auth-box").style.display = "block";
-      if (!isLoginPage && currentPath !== "/index.html") {
-        alert("Please log in to access GameSync Union.");
-        window.location.href = "account_creation.html";
-      }
+  if (user) {
+    loadProfile(user.uid);
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const data = snap.data();
+    const favoriteGames = data.favoriteGames || [];
+
+    const videos = await fetchYouTubeVideos(favoriteGames.slice(0, 3));
+    displayVideos(videos);
+
+    document.getElementById("auth-box").style.display = "none";
+  } else {
+    document.getElementById("auth-box").style.display = "block";
+    if (!isLoginPage && currentPath !== "/index.html") {
+      alert("Please log in to access GameSync Union.");
+      window.location.href = "account_creation.html";
     }
-  });
+  }
+});
 
+
+  const YOUTUBE_API_KEY = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // Replace this with your real API key
+
+async function fetchYouTubeVideos(gameTitles = []) {
+  const videoResults = [];
+  console.log("🧪 Game Titles Passed In:", gameTitles);
+
+  for (const title of gameTitles) {
+    const query = `${title} gameplay`;
+    const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=3&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}`;
+
+    try {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      if (data.items) {
+        videoResults.push({
+          title: title,
+          videos: data.items.map(item => ({
+            videoId: item.id.videoId,
+            videoTitle: item.snippet.title
+          }))
+        });
+      }
+    } catch (err) {
+      console.error(`❌ Error fetching videos for ${title}:`, err);
+    }
+  }
+
+  console.log("✅ Final video list to display:", videoResults);
+  return videoResults;
+}
+
+function displayVideos(videoGroups) {
+  const container = document.getElementById("youtube-videos");
+  container.innerHTML = "";
+
+  videoGroups.forEach((group, index) => {
+    let currentIndex = 0;
+    const gameTitle = group.title;
+    const uniqueId = `game-video-${index}`;
+    
+    const videoContainer = document.createElement("div");
+    videoContainer.id = uniqueId;
+    videoContainer.style = "background:#2a2a2a;padding:1rem;border-radius:8px;margin-top:1rem;";
+    container.appendChild(videoContainer);
+
+    const rotate = () => {
+      const current = group.videos[currentIndex];
+      videoContainer.innerHTML = `
+        <h3 style="color:var(--gsu-red);font-family:'Montserrat',sans-serif;">🎮 ${gameTitle}</h3>
+        <iframe width="100%" height="200" src="https://www.youtube.com/embed/${current.videoId}" 
+          title="${current.videoTitle}" frameborder="0" allowfullscreen></iframe>
+        <p style="color:#ccc;font-size:0.9rem;margin-top:0.5rem;">${current.videoTitle}</p>
+      `;
+      currentIndex = (currentIndex + 1) % group.videos.length;
+    };
+
+    const todayIndex = new Date().getDate() % group.videos.length;
+const todayVideo = group.videos[todayIndex];
+
+videoContainer.innerHTML = `
+  <h3 style="color:var(--gsu-red);font-family:'Montserrat',sans-serif;">🎮 ${gameTitle}</h3>
+  <iframe width="100%" height="200" src="https://www.youtube.com/embed/${todayVideo.videoId}" 
+    title="${todayVideo.videoTitle}" frameborder="0" allowfullscreen></iframe>
+  <p style="color:#ccc;font-size:0.9rem;margin-top:0.5rem;">${todayVideo.videoTitle}</p>
+`;
+  });
+}
   const logoutBtn = document.getElementById("logoutBtn");
 
   if (logoutBtn) {
@@ -803,78 +878,3 @@ if (user) {
     window.auth = auth;
 
 </script>
-<script type="module">
-  import {
-  getFirestore, doc, getDoc
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import {
-  getAuth, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-
-const db = getFirestore();
-const auth = getAuth();
-const spotlightRef = document.getElementById("fav-game-updates");
-const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // ✅ Your API key
-
-async function rotateYouTubeVideosForUser(uid) {
-  try {
-    const snap = await getDoc(doc(db, "users", uid));
-    if (!snap.exists()) {
-      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>";
-      return;
-    }
-
-    const { favoriteGames } = snap.data();
-    if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
-      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
-      return;
-    }
-
-    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
-
-    const blocks = await Promise.all(
-      favoriteGames.slice(0, 3).map(async (title) => {
-        const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
-        try {
-          const res = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
-          );
-          const data = await res.json();
-          const video = data.items?.find(item => item.id.videoId);
-
-          if (!video) throw new Error("No videos found");
-
-          return `
-            <div style="background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
-              <h3 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎮 ${title}</h3>
-              <iframe width="100%" height="200" src="https://www.youtube.com/embed/${video.id.videoId}" frameborder="0" allowfullscreen></iframe>
-              <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.5rem;">▶️ Daily gameplay drop powered by YouTube</p>
-            </div>`;
-        } catch (err) {
-          return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
-        }
-      })
-    );
-
-    spotlightRef.innerHTML = blocks.join("");
-  } catch (e) {
-    console.error("Error fetching YouTube videos:", e);
-    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
-  }
-  console.log("Favorite games from Firebase:", favoriteGames);
-  console.log("Calling YouTube API with:", cleanTitle + " gameplay");
-
-}
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
-    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
-  } else {
-    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
-  }
-});
-</script>
-
-</body>
-</html>
