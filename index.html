@@ -11,15 +11,6 @@
 :root {
   --gsu-red: #e60023;
 }
-#fav-game-updates::-webkit-scrollbar {
-  height: 8px;
-}
-
-#fav-game-updates::-webkit-scrollbar-thumb {
-  background: var(--gsu-red);
-  border-radius: 10px;
-}
-
 </style>
 
 <style>
@@ -701,30 +692,46 @@ When the Union highlights you — it means something. If your name’s echoing i
 }
 #fav-game-updates {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-direction: column;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
   gap: 1rem;
-  padding-bottom: 1rem;
-  margin-top: 1.2rem;
-  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+#fav-game-updates::-webkit-scrollbar {
+  width: 6px;
+}
+
+#fav-game-updates::-webkit-scrollbar-thumb {
+  background: var(--gsu-red);
+  border-radius: 6px;
 }
 
 .spotlight-video {
-  flex: 0 0 auto;
-  width: 320px;
-  scroll-snap-align: start;
   background: #2a2a2a;
   padding: 1rem;
   border-radius: 10px;
-  margin-bottom: 0.5rem;
   border: 2px solid transparent;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+  width: 100%;
+  max-width: 100%;
 }
 
 .spotlight-video:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+  transform: scale(1.02);
   border-color: var(--gsu-red);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+}
+
+.spotlight-video iframe {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  margin: 0.6rem 0;
 }
 
 .spotlight-video {
