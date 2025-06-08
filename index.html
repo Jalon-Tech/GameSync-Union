@@ -503,13 +503,22 @@
       <div style="font-size: 0.85rem; margin-top: 0.3rem;" id="character-role"></div>
     </div>
 
-    <!-- ✅ Image and Description in Flex Row (like #fav-images) -->
-    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;">
-      <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character" style="height: 60px; border-radius: 6px; box-shadow: 0 0 6px rgba(255,255,255,0.1);" />
-      <div style="font-size: 0.85rem; max-width: 260px;" id="character-desc">
-        Analyzing traits from your favorite games...
-      </div>
-    </div>
+  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;">
+  <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character"
+    style="
+      height: 60px;
+      width: 60px;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(255,255,255,0.1);
+      background-color: #111;
+      padding: 4px;
+    " />
+  <div style="font-size: 0.85rem; max-width: 260px;" id="character-desc">
+    Analyzing traits from your favorite games...
+  </div>
+</div>
+
 
     <button class="btn" onclick="assignCharacter()" style="margin-top: 0.8rem; font-size: 0.85rem;">🎮 Sync Me</button>
   </div>
