@@ -8,30 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
 
 <style>
-  #fav-images {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 1rem;
-  padding: 0.5rem 0;
-  justify-content: flex-start;
-  max-width: 100%;
-  height: 160px; /* Limits height */
-}
-
-#fav-images img {
-  scroll-snap-align: center;
-  flex-shrink: 0;
-  width: auto;
-  height: 140px;
-  object-fit: contain;
-  background-color: #111;
-  padding: 6px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.08);
-  transition: transform 0.3s ease;
-}
-
   .retro-flashback {
   background-color: var(--black-faded);
   border-radius: 8px;
@@ -934,6 +910,8 @@ When the Union highlights you — it means something. If your name’s echoing i
     
   </div>
 
+  <!-- Edit Button -->
+  <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
 
   <script>
     const imageRow = document.getElementById("fav-images");
@@ -977,13 +955,6 @@ When the Union highlights you — it means something. If your name’s echoing i
       });
     }
   </script>
-      <div id="fav-images"></div>
-
-    <!-- Edit Button below scrolling images -->
-    <div style="margin-top: 1rem; text-align: center;">
-      <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
-    </div>
-
 </div>
 
 
