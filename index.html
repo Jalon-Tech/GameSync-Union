@@ -449,25 +449,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
-  padding: 0.8rem 0.5rem;
+  gap: 1rem;
+  padding-right: 4px;
 }
 
 #fav-images img {
-  max-width: 100%;
-  height: auto;
+  height: 180px;
+  width: auto;
   object-fit: contain;
   border-radius: 12px;
-  background-color: transparent;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  padding: 6px;
+  background-color: #111;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+  transition: transform 0.3s ease;
 }
-
-
 #fav-images img:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
 }
 
 
@@ -1162,13 +1158,13 @@ if (user) {
 
   const img = document.createElement("img");
 
-img.style.width = "100%"; // Force full width inside container
-img.style.maxWidth = "260px"; // Limit width to avoid overflow
-img.style.height = "180px"; // Taller image
-img.style.objectFit = "contain";
-img.style.borderRadius = "12px";
-img.style.backgroundColor = "transparent";
-img.style.padding = "6px";
+  img.style.height = "180px";
+  img.style.width = "auto";
+  img.style.objectFit = "contain";
+  img.style.borderRadius = "12px";
+  img.style.backgroundColor = "#111";
+  img.style.boxShadow = "0 0 12px rgba(255, 255, 255, 0.15)";
+  img.style.transition = "transform 0.3s ease";
 
 
 });
@@ -1264,19 +1260,20 @@ img.style.padding = "6px";
 
       if (Array.isArray(data.favoriteImages)) {
         data.favoriteImages.forEach(url => {
+          const img = document.createElement("img");
+          img.src = url;
           img.alt = "Game cover";
-          img.style.height = "220px"; // significantly taller
-          img.style.width = "220px";  // significantly wider
-
-
-
-
-
+          img.style.height = "120px";
+          img.style.width = "120px";
+          img.style.objectFit = "contain";
+          img.style.borderRadius = "10px";
+          img.style.padding = "5px";
+          img.style.backgroundColor = "#111";
+          img.style.boxShadow = "0 0 10px rgba(255,255,255,0.15)";
+          img.style.transition = "transform 0.3s ease";
           img.onmouseover = () => img.style.transform = "scale(1.05)";
           img.onmouseout = () => img.style.transform = "scale(1)";
-
           imageRow.appendChild(img);
-
 
         });
       }
@@ -1360,7 +1357,7 @@ async function rotateYouTubeVideosForUser(uid) {
       const res = await fetch(
         `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
       );
-      const data = await res.json(); 
+      const data = await res.json();
 
       // ✅ Handle YouTube quota errors here
     if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
