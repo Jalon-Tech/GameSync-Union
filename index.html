@@ -1,4 +1,4 @@
-good?: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -209,44 +209,52 @@ good?: <!DOCTYPE html>
       background-color: var(--black-main);
       color: var(--white-text);
     }
-    header {
-      background-color: var(--black-faded); /* solid background */
-      border-bottom: 1px solid #333;
-      position: relative; /* remove sticky */
-      top: auto;
-      z-index: 1000;
-      backdrop-filter: none; /* no blur */
-    }
+   header {
+  background-color: var(--black-faded);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  position: relative; /* Not sticky */
+  z-index: 1000;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    .logo img {
-      height: 50px;
-      margin-right: 1rem;
-    }
-    .logo-text {
-      font-size: 1.5rem;
-      font-family: 'Montserrat', sans-serif;
-    }
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.8rem;
-    }
-    nav a {
-      text-decoration: none;
-      color: var(--white-text);
-      font-family: 'Montserrat', sans-serif;
-      transition: color 0.3s ease;
-      font-size: 1rem;
-    }
-    nav a:hover {
-      color: var(--gsu-red);
-    }
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 60px;
+  margin-right: 1rem;
+}
+
+.logo-text {
+  font-size: 1.6rem;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--white-text);
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--white-text);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: var(--gsu-red);
+}
+
     .main-container {
       display: grid;
       grid-template-columns: 1fr 3fr 1fr; /* sidebar - main - sidebar */
@@ -531,24 +539,28 @@ good?: <!DOCTYPE html>
   text-shadow: 0 0 6px rgba(255, 0, 55, 0.3);
 }
 
+#upcoming-events {
+  animation: fadeSlideIn 0.6s ease-out;
+}
+
 
   </style>
 </head>
 <body>
   <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
     <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
-      <div class="logo-text">GAMESYNC UNION</div>
-    </div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
-      <a href="art.html">Art</a>
-      <a href="game-guides.html">Guides</a>
-      <a href="uploads.html">GSU Player Lounge</a>
-    </nav>
+  <div class="logo">
+    <img src="GSU_LOGO.png" alt="GSU Logo" />
+    <div class="logo-text">GAMESYNC UNION</div>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+    <a href="art.html">Art</a>
+    <a href="game-guides.html">Guides</a>
+    <a href="uploads.html">GSU Player Lounge</a>
+  </nav>
      <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
   </header>
 
@@ -1003,25 +1015,24 @@ When the Union highlights you — it means something. If your name’s echoing i
     }
   </script>
 </div>
+  
+    <div class="box" id="upcoming-events">
+          <h2>Upcoming Games & Events</h2>
+          <p>Stay updated on everything new in gaming:</p>
+          <ul>
+            <li>🆕 Recently Announced Games</li>
+            <li>🚀 Upcoming Game Releases</li>
+            <li>📆 Countdown to Launch & Events</li>
+            <li>🛠 Major Patch Notes & Updates</li>
+            <li>🎮 Gaming Conventions & Streams</li>
+          </ul>
+      <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+        *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+        <a href="#" style="color: #e60023;">Learn more</a>
+      </p>
+    </div>
 
 
-
-
-      <div class="box">
-        <h2>Upcoming Games & Events</h2>
-        <p>Stay updated on everything new in gaming:</p>
-        <ul>
-          <li>🆕 Recently Announced Games</li>
-          <li>🚀 Upcoming Game Releases</li>
-          <li>📆 Countdown to Launch & Events</li>
-          <li>🛠 Major Patch Notes & Updates</li>
-          <li>🎮 Gaming Conventions & Streams</li>
-        </ul>
-        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
-          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
-          <a href="#" style="color: #e60023;">Learn more</a>
-        </p>
-      </div>
         <div class="box" id="spotlight3">
           <h2>🎮 GameSync Spotlight 3</h2>
           <p>Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
