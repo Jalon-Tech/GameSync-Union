@@ -6,12 +6,6 @@
   <title>GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-  <style>
-
-:root {
-  --gsu-red: #e60023;
-}
-</style>
 
 <style>
   .retro-flashback {
@@ -425,16 +419,28 @@
 }
 
 #character-image {
-  width: 100%;
-  max-width: 320px;
-  height: auto;
+  height: 280px;
+  width: auto;
   object-fit: contain;
-  object-position: center;
-  border-radius: 12px;
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+  box-shadow: none;
   margin: 0 auto;
   display: block;
   background: transparent !important;
+}
+
+
+#fav-images {
+  scroll-behavior: smooth;
+}
+
+#fav-images::-webkit-scrollbar {
+  height: 8px;
+}
+
+#fav-images::-webkit-scrollbar-thumb {
+  background-color: var(--gsu-red);
+  border-radius: 6px;
 }
 
 
@@ -452,27 +458,27 @@
   display: flex;
   flex-direction: row;
   overflow-x: auto;
-  overflow-y: hidden;
-  gap: 1rem;
-  padding: 1rem 0;
   scroll-snap-type: x mandatory;
+  padding: 1rem 0;
+  gap: 2rem;
+  justify-content: flex-start;
 }
 
-
 #fav-images img {
-  height: 220px;
+  height: 280px;
   width: auto;
   object-fit: contain;
-  border-radius: 12px;
+  scroll-snap-align: center;
+  border-radius: 0; /* no border rounding */
+  box-shadow: none; /* remove glow */
   background: transparent !important;
-  scroll-snap-align: start;
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.15);
   transition: transform 0.3s ease;
 }
 
 #fav-images img:hover {
   transform: scale(1.05);
 }
+
 
 
   </style>
@@ -1163,19 +1169,21 @@ if (user) {
   const imageRow = document.getElementById("fav-images");
   imageRow.innerHTML = "";
  imageUrls.forEach(url => {
-
   const img = document.createElement("img");
-
-  img.style.height = "180px";
-  img.style.width = "auto";
+  img.src = url;
+  img.alt = "Game cover";
+  img.style.height = "280px";
   img.style.objectFit = "contain";
-  img.style.borderRadius = "12px";
-  img.style.backgroundColor = "#111";
-  img.style.boxShadow = "0 0 12px rgba(255, 255, 255, 0.15)";
+  img.style.backgroundColor = "transparent";
+  img.style.boxShadow = "none";
+  img.style.borderRadius = "0";
   img.style.transition = "transform 0.3s ease";
-
-
+  img.style.scrollSnapAlign = "center";
+  img.onmouseover = () => img.style.transform = "scale(1.05)";
+  img.onmouseout = () => img.style.transform = "scale(1)";
+  imageRow.appendChild(img); // ✅ This was missing
 });
+
 
 
   closeEditModal();
@@ -1266,25 +1274,24 @@ if (user) {
       gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
       trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
 
-      if (Array.isArray(data.favoriteImages)) {
-        data.favoriteImages.forEach(url => {
-          const img = document.createElement("img");
-          img.src = url;
-          img.alt = "Game cover";
-          img.style.height = "120px";
-          img.style.width = "120px";
-          img.style.objectFit = "contain";
-          img.style.borderRadius = "10px";
-          img.style.padding = "5px";
-          img.style.backgroundColor = "#111";
-          img.style.boxShadow = "0 0 10px rgba(255,255,255,0.15)";
-          img.style.transition = "transform 0.3s ease";
-          img.onmouseover = () => img.style.transform = "scale(1.05)";
-          img.onmouseout = () => img.style.transform = "scale(1)";
-          imageRow.appendChild(img);
+     if (Array.isArray(data.favoriteImages)) {
+  data.favoriteImages.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "Game cover";
+    img.style.height = "280px";
+    img.style.objectFit = "contain";
+    img.style.backgroundColor = "transparent";
+    img.style.boxShadow = "none";
+    img.style.borderRadius = "0";
+    img.style.transition = "transform 0.3s ease";
+    img.style.scrollSnapAlign = "center";
+    img.onmouseover = () => img.style.transform = "scale(1.05)";
+    img.onmouseout = () => img.style.transform = "scale(1)";
+    imageRow.appendChild(img);
+  });
+}
 
-        });
-      }
     } else {
       console.warn("User profile data not found.");
     }
