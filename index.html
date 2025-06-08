@@ -1162,14 +1162,13 @@ if (user) {
 
   const img = document.createElement("img");
 
-  img.style.maxWidth = "100%";
-  img.style.height = "auto";
-  img.style.objectFit = "contain";
-  img.style.borderRadius = "12px";
-  img.style.backgroundColor = "transparent";
-  img.style.padding = "6px";
-  img.style.boxShadow = "0 0 12px rgba(255, 255, 255, 0.15)";
-
+img.style.width = "100%"; // Force full width inside container
+img.style.maxWidth = "260px"; // Limit width to avoid overflow
+img.style.height = "180px"; // Taller image
+img.style.objectFit = "contain";
+img.style.borderRadius = "12px";
+img.style.backgroundColor = "transparent";
+img.style.padding = "6px";
 
 
 });
@@ -1268,17 +1267,20 @@ if (user) {
           const img = document.createElement("img");
           img.src = url;
           img.alt = "Game cover";
-          img.style.height = "120px";
-          img.style.width = "120px";
+          img.style.height = "220px"; // significantly taller
+          img.style.width = "220px";  // significantly wider
           img.style.objectFit = "contain";
-          img.style.borderRadius = "10px";
-          img.style.padding = "5px";
+          img.style.borderRadius = "14px";
+          img.style.padding = "8px";
           img.style.backgroundColor = "transparent";
-          img.style.boxShadow = "0 0 10px rgba(255,255,255,0.15)";
           img.style.transition = "transform 0.3s ease";
+          img.style.boxShadow = "0 0 18px rgba(255, 255, 255, 0.25)";
+
           img.onmouseover = () => img.style.transform = "scale(1.05)";
           img.onmouseout = () => img.style.transform = "scale(1)";
+
           imageRow.appendChild(img);
+
 
         });
       }
