@@ -8,6 +8,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
 
 <style>
+  #profile-box .profile-fav-img {
+  height: 100px;
+}
+
+  #profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  gap: 0.8rem;
+}
+
   .retro-flashback {
   background-color: var(--black-faded);
   border-radius: 8px;
@@ -898,7 +915,7 @@ When the Union highlights you — it means something. If your name’s echoing i
     </main>
 
     <aside>
- <div class="box" id="profile-box">
+ <div id="profile-box" class="box">
   <h2>Your Profile</h2>
   <p id="fav-games">🌟 Favorite Games</p>
   <p id="games-played">🎮 Games Played</p>
@@ -917,6 +934,7 @@ When the Union highlights you — it means something. If your name’s echoing i
     Update GSU Profile
   </button>
 </div>
+
 
 
 
