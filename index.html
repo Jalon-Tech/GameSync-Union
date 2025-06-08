@@ -446,7 +446,7 @@
         <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
       
-      <!-- 🕹️ Retro Game Flashback -->
+     <!-- 🕹️ Retro Game Flashback -->
 <div class="box retro-flashback">
   <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
@@ -461,22 +461,23 @@
   </div>
 </div>
 
-<!-- 🎮 GSU Gaming Knowledge Grid -->
+<!-- 🧬 GSU Character Sync Assignment -->
 <div class="box retro-flashback">
-  <h2 class="retro-header">🎮 GSU Gaming Knowledge Grid</h2>
+  <h2 class="retro-header">🧬 GSU Character Sync Assignment</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    Discover wild facts, deep cuts, and trivia across the gaming universe — from console origins to secret dev lore. Tap in and expand your knowledge.
+    Based on your top 3 favorite games, your gamer DNA has synced with a legendary character — protagonist or antagonist. Identity confirmed.
   </p>
   <div class="retro-body">
-    <div class="game-title">🧠 Did You Know?</div>
-    <div class="game-fact" id="grid-fact" style="max-height: 90px; overflow-y: auto;">
-      Loading fact...
+    <div class="game-title" id="character-role">🧠 Character Assignment Loading...</div>
+    <div style="display: flex; gap: 0.8rem; align-items: center; margin: 0.5rem 0;">
+      <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character" style="border-radius: 10px; width: 80px; height: 80px; object-fit: cover;">
+      <div style="font-size: 0.85rem;" id="character-desc">Analyzing traits from your favorite games...</div>
     </div>
-    <button class="btn" onclick="loadGridFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🔄 Explore Another</button>
+    <button class="btn" onclick="assignCharacter()" style="margin-top: 0.5rem; font-size: 0.85rem;">🎮 Reveal Your Character</button>
   </div>
 </div>
 
-<!-- Scripts -->
+<!-- 🔧 Scripts -->
 <script>
   const RetroFacts = [
     "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
@@ -490,16 +491,31 @@
     "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
   ];
 
-  const GridFacts = [
-    "🎮 The PS2 is the best-selling console ever — over 155 million units sold.",
-    "🧠 The original Xbox was almost called the 'DirectX Box'.",
-    "👾 The Konami Code (↑ ↑ ↓ ↓ ← → ← → B A) debuted in Gradius (1986).",
-    "⚔️ Elden Ring’s lore was co-written by George R.R. Martin.",
-    "💾 'Easter eggs' in games started with secret credits in Atari titles.",
-    "🕹️ The first video game tournament? 1972 at Stanford: Spacewar!",
-    "🎤 MGS5 replaced David Hayter with Kiefer Sutherland as Snake.",
-    "🚀 Doom’s engine (1993) powered over 50 fan-made games/tools.",
-    "🌀 Mini-games in loading screens were banned due to a 1995 patent."
+  const CharacterAssignments = [
+    {
+      name: "Kratos",
+      role: "🟥 Antagonist-Turned-Protagonist",
+      desc: "Based on your love for intense, emotional action titles, you were assigned Kratos — a warrior driven by vengeance, but shaped by fatherhood and power.",
+      img: "https://upload.wikimedia.org/wikipedia/en/9/9a/Kratos_God_of_War.png"
+    },
+    {
+      name: "Miles Morales",
+      role: "🟦 Protagonist",
+      desc: "Your connection to modern heroism, style, and skill syncs you with Miles Morales. You're driven, community-rooted, and got mad swing power.",
+      img: "https://upload.wikimedia.org/wikipedia/en/thumb/d/dc/Miles_Morales_Spider-Man.png/220px-Miles_Morales_Spider-Man.png"
+    },
+    {
+      name: "Sephiroth",
+      role: "🟥 Antagonist",
+      desc: "Mysterious. Calculated. Dramatic. Your preference for deep lore and iconic chaos led to this elite villain assignment.",
+      img: "https://upload.wikimedia.org/wikipedia/en/5/5e/Sephiroth.png"
+    },
+    {
+      name: "Lara Croft",
+      role: "🟦 Protagonist",
+      desc: "You're relentless, curious, and bold — just like Lara. Your game picks show you thrive in challenge and danger, no fear.",
+      img: "https://upload.wikimedia.org/wikipedia/en/b/b0/Lara_Croft.png"
+    }
   ];
 
   function loadRetroFact() {
@@ -507,16 +523,19 @@
     document.getElementById("retro-fact").innerText = random;
   }
 
-  function loadGridFact() {
-    const random = GridFacts[Math.floor(Math.random() * GridFacts.length)];
-    document.getElementById("grid-fact").innerText = random;
+  function assignCharacter() {
+    const random = CharacterAssignments[Math.floor(Math.random() * CharacterAssignments.length)];
+    document.getElementById("character-role").innerText = `🎮 You Are: ${random.name} (${random.role})`;
+    document.getElementById("character-desc").innerText = random.desc;
+    document.getElementById("character-image").src = random.img;
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     loadRetroFact();
-    loadGridFact();
+    assignCharacter();
   });
 </script>
+
 
     </aside>
 
