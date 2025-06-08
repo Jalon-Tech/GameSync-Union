@@ -1267,7 +1267,7 @@ if (user) {
   });
 
   async function loadProfile(uid) {
-    window.favoriteCoverMap = coverMap;
+    window.favoriteCoverMap = {};
     const snap = await getDoc(doc(db, "users", uid));
     if (snap.exists()) {
       const data = snap.data();
@@ -1314,13 +1314,19 @@ if (user) {
       coverDropdown.innerHTML = "";
       displayArea.innerHTML = "";
 
-      if (Array.isArray(data.favoriteImages) && Array.isArray(data.favoriteGames)) {
-        data.favoriteImages.forEach((url, index) => {
-          const option = document.createElement("option");
-          option.value = url;
-          option.textContent = data.favoriteGames[index] || `Game ${index + 1}`;
-          coverDropdown.appendChild(option);
-        });
+      if (Array.isArray(data.favoriteImages)) {
+      data.favoriteImages.forEach((url, index) => {
+      const title = data.favoriteGames[index] || `Game ${index + 1}`;
+      const option = document.createElement("option");
+      option.value = title;
+      option.textContent = title;
+      coverDropdown.appendChild(option);
+
+      // ✅ Build the map of title to URL
+      window.favoriteCoverMap[title] = url;
+    });
+  }
+
 
         if (data.favoriteImages[0]) {
           displayArea.innerHTML = `<img src="${data.favoriteImages[0]}" alt="Game Cover" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
@@ -1328,11 +1334,10 @@ if (user) {
       }
 
     
-    } else {
+     else {
       console.warn("User profile data not found.");
     }
   }
-
   onAuthStateChanged(auth, (user) => {
     const currentPath = window.location.pathname.toLowerCase();
     const isLoginPage = currentPath.includes("account_creation.html");
