@@ -495,15 +495,24 @@
 <div class="box retro-flashback">
   <h2 class="retro-header">🧬 GSU Character Sync Assignment</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    Based on your top 3 favorite games, your gamer DNA has synced with a legendary character — protagonist or antagonist. Identity confirmed.
+    Based on your top 3 favorite games, we've scanned your vibe, playstyle, and energy to sync you with a legendary character.
   </p>
+
   <div class="retro-body">
-    <div class="game-title" id="character-role">🧠 Character Assignment Loading...</div>
-    <div class="image-row" style="margin: 0.5rem 0;">
-      <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character">
-      <div style="font-size: 0.85rem;" id="character-desc">Analyzing traits from your favorite games...</div>
+    <div style="text-align: center;">
+      <div style="font-weight: bold; font-size: 1.1rem;" id="character-name">🧬 Calculating...</div>
+      <div style="font-size: 0.85rem; margin-top: 0.3rem;" id="character-role"></div>
     </div>
-    <button class="btn" onclick="assignCharacter()" style="margin-top: 0.5rem; font-size: 0.85rem;">🎮 Reveal Your Character</button>
+
+    <!-- ✅ Image and Description in Flex Row (like #fav-images) -->
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;">
+      <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character" style="height: 60px; border-radius: 6px; box-shadow: 0 0 6px rgba(255,255,255,0.1);" />
+      <div style="font-size: 0.85rem; max-width: 260px;" id="character-desc">
+        Analyzing traits from your favorite games...
+      </div>
+    </div>
+
+    <button class="btn" onclick="assignCharacter()" style="margin-top: 0.8rem; font-size: 0.85rem;">🎮 Sync Me</button>
   </div>
 </div>
 
