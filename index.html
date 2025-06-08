@@ -7,7 +7,57 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
 
+  <style>
+  .ts-dropdown, .ts-control {
+    background-color: #1c1c1c;
+    color: #f4f4f4;
+    border-radius: 10px;
+    border: 1px solid #333;
+    box-shadow: 0 0 10px rgba(255,255,255,0.05);
+  }
+
+  .ts-dropdown .option-item:hover {
+    background-color: #333;
+    color: #fff;
+  }
+</style>
+
+
 <style>
+  .ts-dropdown, .ts-control {
+  background-color: #1c1c1c;
+  color: #f4f4f4;
+  border-radius: 10px;
+  border: 1px solid #333;
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
+}
+.option-item-with-image {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+}
+
+.option-item-with-image img.cover-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  background-color: #222;
+  box-shadow: 0 0 5px rgba(0,0,0,0.4);
+}
+
+.selected-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+}
+
+.ts-dropdown .option-item:hover {
+  background-color: #333;
+  color: #fff;
+}
+
   .retro-flashback {
   background-color: var(--black-faded);
   border-radius: 8px;
@@ -1275,6 +1325,31 @@ async function loadGameCoversFromAllUsers() {
 
   populateGlobalDropdown();
 }
+new TomSelect("#fav-select", {
+  placeholder: "Select a game...",
+  maxOptions: 500,
+  maxItems: 1,
+  highlight: true,
+  closeAfterSelect: true,
+  allowEmptyOption: false,
+  create: false,
+  render: {
+    option: function(data, escape) {
+      const title = escape(data.text);
+      const imgSrc = window.globalGameCoverMap?.[title.toLowerCase()] || '';
+      return `
+        <div class="option-item-with-image">
+          <img src="${imgSrc}" class="cover-thumb" alt="${title}" />
+          <span>${title}</span>
+        </div>
+      `;
+    },
+    item: function(data, escape) {
+      return `<div class="selected-item">${escape(data.text)}</div>`;
+    }
+  }
+});
+
 function populateGlobalDropdown() {
   const dropdown = document.getElementById("fav-select");
   dropdown.innerHTML = "";
@@ -1559,7 +1634,10 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 </script>
-  
+
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
 </body>
 
 </html>
