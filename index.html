@@ -433,6 +433,17 @@
   display: block;
 }
 
+  .image-row img {
+  height: 60px;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(255,255,255,0.1);
+  transition: transform 0.3s;
+}
+.image-row img:hover {
+  transform: scale(1.05);
+}
+
+
 
   </style>
 </head>
@@ -488,8 +499,8 @@
   </p>
   <div class="retro-body">
     <div class="game-title" id="character-role">🧠 Character Assignment Loading...</div>
-    <div style="display: flex; gap: 0.8rem; align-items: center; margin: 0.5rem 0;">
-      <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character" style="border-radius: 10px; width: 80px; height: 80px; object-fit: cover;">
+    <div class="image-row" style="margin: 0.5rem 0;">
+      <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character">
       <div style="font-size: 0.85rem;" id="character-desc">Analyzing traits from your favorite games...</div>
     </div>
     <button class="btn" onclick="assignCharacter()" style="margin-top: 0.5rem; font-size: 0.85rem;">🎮 Reveal Your Character</button>
@@ -601,7 +612,7 @@
     role: "🟦 Protagonist",
     desc: "Rebellious and righteous — Rivet mirrors your fire and independence in every timeline.",
     game: "Ratchet & Clank: Rift Apart",
-    img: "hhttps://insomniac.games/wp-content/uploads/2020/10/RC_RiftApart_Who_PS5-scaled.jpg"
+    img: "https://insomniac.games/wp-content/uploads/2020/10/RC_RiftApart_Who_PS5-scaled.jpg"
   },
   {
     name: "Emperor Nefarious",
