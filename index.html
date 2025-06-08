@@ -8,23 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
 
 <style>
-  #profile-box .profile-fav-img {
-  height: 100px;
-}
-
-  #profile-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1.2rem;
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-align: center;
-  gap: 0.8rem;
-}
-
   .retro-flashback {
   background-color: var(--black-faded);
   border-radius: 8px;
@@ -237,17 +220,10 @@
     }
     .main-container {
       display: grid;
-      grid-template-columns: 1fr minmax(auto, 960px) 1fr;
-      gap: 2rem;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
       padding: 2rem;
-      justify-content: center;
     }
-    main .box {
-  max-width: 860px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
     aside, main {
       display: flex;
       flex-direction: column;
@@ -922,7 +898,7 @@ When the Union highlights you — it means something. If your name’s echoing i
     </main>
 
     <aside>
- <div id="profile-box" class="box">
+ <div class="box" id="profile-box">
   <h2>Your Profile</h2>
   <p id="fav-games">🌟 Favorite Games</p>
   <p id="games-played">🎮 Games Played</p>
@@ -930,20 +906,12 @@ When the Union highlights you — it means something. If your name’s echoing i
 
   <div style="margin-top: 1rem;">
     <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
+    
+    
   </div>
 
-  <!-- ✅ New: Game Cover Image Row -->
-  <div id="fav-images" class="image-row"></div>
-
-  <!-- ✅ New: Update Button -->
-  <div style="margin-top: 1rem; text-align: center;">
-  <button onclick="openEditModal()" class="edit-btn" style="min-width: 160px;">
-    Update GSU Profile
-  </button>
-</div>
-
-
-
+  <!-- Edit Button -->
+  <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
 
   <script>
     const imageRow = document.getElementById("fav-images");
