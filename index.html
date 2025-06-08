@@ -907,22 +907,7 @@ When the Union highlights you — it means something. If your name’s echoing i
   <div style="margin-top: 1rem;">
     <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
     
-    <!-- Horizontal scroll with game covers -->
-    <div id="fav-images" style="margin-top: 1rem; display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem; border: 1px solid #444; border-radius: 8px; background-color: #1e1e1e;">
-      <!-- Images inserted dynamically -->
-    </div>
     
-    <select id="fav-select" onchange="displaySelectedCover()" style="width: 100%; margin-top: 1rem; padding: 0.6rem; background: #2a2a2a; color: white; border-radius: 8px; border: 1px solid #444; font-family: 'Roboto', sans-serif;">
-      <option disabled selected>Select a game cover</option>
-    </select>
-
-    <!-- Optional preview of selected cover -->
-    <div id="fav-cover-display" style="margin-top: 1rem; text-align: center;"></div>
-
-    <!-- Fallback message -->
-    <p id="no-images-msg" style="color: #888; font-size: 0.85rem; text-align: center; display: none; margin-top: 0.5rem;">
-      No game covers available. Update your profile to add your top 3 games.
-    </p>
   </div>
 
   <!-- Edit Button -->
@@ -1351,27 +1336,36 @@ if (user) {
       const gamesPlayedEl = document.getElementById("games-played");
       const trophyStatsEl = document.getElementById("trophy-stats");
 
-      let imageRow = document.getElementById("fav-images");
-      if (!imageRow) {
-        imageRow = document.createElement("div");
-        imageRow.id = "fav-images";
-        imageRow.style.display = "flex";
-        imageRow.style.flexWrap = "wrap";
-        imageRow.style.gap = "0.5rem";
-        imageRow.style.marginTop = "0.8rem";
-        imageRow.style.justifyContent = "center";
-        profileBox.appendChild(imageRow);
-      }
-      imageRow.innerHTML = "";
+     let imageRow = document.getElementById("fav-images");
 
-      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+if (!imageRow) {
+  imageRow = document.createElement("div");
+  imageRow.id = "fav-images";
+  imageRow.style.display = "flex";
+  imageRow.style.flexWrap = "wrap";
+  imageRow.style.gap = "0.5rem";
+  imageRow.style.marginTop = "0.8rem";
+  imageRow.style.justifyContent = "center";
+  profileBox.appendChild(imageRow);
+}
 
-      const coverDropdown = document.getElementById("fav-select");
-      const displayArea = document.getElementById("fav-cover-display");
-      coverDropdown.innerHTML = "";
-      displayArea.innerHTML = "";
+imageRow.innerHTML = "";
+
+favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+
+if (Array.isArray(data.favoriteImages)) {
+  data.favoriteImages.forEach((url, index) => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = data.favoriteGames[index] || `Game ${index + 1}`;
+    img.classList.add("profile-fav-img");
+    imageRow.appendChild(img);
+  });
+}
+
+
 
      if (Array.isArray(data.favoriteImages)) {
   data.favoriteImages.forEach((url, index) => {
