@@ -468,18 +468,29 @@
 }
 
 #fav-images img {
-  height: 160px; /* Smaller height */
+  height: 140px;
   width: auto;
   object-fit: contain;
   scroll-snap-align: center;
-  background: transparent;
-  transition: transform 0.3s ease;
-  border-radius: 10px;
-  padding: 4px;
+  background: #111;
+  padding: 6px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 #fav-images img:hover {
   transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
+}
+
+#fav-images::-webkit-scrollbar {
+  height: 8px;
+}
+
+#fav-images::-webkit-scrollbar-thumb {
+  background-color: var(--gsu-red);
+  border-radius: 6px;
 }
 
 
@@ -1120,6 +1131,20 @@ When the Union highlights you — it means something. If your name’s echoing i
 @keyframes fadeIn {
   to { opacity: 1; }
 }
+.profile-fav-img {
+  height: 140px;
+  object-fit: contain;
+  background-color: #111;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease;
+  scroll-snap-align: center;
+  padding: 6px;
+}
+.profile-fav-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
+}
 
 </style>
 
@@ -1176,7 +1201,7 @@ if (user) {
   const img = document.createElement("img");
   img.src = url;
   img.alt = "Game cover";
-  img.style.height = "280px";
+  img.classList.add("profile-fav-img"); // So CSS controls layout
   img.style.objectFit = "contain";
   img.style.backgroundColor = "transparent";
   img.style.boxShadow = "none";
@@ -1283,11 +1308,12 @@ if (user) {
     const img = document.createElement("img");
     img.src = url;
     img.alt = "Game cover";
-    img.style.height = "280px";
+    img.src = url;
+    img.alt = "Game cover";
+    img.classList.add("profile-fav-img");
     img.style.objectFit = "contain";
     img.style.backgroundColor = "transparent";
     img.style.boxShadow = "none";
-    img.style.borderRadius = "0";
     img.style.transition = "transform 0.3s ease";
     img.style.scrollSnapAlign = "center";
     img.onmouseover = () => img.style.transform = "scale(1.05)";
