@@ -1321,7 +1321,9 @@ if (user) {
     option.value = title;
     option.textContent = title;
     coverDropdown.appendChild(option);
-    window.favoriteCoverMap[title] = url;
+    const titleKey = title.trim().toLowerCase(); // Normalize
+    window.favoriteCoverMap[titleKey] = url;
+
   });
 
   // 👇 Ensure the first game is selected (optional)
@@ -1391,7 +1393,7 @@ if (user) {
   function displaySelectedCover() {
   const select = document.getElementById("fav-select");
   const display = document.getElementById("fav-cover-display");
-  const selectedTitle = select.value;
+  const selectedTitle = select.value.trim().toLowerCase(); // Normalize
   const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
 
   if (selectedUrl) {
@@ -1400,6 +1402,7 @@ if (user) {
     display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
   }
 }
+
 
 
 window.displaySelectedCover = displaySelectedCover;
