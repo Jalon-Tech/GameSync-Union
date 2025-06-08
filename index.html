@@ -1133,22 +1133,21 @@ if (user) {
   const imageRow = document.getElementById("fav-images");
   imageRow.innerHTML = "";
  imageUrls.forEach(url => {
-  const img = document.createElement("img");
-  img.src = url;
-  img.alt = "Game cover";
-  img.style.height = "140px"; // 🔺 Made significantly larger
-  img.style.width = "140px";  // 🔺 Ensure square display
-  img.style.objectFit = "contain"; // ✅ Prevent cropping while preserving aspect ratio
-  img.style.borderRadius = "12px"; // 🔺 Softer, modern round edges
-  img.style.backgroundColor = "#111"; // ✅ Keeps transparency clean
-  img.style.padding = "6px"; // ✅ Adds inner spacing for clean visual separation
-  img.style.boxShadow = "0 0 10px rgba(255,255,255,0.15)";
-  img.style.transition = "transform 0.3s";
   
+  const img = document.createElement("img");
+
+  img.style.height = "120px";
+  img.style.width = "120px";
+  img.style.objectFit = "contain";
+  img.style.borderRadius = "10px";
+  img.style.padding = "5px";
+  img.style.backgroundColor = "#111";
+  img.style.boxShadow = "0 0 10px rgba(255,255,255,0.15)";
+  img.style.transition = "transform 0.3s ease";
   img.onmouseover = () => img.style.transform = "scale(1.05)";
   img.onmouseout = () => img.style.transform = "scale(1)";
-  
   imageRow.appendChild(img);
+
 });
 
 
@@ -1245,13 +1244,18 @@ if (user) {
           const img = document.createElement("img");
           img.src = url;
           img.alt = "Game cover";
-          img.style.height = "60px";
-          img.style.borderRadius = "6px";
-          img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
-          img.style.transition = "transform 0.3s";
+          img.style.height = "120px";
+          img.style.width = "120px";
+          img.style.objectFit = "contain";
+          img.style.borderRadius = "10px";
+          img.style.padding = "5px";
+          img.style.backgroundColor = "#111";
+          img.style.boxShadow = "0 0 10px rgba(255,255,255,0.15)";
+          img.style.transition = "transform 0.3s ease";
           img.onmouseover = () => img.style.transform = "scale(1.05)";
           img.onmouseout = () => img.style.transform = "scale(1)";
           imageRow.appendChild(img);
+
         });
       }
     } else {
