@@ -1115,15 +1115,18 @@ if (user) {
   imageRow.innerHTML = "";
   imageUrls.forEach(url => {
     const img = document.createElement("img");
-    img.src = url;
-    img.alt = "Game cover";
-    img.style.height = "60px";
-    img.style.borderRadius = "6px";
-    img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
-    img.style.transition = "transform 0.3s";
-    img.onmouseover = () => img.style.transform = "scale(1.05)";
-    img.onmouseout = () => img.style.transform = "scale(1)";
-    imageRow.appendChild(img);
+    img.src = character.img;
+    img.alt = character.name;
+    img.style.width = "100%";               // Fill width of container
+    img.style.height = "auto";              // Maintain aspect ratio
+    img.style.objectFit = "contain";        // Prevent cropping
+    img.style.borderRadius = "12px";        // Clean round corners
+    img.style.padding = "0";                // No padding
+    img.style.margin = "0 auto";            // Center horizontally
+    img.style.backgroundColor = "#000";     // No transparency
+    img.style.boxShadow = "0 0 14px rgba(255, 255, 255, 0.25)";
+    img.style.opacity = "1";                // Fully visible
+
   });
 
 
@@ -1218,15 +1221,18 @@ if (user) {
       if (Array.isArray(data.favoriteImages)) {
         data.favoriteImages.forEach(url => {
           const img = document.createElement("img");
-          img.src = url;
-          img.alt = "Game cover";
-          img.style.height = "60px";
-          img.style.borderRadius = "6px";
-          img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
-          img.style.transition = "transform 0.3s";
-          img.onmouseover = () => img.style.transform = "scale(1.05)";
-          img.onmouseout = () => img.style.transform = "scale(1)";
-          imageRow.appendChild(img);
+          img.src = character.img;
+          img.alt = character.name;
+          img.style.width = "100%";               // Fill width of container
+          img.style.height = "auto";              // Maintain aspect ratio
+          img.style.objectFit = "contain";        // Prevent cropping
+          img.style.borderRadius = "12px";        // Clean round corners
+          img.style.padding = "0";                // No padding
+          img.style.margin = "0 auto";            // Center horizontally
+          img.style.backgroundColor = "#000";     // No transparency
+          img.style.boxShadow = "0 0 14px rgba(255, 255, 255, 0.25)";
+          img.style.opacity = "1";                // Fully visible
+
         });
       }
     } else {
