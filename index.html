@@ -409,14 +409,17 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-.character-img {
-  width: 100%;
-  height: 180px;
+.character-image {
+  height: 120px;
+  width: 120px;
   object-fit: contain;
-  object-position: center;
-  border-radius: 8px;
-  background-color: #111; /* fallback if image has transparency */
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  background-color: #111;
+  padding: 6px;
+  transition: transform 0.3s ease;
 }
+
 
 #character-image {
   height: 280px;
@@ -456,23 +459,23 @@
 
 #fav-images {
   display: flex;
-  flex-direction: row;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 1rem 0;
-  gap: 2rem;
+  gap: 1rem;
+  padding: 0.5rem 0;
   justify-content: flex-start;
+  max-width: 100%;
 }
 
 #fav-images img {
-  height: 280px;
+  height: 160px; /* Smaller height */
   width: auto;
   object-fit: contain;
   scroll-snap-align: center;
-  border-radius: 0; /* no border rounding */
-  box-shadow: none; /* remove glow */
-  background: transparent !important;
+  background: transparent;
   transition: transform 0.3s ease;
+  border-radius: 10px;
+  padding: 4px;
 }
 
 #fav-images img:hover {
@@ -540,7 +543,8 @@
     </div>
 
   <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;">
-  <img id="character-image" src="https://via.placeholder.com/320x180" alt="Character"
+  <img id="character-image" src="..." class="character-image" 
+
   style="
     height: 140px;
     width: 140px;
