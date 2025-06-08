@@ -443,32 +443,6 @@
   transform: scale(1.05);
 }
 
-#fav-images {
-  max-height: 420px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-  padding: 0.8rem 0.5rem;
-}
-
-#fav-images img {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  border-radius: 12px;
-  background-color: transparent;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  padding: 6px;
-}
-
-
-#fav-images img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
-}
 
 
   </style>
@@ -521,34 +495,15 @@
 <div class="box retro-flashback">
   <h2 class="retro-header">🧬 GSU Character Sync Assignment</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    Based on your top 3 favorite games, we've scanned your vibe, playstyle, and energy to sync you with a legendary character.
+    Based on your top 3 favorite games, your gamer DNA has synced with a legendary character — protagonist or antagonist. Identity confirmed.
   </p>
-
   <div class="retro-body">
-    <div style="text-align: center;">
-      <div style="font-size: 0.85rem; margin-top: 0.3rem;" id="character-role"></div>
+    <div class="game-title" id="character-role">🧠 Character Assignment Loading...</div>
+    <div class="image-row" style="margin: 0.5rem 0;">
+      <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character">
+      <div style="font-size: 0.85rem;" id="character-desc">Analyzing traits from your favorite games...</div>
     </div>
-
-  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;">
-  <img id="character-image" src="https://via.placeholder.com/80x80" alt="Character"
-  style="
-    height: 140px;
-    width: 140px;
-    object-fit: contain;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-    background-color: #111;
-    padding: 6px;
-    transition: transform 0.3s ease;"/>
-
-
-  <div style="font-size: 0.85rem; max-width: 260px;" id="character-desc">
-    Analyzing traits from your favorite games...
-  </div>
-</div>
-
-
-    <button class="btn" onclick="assignCharacter()" style="margin-top: 0.8rem; font-size: 0.85rem;">🧬 Sync Your Gaming Identity</button>
+    <button class="btn" onclick="assignCharacter()" style="margin-top: 0.5rem; font-size: 0.85rem;">🎮 Reveal Your Character</button>
   </div>
 </div>
 
@@ -1158,20 +1113,18 @@ if (user) {
 
   const imageRow = document.getElementById("fav-images");
   imageRow.innerHTML = "";
- imageUrls.forEach(url => {
-
-  const img = document.createElement("img");
-
-img.style.width = "100%"; // Force full width inside container
-img.style.maxWidth = "260px"; // Limit width to avoid overflow
-img.style.height = "180px"; // Taller image
-img.style.objectFit = "contain";
-img.style.borderRadius = "12px";
-img.style.backgroundColor = "transparent";
-img.style.padding = "6px";
-
-
-});
+  imageUrls.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "Game cover";
+    img.style.height = "60px";
+    img.style.borderRadius = "6px";
+    img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+    img.style.transition = "transform 0.3s";
+    img.onmouseover = () => img.style.transform = "scale(1.05)";
+    img.onmouseout = () => img.style.transform = "scale(1)";
+    imageRow.appendChild(img);
+  });
 
 
   closeEditModal();
@@ -1267,19 +1220,13 @@ img.style.padding = "6px";
           const img = document.createElement("img");
           img.src = url;
           img.alt = "Game cover";
-          img.style.height = "220px"; // significantly taller
-          img.style.width = "220px";  // significantly wider
-
-
-
-
-
+          img.style.height = "60px";
+          img.style.borderRadius = "6px";
+          img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+          img.style.transition = "transform 0.3s";
           img.onmouseover = () => img.style.transform = "scale(1.05)";
           img.onmouseout = () => img.style.transform = "scale(1)";
-
           imageRow.appendChild(img);
-
-
         });
       }
     } else {
@@ -1362,7 +1309,7 @@ async function rotateYouTubeVideosForUser(uid) {
       const res = await fetch(
         `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
       );
-      const data = await res.json(); 
+      const data = await res.json();
 
       // ✅ Handle YouTube quota errors here
     if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
