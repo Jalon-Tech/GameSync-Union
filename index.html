@@ -904,7 +904,7 @@ When the Union highlights you — it means something. If your name’s echoing i
         <p id="games-played">🎮 Games Played</p>
         <p id="trophy-stats">🏆 Trophy Stats</p>
         <div style="margin-top: 1rem;">
-        <label for="fav-select" style="color:#ccc; font-size: 0.9rem;">🎮 Choose Favorite Game Cover:</label>
+        <label for="fav-select" style="color:#ccc; font-size: 0.9rem;">🎮 Feature a Favorite Game</label>
         <select id="fav-select" class="input-field" onchange="displaySelectedCover()"></select>
         <div id="fav-cover-display" style="margin-top: 1rem; text-align: center;"></div>
       </div>
@@ -1267,6 +1267,7 @@ if (user) {
   });
 
   async function loadProfile(uid) {
+    window.favoriteCoverMap = coverMap;
     const snap = await getDoc(doc(db, "users", uid));
     if (snap.exists()) {
       const data = snap.data();
@@ -1371,10 +1372,16 @@ if (user) {
   function displaySelectedCover() {
   const select = document.getElementById("fav-select");
   const display = document.getElementById("fav-cover-display");
-  const selectedUrl = select.value;
+  const selectedTitle = select.value;
+  const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
 
-  display.innerHTML = `<img src="${selectedUrl}" alt="Game Cover" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+  if (selectedUrl) {
+    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+  } else {
+    display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
+  }
 }
+
 
 window.displaySelectedCover = displaySelectedCover;
 
