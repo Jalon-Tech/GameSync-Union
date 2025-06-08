@@ -446,35 +446,51 @@
         <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
       
-      <div class="box retro-flashback">
-      <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
-      <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-        Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry — a reminder of where the journey began.
-      </p>
-      <div class="retro-body">
-        <div class="game-title">🎮 Donkey Kong (1981)</div>
-        <div class="game-fact">
-          This classic arcade game introduced the world to Jumpman — who would later become Mario. It defined the platformer genre and helped launch Nintendo's global legacy.
-        </div>
-      </div>
+      <!-- 🕹️ Retro Game Flashback -->
+<div class="box retro-flashback">
+  <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
+  <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
+    Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry — a reminder of where the journey began.
+  </p>
+  <div class="retro-body">
+    <div class="game-title">From here, the Retroverse info unfolds.</div>
+    <div class="game-fact" id="retro-fact" style="max-height: 90px; overflow-y: auto;">
+      Loading fact...
     </div>
+    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🕹️ Spin the Retro Wheel</button>
+  </div>
+</div>
 
-      <div class="box retro-flashback">
+<!-- 🎮 GSU Gaming Knowledge Grid -->
+<div class="box retro-flashback">
   <h2 class="retro-header">🎮 GSU Gaming Knowledge Grid</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
     Discover wild facts, deep cuts, and trivia across the gaming universe — from console origins to secret dev lore. Tap in and expand your knowledge.
   </p>
   <div class="retro-body">
     <div class="game-title">🧠 Did You Know?</div>
-    <div class="game-fact" id="gaming-fact" style="max-height: 90px; overflow-y: auto;">
+    <div class="game-fact" id="grid-fact" style="max-height: 90px; overflow-y: auto;">
       Loading fact...
     </div>
-    <button class="btn" onclick="loadGamingFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🔄 Explore Another</button>
+    <button class="btn" onclick="loadGridFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🔄 Explore Another</button>
   </div>
 </div>
 
+<!-- Scripts -->
 <script>
-  const facts = [
+  const RetroFacts = [
+    "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
+    "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
+    "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
+    "🎯 Pong (1972) was so popular that the original machine overflowed with quarters and broke.",
+    "🎮 The Sega Genesis had a hidden sound test screen used for cheat codes in Sonic games.",
+    "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
+    "🎤 Mortal Kombat sparked U.S. government hearings that led to the ESRB rating system.",
+    "🌀 SNES Mode 7 graphics engine enabled fake 3D effects in F-Zero and Mario Kart.",
+    "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
+  ];
+
+  const GridFacts = [
     "🎮 The PS2 is the best-selling console ever — over 155 million units sold.",
     "🧠 The original Xbox was almost called the 'DirectX Box'.",
     "👾 The Konami Code (↑ ↑ ↓ ↓ ← → ← → B A) debuted in Gradius (1986).",
@@ -486,15 +502,21 @@
     "🌀 Mini-games in loading screens were banned due to a 1995 patent."
   ];
 
-  function loadGamingFact() {
-    const random = facts[Math.floor(Math.random() * facts.length)];
-    document.getElementById("gaming-fact").innerText = random;
+  function loadRetroFact() {
+    const random = RetroFacts[Math.floor(Math.random() * RetroFacts.length)];
+    document.getElementById("retro-fact").innerText = random;
   }
 
-  window.addEventListener('DOMContentLoaded', loadGamingFact);
+  function loadGridFact() {
+    const random = GridFacts[Math.floor(Math.random() * GridFacts.length)];
+    document.getElementById("grid-fact").innerText = random;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    loadRetroFact();
+    loadGridFact();
+  });
 </script>
-
-
 
     </aside>
 
