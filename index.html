@@ -1171,68 +1171,57 @@ When the Union highlights you — it means something. If your name’s echoing i
   }
 
   async function saveProfileChanges() {
-  const games = document.getElementById('editGames').value.split(',').map(s => s.trim());
-  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
+  const games = document.getElementById('editGames').value;
   const gamesPlayed = document.getElementById('editGamesPlayed').value;
+  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
   const trophies = document.getElementById('editTrophies').value;
   const user = getAuth().currentUser;
+if (user) {
+  const uid = user.uid;
+  const docRef = doc(db, "users", uid);
+  try {
+    await setDoc(docRef, {
+      favoriteGames: games.split(',').map(s => s.trim()),
+      gamesPlayed: parseInt(gamesPlayed),
+      favoriteImages: imageUrls,
+      trophyCount: parseInt(trophies)
+    }, { merge: true });
 
-  if (user && games.length === imageUrls.length) {
-    const uid = user.uid;
-    const docRef = doc(db, "users", uid);
-
-    try {
-      await setDoc(docRef, {
-        favoriteGames: games,
-        favoriteImages: imageUrls,
-        gamesPlayed: parseInt(gamesPlayed),
-        trophyCount: parseInt(trophies)
-      }, { merge: true });
-
-      alert("Profile updated successfully.");
-
-      // Update UI
-      document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games.join(", ")}`;
-      document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
-      document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
-
-      const imageRow = document.getElementById("fav-images");
-      imageRow.innerHTML = "";
-
-      window.favoriteCoverMap = {}; // 🔁 Reset cover map
-      const dropdown = document.getElementById("fav-select");
-      dropdown.innerHTML = ""; // Clear existing options
-
-      games.forEach((title, index) => {
-        const url = imageUrls[index];
-        window.favoriteCoverMap[title] = url;
-
-        const option = document.createElement("option");
-        option.value = title;
-        option.textContent = title;
-        dropdown.appendChild(option);
-
-        // Preview covers
-        const img = document.createElement("img");
-        img.src = url;
-        img.alt = title;
-        img.classList.add("profile-fav-img");
-        imageRow.appendChild(img);
-      });
-
-      dropdown.value = games[0]; // Auto-select first
-      displaySelectedCover(); // Show matching image
-      closeEditModal();
-
-    } catch (err) {
-      console.error("Error saving profile:", err);
-      alert("Error saving changes.");
-    }
-  } else {
-    alert("Please ensure each favorite game has a matching image.");
+    alert("Profile updated successfully.");
+  } catch (err) {
+    console.error("Error saving profile:", err);
+    alert("Error saving changes.");
   }
 }
 
+
+
+  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
+  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
+  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
+
+  const imageRow = document.getElementById("fav-images");
+  imageRow.innerHTML = "";
+ imageUrls.forEach(url => {
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "Game cover";
+  img.classList.add("profile-fav-img"); // So CSS controls layout
+  img.style.objectFit = "contain";
+  img.style.backgroundColor = "transparent";
+  img.style.boxShadow = "none";
+  img.style.borderRadius = "0";
+  img.style.transition = "transform 0.3s ease";
+  img.style.scrollSnapAlign = "center";
+  img.onmouseover = () => img.style.transform = "scale(1.05)";
+  img.onmouseout = () => img.style.transform = "scale(1)";
+  imageRow.appendChild(img); // ✅ This was missing
+});
+
+
+
+  closeEditModal();
+}
 </script>
 
 <script type="module">
@@ -1400,18 +1389,17 @@ When the Union highlights you — it means something. If your name’s echoing i
     window.auth = auth;
 
   function displaySelectedCover() {
-  const selectedGame = document.getElementById("fav-select").value;
-  const coverImage = document.getElementById("selected-cover");
+  const select = document.getElementById("fav-select");
+  const display = document.getElementById("fav-cover-display");
+  const selectedTitle = select.value;
+  const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
 
-  if (window.favoriteCoverMap && window.favoriteCoverMap[selectedGame]) {
-    coverImage.src = window.favoriteCoverMap[selectedGame];
-    coverImage.alt = selectedGame;
+  if (selectedUrl) {
+    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
   } else {
-    coverImage.src = "";
-    coverImage.alt = "No cover image available";
+    display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
   }
 }
-
 
 
 window.displaySelectedCover = displaySelectedCover;
