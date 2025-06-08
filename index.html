@@ -7,7 +7,57 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
 
+  <style>
+  .ts-dropdown, .ts-control {
+    background-color: #1c1c1c;
+    color: #f4f4f4;
+    border-radius: 10px;
+    border: 1px solid #333;
+    box-shadow: 0 0 10px rgba(255,255,255,0.05);
+  }
+
+  .ts-dropdown .option-item:hover {
+    background-color: #333;
+    color: #fff;
+  }
+</style>
+
+
 <style>
+  .ts-dropdown, .ts-control {
+  background-color: #1c1c1c;
+  color: #f4f4f4;
+  border-radius: 10px;
+  border: 1px solid #333;
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
+}
+.option-item-with-image {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+}
+
+.option-item-with-image img.cover-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  background-color: #222;
+  box-shadow: 0 0 5px rgba(0,0,0,0.4);
+}
+
+.selected-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+}
+
+.ts-dropdown .option-item:hover {
+  background-color: #333;
+  color: #fff;
+}
+
   .retro-flashback {
   background-color: var(--black-faded);
   border-radius: 8px;
@@ -789,6 +839,8 @@
 
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
+
+
 <div class="box">
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
   <div class="livewire-stats">
@@ -899,20 +951,17 @@ When the Union highlights you — it means something. If your name’s echoing i
 
     <aside>
     <div class="box" id="profile-box">
-      <h2>Your Profile</h2>
-        <p id="fav-games">🎯 Favorite Games</p>
-        <p id="games-played">🎮 Games Played</p>
-        <p id="trophy-stats">🏆 Trophy Stats</p>
-        <div style="margin-top: 1rem;">
-        <label for="fav-select" style="color:#ccc; font-size: 0.9rem;">🎮 Highlight a Favorite Game Cover</label>
-        <select id="fav-select" class="input-field" onchange="displaySelectedCover()"></select>
-        <div id="fav-cover-display" style="margin-top: 1rem; text-align: center;"></div>
-      </div>
+  <h2>Your Profile</h2>
+  <p id="fav-games">🌟 Favorite Games</p>
+  <p id="games-played">🎮 Games Played</p>
+  <p id="trophy-stats">🏆 Trophy Stats</p>
 
-      <!-- Edit Button -->
-        <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
+  <label style="color:#ccc; font-size: 0.9rem; display:block; margin-top: 1rem; text-align:center;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
+  <div id="fav-images"></div>
 
-    </div>
+  <!-- Edit Button -->
+  <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
+</div>
 
 
 
@@ -1225,6 +1274,12 @@ if (user) {
 </script>
 
 <script type="module">
+
+  window.addEventListener("DOMContentLoaded", () => {
+  loadGameCoversFromAllUsers();
+  document.getElementById("fav-select").addEventListener("change", displaySelectedCoverGlobal);
+});
+
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
@@ -1247,6 +1302,80 @@ if (user) {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+async function loadGameCoversFromAllUsers() {
+  const userDocs = await getDocs(collection(db, "users"));
+  window.globalGameCoverMap = {};
+
+  userDocs.forEach((docSnap) => {
+    const data = docSnap.data();
+    if (Array.isArray(data.favoriteGames) && Array.isArray(data.favoriteImages)) {
+      for (let i = 0; i < data.favoriteGames.length; i++) {
+        const title = data.favoriteGames[i]?.trim();
+        const image = data.favoriteImages[i]?.trim();
+        if (title && image && !window.globalGameCoverMap[title.toLowerCase()]) {
+          window.globalGameCoverMap[title.toLowerCase()] = image;
+        }
+      }
+    }
+  });
+
+  populateGlobalDropdown();
+}
+new TomSelect("#fav-select", {
+  placeholder: "Select a game...",
+  maxOptions: 500,
+  maxItems: 1,
+  highlight: true,
+  closeAfterSelect: true,
+  allowEmptyOption: false,
+  create: false,
+  render: {
+    option: function(data, escape) {
+      const title = escape(data.text);
+      const imgSrc = window.globalGameCoverMap?.[title.toLowerCase()] || '';
+      return `
+        <div class="option-item-with-image">
+          <img src="${imgSrc}" class="cover-thumb" alt="${title}" />
+          <span>${title}</span>
+        </div>
+      `;
+    },
+    item: function(data, escape) {
+      return `<div class="selected-item">${escape(data.text)}</div>`;
+    }
+  }
+});
+
+function populateGlobalDropdown() {
+  const dropdown = document.getElementById("fav-select");
+  dropdown.innerHTML = "";
+
+  for (const title in window.globalGameCoverMap) {
+    const option = document.createElement("option");
+    option.value = title;
+    option.textContent = title;
+    dropdown.appendChild(option);
+  }
+
+  // Auto-display the first game cover
+  if (dropdown.options.length > 0) {
+    dropdown.selectedIndex = 0;
+    displaySelectedCoverGlobal();
+  }
+}
+function displaySelectedCoverGlobal() {
+  const selectedTitle = document.getElementById("fav-select").value.trim().toLowerCase();
+  const selectedUrl = window.globalGameCoverMap?.[selectedTitle];
+  const display = document.getElementById("fav-cover-display");
+
+  if (selectedUrl) {
+    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+  } else {
+    display.innerHTML = `<p style="color:#ccc;">No image found for <strong>${selectedTitle}</strong>.</p>`;
+  }
+}
+
 
   const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
   const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
@@ -1408,6 +1537,7 @@ if (user) {
 window.displaySelectedCover = displaySelectedCover;
 
 </script>
+
 <script type="module">
  
 
@@ -1501,7 +1631,10 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 </script>
-  
+
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
 </body>
 
 </html>
