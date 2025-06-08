@@ -237,10 +237,17 @@
     }
     .main-container {
       display: grid;
-      grid-template-columns: 1fr 3fr 1.2fr;
-      gap: 1rem;
+      grid-template-columns: 1fr minmax(auto, 960px) 1fr;
+      gap: 2rem;
       padding: 2rem;
+      justify-content: center;
     }
+    main .box {
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
     aside, main {
       display: flex;
       flex-direction: column;
