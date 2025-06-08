@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+good?: <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -210,13 +210,14 @@
       color: var(--white-text);
     }
     header {
-      background-color: var(--black-faded);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      flex-wrap: wrap;
+      background-color: var(--black-faded); /* solid background */
+      border-bottom: 1px solid #333;
+      position: relative; /* remove sticky */
+      top: auto;
+      z-index: 1000;
+      backdrop-filter: none; /* no blur */
     }
+
     .logo {
       display: flex;
       align-items: center;
@@ -248,10 +249,11 @@
     }
     .main-container {
       display: grid;
-      grid-template-columns: 1fr 2.5fr;
-      gap: 1rem;
+      grid-template-columns: 1fr 3fr 1fr; /* sidebar - main - sidebar */
+      gap: 1.5rem;
       padding: 2rem;
     }
+
     aside, main {
       display: flex;
       flex-direction: column;
@@ -438,15 +440,15 @@
 }
 
 .character-image {
-  height: 120px;
-  width: 120px;
+  height: 140px;
+  width: auto;
   object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
   background-color: #111;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
   padding: 6px;
-  transition: transform 0.3s ease;
 }
+
 
 
 #character-image {
@@ -527,14 +529,6 @@
 }
 .box h2 {
   text-shadow: 0 0 6px rgba(255, 0, 55, 0.3);
-}
-header {
-  backdrop-filter: blur(4px);
-  background-color: rgba(31, 31, 31, 0.92);
-  border-bottom: 1px solid #333;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 
@@ -961,15 +955,10 @@ When the Union highlights you — it means something. If your name’s echoing i
   </ul>
 </div>
 
-  <div class="box" id="spotlight3">
-    <h2>🎮 GameSync Spotlight 3</h2>
-    <p>Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
-    <div id="fav-game-updates"></div>
-  </div>
-
     </main>
 
     <aside>
+      
 
   <script>
     const imageRow = document.getElementById("fav-images");
@@ -1033,6 +1022,11 @@ When the Union highlights you — it means something. If your name’s echoing i
           <a href="#" style="color: #e60023;">Learn more</a>
         </p>
       </div>
+        <div class="box" id="spotlight3">
+          <h2>🎮 GameSync Spotlight 3</h2>
+          <p>Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
+          <div id="fav-game-updates"></div>
+        </div>
     </aside>
   </div>
 
