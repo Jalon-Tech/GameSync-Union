@@ -789,8 +789,6 @@
 
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
-
-
 <div class="box">
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
   <div class="livewire-stats">
@@ -1227,12 +1225,6 @@ if (user) {
 </script>
 
 <script type="module">
-
-  window.addEventListener("DOMContentLoaded", () => {
-  loadGameCoversFromAllUsers();
-  document.getElementById("fav-select").addEventListener("change", displaySelectedCoverGlobal);
-});
-
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
@@ -1255,55 +1247,6 @@ if (user) {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
-async function loadGameCoversFromAllUsers() {
-  const userDocs = await getDocs(collection(db, "users"));
-  window.globalGameCoverMap = {};
-
-  userDocs.forEach((docSnap) => {
-    const data = docSnap.data();
-    if (Array.isArray(data.favoriteGames) && Array.isArray(data.favoriteImages)) {
-      for (let i = 0; i < data.favoriteGames.length; i++) {
-        const title = data.favoriteGames[i]?.trim();
-        const image = data.favoriteImages[i]?.trim();
-        if (title && image && !window.globalGameCoverMap[title.toLowerCase()]) {
-          window.globalGameCoverMap[title.toLowerCase()] = image;
-        }
-      }
-    }
-  });
-
-  populateGlobalDropdown();
-}
-function populateGlobalDropdown() {
-  const dropdown = document.getElementById("fav-select");
-  dropdown.innerHTML = "";
-
-  for (const title in window.globalGameCoverMap) {
-    const option = document.createElement("option");
-    option.value = title;
-    option.textContent = title;
-    dropdown.appendChild(option);
-  }
-
-  // Auto-display the first game cover
-  if (dropdown.options.length > 0) {
-    dropdown.selectedIndex = 0;
-    displaySelectedCoverGlobal();
-  }
-}
-function displaySelectedCoverGlobal() {
-  const selectedTitle = document.getElementById("fav-select").value.trim().toLowerCase();
-  const selectedUrl = window.globalGameCoverMap?.[selectedTitle];
-  const display = document.getElementById("fav-cover-display");
-
-  if (selectedUrl) {
-    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-  } else {
-    display.innerHTML = `<p style="color:#ccc;">No image found for <strong>${selectedTitle}</strong>.</p>`;
-  }
-}
-
 
   const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
   const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
@@ -1465,7 +1408,6 @@ function displaySelectedCoverGlobal() {
 window.displaySelectedCover = displaySelectedCover;
 
 </script>
-
 <script type="module">
  
 
