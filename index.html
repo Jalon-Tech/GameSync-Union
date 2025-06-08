@@ -1322,10 +1322,9 @@ if (user) {
       option.textContent = title;
       coverDropdown.appendChild(option);
 
-      // ✅ Build the map of title to URL
-      window.favoriteCoverMap[title] = url;
-    });
-  }
+    window.favoriteCoverMap[title] = url; // ✅ Mapping each title to image
+  });
+}
 
 
         if (data.favoriteImages[0]) {
