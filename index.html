@@ -459,6 +459,42 @@
       </div>
     </div>
 
+      <div class="box retro-flashback">
+  <h2 class="retro-header">🎮 GSU Gaming Knowledge Grid</h2>
+  <p style="font-size: 0.9rem; color: #ffddb0; font-family: 'Courier New', monospace; margin-bottom: 0.8rem;">
+    Discover wild facts, deep cuts, and trivia across the gaming universe — from console origins to secret dev lore. Tap in and expand your knowledge.
+  </p>
+  <div class="retro-body">
+    <div class="game-title">🧠 Did You Know?</div>
+    <div class="game-fact" id="gaming-fact" style="max-height: 90px; overflow-y: auto;">
+      Loading fact...
+    </div>
+    <button class="btn" onclick="loadGamingFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🔄 Explore Another</button>
+  </div>
+</div>
+
+<script>
+  const facts = [
+    "🎮 The PS2 is the best-selling console ever — over 155 million units sold.",
+    "🧠 The original Xbox was almost called the 'DirectX Box'.",
+    "👾 The Konami Code (↑ ↑ ↓ ↓ ← → ← → B A) debuted in Gradius (1986).",
+    "⚔️ Elden Ring’s lore was co-written by George R.R. Martin.",
+    "💾 'Easter eggs' in games started with secret credits in Atari titles.",
+    "🕹️ The first video game tournament? 1972 at Stanford: Spacewar!",
+    "🎤 MGS5 replaced David Hayter with Kiefer Sutherland as Snake.",
+    "🚀 Doom’s engine (1993) powered over 50 fan-made games/tools.",
+    "🌀 Mini-games in loading screens were banned due to a 1995 patent."
+  ];
+
+  function loadGamingFact() {
+    const random = facts[Math.floor(Math.random() * facts.length)];
+    document.getElementById("gaming-fact").innerText = random;
+  }
+
+  window.addEventListener('DOMContentLoaded', loadGamingFact);
+</script>
+
+
 
     </aside>
 
