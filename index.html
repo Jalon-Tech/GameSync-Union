@@ -454,14 +454,16 @@
 }
 
 #fav-images img {
-  height: 180px;
-  width: auto;
+  max-width: 100%;
+  height: auto;
   object-fit: contain;
   border-radius: 12px;
-  background-color: #111;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+  background-color: transparent;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 6px;
 }
+
 
 #fav-images img:hover {
   transform: scale(1.05);
@@ -1160,13 +1162,14 @@ if (user) {
 
   const img = document.createElement("img");
 
-  img.style.height = "180px";
-  img.style.width = "auto";
+  img.style.maxWidth = "100%";
+  img.style.height = "auto";
   img.style.objectFit = "contain";
   img.style.borderRadius = "12px";
-  img.style.backgroundColor = "#111";
+  img.style.backgroundColor = "transparent";
+  img.style.padding = "6px";
   img.style.boxShadow = "0 0 12px rgba(255, 255, 255, 0.15)";
-  img.style.transition = "transform 0.3s ease";
+
 
 
 });
@@ -1270,7 +1273,7 @@ if (user) {
           img.style.objectFit = "contain";
           img.style.borderRadius = "10px";
           img.style.padding = "5px";
-          img.style.backgroundColor = "#111";
+          img.style.backgroundColor = "transparent";
           img.style.boxShadow = "0 0 10px rgba(255,255,255,0.15)";
           img.style.transition = "transform 0.3s ease";
           img.onmouseover = () => img.style.transform = "scale(1.05)";
