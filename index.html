@@ -1314,23 +1314,38 @@ if (user) {
       coverDropdown.innerHTML = "";
       displayArea.innerHTML = "";
 
-      if (Array.isArray(data.favoriteImages)) {
-      data.favoriteImages.forEach((url, index) => {
-      const title = data.favoriteGames[index] || `Game ${index + 1}`;
-      const option = document.createElement("option");
-      option.value = title;
-      option.textContent = title;
-      coverDropdown.appendChild(option);
-
-    window.favoriteCoverMap[title] = url; // ✅ Mapping each title to image
+     if (Array.isArray(data.favoriteImages)) {
+  data.favoriteImages.forEach((url, index) => {
+    const title = data.favoriteGames[index] || `Game ${index + 1}`;
+    const option = document.createElement("option");
+    option.value = title;
+    option.textContent = title;
+    coverDropdown.appendChild(option);
+    window.favoriteCoverMap[title] = url;
   });
+
+  // 👇 Ensure the first game is selected (optional)
+  if (data.favoriteGames.length > 0) {
+    coverDropdown.value = data.favoriteGames[0];
+  }
+
+  displaySelectedCover();
 }
 
 
-        if (data.favoriteImages[0]) {
-          displayArea.innerHTML = `<img src="${data.favoriteImages[0]}" alt="Game Cover" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-        }
-      }
+
+       if (data.favoriteGames?.length && data.favoriteImages?.length) {
+        const firstTitle = data.favoriteGames[0];
+        const firstCover = window.favoriteCoverMap[firstTitle];
+
+  if (firstCover) {
+    displayArea.innerHTML = `<img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+
+    // Optional: set dropdown to match default image
+    document.getElementById("fav-select").value = firstTitle;
+  }
+}
+    }
 
     
      else {
