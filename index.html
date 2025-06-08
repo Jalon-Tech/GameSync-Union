@@ -1264,15 +1264,9 @@ img.style.padding = "6px";
 
       if (Array.isArray(data.favoriteImages)) {
         data.favoriteImages.forEach(url => {
-          const img = document.createElement("img");
-          img.src = url;
           img.alt = "Game cover";
           img.style.height = "220px"; // significantly taller
           img.style.width = "220px";  // significantly wider
-          img.style.objectFit = "contain";
-          img.style.borderRadius = "14px";
-          img.style.padding = "8px";
-          img.style.transition = "transform 0.3s ease";
 
 
 
