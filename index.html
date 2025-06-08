@@ -898,21 +898,51 @@ When the Union highlights you — it means something. If your name’s echoing i
     </main>
 
     <aside>
-    <div class="box" id="profile-box">
-      <h2>Your Profile</h2>
-        <p id="fav-games">🎯 Favorite Games</p>
-        <p id="games-played">🎮 Games Played</p>
-        <p id="trophy-stats">🏆 Trophy Stats</p>
-        <div style="margin-top: 1rem;">
-        <label for="fav-select" style="color:#ccc; font-size: 0.9rem;">🎮 Highlight a Favorite Game Cover</label>
-        <select id="fav-select" class="input-field" onchange="displaySelectedCover()"></select>
-        <div id="fav-cover-display" style="margin-top: 1rem; text-align: center;"></div>
-      </div>
+ <div class="box" id="profile-box">
+  <h2>Your Profile</h2>
+  <p id="fav-games">🌟 Favorite Games</p>
+  <p id="games-played">🎮 Games Played</p>
+  <p id="trophy-stats">🏆 Trophy Stats</p>
 
-      <!-- Edit Button -->
-        <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
-
+  <div style="margin-top: 1rem;">
+    <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
+    <div id="fav-images" style="margin-top: 1rem; display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem; border: 1px solid #444; border-radius: 8px; background-color: #1e1e1e;">
+      <!-- Images will be inserted dynamically -->
+    <div id="fav-cover-display" style="margin-top: 1rem; text-align: center;"></div>
     </div>
+    <p id="no-images-msg" style="color: #888; font-size: 0.85rem; text-align: center; display: none; margin-top: 0.5rem;">No game covers available. Update your profile to add your top 3 games.</p>
+  </div>
+
+  <!-- Edit Button -->
+  <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
+
+  <script>
+    const imageRow = document.getElementById("fav-images");
+    const noImagesMsg = document.getElementById("no-images-msg");
+
+    function displayFavoriteImages(imageUrls) {
+      imageRow.innerHTML = "";
+      if (!imageUrls || imageUrls.length === 0) {
+        noImagesMsg.style.display = "block";
+        return;
+      }
+      noImagesMsg.style.display = "none";
+      imageUrls.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "Game cover";
+        img.classList.add("profile-fav-img");
+        img.style.width = "120px";
+        img.style.borderRadius = "8px";
+        img.style.transition = "transform 0.3s";
+        img.style.cursor = "pointer";
+        img.onmouseover = () => img.style.transform = "scale(1.1)";
+        img.onmouseout = () => img.style.transform = "scale(1)";
+        imageRow.appendChild(img);
+      });
+    }
+  </script>
+</div>
 
 
 
