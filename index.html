@@ -906,11 +906,19 @@ When the Union highlights you — it means something. If your name’s echoing i
 
   <div style="margin-top: 1rem;">
     <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
+    
+    <!-- Horizontal scroll with game covers -->
     <div id="fav-images" style="margin-top: 1rem; display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem; border: 1px solid #444; border-radius: 8px; background-color: #1e1e1e;">
-      <!-- Images will be inserted dynamically -->
-    <div id="fav-cover-display" style="margin-top: 1rem; text-align: center;"></div>
+      <!-- Images inserted dynamically -->
     </div>
-    <p id="no-images-msg" style="color: #888; font-size: 0.85rem; text-align: center; display: none; margin-top: 0.5rem;">No game covers available. Update your profile to add your top 3 games.</p>
+
+    <!-- Optional preview of selected cover -->
+    <div id="fav-cover-display" style="margin-top: 1rem; text-align: center;"></div>
+
+    <!-- Fallback message -->
+    <p id="no-images-msg" style="color: #888; font-size: 0.85rem; text-align: center; display: none; margin-top: 0.5rem;">
+      No game covers available. Update your profile to add your top 3 games.
+    </p>
   </div>
 
   <!-- Edit Button -->
@@ -922,11 +930,16 @@ When the Union highlights you — it means something. If your name’s echoing i
 
     function displayFavoriteImages(imageUrls) {
       imageRow.innerHTML = "";
+      const preview = document.getElementById("fav-cover-display");
+      preview.innerHTML = "";
+      
       if (!imageUrls || imageUrls.length === 0) {
         noImagesMsg.style.display = "block";
         return;
       }
+
       noImagesMsg.style.display = "none";
+
       imageUrls.forEach(url => {
         const img = document.createElement("img");
         img.src = url;
@@ -938,11 +951,23 @@ When the Union highlights you — it means something. If your name’s echoing i
         img.style.cursor = "pointer";
         img.onmouseover = () => img.style.transform = "scale(1.1)";
         img.onmouseout = () => img.style.transform = "scale(1)";
+        img.onclick = () => {
+          preview.innerHTML = "";
+          const bigImg = document.createElement("img");
+          bigImg.src = url;
+          bigImg.alt = "Full game cover";
+          bigImg.style.maxWidth = "300px";
+          bigImg.style.marginTop = "1rem";
+          bigImg.style.borderRadius = "10px";
+          bigImg.style.boxShadow = "0 0 15px rgba(255,255,255,0.2)";
+          preview.appendChild(bigImg);
+        };
         imageRow.appendChild(img);
       });
     }
   </script>
 </div>
+
 
 
 
