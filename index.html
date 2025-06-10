@@ -547,7 +547,7 @@ nav a:hover {
   </style>
 </head>
 <body>
-  <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
+ <div id="user-list" style="color: white; padding: 1rem;">Loading users...</div>
     <header>
   <div class="logo">
     <img src="GSU_LOGO.png" alt="GSU Logo" />
@@ -1602,7 +1602,48 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 </script>
-  
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "488911705365",
+    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadAllUsers() {
+    const usersRef = collection(db, "users");
+    const snapshot = await getDocs(usersRef);
+    const userList = document.getElementById("user-list");
+    userList.innerHTML = ""; // clear loading message
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const div = document.createElement("div");
+      div.style.padding = "10px";
+      div.style.borderBottom = "1px solid #444";
+      div.style.marginBottom = "0.6rem";
+      div.style.borderRadius = "6px";
+      div.style.background = "#222";
+      div.innerHTML = `
+        <strong style="color: var(--gsu-red); font-family: 'Montserrat';">${data.username || "Unnamed"}</strong><br>
+        🎮 Games Played: ${data.gamesPlayed || 0}<br>
+        🏆 Trophies: ${data.trophyCount || 0}
+      `;
+      userList.appendChild(div);
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded", loadAllUsers);
+</script>
+
 </body>
 
 </html>
