@@ -6,192 +6,7 @@
   <title>GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
-
-<style>
-  main > .box:not(:last-child) {
-  margin-bottom: 2.2rem;
-}
-
-#profile-box {
-  background: linear-gradient(to bottom right, #1e1e1e, #282828);
-  border: 2px solid var(--gsu-red);
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.2);
-  border-radius: 10px;
-  text-align: center;
-  font-size: 1rem;
-}
-#profile-box {
-  animation: fadeSlideIn 0.5s ease-out;
-}
-
-@keyframes fadeSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-  .retro-flashback {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  font-family: 'Roboto', sans-serif;
-  color: var(--white-text);
-  box-shadow: 0 0 8px rgba(255, 0, 55, 0.12);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.retro-flashback:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.25);
-}
-
-
-.retro-header {
-  font-size: 1.1rem;
-  color: var(--gsu-red);
-  font-family: 'Montserrat', sans-serif;
-  margin-bottom: 0.6rem;
-}
-
-.retro-body .game-title {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #f8f8f8;
-  margin-bottom: 0.4rem;
-}
-
-.retro-body .game-fact {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #ccc;
-}
-
-
-.livewire-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-.stat-item {
-  background: #2a2a2a;
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-family: 'Roboto', sans-serif;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-}
-
-.stat-item:hover {
-  transform: scale(1.03);
-  background-color: #333;
-  box-shadow: 0 0 10px rgba(230, 0, 35, 0.25);
-}
-
-.culture-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  text-align: center;
-}
-.culture-tile {
-  background: #2a2a2a;
-  padding: 1.4rem 1rem;
-  border-radius: 10px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  color: white;
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s ease, background 0.3s ease;
-}
-.culture-tile:hover {
-  background: var(--gsu-red);
-  transform: scale(1.05);
-}
-.tile-hover {
-  margin-top: 0.4rem;
-  font-size: 0.85rem;
-  color: #ddd;
-}
-.showoff-card {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  align-items: center;
-  background-color: #2a2a2a;
-  border-radius: 10px;
-  padding: 1rem;
-}
-.showoff-img {
-  width: 200px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
-.showoff-info h3 {
-  color: var(--gsu-red);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem;
-  margin-bottom: 0.4rem;
-}
-.showoff-info p {
-  font-size: 0.95rem;
-  font-family: 'Roboto', sans-serif;
-  margin-bottom: 0.6rem;
-}
-.talk-quote {
-  background: #2a2a2a;
-  padding: 1rem 1.2rem;
-  border-left: 4px solid var(--gsu-red);
-  border-radius: 8px;
-  font-style: italic;
-}
-.talk-quote blockquote {
-  font-size: 1.1rem;
-  color: #eee;
-  margin-bottom: 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-}
-.talk-quote p {
-  font-size: 0.95rem;
-  color: #aaa;
-  font-family: 'Roboto', sans-serif;
-}
-.certified-moment {
-  text-align: center;
-  font-family: 'Roboto', sans-serif;
-}
-.certified-img {
-  width: 100%;
-  max-width: 400px;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  margin-bottom: 0.8rem;
-}
-.certified-caption {
-  font-size: 1rem;
-  margin-bottom: 0.6rem;
-}
-.incoming-drop {
-  margin-top: 1rem;
-  padding-left: 1rem;
-  color: #ddd;
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.95rem;
-  list-style-type: square;
-}
-
+  <style>
     /* CSS REMAINS UNCHANGED */
       :root {
       --gsu-red: #e60023;
@@ -209,59 +24,49 @@
       background-color: var(--black-main);
       color: var(--white-text);
     }
-   header {
-  background-color: var(--black-faded);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-  position: relative; /* Not sticky */
-  z-index: 1000;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-}
-
-.logo img {
-  height: 60px;
-  margin-right: 1rem;
-}
-
-.logo-text {
-  font-size: 1.6rem;
-  font-family: 'Montserrat', sans-serif;
-  color: var(--white-text);
-}
-
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-nav a {
-  text-decoration: none;
-  color: var(--white-text);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-}
-
-nav a:hover {
-  color: var(--gsu-red);
-}
-
+    header {
+      background-color: var(--black-faded);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .logo img {
+      height: 50px;
+      margin-right: 1rem;
+    }
+    .logo-text {
+      font-size: 1.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
+    }
+    nav a:hover {
+      color: var(--gsu-red);
+    }
     .main-container {
       display: grid;
-      grid-template-columns: 1fr 3fr 1fr; /* sidebar - main - sidebar */
-      gap: 1.5rem;
+      grid-template-columns: 1fr 3fr 1.2fr;
+      gap: 1rem;
       padding: 2rem;
     }
-
     aside, main {
       display: flex;
       flex-direction: column;
@@ -381,186 +186,23 @@ nav a:hover {
         font-size: 0.9rem;
       }
     }
-    #spotlight3 {
-  background: linear-gradient(to bottom right, #1f1f1f, #262626);
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 2rem 1.5rem;
-  box-shadow: 0 0 16px rgba(230, 0, 35, 0.3);
-  color: var(--white-text);
-  font-family: 'Montserrat', sans-serif;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  transition: border 0.3s ease;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#spotlight3:hover {
-  border-color: var(--gsu-red); /* Only show red border on hover */
-}
-
-
-#spotlight3 h2 {
-  color: var(--gsu-red);
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-}
-
-#spotlight3 p {
-  font-size: 0.95rem;
-  color: #ccc;
-  margin-bottom: 1.2rem;
-}
-
-
-.spotlight-video:hover {
-  transform: scale(1.02);
-  border-color: var(--gsu-red);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
-}
-
-.spotlight-video iframe {
-  width: 100%;
-  height: 340px;
-  border-radius: 10px;
-}
-
-@media (max-width: 768px) {
-  .spotlight-video iframe {
-    height: 220px;
-  }
-}
-
-.spotlight-video iframe {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-
-
-.spotlight-video h3 {
-  color: var(--gsu-red);
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.character-image {
-  height: 140px;
-  width: auto;
-  object-fit: contain;
-  background-color: #111;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  padding: 6px;
-}
-
-
-
-#character-image {
-  height: 280px;
-  width: auto;
-  object-fit: contain;
-  border-radius: 0;
-  box-shadow: none;
-  margin: 0 auto;
-  display: block;
-  background: transparent !important;
-}
-
-
-#fav-images {
-  scroll-behavior: smooth;
-}
-
-#fav-images::-webkit-scrollbar {
-  height: 8px;
-}
-
-#fav-images::-webkit-scrollbar-thumb {
-  background-color: var(--gsu-red);
-  border-radius: 6px;
-}
-
-
-  .image-row img {
-  height: 60px;
-  border-radius: 6px;
-  box-shadow: 0 0 6px rgba(255,255,255,0.1);
-  transition: transform 0.3s;
-}
-.image-row img:hover {
-  transform: scale(1.05);
-}
-
-#fav-images {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 1rem;
-  padding: 0.5rem 0;
-  justify-content: flex-start;
-  max-width: 100%;
-}
-
-#fav-images img {
-  height: 140px;
-  width: auto;
-  object-fit: contain;
-  scroll-snap-align: center;
-  background: #111;
-  padding: 6px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-#fav-images img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
-}
-
-#fav-images::-webkit-scrollbar {
-  height: 8px;
-}
-
-#fav-images::-webkit-scrollbar-thumb {
-  background-color: var(--gsu-red);
-  border-radius: 6px;
-}
-
-.profile-fav-img {
-  max-height: 120px;
-  width: auto;
-}
-.box h2 {
-  text-shadow: 0 0 6px rgba(255, 0, 55, 0.3);
-}
-
-#upcoming-events {
-  animation: fadeSlideIn 0.6s ease-out;
-}
-
-
   </style>
 </head>
 <body>
   <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
     <header>
-  <div class="logo">
-    <img src="GSU_LOGO.png" alt="GSU Logo" />
-    <div class="logo-text">GAMESYNC UNION</div>
-  </div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="games.html">Games</a>
-    <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
-    <a href="art.html">Art</a>
-    <a href="game-guides.html">Guides</a>
-    <a href="uploads.html">GSU Player Lounge</a>
-  </nav>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <div class="logo-text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">Trophies/Achievements</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">Guides</a>
+      <a href="uploads.html">Community Uploads</a>
+    </nav>
      <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
   </header>
 
@@ -572,350 +214,40 @@ nav a:hover {
         <input type="text" class="input-field" placeholder="Username" />
         <input type="password" class="input-field" placeholder="Password" />
         <button class="btn">Sign In</button>
-        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.HTML" style="color: #e60023;">Create Account</a></p>
       </div>
-      
-     <!-- 🕹️ Retro Game Flashback -->
-<div class="box retro-flashback">
-  <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
-  <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry — a reminder of where the journey began.
-  </p>
-  <div class="retro-body">
-    <div class="game-title">From here, the Retroverse info unfolds.</div>
-    <div class="game-fact" id="retro-fact" style="max-height: 90px; overflow-y: auto;">
-      Loading fact...
-    </div>
-    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🕹️ Spin the Retro Wheel</button>
-  </div>
-</div>
-
-<!-- 🧬 GSU Character Sync Assignment -->
-<div class="box retro-flashback">
-  <h2 class="retro-header">🧬 GSU Character Sync Assignment</h2>
-  <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    Based on your top 3 favorite games, we've scanned your vibe, playstyle, and energy to sync you with a legendary character.
-  </p>
-
-  <div class="retro-body">
-    <div style="text-align: center;">
-      <div style="font-size: 0.85rem; margin-top: 0.3rem;" id="character-role"></div>
-    </div>
-
-  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;">
-  <img id="character-image" src="..." class="character-image" 
-
-  style="
-    height: 140px;
-    width: 140px;
-    object-fit: contain;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-    background-color: #111;
-    padding: 6px;
-    transition: transform 0.3s ease;"/>
-
-
-  <div style="font-size: 0.85rem; max-width: 260px;" id="character-desc">
-    Analyzing traits from your favorite games...
-  </div>
-</div>
-
-
-    <button class="btn" onclick="assignCharacter()" style="margin-top: 0.8rem; font-size: 0.85rem;">🧬 Sync Your Gaming Identity</button>
-  </div>
-</div>
-
-
-<!-- 🔧 Scripts -->
-<script>
-  const RetroFacts = [
-    "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
-    "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
-    "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
-    "🎯 Pong (1972) was so popular that the original machine overflowed with quarters and broke.",
-    "🎮 The Sega Genesis had a hidden sound test screen used for cheat codes in Sonic games.",
-    "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
-    "🎤 Mortal Kombat sparked U.S. government hearings that led to the ESRB rating system.",
-    "🌀 SNES Mode 7 graphics engine enabled fake 3D effects in F-Zero and Mario Kart.",
-    "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
-  ];
-
-  const CharacterAssignments = [
-  {
-    name: "Kratos",
-    role: "🟥-🟦 Antagonist-Turned-Protagonist",
-    desc: "Based on your love for intense, emotional action titles, you were assigned Kratos — a warrior driven by vengeance, but shaped by fatherhood and power.",
-    game: "God of War (2018)",
-    img: "https://images7.alphacoders.com/714/714040.jpg"
-  },
-  {
-    name: "Miles Morales",
-    role: "🟦 Protagonist",
-    desc: "Your connection to modern heroism, style, and skill syncs you with Miles Morales. You're driven, community-rooted, and got mad swing power.",
-    game: "Marvel's Spider-Man: Miles Morales",
-    img: "https://cdn.mos.cms.futurecdn.net/DUggVweyTBsPWDKyENcuh5-1200-80.jpg"
-  },
-  {
-    name: "Peter Parker (Spider-Man)",
-    role: "🟦 Protagonist",
-    desc: "You take responsibility seriously, balance power with heart, and swing between chaos and control — just like Peter Parker.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://images.warnersallman.com/big/4006-marvel039s-spider-man-2-spiderman-peter-parker.jpg"
-  },
-  {
-    name: "Doctor Octopus",
-    role: "🟥 Antagonist",
-    desc: "Driven by intellect and ambition, your path mirrors Otto Octavius — a mind once noble, now twisted by obsession.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://i.ytimg.com/vi/GhyoeU1wR4I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLA7DMLD3lO73POqynoCO9ITkIDmqA"
-  },
-  {
-    name: "Venom",
-    role: "🟥 Antagonist",
-    desc: "You're overwhelming, unpredictable, and raw. This match reflects your affinity for chaos fused with personal conflict.",
-    game: "Marvel's Spider-Man 2",
-    img: "https://image.api.playstation.com/vulcan/ap/rnd/202308/0718/e2293c139402f6a14ffb7b69ea4da5fbfd58939bd9bccd5b.jpg"
-  },
-  {
-    name: "Kraven the Hunter",
-    role: "🟥 Antagonist",
-    desc: "You're precise, primal, and relentless — hunting for worthy opponents like Kraven, seeking purpose through dominance.",
-    game: "Marvel's Spider-Man 2",
-    img: "https://cdn.marvel.com/content/1x/msm2_launch_kraven_4k_legal_2023.jpg"
-  },
-  {
-    name: "Mr. Negative",
-    role: "🟥 Antagonist",
-    desc: "Calm on the surface, but chaotic underneath. This duality makes you an unpredictable force like Martin Li.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://cdn.marvel.com/content/1x/msm2_characterhighlights_mrnegative_4k_legal_2023.jpg"
-  },
-  {
-    name: "Electro",
-    role: "🟥 Antagonist",
-    desc: "Electrifying rage and chaotic energy define you. Like Max Dillon, you're unpredictable and always charged up.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://external-preview.redd.it/fighting-electro-and-vulture-in-spiderman-ps5-v0-5J6_1r6dac2Id2mnXfeU7bgHaogx2zJ2mvz-QHCa0yU.png?format=pjpg&auto=webp&s=22b19aeb54f3dbcd745151fcbeedeadf08e2f8c1"
-  },
-  {
-    name: "Atreus",
-    role: "🟦 Protagonist",
-    desc: "Strategic, emotional, and still growing into greatness. You reflect the future of power — Atreus’ spirit lives in your gameplay.",
-    game: "God of War Ragnarök",
-    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgp-xLVfic-GJT_nidJU8RBRjxQl31RRNltKT_cns5L2hYm4MH3cSSooHeJcEPLSaFrERpS80iv6XMng9Bo9lxwzBac2S8CHWN0bfnjRBHx2ugbZJPe_svxmIpq8lKFxNyiVxlr2Tw5_-Yj/w919/god-of-war-ragnarok-atreus-ps5-game-screenshot-4k-uhdpaper.com-723.1_b-thumbnail.jpg"
-  },
-  {
-    name: "Odin",
-    role: "🟥 Antagonist",
-    desc: "Cunning, manipulative, and always five steps ahead. Your choices reveal a calculating nature, just like Odin.",
-    game: "God of War Ragnarök",
-    img: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/07/god-of-war-ragnarok-odin.jpg"
-  },
-  {
-    name: "Thor",
-    role: "🟥 Antagonist",
-    desc: "Brute power, loyalty, and a storm of emotions. This pick reflects your raw strength and unpredictable energy.",
-    game: "God of War Ragnarök",
-    img: "https://i.pinimg.com/736x/3e/77/c1/3e77c194dc72ebee1a904ef02844d720.jpg"
-  },
-  {
-    name: "Ratchet",
-    role: "🟦 Protagonist",
-    desc: "Loyal, resourceful, and universe-saving since the PS2 days. You're Ratchet — classic and clutch.",
-    game: "Ratchet & Clank: Rift Apart",
-    img: "https://insomniac.games/wp-content/uploads/2021/06/RACRA_Warmonger_Legal-scaled.jpg"
-  },
-  {
-    name: "Rivet",
-    role: "🟦 Protagonist",
-    desc: "Rebellious and righteous — Rivet mirrors your fire and independence in every timeline.",
-    game: "Ratchet & Clank: Rift Apart",
-    img: "https://insomniac.games/wp-content/uploads/2020/10/RC_RiftApart_Who_PS5-scaled.jpg"
-  },
-  {
-    name: "Emperor Nefarious",
-    role: "🟥 Antagonist",
-    desc: "You crave victory across dimensions, with style and ego to match. Villainy? Yes. But make it extra.",
-    game: "Ratchet & Clank: Rift Apart",
-    img: "https://4kwallpapers.com/images/walls/thumbs_2t/12309.jpeg"
-  },
-  {
-    name: "Crash Bandicoot",
-    role: "🟦 Protagonist",
-    desc: "Wild, goofy, fearless. You tackle chaos with a spin and a smirk. Classic energy.",
-    game: "Crash Bandicoot 4: It’s About Time",
-    img: "https://blz-contentstack-images.akamaized.net/v3/assets/bltf408a0557f4e4998/blt5a6d4381bfb3699a/63224d89636d390da7825eb2/crash-bandicoot-4-section1-feature1.jpg?imwidth=1920&imdensity=2.625"
-  },
-  {
-    name: "Coco Bandicoot",
-    role: "🟦 Protagonist",
-    desc: "Smart, stylish, and precise — you solve problems with brains *and* bounces. Coco-coded.",
-    game: "Crash Bandicoot 4: It’s About Time",
-    img: "https://support.activision.com/content/dam/atvi/support/article-assets/embedded-images/crash-4/COCO.jpg"
-  },
-  {
-    name: "Neo Cortex",
-    role: "🟥 Antagonist",
-    desc: "Ambitious, unpredictable, and always scheming. This pick fits your chaotic genius.",
-    game: "Crash Bandicoot 4: It’s About Time",
-    img: "https://crashynews.wordpress.com/wp-content/uploads/2020/09/eixlavlucaej2vj.jpg"
-  },
-  {
-    name: "Sephiroth",
-    role: "🟥 Antagonist",
-    desc: "Mysterious. Calculated. Dramatic. Your preference for deep lore and iconic chaos led to this elite villain assignment.",
-    game: "Final Fantasy VII Remake",
-    img: "https://preview.redd.it/how-high-do-you-think-sephiroths-kill-count-is-before-and-v0-iscp8hce0c3a1.jpg?auto=webp&s=fa90c71683d9e692210329f2c34e25f0f8cf3bf2"
-  },
-  {
-    name: "Lara Croft",
-    role: "🟦 Protagonist",
-    desc: "You're relentless, curious, and bold — just like Lara. Your game picks show you thrive in challenge and danger, no fear.",
-    game: "Shadow of the Tomb Raider",
-    img: "https://i.guim.co.uk/img/media/0c3a2da7f4258079ecd6d29240b85deba8fe5913/410_4_2023_1214/master/2023.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=221c208272beb5ed37cdb473f442612a"
-  },
-  {
-    name: "Nathan Drake",
-    role: "🟦 Protagonist",
-    desc: "Adventurous, witty, and always in over your head — you're all about high-stakes treasure hunts and quick comebacks.",
-    game: "Uncharted 4: A Thief’s End",
-    img: "https://wallpapers.com/images/featured/uncharted-4-lrc9dstxc47wztbp.jpg"
-  },
-  {
-    name: "Aloy",
-    role: "🟦 Protagonist",
-    desc: "Resourceful and relentless, you challenge the old world and forge new paths like the machine-slaying legend from Horizon.",
-    game: "Horizon Forbidden West",
-    img: "https://live.staticflickr.com/65535/51509006883_ff5af117e0_h.jpg"
-  },
-  {
-    name: "Jin Sakai",
-    role: "🟦 Protagonist",
-    desc: "You fight with honor — until the mission demands shadows. Your duality mirrors the Ghost’s balance of warrior and survivor.",
-    game: "Ghost of Tsushima",
-    img: "https://static.wikia.nocookie.net/ghostoftsushima/images/9/94/Jin_Sakai_key_art_cropped.png/revision/latest/scale-to-width-down/1200?cb=20200802081711"
-  },
-  {
-    name: "Joel Miller",
-    role: "🟦 Protagonist",
-    desc: "Hard choices, heavy loss. You do what must be done to protect who matters — even if it breaks you, like Joel.",
-    game: "The Last of Us Part I",
-    img: "https://w0.peakpx.com/wallpaper/519/134/HD-wallpaper-joel-the-last-of-us-tlou.jpg"
-  },
-  
-];
-
-
-
-  function loadRetroFact() {
-    const random = RetroFacts[Math.floor(Math.random() * RetroFacts.length)];
-    document.getElementById("retro-fact").innerText = random;
-  }
-
-  function assignCharacter() {
-    const random = CharacterAssignments[Math.floor(Math.random() * CharacterAssignments.length)];
-    document.getElementById("character-role").innerText = `🎮 You Are: ${random.name} (${random.role})`;
-    document.getElementById("character-desc").innerText = random.desc;
-    document.getElementById("character-image").src = random.img;
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    loadRetroFact();
-    assignCharacter();
-  });
-</script>
-
+      <div class="box">
+        <h2>Recent Uploads</h2>
+        <p>[Your gameplay clips will show up here]</p>
+      </div>
     </aside>
+
     <main>
       <div class="box" style="text-align:center;">
         <h2>Welcome to GameSync Union</h2>
         <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
-        <button class="btn" onclick="window.location.href='about.html'"><h3>📘🎮 The Full Breakdown: GameSync Union Explained</h3></button>
+        <button class="btn" onclick="document.getElementById('auth-box').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
       </div>
 
-      <div class="box" id="profile-box">
-    <h2 style="color: var(--gsu-red);">Your Profile</h2>
-    <p id="fav-games">🌟 Favorite Games</p>
-    <p id="games-played">🎮 Games Played</p>
-    <p id="trophy-stats">🏆 Trophy Stats</p>
-
-    <div style="margin-top: 1rem;">
-      <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
-    </div>
-
-    <div id="fav-images" style="
-      margin-top: 0.8rem;
-      display: flex;
-      overflow-x: auto;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      padding: 1rem 0;
-      scroll-snap-type: x mandatory;
-      border: 1px solid #444;
-      border-radius: 10px;
-      background: #1b1b1b;
-      ">
-    </div>
-
-    <div style="margin-top: 1rem; text-align: center;">
-      <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
-    </div>
-  </div>
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
-<div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
-  <div class="livewire-stats">
-    <div class="stat-item">📹 28 new uploads this week</div>
-    <div class="stat-item">🎨 12 fan arts added</div>
-    <div class="stat-item">🏆 39 new trophies earned</div>
-    <div class="stat-item">💬 52 new Lounge posts</div>
-    <div class="stat-item">👥 17 new GSU members joined</div>
-    <div class="stat-item">👾 14 combos submitted</div>
-    <div class="stat-item">📊 6 polls voted on</div>
+      <div class="box">
+        <h2>Community Highlights</h2>
+        <div class="section-flex">
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">🔥 Trending Topics</h3>
+    <ul id="trending-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
   </div>
-
-</div>
-
-<div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">💪 Built by GSU. Flexed by Gamers.</h2>
-
-  <div class="culture-grid">
-   <a href="games.html" class="culture-tile">🎮 Game Lineup<div class="tile-hover">What We’re Really Playing.</div></a>
-
-<a href="trophies.html" class="culture-tile">🏆 Hall of Trophies<div class="tile-hover">Earn It. Show It Off.</div></a>
-<a href="art.html" class="culture-tile">🖼️ Fan Art<div class="tile-hover">Clipped. Posted. Respected.</div></a>
-<a href="community-gameplay-videos.html" class="culture-tile">🎥 Gameplay Hub<div class="tile-hover">Your Best Runs. On Display.</div></a>
-<a href="uploads.html" class="culture-tile">💬 Player Lounge<div class="tile-hover">Talk Real. Squad Up.</div></a>
-<a href="combo-guides.html" class="culture-tile">🥊 Combo Guides<div class="tile-hover">Damage that actually matters.</div></a>
-<a href="guide-discussion.html" class="culture-tile">🧠 Meta Talk<div class="tile-hover">Work needed to bring in those Wins.</div></a>
-<a href="trophy-tips.html" class="culture-tile">📈 Trophy Tips<div class="tile-hover">Level Up Without Wasting Time.</div></a>
-
-
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">📹 Latest Uploads</h3>
+    <ul id="uploads-list" style="list-style: none; padding-left: 0; color: var(--white-text);"></ul>
+  </div>
+  <div class="box" style="flex: 1; background-color: #2a2a2a; padding: 1rem; border-radius: 8px;">
+    <h3 style="text-align: center;">🎨 Fan Art</h3>
+    <p>[Showcase user-submitted art here]</p>
   </div>
 </div>
-
-<div class="box">
- <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
-🔥 Made the Union Watch
-</h2>
-<p style="text-align: center; font-family: 'Roboto'; color: var( --white-text);">
-When the Union highlights you — it means something. If your name’s echoing in live chat, it’s because your skills made the noise. Real gameplay earns the light.
-</p>
-
-  <div class="showoff-card">
-    <img src="https://your-image-url.jpg" alt="Elite Clip Thumbnail" class="showoff-img" />
-    <div class="showoff-info">
-      <h3>@QuantumX - “One Parry, One Kill”</h3>
-      <p>Disrespected the Valkyrie Queen with no HUD in God of War: Ragnarök. Certified GSU moment.</p>
-      <div style="text-align: center;">
-        <button onclick="window.location.href='uploads.html'" class="btn" style="margin: 0 auto; display: inline-block; text-align: center;">See Why Everyone’s Talking</button>
       </div>
-    </div>
-  </div>
-</div>
 
       <div class="box">
         <h2>Game Guides</h2>
@@ -930,100 +262,48 @@ When the Union highlights you — it means something. If your name’s echoing i
         </ul>
       </div>
 
-   <div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🎭 Union Rewind: Talk of the Week</h2>
+      <div class="box">
+        <h2>Your Trophies</h2>
+        <p>[View trophies and compare achievements]</p>
+      </div>
 
-  <div class="talk-quote">
-    <blockquote>“Bro didn’t dodge — he teleported 💀”</blockquote>
-    <p>— Pulled from GSU Lounge</p>
-  </div>
-</div>
+      <div class="box">
+        <h2>User Uploads</h2>
+        <p>[Uploaded game videos and highlight reels]</p>
+      </div>
 
-<div class="box">
- <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
-👑 One Trophy. One Flex. You Dropped It — Now the Union Sees Why.
-</h2>
-
-  <div class="certified-moment">
-    <img src="https://your-image-url.jpg" alt="Moment Screenshot" class="certified-img" />
-    <p class="certified-caption">“Left the boss at 1% just to taunt 💀” — <strong>@ThroneSnatcher</strong></p>
-    <div style="text-align: center;">
-      <button class="btn" onclick="window.location.href='trophies.html'" style="margin: 0 auto; display: inline-block;">Relive the Moment</button>
-    </div>
-  </div>
-</div>
-
-<div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
-  📡 Union Alert: Drop Goes Live Soon
-  </h2>
-
-  <ul class="incoming-drop">
-    <li>🎯 Challenge Theme dropping Friday: <strong>✨ Style Over Damage</strong></li>
-    <li>🖼️ Fan Art Tournament Round 2 this weekend</li>
-    <li>🆕 GSU Custom Avatars launching soon</li>
-  </ul>
-</div>
-
+      <div class="box">
+        <h2>Art Showcase</h2>
+        <p>[In-game screenshots, posters, and original artwork]</p>
+      </div>
     </main>
 
     <aside>
-      
+    <div class="box" id="profile-box">
+      <h2>Your Profile</h2>
+        <p id="fav-games">🎯 Favorite Games</p>
+        <p id="games-played">🎮 Games Played</p>
+        <p id="trophy-stats">🏆 Trophy Stats</p>
+    </div>
 
-  <script>
-    const imageRow = document.getElementById("fav-images");
-    const noImagesMsg = document.getElementById("no-images-msg");
 
-    function displayFavoriteImages(imageUrls) {
-      imageRow.innerHTML = "";
-      const preview = document.getElementById("fav-cover-display");
-      preview.innerHTML = "";
-      
-      if (!imageUrls || imageUrls.length === 0) {
-        noImagesMsg.style.display = "block";
-        return;
-      }
 
-      noImagesMsg.style.display = "none";
-
-      imageUrls.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.alt = "Game cover";
-        img.classList.add("profile-fav-img");
-        img.style.width = "120px";
-        img.style.borderRadius = "8px";
-        img.style.transition = "transform 0.3s";
-        img.style.cursor = "pointer";
-        img.onmouseover = () => img.style.transform = "scale(1.1)";
-        img.onmouseout = () => img.style.transform = "scale(1)";
-        img.onclick = () => {
-          preview.innerHTML = "";
-          const bigImg = document.createElement("img");
-          bigImg.src = url;
-          bigImg.alt = "Full game cover";
-          bigImg.style.maxWidth = "300px";
-          bigImg.style.marginTop = "1rem";
-          bigImg.style.borderRadius = "10px";
-          bigImg.style.boxShadow = "0 0 15px rgba(255,255,255,0.2)";
-          preview.appendChild(bigImg);
-        };
-        imageRow.appendChild(img);
-      });
-    }
-  </script>
-</div>
-
-      <div class="box" id="spotlight3">
-        <h2>🎮 GameSync Spotlight 3</h2>
-        <p>Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
-            <div id="fav-game-updates"></div>
+      <div class="box">
+        <h2>Upcoming Games & Events</h2>
+        <p>Stay updated on everything new in gaming:</p>
+        <ul>
+          <li>🆕 Recently Announced Games</li>
+          <li>🚀 Upcoming Game Releases</li>
+          <li>📆 Countdown to Launch & Events</li>
+          <li>🛠 Major Patch Notes & Updates</li>
+          <li>🎮 Gaming Conventions & Streams</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.9rem;">
+          *This section automatically pulls the latest game info, updates, and events using APIs (Application Programming Interfaces) from trusted gaming databases like RAWG and IGDB.
+          <a href="#" style="color: #e60023;">Learn more</a>
+        </p>
       </div>
-
-
     </aside>
-
-
   </div>
 
   <footer>
@@ -1035,296 +315,19 @@ When the Union highlights you — it means something. If your name’s echoing i
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-  <!-- Edit Modal -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeEditModal()">&times;</span>
-    <h2>Update Profile</h2>
-
-    <label>Favorite Games (comma-separated):</label>
-    <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank...">
-
-    <label>Number of Games Played:</label>
-    <input type="number" id="editGamesPlayed" min="0">
-
-    <label>Favorite Game Image URLs (comma-separated):</label>
-    <input type="text" id="editGameImages" placeholder="url1, url2, url3">
-
-    <label>Total Trophy Count:</label>
-    <input type="number" id="editTrophies" min="0">
-
-    <button onclick="saveProfileChanges()">Save Changes</button>
-  </div>
-</div>
-
-<style>
- .edit-btn {
-  background-color: var(--gsu-red);
-  color: var(--white-text);
-  padding: 10px 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 15px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.edit-btn:hover {
-  background-color: #cc001f; /* slightly darker red for hover */
-  transform: scale(1.03);
-}
-
-
- .modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-.modal-content {
-  background-color: var(--black-faded);
-  margin: 10% auto;
-  padding: 24px;
-  border: 2px solid var(--gsu-red);
-  border-radius: 12px;
-  width: 80%;
-  max-width: 500px;
-  color: var(--white-text);
-  font-family: 'Montserrat', sans-serif;
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
-}
-
-.modal-content label {
-  font-weight: 600;
-  margin-top: 10px;
-  display: block;
-  color: var(--gsu-red);
-}
-
-.modal-content input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0 18px;
-  background: #2a2a2a;
-  color: var(--white-text);
-  border: 1px solid #444;
-  border-radius: 6px;
-  font-family: 'Roboto', sans-serif;
-}
-
-.modal-content button {
-  background-color: var(--gsu-red);
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-family: 'Montserrat', sans-serif;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.modal-content button:hover {
-  background-color: #cc001f;
-  transform: scale(1.03);
-}
-
-.close {
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  color: var(--gsu-red);
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.close:hover {
-  color: #ff3344;
-}
-#fav-game-updates {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
-
-.spotlight-video:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 16px rgba(230, 0, 35, 0.4);
-  border: 1px solid var(--gsu-red);
-}
-
-.spotlight-video iframe {
-  width: 100%;
-  height: 200px;
-  border: none;
-  border-radius: 0;
-}
-
-.spotlight-video h3 {
-  font-family: 'Montserrat', sans-serif;
-  color: var(--gsu-red);
-  font-size: 1rem;
-  padding: 0.8rem 1rem 0 1rem;
-}
-
-.spotlight-video p {
-  color: #bbb;
-  font-size: 0.9rem;
-  padding: 0 1rem 1rem 1rem;
-}
-
-
-
-#fav-game-updates::-webkit-scrollbar {
-  width: 6px;
-}
-
-#fav-game-updates::-webkit-scrollbar-thumb {
-  background: var(--gsu-red);
-  border-radius: 6px;
-}
-
-.spotlight-video {
-  background: #2a2a2a;
-  padding: 1rem;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
-  width: 100%;
-  max-width: 100%;
-}
-
-.spotlight-video:hover {
-  transform: scale(1.02);
-  border-color: var(--gsu-red);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
-}
-
-.spotlight-video iframe {
-  width: 100%;
-  height: 200px;
-  border-radius: 8px;
-  margin: 0.6rem 0;
-}
-
-.spotlight-video {
-  opacity: 0;
-  animation: fadeIn 0.6s ease forwards;
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-.profile-fav-img {
-  height: 140px;
-  object-fit: contain;
-  background-color: #111;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
-  transition: transform 0.3s ease;
-  scroll-snap-align: center;
-  padding: 6px;
-}
-.profile-fav-img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
-}
-
-</style>
-
-<script>
-  function openEditModal() {
-
-  document.getElementById('editModal').style.display = 'block';
-
-  // 🧠 Auto-fill current profile values
-  document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
-  document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('🎮 Number Of Games Played: ', '');
-  document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('🏆 Trophy Stats (Total Trophies): ', '');
-}
-
-
-
-  function closeEditModal() {
-    document.getElementById('editModal').style.display = 'none';
-  }
-
-  async function saveProfileChanges() {
-  const games = document.getElementById('editGames').value;
-  const gamesPlayed = document.getElementById('editGamesPlayed').value;
-  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
-  const trophies = document.getElementById('editTrophies').value;
-  const user = getAuth().currentUser;
-if (user) {
-  const uid = user.uid;
-  const docRef = doc(db, "users", uid);
-  try {
-    await setDoc(docRef, {
-      favoriteGames: games.split(',').map(s => s.trim()),
-      gamesPlayed: parseInt(gamesPlayed),
-      favoriteImages: imageUrls,
-      trophyCount: parseInt(trophies)
-    }, { merge: true });
-
-    alert("Profile updated successfully.");
-  } catch (err) {
-    console.error("Error saving profile:", err);
-    alert("Error saving changes.");
-  }
-}
-
-
-
-  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
-  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
-  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
-
-  const imageRow = document.getElementById("fav-images");
-  imageRow.innerHTML = "";
- imageUrls.forEach(url => {
-  const img = document.createElement("img");
-  img.src = url;
-  img.alt = "Game cover";
-  img.classList.add("profile-fav-img"); // So CSS controls layout
-  img.style.objectFit = "contain";
-  img.style.backgroundColor = "transparent";
-  img.style.boxShadow = "none";
-  img.style.borderRadius = "0";
-  img.style.transition = "transform 0.3s ease";
-  img.style.scrollSnapAlign = "center";
-  img.onmouseover = () => img.style.transform = "scale(1.05)";
-  img.onmouseout = () => img.style.transform = "scale(1)";
-  imageRow.appendChild(img); // ✅ This was missing
-});
-
-
-
-  closeEditModal();
-}
-</script>
 
 <script type="module">
-  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
   import {
     getAuth,
     signInWithEmailAndPassword,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -1359,7 +362,6 @@ if (user) {
   });
 
   async function loadProfile(uid) {
-    window.favoriteCoverMap = {};
     const snap = await getDoc(doc(db, "users", uid));
     if (snap.exists()) {
       const data = snap.data();
@@ -1384,77 +386,42 @@ if (user) {
       const gamesPlayedEl = document.getElementById("games-played");
       const trophyStatsEl = document.getElementById("trophy-stats");
 
-     let imageRow = document.getElementById("fav-images");
+      let imageRow = document.getElementById("fav-images");
+      if (!imageRow) {
+        imageRow = document.createElement("div");
+        imageRow.id = "fav-images";
+        imageRow.style.display = "flex";
+        imageRow.style.flexWrap = "wrap";
+        imageRow.style.gap = "0.5rem";
+        imageRow.style.marginTop = "0.8rem";
+        imageRow.style.justifyContent = "center";
+        profileBox.appendChild(imageRow);
+      }
+      imageRow.innerHTML = "";
 
-if (!imageRow) {
-  imageRow = document.createElement("div");
-  imageRow.id = "fav-images";
-  imageRow.style.display = "flex";
-  imageRow.style.flexWrap = "wrap";
-  imageRow.style.gap = "0.5rem";
-  imageRow.style.marginTop = "0.8rem";
-  imageRow.style.justifyContent = "center";
-  profileBox.appendChild(imageRow);
-}
+      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
 
-imageRow.innerHTML = "";
-
-favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
-
-if (Array.isArray(data.favoriteImages)) {
-  data.favoriteImages.forEach((url, index) => {
-    const img = document.createElement("img");
-    img.src = url;
-    img.alt = data.favoriteGames[index] || `Game ${index + 1}`;
-    img.classList.add("profile-fav-img");
-    imageRow.appendChild(img);
-  });
-}
-
-
-
-     if (Array.isArray(data.favoriteImages)) {
-  data.favoriteImages.forEach((url, index) => {
-    const title = data.favoriteGames[index] || `Game ${index + 1}`;
-    const option = document.createElement("option");
-    option.value = title;
-    option.textContent = title;
-    coverDropdown.appendChild(option);
-    const titleKey = title.trim().toLowerCase(); // Normalize
-    window.favoriteCoverMap[titleKey] = url;
-
-  });
-
-  // 👇 Ensure the first game is selected (optional)
-  if (data.favoriteGames.length > 0) {
-    coverDropdown.value = data.favoriteGames[0];
-  }
-
-  displaySelectedCover();
-}
-
-
-
-       if (data.favoriteGames?.length && data.favoriteImages?.length) {
-        const firstTitle = data.favoriteGames[0];
-        const firstCover = window.favoriteCoverMap[firstTitle];
-
-  if (firstCover) {
-    displayArea.innerHTML = `<img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-
-    // Optional: set dropdown to match default image
-    document.getElementById("fav-select").value = firstTitle;
-  }
-}
-    }
-
-    
-     else {
+      if (Array.isArray(data.favoriteImages)) {
+        data.favoriteImages.forEach(url => {
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = "Game cover";
+          img.style.height = "60px";
+          img.style.borderRadius = "6px";
+          img.style.boxShadow = "0 0 6px rgba(255,255,255,0.1)";
+          img.style.transition = "transform 0.3s";
+          img.onmouseover = () => img.style.transform = "scale(1.05)";
+          img.onmouseout = () => img.style.transform = "scale(1)";
+          imageRow.appendChild(img);
+        });
+      }
+    } else {
       console.warn("User profile data not found.");
     }
   }
+
   onAuthStateChanged(auth, (user) => {
     const currentPath = window.location.pathname.toLowerCase();
     const isLoginPage = currentPath.includes("account_creation.html");
@@ -1466,7 +433,7 @@ if (Array.isArray(data.favoriteImages)) {
       document.getElementById("auth-box").style.display = "block";
       if (!isLoginPage && currentPath !== "/index.html") {
         alert("Please log in to access GameSync Union.");
-        window.location.href = "account_creation.html";
+        window.location.href = "Account_Creation.html";
       }
     }
   });
@@ -1478,131 +445,10 @@ if (Array.isArray(data.favoriteImages)) {
       try {
         await auth.signOut();
         alert("You have been logged out.");
-        window.location.href = "account_creation.html";
+        window.location.href = "Account_Creation.html";
       } catch (err) {
         alert("Error signing out: " + err.message);
       }
     });
   }
-    // ✅ Expose Firebase services globally
-    window.db = db;
-    window.doc = doc;
-    window.setDoc = setDoc;
-    window.getAuth = getAuth;
-    window.auth = auth;
-
-  function displaySelectedCover() {
-  const select = document.getElementById("fav-select");
-  const display = document.getElementById("fav-cover-display");
-  const selectedTitle = select.value.trim().toLowerCase(); // Normalize
-  const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
-
-  if (selectedUrl) {
-    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-  } else {
-    display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
-  }
-}
-
-
-
-window.displaySelectedCover = displaySelectedCover;
-
 </script>
-<script type="module">
- 
-
-  import {
-  getFirestore, doc, getDoc
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import {
-  getAuth, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-
-
-const spotlightRef = document.getElementById("fav-game-updates");
-const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // ✅ Your API key
-
-async function rotateYouTubeVideosForUser(uid) {
-  try {
-    const snap = await getDoc(doc(db, "users", uid));
-    if (!snap.exists()) {
-      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>";
-      return;
-    }
-
-    const { favoriteGames } = snap.data();
-    console.log("Favorite games from Firebase:", favoriteGames);
-    if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
-      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
-      return;
-    }
-
-    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
-
-   const blocks = await Promise.all(
-  favoriteGames.slice(0, 3).map(async (title) => {
-    const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
-    try {
-      const res = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
-      );
-      const data = await res.json();
-
-      // ✅ Handle YouTube quota errors here
-    if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
-    return `
-      <div style="color: var(--gsu-red); text-align: center; padding: 1rem;">
-        Today’s video drops are temporarily unavailable. Check back tomorrow for fresh gameplay!
-        <br/><br/>
-        <button onclick="window.location.href='uploads.html'" style="background-color: var(--gsu-red); color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600;">
-          Explore GSU Player Lounge
-        </button>
-      </div>
-    `;
-  }
-
-
-      const video = data.items?.find(item => item.id.kind === "youtube#video");
-      const videoId = video?.id?.videoId;
-
-      if (!videoId) throw new Error("No videos found");
-
-      return `
-      <div class="spotlight-video">
-        <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
-        <h3>🎮 ${title}</h3>
-        <p>▶️ Daily gameplay drop powered by YouTube</p>
-      </div>
-    `;
-
-    } catch (err) {
-      console.error(`Error loading video for ${title}:`, err);
-      return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
-    }
-  })
-);
-
-
-    spotlightRef.innerHTML = blocks.join("");
-  } catch (e) {
-    console.error("Error fetching YouTube videos:", e);
-    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
-  }
-  
-
-}
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
-    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
-  } else {
-    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
-  }
-});
-</script>
-  
-</body>
-
-</html>
