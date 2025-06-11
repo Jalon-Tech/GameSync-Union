@@ -437,24 +437,34 @@
   </div>
 
   <script>
+    
     function clearChat() {
-        if (confirm("Are you sure you want to delete all chat messages?")) {
-          const chatBox = document.getElementById("liveChat");
-          if (chatBox) {
-            Array.from(chatBox.children).forEach((msg, index) => {
-              setTimeout(() => {
-                msg.classList.add("fade-out");
-              }, index * 50);
-            });
-      
-            setTimeout(() => {
-              db.collection("chat").get().then(snapshot => {
-                snapshot.forEach(doc => doc.ref.delete());
-              });
-            }, 600); // wait for animation to finish before deleting
-          }
-        }
-      }
+  const user = firebase.auth().currentUser;
+  
+  if (!user) return;
+
+  if (confirm("Are you sure you want to delete all chat messages?")) {
+    const chatBox = document.getElementById("liveChat");
+
+    // Add fade-out effect
+    Array.from(chatBox.children).forEach((msg, index) => {
+      msg.classList.add("fade-out");
+    });
+
+    // Delay deletion after animation completes
+    setTimeout(() => {
+      db.collection("chat").get().then(snapshot => {
+        const batch = db.batch();
+        snapshot.forEach(doc => batch.delete(doc.ref));
+        return batch.commit();
+      }).then(() => {
+        console.log("🔥 Chat cleared.");
+        chatBox.innerHTML = ""; // clean DOM
+      });
+    }, 600);
+  }
+}
+
       
       
     const firebaseConfig = {
@@ -492,6 +502,7 @@ window.addFriend = addFriend;
 
   </script>
   <script>
+    
 let currentDMUser = "";
 
 function getChatRoomId(uid1, uid2) {
@@ -636,10 +647,37 @@ firebase.auth().onAuthStateChanged(user => {
 
 
 firebase.auth().onAuthStateChanged(authUser => {
+  
   if (!authUser) {
     console.warn("🚫 Not logged in.");
     return;
   }
+  firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    const userRef = db.collection("users").doc(user.uid);
+    userRef.get().then(doc => {
+      if (!doc.exists) {
+        userRef.set({
+          username: user.email.split("@")[0],  // or prompt them
+          online: true,
+          friends: [],
+          favoriteGames: [],
+          favoriteImages: [],
+          platform: "Not set",
+          gamesPlayed: 0,
+          trophyCount: 0,
+          lastActive: firebase.firestore.FieldValue.serverTimestamp()
+          
+        });
+      } else {
+        userRef.update({ online: true });
+      }
+    });
+  }
+});
+
+
+
 
   console.log("✅ Logged in as:", authUser.email);
 
@@ -805,7 +843,7 @@ firebase.auth().onAuthStateChanged(authUser => {
 
   }
   
-});
+;
 
 function showFeedback(message, bgColor = '#e60023') {
   const banner = document.getElementById("feedbackBanner");
@@ -830,6 +868,7 @@ function showFeedback(message, bgColor = '#e60023') {
 
 </script>
   <script>
+    
     function sendMessage() {
       const input = document.getElementById("chatMessage");
       const message = input.value.trim();
