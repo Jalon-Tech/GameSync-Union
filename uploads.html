@@ -337,6 +337,9 @@
 }
 
   </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
   <div class="page-wrapper">
@@ -434,8 +437,6 @@
   </div>
 
   <script>
-    const db = window.db;
-    const auth = window.auth;
     function clearChat() {
         if (confirm("Are you sure you want to delete all chat messages?")) {
           const chatBox = document.getElementById("liveChat");
@@ -456,11 +457,19 @@
       }
       
       
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
   
     function addFriend(targetUserId, targetUsername) {
+  const user = firebase.auth().currentUser;
   if (!user || user.uid === targetUserId) return;
 
   const userRef = db.collection("users").doc(user.uid);
@@ -468,7 +477,7 @@
 
   // Add the username of the friend to the 'friends' array
   userRef.update({
-    friends: FieldValue.arrayUnion(friendUsername)
+    friends: firebase.firestore.FieldValue.arrayUnion(friendUsername)
   }).then(() => {
     alert(`You added @${friendUsername} as a friend!`);
   }).catch(err => {
@@ -491,6 +500,7 @@ function getChatRoomId(uid1, uid2) {
 
 function openDM(friendId, friendUsername) {
   currentDMUser = friendId;
+  const user = firebase.auth().currentUser;
   if (!user) return;
 
   const roomId = getChatRoomId(user.uid, friendId);
@@ -513,6 +523,7 @@ function openDM(friendId, friendUsername) {
 
 function sendDM() {
   const msg = document.getElementById("dmInput").value.trim();
+  const user = firebase.auth().currentUser;
 if (!msg || !currentDMUser || !user) return;
 
 db.collection("users").doc(user.uid).get().then(doc => {
@@ -522,6 +533,7 @@ db.collection("users").doc(user.uid).get().then(doc => {
   db.collection("dms").doc(roomId).collection("messages").add({
     sender: senderName,
     text: msg,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
   });
 
   document.getElementById("dmInput").value = "";
@@ -536,10 +548,11 @@ function closeDM() {
 }
 
 function sendFriendRequest(targetId) {
+  const user = firebase.auth().currentUser;
   if (!user || user.uid === targetId) return;
 
   db.collection("users").doc(targetId).update({
-    friendRequests: FieldValue.arrayUnion(user.uid)
+    friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
   }).then(() => {
     showFeedback("✅ Friend request sent!");
   });
@@ -548,6 +561,7 @@ function sendFriendRequest(targetId) {
 
 
 function acceptFriend(targetId) {
+  const user = firebase.auth().currentUser;
   if (!user) return;
 
   db.collection("users").doc(user.uid).get().then(doc => {
@@ -556,12 +570,12 @@ function acceptFriend(targetId) {
 
     if (received.includes(targetId)) {
       db.collection("users").doc(user.uid).update({
-        friends: FieldValue.arrayUnion(targetId),
-        friendRequests: FieldValue.arrayRemove(targetId)
+        friends: firebase.firestore.FieldValue.arrayUnion(targetId),
+        friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
       });
 
       db.collection("users").doc(targetId).update({
-        friends: FieldValue.arrayUnion(user.uid)
+        friends: firebase.firestore.FieldValue.arrayUnion(user.uid)
       });
 
       showFeedback("🎉 Friend request accepted!");
@@ -573,6 +587,7 @@ function acceptFriend(targetId) {
 
 
 function declineFriend(targetId) {
+  const user = firebase.auth().currentUser;
   if (!user) return;
 
   db.collection("users").doc(user.uid).get().then(doc => {
@@ -581,7 +596,7 @@ function declineFriend(targetId) {
 
     if (received.includes(targetId)) {
       db.collection("users").doc(user.uid).update({
-        friendRequests: FieldValue.arrayRemove(targetId)
+        friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
       }).then(() => {
         showFeedback("❌ Friend request declined", "#444");
       });
@@ -594,24 +609,24 @@ function declineFriend(targetId) {
 
 
 function removeFriend(targetId, username) {
+  const user = firebase.auth().currentUser;
   if (!user) return;
 
   const currentUserRef = db.collection("users").doc(user.uid);
   const targetUserRef = db.collection("users").doc(targetId);
 
   currentUserRef.update({
-    friends: FieldValue.arrayRemove(targetId)
+    friends: firebase.firestore.FieldValue.arrayRemove(targetId)
   });
 
   targetUserRef.update({
-    friends: FieldValue.arrayRemove(user.uid)
+    friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
   }).then(() => {
     showFeedback(`👋 Removed @${username} as a friend`, "#444");
   });
 }
 
-auth.onAuthStateChanged(user => {
-
+firebase.auth().onAuthStateChanged(user => {
   if (!user) {
     console.warn("🚫 Not logged in.");
   } else {
@@ -620,7 +635,7 @@ auth.onAuthStateChanged(user => {
 });
 
 
-auth.onAuthStateChanged(user => {
+firebase.auth().onAuthStateChanged(authUser => {
   db.collection("users").orderBy("username").onSnapshot(snapshot => {
     const container = document.getElementById("connectPlayers");
     if (!container) {
@@ -639,7 +654,7 @@ auth.onAuthStateChanged(user => {
       const userRef = db.collection("users").doc(authUser.uid);
 
       setInterval(() => {
-
+        userRef.update({ lastActive: firebase.firestore.FieldValue.serverTimestamp() });
       }, 30000); // 30 seconds
     }
 
@@ -784,7 +799,78 @@ function showFeedback(message, bgColor = '#e60023') {
 
 
 </script>
- 
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("chatMessage");
+      const message = input.value.trim();
+      const user = firebase.auth().currentUser;
+    
+      if (!message || !user) return;
+    
+      db.collection("users").doc(user.uid).get().then(doc => {
+        const sender = doc.data()?.username || "Anonymous"; // fallback only if absolutely no username exists
+    
+        db.collection("chat").add({
+          sender: sender,
+          text: message,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          input.value = "";
+        }).catch((error) => {
+          console.error("Error sending message:", error);
+        });
+      });
+    }
+    
+    
+
+// Real-time listener to show new messages
+db.collection("chat").orderBy("timestamp").onSnapshot(snapshot => {
+  const chatBox = document.getElementById("liveChat");
+  chatBox.innerHTML = "";
+
+  snapshot.forEach(doc => {
+  const msg = doc.data();
+  const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "";
+
+  chatBox.innerHTML += `
+    <div class="chat-message" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <span>@${msg.sender}</span> ${msg.text}
+      </div>
+      <div class="chat-time" style="font-size: 0.75rem; color:#aaa; margin-left: 1rem; min-width: 60px; text-align: right;">
+        ${time}
+      </div>
+    </div>
+  `;
+});
+
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+function clearDMChat() {
+  const user = firebase.auth().currentUser;
+  if (!currentDMUser || !user) return;
+
+  if (confirm("Are you sure you want to clear this DM conversation?")) {
+    const roomId = getChatRoomId(user.uid, currentDMUser);
+    const chatBox = document.getElementById("dmMessages");
+
+    Array.from(chatBox.children).forEach((msg, index) => {
+      setTimeout(() => {
+        msg.classList.add("fade-out");
+      }, index * 50);
+    });
+
+    setTimeout(() => {
+      db.collection("dms").doc(roomId).collection("messages").get().then(snapshot => {
+        snapshot.forEach(doc => doc.ref.delete());
+      });
+    }, 600); // after animation
+  }
+}
+
+</script>
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
@@ -797,8 +883,6 @@ function showFeedback(message, bgColor = '#e60023') {
 
 <div id="feedbackBanner" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#e60023; color:#fff; padding:10px 20px; border-radius:8px; font-weight:bold; font-family:Montserrat, sans-serif; display:none; z-index:9999; box-shadow: 0 4px 10px rgba(0,0,0,0.4);">
 </div>
-  
-  <script type="module" src="firebase-init.js"></script>
 
 </body>
 </html>
