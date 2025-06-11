@@ -1317,187 +1317,291 @@ if (user) {
 </script>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// ✅ Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-  authDomain: "gamesync-union.firebaseapp.com",
-  projectId: "gamesync-union",
-  storageBucket: "gamesync-union.appspot.com",
-  messagingSenderId: "488911705365",
-  appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-  measurementId: "G-CP48EXW1EV"
-};
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "488911705365",
+    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+    measurementId: "G-CP48EXW1EV"
+  };
 
-// 🔁 Save to global scope
-window.db = db;
-window.auth = auth;
-window.doc = doc;
-window.setDoc = setDoc;
-window.getDoc = getDoc;
-window.getAuth = getAuth;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-// 🌐 UI Element References
-const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
-const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
-const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
-const signInBtn = document.querySelector('#auth-box .btn');
-const logoutBtn = document.getElementById("logoutBtn");
-const spotlightRef = document.getElementById("fav-game-updates");
-const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // YouTube API
+  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
+  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
+  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
+  const signInBtn = document.querySelector('#auth-box .btn');
 
-// 🔐 Sign-In
-signInBtn.addEventListener('click', async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-  try {
-    const userCred = await signInWithEmailAndPassword(auth, email, password);
-    const uid = userCred.user.uid;
-    loadProfile(uid);
-    rotateYouTubeVideosForUser(uid);
-    alert("Signed in successfully");
-  } catch (err) {
-    alert("Login failed: " + err.message);
+  signInBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      loadProfile(uid);
+      alert("Signed in successfully");
+    } catch (err) {
+      alert("Login failed: " + err.message);
+    }
+  });
+
+  async function loadProfile(uid) {
+    window.favoriteCoverMap = {};
+    const snap = await getDoc(doc(db, "users", uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      console.log("User data:", data);
+
+      const profileBox = document.getElementById("profile-box");
+
+      const usernameEl = document.createElement("p");
+      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+      usernameEl.style.fontWeight = "bold";
+      usernameEl.style.fontSize = "1rem";
+      usernameEl.style.marginBottom = "0.5rem";
+      profileBox.prepend(usernameEl);
+
+      const platformEl = document.createElement("p");
+      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
+      platformEl.style.fontSize = "0.95rem";
+      platformEl.style.marginBottom = "0.5rem";
+      profileBox.insertBefore(platformEl, usernameEl.nextSibling);
+
+      const favGamesEl = document.getElementById("fav-games");
+      const gamesPlayedEl = document.getElementById("games-played");
+      const trophyStatsEl = document.getElementById("trophy-stats");
+
+     let imageRow = document.getElementById("fav-images");
+
+if (!imageRow) {
+  imageRow = document.createElement("div");
+  imageRow.id = "fav-images";
+  imageRow.style.display = "flex";
+  imageRow.style.flexWrap = "wrap";
+  imageRow.style.gap = "0.5rem";
+  imageRow.style.marginTop = "0.8rem";
+  imageRow.style.justifyContent = "center";
+  profileBox.appendChild(imageRow);
+}
+
+imageRow.innerHTML = "";
+
+favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+
+if (Array.isArray(data.favoriteImages)) {
+  data.favoriteImages.forEach((url, index) => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = data.favoriteGames[index] || `Game ${index + 1}`;
+    img.classList.add("profile-fav-img");
+    imageRow.appendChild(img);
+  });
+}
+
+
+
+     if (Array.isArray(data.favoriteImages)) {
+  data.favoriteImages.forEach((url, index) => {
+    const title = data.favoriteGames[index] || `Game ${index + 1}`;
+    const option = document.createElement("option");
+    option.value = title;
+    option.textContent = title;
+    coverDropdown.appendChild(option);
+    const titleKey = title.trim().toLowerCase(); // Normalize
+    window.favoriteCoverMap[titleKey] = url;
+
+  });
+
+  // 👇 Ensure the first game is selected (optional)
+  if (data.favoriteGames.length > 0) {
+    coverDropdown.value = data.favoriteGames[0];
   }
-});
 
-// 🔓 Log out
-logoutBtn?.addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-    alert("You have been logged out.");
-    window.location.href = "account_creation.html";
-  } catch (err) {
-    alert("Error signing out: " + err.message);
+  displaySelectedCover();
+}
+
+
+
+       if (data.favoriteGames?.length && data.favoriteImages?.length) {
+        const firstTitle = data.favoriteGames[0];
+        const firstCover = window.favoriteCoverMap[firstTitle];
+
+  if (firstCover) {
+    displayArea.innerHTML = `<img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+
+    // Optional: set dropdown to match default image
+    document.getElementById("fav-select").value = firstTitle;
   }
-});
+}
+    }
 
-// 🧠 Load Profile Info
-async function loadProfile(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  if (!snap.exists()) return;
+    
+     else {
+      console.warn("User profile data not found.");
+    }
+  }
+  onAuthStateChanged(auth, (user) => {
+    const currentPath = window.location.pathname.toLowerCase();
+    const isLoginPage = currentPath.includes("account_creation.html");
 
-  const data = snap.data();
-  const profileBox = document.getElementById("profile-box");
-  const favGamesEl = document.getElementById("fav-games");
-  const gamesPlayedEl = document.getElementById("games-played");
-  const trophyStatsEl = document.getElementById("trophy-stats");
-  let imageRow = document.getElementById("fav-images");
-  imageRow.innerHTML = "";
+    if (user) {
+      loadProfile(user.uid);
+      document.getElementById("auth-box").style.display = "none";
+    } else {
+      document.getElementById("auth-box").style.display = "block";
+      if (!isLoginPage && currentPath !== "/index.html") {
+        alert("Please log in to access GameSync Union.");
+        window.location.href = "account_creation.html";
+      }
+    }
+  });
 
-  // 🎮 Main Profile Info
-  favGamesEl.textContent = `🔥 Favorite Games: ${data.favoriteGames?.join(", ") || "N/A"}`;
-  gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-  trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  // 🖼️ Game Cover Images
-  if (Array.isArray(data.favoriteImages)) {
-    data.favoriteImages.forEach((url, index) => {
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = data.favoriteGames?.[index] || `Game ${index + 1}`;
-      img.classList.add("profile-fav-img");
-      imageRow.appendChild(img);
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await auth.signOut();
+        alert("You have been logged out.");
+        window.location.href = "account_creation.html";
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
     });
   }
+    // ✅ Expose Firebase services globally
+    window.db = db;
+    window.doc = doc;
+    window.setDoc = setDoc;
+    window.getAuth = getAuth;
+    window.auth = auth;
 
-  // 👤 Username and Platform
-  const usernameEl = document.createElement("p");
-  usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
-  usernameEl.style.fontWeight = "bold";
-  usernameEl.style.fontSize = "1rem";
-  profileBox.prepend(usernameEl);
+  function displaySelectedCover() {
+  const select = document.getElementById("fav-select");
+  const display = document.getElementById("fav-cover-display");
+  const selectedTitle = select.value.trim().toLowerCase(); // Normalize
+  const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
 
-  const platformEl = document.createElement("p");
-  platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
-  platformEl.style.fontSize = "0.95rem";
-  profileBox.insertBefore(platformEl, usernameEl.nextSibling);
+  if (selectedUrl) {
+    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+  } else {
+    display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
+  }
 }
 
-// ▶️ YouTube Gameplay Drop Logic
-async function rotateYouTubeVideosForUser(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  const { favoriteGames } = snap.data() || {};
 
-  if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
-    spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
-    return;
+
+window.displaySelectedCover = displaySelectedCover;
+
+</script>
+<script type="module">
+ 
+
+  import {
+  getFirestore, doc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+
+const spotlightRef = document.getElementById("fav-game-updates");
+const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // ✅ Your API key
+
+async function rotateYouTubeVideosForUser(uid) {
+  try {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (!snap.exists()) {
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>";
+      return;
+    }
+
+    const { favoriteGames } = snap.data();
+    console.log("Favorite games from Firebase:", favoriteGames);
+    if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
+      return;
+    }
+
+    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
+
+   const blocks = await Promise.all(
+  favoriteGames.slice(0, 3).map(async (title) => {
+    const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
+    try {
+      const res = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
+      );
+      const data = await res.json();
+
+      // ✅ Handle YouTube quota errors here
+    if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
+    return `
+      <div style="color: var(--gsu-red); text-align: center; padding: 1rem;">
+        Today’s video drops are temporarily unavailable. Check back tomorrow for fresh gameplay!
+        <br/><br/>
+        <button onclick="window.location.href='uploads.html'" style="background-color: var(--gsu-red); color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600;">
+          Explore GSU Player Lounge
+        </button>
+      </div>
+    `;
   }
 
-  spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
 
-  const blocks = await Promise.all(
-    favoriteGames.slice(0, 3).map(async (title) => {
-      const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim();
-      try {
-        const res = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
-        );
-        const data = await res.json();
+      const video = data.items?.find(item => item.id.kind === "youtube#video");
+      const videoId = video?.id?.videoId;
 
-        if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
-          return `<div style="color: var(--gsu-red); text-align: center; padding: 1rem;">
-            🚫 YouTube API limit reached. Check back tomorrow for gameplay!
-          </div>`;
-        }
+      if (!videoId) throw new Error("No videos found");
 
-        const video = data.items?.find(item => item.id.kind === "youtube#video");
-        const videoId = video?.id?.videoId;
-        if (!videoId) throw new Error("No video found");
+      return `
+      <div class="spotlight-video">
+        <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+        <h3>🎮 ${title}</h3>
+        <p>▶️ Daily gameplay drop powered by YouTube</p>
+      </div>
+    `;
 
-        return `
-          <div class="spotlight-video">
-            <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
-            <h3>🎮 ${title}</h3>
-            <p>▶️ Daily gameplay drop powered by YouTube</p>
-          </div>
-        `;
-      } catch (err) {
-        console.error(`Error for ${title}:`, err);
-        return `<div style="color:red; text-align:center;">❌ Error loading video for <strong>${title}</strong></div>`;
-      }
-    })
-  );
+    } catch (err) {
+      console.error(`Error loading video for ${title}:`, err);
+      return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
+    }
+  })
+);
 
-  spotlightRef.innerHTML = blocks.join("");
+
+    spotlightRef.innerHTML = blocks.join("");
+  } catch (e) {
+    console.error("Error fetching YouTube videos:", e);
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
+  }
+  
+
 }
 
-// 🔐 Auth Watcher
 onAuthStateChanged(auth, (user) => {
-  const currentPath = window.location.pathname.toLowerCase();
-  const isLoginPage = currentPath.includes("account_creation.html");
-
   if (user) {
-    loadProfile(user.uid);
-    rotateYouTubeVideosForUser(user.uid);
-    document.getElementById("auth-box").style.display = "none";
+    rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
+    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
   } else {
-    document.getElementById("auth-box").style.display = "block";
-    if (!isLoginPage && currentPath !== "/index.html") {
-      alert("Please log in to access GameSync Union.");
-      window.location.href = "account_creation.html";
-    }
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
 });
 </script>
-
   
 </body>
 
