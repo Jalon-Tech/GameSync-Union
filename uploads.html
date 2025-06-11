@@ -733,7 +733,14 @@ firebase.auth().onAuthStateChanged(authUser => {
       const div = document.createElement("div");
       div.classList.add("upload-card");
       div.innerHTML = `
-        <h3><span class="status-dot ${status}"></span>🎮 @${user.username}</h3>
+          <h3>
+          <span class="status-dot ${status}"></span>
+          <span style="color: ${status === 'online' ? 'var(--gsu-red)' : '#aaa'}; font-weight: bold;">
+            ${status.toUpperCase()}
+          </span>
+          🎮 @${user.username}
+        </h3>
+
         <p><strong>Platform:</strong> ${user.platform || "Not set"}</p>
         <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
         <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
