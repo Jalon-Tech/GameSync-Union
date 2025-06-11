@@ -186,6 +186,7 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -215,10 +216,10 @@
     });
 
     function uploadTrophy() {
-      const title = document.getElementById("trophyTitle").value;
-      const game = document.getElementById("gameName").value;
-      const cover = document.getElementById("coverURL").value;
-      const description = document.getElementById("description").value;
+      const title = document.getElementById("trophyTitle").value.trim();
+      const game = document.getElementById("gameName").value.trim();
+      const cover = document.getElementById("coverURL").value.trim();
+      const description = document.getElementById("description").value.trim();
       const user = auth.currentUser;
 
       if (!user || !title || !game || !cover) {
