@@ -727,7 +727,7 @@ firebase.auth().onAuthStateChanged(authUser => {
         if (isFriend) {
           friendActions = `
             <button onclick="openDM('${userId}', '${user.username}')">💬 DM</button>
-            <button onclick="removeFriend('${userId}', '${user.username}')">🗑️ Remove</button>`;
+            <button onclick="removeFriend('${userId}', '${user.username}')">❌ Unfriend</button>`;
         } else if (sentRequest) {
           friendActions = `<span style="color: var(--gsu-red); font-weight: bold;">🔴 Pending</span>`;
         } else if (receivedRequest) {
@@ -735,7 +735,7 @@ firebase.auth().onAuthStateChanged(authUser => {
             <button onclick="acceptFriend('${userId}')">✅ Accept</button>
             <button onclick="declineFriend('${userId}')">❌ Decline</button>`;
         } else {
-          friendActions = `<button onclick="sendFriendRequest('${userId}')">➕ Add Friend</button>`;
+          friendActions = `<button onclick="sendFriendRequest('${userId}')">✅ Add Friend</button>`;
         }
       }
 
