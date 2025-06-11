@@ -10,6 +10,48 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <style>
+    .trophy-highlight {
+  background: linear-gradient(90deg, #e60023 10%, transparent 100%);
+  border-left: 5px solid #e60023;
+  padding: 0.75rem 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 10px rgba(230, 0, 35, 0.2);
+  border-radius: 6px;
+}
+
+.trophy-badge {
+  display: inline-block;
+  background-color: var(--gsu-red);
+  color: white;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trophy-card h3::after {
+  content: " 🔥";
+  font-size: 1rem;
+}
+
+.gsu-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #e60023 20%, #2a2a2a 100%);
+  color: white;
+  padding: 0.8rem 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 15px rgba(230, 0, 35, 0.3);
+}
+
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -53,6 +95,7 @@
 
     nav a:hover { color: var(--gsu-red); }
 
+    
     .main-container {
       padding: 2rem;
       display: flex;
@@ -60,6 +103,7 @@
       gap: 2rem;
       flex: 1;
     }
+    
 
     .box {
       background-color: var(--black-faded);
@@ -98,57 +142,79 @@
       margin-top: 1.2rem;
     }
 
-    .trophy-card {
-      background-color: #2a2a2a;
-      border-radius: 6px;
-      padding: 1rem;
-      width: calc(33.3% - 1rem);
-      transition: 0.3s ease all;
-      border: 1px solid transparent;
-      position: relative;
-    }
+   .trophy-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
 
-    .trophy-card:hover {
-      border: 1px solid var(--gsu-red);
-      box-shadow: 0 0 8px rgba(230, 0, 35, 0.3);
-      transform: translateY(-3px);
-    }
+.trophy-card {
+  background-color: #2a2a2a;
+  border: 2px solid var(--gsu-red);
+  border-radius: 10px;
+  padding: 0.8rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  box-shadow: 0 0 14px rgba(230, 0, 35, 0.3);
+}
 
-    .trophy-card img {
-      display: block;
-      width: 100%;
-      height: auto;
-      border-radius: 6px;
-      margin-bottom: 0.6rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    }
+.trophy-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 25px rgba(230, 0, 35, 0.5);
+}
 
-    .trophy-card h3 {
-      font-family: 'Montserrat', sans-serif;
-      margin: 0.5rem 0 0.3rem 0;
-    }
+.trophy-card::before {
+  content: "🏆";
+  font-size: 2rem;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--gsu-red);
+  color: white;
+  padding: 6px 10px;
+  border-bottom-left-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
 
-    .trophy-card p {
-      font-size: 0.85rem;
-      opacity: 0.85;
-    }
+.trophy-card img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.trophy-card h3 {
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  margin: 0.4rem 0 0.3rem 0;
+  color: var(--white-text);
+}
+
+.trophy-card p {
+  font-size: 0.8rem;
+  color: #ccc;
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
 
     .delete-btn {
-      background: transparent;
-      color: #e60023;
-      border: 1px solid #e60023;
-      font-size: 0.75rem;
-      border-radius: 4px;
-      margin-top: 0.5rem;
-      cursor: pointer;
-      padding: 0.3rem 0.6rem;
-      transition: 0.2s;
-    }
+  background: none;
+  color: var(--gsu-red);
+  border: 1px solid var(--gsu-red);
+  font-size: 0.7rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
 
-    .delete-btn:hover {
-      background-color: #e60023;
-      color: white;
-    }
+.delete-btn:hover {
+  background-color: var(--gsu-red);
+  color: white;
+}
+
 
     footer {
       background-color: var(--black-faded);
@@ -192,12 +258,17 @@
     </nav>
   </header>
 
-  <div class="main-container">
-    <div class="box">
-      <h2>🔥 GSU Hall of Trophies & Achievements</h2>
-      <p>Only the bold make it here — rare feats, brutal grinds, and flex-worthy wins from the GSU elite.</p>
-      <div class="trophy-list" id="trophyList"></div>
-    </div>
+  <div class="box">
+  <h2>🔥 GSU Hall of Trophies & Achievements</h2>
+  <p>Only the bold make it here — rare feats, brutal grinds, and flex-worthy wins from the GSU elite.</p>
+  
+  
+  <div class="gsu-banner" role="banner" aria-label="Trophy Highlight">
+    💥 <strong>Flex Your Wins.</strong> Claim Your Spot in the <span style="color: var(--gsu-red); font-weight: bold;">GSU Hall of Legends</span>.
+  </div>
+
+  <div class="trophy-list" id="trophyList"></div>
+</div>
 
     <div class="box">
       <h2>🏆 Show Off Your Trophies & Achievements to the GSU Squad!</h2>
