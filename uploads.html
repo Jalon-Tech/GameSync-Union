@@ -281,22 +281,21 @@
 
 .upload-card {
   background-color: #1f1f1f;
-  border: 2px solid #fff; /* White border */
+  border: 2px solid #fff; /* Default white border */
   border-radius: 12px;
   padding: 1.2rem;
   color: var(--white-text);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .upload-card:hover {
-  border-color: var(--gsu-red); /* Hover = GSU red */
-  box-shadow: 0 0 20px rgba(230, 0, 35, 0.25);
-  transform: scale(1.015);
-  z-index: 1;
+  border-color: var(--gsu-red); /* GSU red on hover */
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.4);
 }
+
 
 
 .upload-card img {
@@ -306,6 +305,9 @@
   flex-shrink: 0;
 }
 
+#connectPlayers {
+  margin-top: 3rem;
+}
 
 .gamer-of-week {
   background-color: #1f1f1f;
