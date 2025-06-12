@@ -199,9 +199,17 @@
           <h3>${data.title}</h3>
           <p>${data.description || "No description provided."}</p>
           <div style="margin-top: 0.8rem;">
-            <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-bottom: 0.3rem;">
-              Uploaded by: <span style="font-weight: bold;">${data.username || "Unknown"}</span>
-            </p>
+          <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-bottom: 0.3rem;">
+            Uploaded by: <span style="font-weight: bold;">${data.username || "Unknown"}</span>
+          </p>
+          <p style="font-size: 0.9rem; color: var(--gsu-red); margin-top: 0.2rem;">
+            📅 Posted on: ${data.timestamp?.toDate().toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            }) || 'Unknown'}
+          </p>
+
             ${data.shoutout ? `
               <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-top: 0.2rem;">
                 Shoutout to artist: <span style="font-weight: bold;">@${data.shoutout}</span>
