@@ -133,7 +133,7 @@
 }
 .showoff-img {
   width: 200px;
-  height: 360px;
+  height: 120px;
   object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
@@ -423,13 +423,13 @@ nav a:hover {
 
 .spotlight-video iframe {
   width: 100%;
-  height: 360px;
+  height: 340px;
   border-radius: 10px;
 }
 
 @media (max-width: 768px) {
   .spotlight-video iframe {
-    height: 360px;
+    height: 220px;
   }
 }
 
@@ -460,7 +460,7 @@ nav a:hover {
 
 
 #character-image {
-  height: 360px;
+  height: 280px;
   width: auto;
   object-fit: contain;
   border-radius: 0;
@@ -499,19 +499,14 @@ nav a:hover {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  gap: 1.5rem;
-  padding: 1.2rem 1rem;
-  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  justify-content: flex-start;
   max-width: 100%;
-  background: #1a1a1a;
-  border: 2px solid #333;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.08);
 }
 
-
 #fav-images img {
-  height: 360px;
+  height: 140px;
   width: auto;
   object-fit: contain;
   scroll-snap-align: center;
@@ -537,7 +532,7 @@ nav a:hover {
 }
 
 .profile-fav-img {
-  max-height: 360px;
+  max-height: 120px;
   width: auto;
 }
 .box h2 {
@@ -621,7 +616,7 @@ nav a:hover {
     transition: transform 0.3s ease;"/>
 
 
-  <div style="font-size: 0.85rem; max-width: 360px;" id="character-desc">
+  <div style="font-size: 0.85rem; max-width: 260px;" id="character-desc">
     Analyzing traits from your favorite games...
   </div>
 </div>
@@ -1008,7 +1003,7 @@ When the Union highlights you — it means something. If your name’s echoing i
         img.src = url;
         img.alt = "Game cover";
         img.classList.add("profile-fav-img");
-        img.style.width = "360px";
+        img.style.width = "120px";
         img.style.borderRadius = "8px";
         img.style.transition = "transform 0.3s";
         img.style.cursor = "pointer";
@@ -1243,21 +1238,19 @@ When the Union highlights you — it means something. If your name’s echoing i
   to { opacity: 1; }
 }
 .profile-fav-img {
-  height: 360px; /* 🔺 Increased from 180px */
+  height: 140px;
   object-fit: contain;
   background-color: #111;
-  border-radius: 16px;
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   transition: transform 0.3s ease;
   scroll-snap-align: center;
-  padding: 8px;
+  padding: 6px;
 }
-
 .profile-fav-img:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
 }
-
 
 </style>
 
