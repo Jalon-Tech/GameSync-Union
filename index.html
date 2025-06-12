@@ -8,35 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
 
 <style>
-  .livewire-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1.4rem;
-  margin-top: 1.4rem;
-  justify-content: flex-start;
-}
-
-.stat-item {
-  background: #2a2a2a;
-  padding: 0.9rem;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-family: 'Roboto', sans-serif;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.25); /* ✅ white outline */
-  text-align: center;
-  color: #fff;
-  cursor: default;
-}
-
-.stat-item:hover {
-  transform: scale(1.05);
-  background-color: #333;
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
-  border-color: var(--gsu-red);
-}
-
   main > .box:not(:last-child) {
   margin-bottom: 2.2rem;
 }
@@ -102,6 +73,27 @@
 }
 
 
+.livewire-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.stat-item {
+  background: #2a2a2a;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: 'Roboto', sans-serif;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.stat-item:hover {
+  transform: scale(1.03);
+  background-color: #333;
+  box-shadow: 0 0 10px rgba(230, 0, 35, 0.25);
+}
 
 .culture-grid {
   display: grid;
@@ -551,18 +543,6 @@ nav a:hover {
   animation: fadeSlideIn 0.6s ease-out;
 }
 
-main .box:not(#profile-box) {
-  background: linear-gradient(to bottom right, #1e1e1e, #282828);
-  border: 2px solid var(--gsu-red);
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.2);
-  border-radius: 10px;
-  animation: fadeSlideIn 0.5s ease-out;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-main .box:not(#profile-box):hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 0 18px rgba(230, 0, 35, 0.3), 0 0 10px rgba(255, 255, 255, 0.05);
-}
 
   </style>
 </head>
@@ -885,7 +865,19 @@ main .box:not(#profile-box):hover {
   </div>
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
+<div class="box">
+  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
+  <div class="livewire-stats">
+    <div class="stat-item">📹 28 new uploads this week</div>
+    <div class="stat-item">🎨 12 fan arts added</div>
+    <div class="stat-item">🏆 39 new trophies earned</div>
+    <div class="stat-item">💬 52 new Lounge posts</div>
+    <div class="stat-item">👥 17 new GSU members joined</div>
+    <div class="stat-item">👾 14 combos submitted</div>
+    <div class="stat-item">📊 6 polls voted on</div>
+  </div>
 
+</div>
 
 <div class="box">
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">💪 Built by GSU. Flexed by Gamers.</h2>
@@ -986,19 +978,7 @@ When the Union highlights you — it means something. If your name’s echoing i
 </div>
 
     </main>
-    <div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
-  <div class="livewire-stats">
-    <div class="stat-item">📹 28 new uploads this week</div>
-    <div class="stat-item">🎨 12 fan arts added</div>
-    <div class="stat-item">🏆 39 new trophies earned</div>
-    <div class="stat-item">💬 52 new Lounge posts</div>
-    <div class="stat-item">👥 17 new GSU members joined</div>
-    <div class="stat-item">👾 14 combos submitted</div>
-    <div class="stat-item">📊 6 polls voted on</div>
-  </div>
 
-</div>
     <aside>
       
 
