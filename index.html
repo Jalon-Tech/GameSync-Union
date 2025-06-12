@@ -499,19 +499,14 @@ nav a:hover {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  gap: 1.5rem;
-  padding: 1.2rem 1rem;
-  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  justify-content: flex-start;
   max-width: 100%;
-  background: #1a1a1a;
-  border: 2px solid #333;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.08);
 }
 
-
 #fav-images img {
-  height: 280px;
+  height: 140px;
   width: auto;
   object-fit: contain;
   scroll-snap-align: center;
@@ -820,7 +815,7 @@ nav a:hover {
 
   function assignCharacter() {
     const random = CharacterAssignments[Math.floor(Math.random() * CharacterAssignments.length)];
-    document.getElementById("character-role").innerText = 🎮 You Are: ${random.name} (${random.role});
+    document.getElementById("character-role").innerText = `🎮 You Are: ${random.name} (${random.role})`;
     document.getElementById("character-desc").innerText = random.desc;
     document.getElementById("character-image").src = random.img;
   }
@@ -1243,20 +1238,19 @@ When the Union highlights you — it means something. If your name’s echoing i
   to { opacity: 1; }
 }
 .profile-fav-img {
-  height: 180px;
+  height: 140px;
   object-fit: contain;
   background-color: #111;
-  border-radius: 14px;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   transition: transform 0.3s ease;
   scroll-snap-align: center;
   padding: 6px;
 }
 .profile-fav-img:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
 }
-
 
 </style>
 
@@ -1303,9 +1297,9 @@ if (user) {
 
 
 
-  document.getElementById('fav-games').textContent = 🔥 Favorite Games: ${games};
-  document.getElementById('games-played').textContent = 🎮 Number Of Games Played: ${gamesPlayed};
-  document.getElementById('trophy-stats').textContent = 🏆 Trophy Stats (Total Trophies): ${trophies};
+  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
+  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
+  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
 
   const imageRow = document.getElementById("fav-images");
   imageRow.innerHTML = "";
@@ -1383,14 +1377,14 @@ if (user) {
       const profileBox = document.getElementById("profile-box");
 
       const usernameEl = document.createElement("p");
-      usernameEl.textContent = 👤 Username: ${data.username || "N/A"};
+      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
       usernameEl.style.fontWeight = "bold";
       usernameEl.style.fontSize = "1rem";
       usernameEl.style.marginBottom = "0.5rem";
       profileBox.prepend(usernameEl);
 
       const platformEl = document.createElement("p");
-      platformEl.textContent = 🔹 Platform: ${data.platform || "N/A"};
+      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
       platformEl.style.fontSize = "0.95rem";
       platformEl.style.marginBottom = "0.5rem";
       profileBox.insertBefore(platformEl, usernameEl.nextSibling);
@@ -1414,15 +1408,15 @@ if (!imageRow) {
 
 imageRow.innerHTML = "";
 
-favGamesEl.textContent = 🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"};
-gamesPlayedEl.textContent = 🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"};
-trophyStatsEl.textContent = 🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"};
+favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
 
 if (Array.isArray(data.favoriteImages)) {
   data.favoriteImages.forEach((url, index) => {
     const img = document.createElement("img");
     img.src = url;
-    img.alt = data.favoriteGames[index] || Game ${index + 1};
+    img.alt = data.favoriteGames[index] || `Game ${index + 1}`;
     img.classList.add("profile-fav-img");
     imageRow.appendChild(img);
   });
@@ -1432,7 +1426,7 @@ if (Array.isArray(data.favoriteImages)) {
 
      if (Array.isArray(data.favoriteImages)) {
   data.favoriteImages.forEach((url, index) => {
-    const title = data.favoriteGames[index] || Game ${index + 1};
+    const title = data.favoriteGames[index] || `Game ${index + 1}`;
     const option = document.createElement("option");
     option.value = title;
     option.textContent = title;
@@ -1457,7 +1451,7 @@ if (Array.isArray(data.favoriteImages)) {
         const firstCover = window.favoriteCoverMap[firstTitle];
 
   if (firstCover) {
-    displayArea.innerHTML = <img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">;
+    displayArea.innerHTML = `<img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
 
     // Optional: set dropdown to match default image
     document.getElementById("fav-select").value = firstTitle;
@@ -1513,7 +1507,7 @@ if (Array.isArray(data.favoriteImages)) {
   const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
 
   if (selectedUrl) {
-    display.innerHTML = <img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">;
+    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
   } else {
     display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
   }
@@ -1560,13 +1554,13 @@ async function rotateYouTubeVideosForUser(uid) {
     const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
     try {
       const res = await fetch(
-        https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}
+        `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
       );
       const data = await res.json();
 
       // ✅ Handle YouTube quota errors here
     if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
-    return 
+    return `
       <div style="color: var(--gsu-red); text-align: center; padding: 1rem;">
         Today’s video drops are temporarily unavailable. Check back tomorrow for fresh gameplay!
         <br/><br/>
@@ -1574,7 +1568,7 @@ async function rotateYouTubeVideosForUser(uid) {
           Explore GSU Player Lounge
         </button>
       </div>
-    ;
+    `;
   }
 
 
@@ -1583,17 +1577,17 @@ async function rotateYouTubeVideosForUser(uid) {
 
       if (!videoId) throw new Error("No videos found");
 
-      return 
+      return `
       <div class="spotlight-video">
         <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
         <h3>🎮 ${title}</h3>
         <p>▶️ Daily gameplay drop powered by YouTube</p>
       </div>
-    ;
+    `;
 
     } catch (err) {
-      console.error(Error loading video for ${title}:, err);
-      return <div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>;
+      console.error(`Error loading video for ${title}:`, err);
+      return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
     }
   })
 );
@@ -1602,7 +1596,7 @@ async function rotateYouTubeVideosForUser(uid) {
     spotlightRef.innerHTML = blocks.join("");
   } catch (e) {
     console.error("Error fetching YouTube videos:", e);
-    spotlightRef.innerHTML = <p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>;
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
   }
   
 
@@ -1613,7 +1607,7 @@ onAuthStateChanged(auth, (user) => {
     rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
     setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
   } else {
-    spotlightRef.innerHTML = <p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>;
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
 });
 </script>
