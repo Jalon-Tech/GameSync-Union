@@ -551,6 +551,18 @@ nav a:hover {
   animation: fadeSlideIn 0.6s ease-out;
 }
 
+main .box:not(#profile-box) {
+  background: linear-gradient(to bottom right, #1e1e1e, #282828);
+  border: 2px solid var(--gsu-red);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.2);
+  border-radius: 10px;
+  animation: fadeSlideIn 0.5s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+main .box:not(#profile-box):hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 0 18px rgba(230, 0, 35, 0.3), 0 0 10px rgba(255, 255, 255, 0.05);
+}
 
   </style>
 </head>
