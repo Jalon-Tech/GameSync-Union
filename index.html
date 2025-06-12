@@ -639,173 +639,791 @@ nav a:hover {
     "🎤 Mortal Kombat sparked U.S. government hearings that led to the ESRB rating system.",
     "🌀 SNES Mode 7 graphics engine enabled fake 3D effects in F-Zero and Mario Kart.",
     "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
-  ];
+  ];const CharacterAssignments = [
+  // 🎮 XBOX PROTAGONISTS (20)
+  {
+    name: "Master Chief",
+    role: "🟩 Protagonist",
+    desc: "A symbol of strength and strategy, you're a Spartan at heart. Calm under pressure, built for battle — just like the Chief.",
+    game: "Halo Infinite",
+    img: "https://cdn.mos.cms.futurecdn.net/B36AzWzV66NGm9KHnHKy3i-1200-80.jpg"
+  },
+  {
+    name: "Kait Diaz",
+    role: "🟩 Protagonist",
+    desc: "Strong-willed and scarred by legacy, Kait’s journey mirrors your rise from confusion to clarity — all through grit.",
+    game: "Gears 5",
+    img: "https://assets.xboxservices.com/assets/3f/0a/3f0a4e3e-48f6-4a0f-86e4-1ec3cbdde8e2.jpg"
+  },
+  {
+    name: "Marcus Fenix",
+    role: "🟩 Protagonist",
+    desc: "Battle-hardened and brutally honest, your leadership echoes Marcus — the gruff, dependable legend of Gears.",
+    game: "Gears of War 4",
+    img: "https://cdn.vox-cdn.com/uploads/chorus_image/image/50115945/gears4_e3_promo.0.0.jpg"
+  },
+  {
+    name: "Razputin Aquato",
+    role: "🟩 Protagonist",
+    desc: "A mind-bending dreamer with psychic flair — you’re imaginative and brave, just like Raz from Psychonauts.",
+    game: "Psychonauts 2",
+    img: "https://cdn.akamai.steamstatic.com/steam/apps/607080/header.jpg"
+  },
+  {
+    name: "Corvo Attano",
+    role: "🟩 Protagonist",
+    desc: "You move in shadows and strike with style. A master of stealth and revenge, Corvo matches your silent intensity.",
+    game: "Dishonored",
+    img: "https://static.wikia.nocookie.net/dishonoredvideogame/images/0/0a/Corvo_-_Dishonored_2.png"
+  },
+  {
+    name: "Cal Kestis",
+    role: "🟩 Protagonist",
+    desc: "You’re a survivor with Jedi resolve, forging your path against all odds. Like Cal, the fight is personal.",
+    game: "Star Wars Jedi: Survivor",
+    img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2023/03/cal-kestis-star-wars-jedi-survivor.jpg"
+  },
+  {
+    name: "BJ Blazkowicz",
+    role: "🟩 Protagonist",
+    desc: "You’re rebellious, raw, and relentless — just like B.J., fighting fascism with grit and guts.",
+    game: "Wolfenstein II: The New Colossus",
+    img: "https://images.ctfassets.net/rporu91m20dc/6o0bKkXyAlFc0RGnD35Hnn/730cb6de9a23fd2e95c2f8ce64ee4f3f/WolfensteinII-NewColossus.jpg"
+  },
+  {
+    name: "Senua",
+    role: "🟩 Protagonist",
+    desc: "Fierce, vulnerable, and visionary — Senua walks through darkness with resolve, just like your inner strength.",
+    game: "Senua’s Saga: Hellblade II",
+    img: "https://cdn.cloudflare.steamstatic.com/steam/apps/2345400/header.jpg"
+  },
+  {
+    name: "Colt",
+    role: "🟩 Protagonist",
+    desc: "Stuck in a loop and breaking rules. Colt’s clever rebellion suits your chaotic logic and snarky resolve.",
+    game: "Deathloop",
+    img: "https://cdn.akamai.steamstatic.com/steam/apps/1252330/header.jpg"
+  },
+  {
+    name: "Emily Kaldwin",
+    role: "🟩 Protagonist",
+    desc: "Royal yet ruthless, Emily channels your balance of grace and ferocity. Your presence turns tides.",
+    game: "Dishonored 2",
+    img: "https://images.squarespace-cdn.com/content/v1/51b3dc8ee4b051b96ceb10de/1476650911739-5EIQNBBNJG84FEP05XAK/Dishonored+2+Emily+Kaldwin.jpg"
+  },
+  {
+    name: "Faith Connors",
+    role: "🟩 Protagonist",
+    desc: "You run above the noise and push against control. Faith's free spirit mirrors your rebellion.",
+    game: "Mirror's Edge Catalyst",
+    img: "https://cdn.mos.cms.futurecdn.net/tH5N6P5oDJgRPrWDSpzRmR.jpg"
+  },
+  {
+    name: "Agent 47",
+    role: "🟩 Protagonist",
+    desc: "Cold. Calculated. Precise. Agent 47's mastery of execution syncs with your silent control.",
+    game: "Hitman 3",
+    img: "https://images.cgames.de/images/gamestar/210/hitman-3-test-01_6139271.jpg"
+  },
+  {
+    name: "Vault Hunter",
+    role: "🟩 Protagonist",
+    desc: "Chaotic, comedic, and deadly. You live on the edge like any true Vault Hunter in Borderlands.",
+    game: "Borderlands 3",
+    img: "https://images.pushsquare.com/8aeb15920c3fe/borderlands-3-cover.cover_large.jpg"
+  },
+  {
+    name: "Jack Cooper",
+    role: "🟩 Protagonist",
+    desc: "Quick-thinking and synced with a titan. Jack Cooper reflects your agility and bond with power.",
+    game: "Titanfall 2",
+    img: "https://cdn.cloudflare.steamstatic.com/steam/apps/1237970/header.jpg"
+  },
+  {
+    name: "Alan Wake",
+    role: "🟩 Protagonist",
+    desc: "Author of horror, trapped in his own words. Alan Wake mirrors your dark imagination and mystery.",
+    game: "Alan Wake Remastered",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/10/Alan-Wake-Remastered-Feature-Image.jpg"
+  },
+  {
+    name: "Max Payne",
+    role: "🟩 Protagonist",
+    desc: "Grizzled, haunted, and relentless. Max fights through pain — just like your inner resolve.",
+    game: "Max Payne 3",
+    img: "https://cdn.akamai.steamstatic.com/steam/apps/204100/header.jpg"
+  },
+  {
+    name: "Banjo",
+    role: "🟩 Protagonist",
+    desc: "Laid-back, adventurous, and bear-huggable. Banjo fits your easygoing but brave spirit.",
+    game: "Banjo-Kazooie",
+    img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2021/10/Banjo-Kazooie-N64.jpg"
+  },
+  {
+    name: "Conker",
+    role: "🟩 Protagonist",
+    desc: "Raunchy, reckless, and rude — you're not for kids, and neither is Conker.",
+    game: "Conker's Bad Fur Day",
+    img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2022/08/Conkers-Bad-Fur-Day.jpg"
+  },
+  {
+    name: "The Arbiter",
+    role: "🟩 Protagonist",
+    desc: "Once an enemy, now a redeemed legend. Arbiter reflects your redemption arc and warrior's code.",
+    game: "Halo 3",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/03/The-Arbiter-Halo.jpg"
+  },
 
-  const CharacterAssignments = [
+  // 👿 XBOX ANTAGONISTS (20)
   {
-    name: "Kratos",
-    role: "🟥-🟦 Antagonist-Turned-Protagonist",
-    desc: "Based on your love for intense, emotional action titles, you were assigned Kratos — a warrior driven by vengeance, but shaped by fatherhood and power.",
-    game: "God of War (2018)",
-    img: "https://images7.alphacoders.com/714/714040.jpg"
-  },
-  {
-    name: "Miles Morales",
-    role: "🟦 Protagonist",
-    desc: "Your connection to modern heroism, style, and skill syncs you with Miles Morales. You're driven, community-rooted, and got mad swing power.",
-    game: "Marvel's Spider-Man: Miles Morales",
-    img: "https://cdn.mos.cms.futurecdn.net/DUggVweyTBsPWDKyENcuh5-1200-80.jpg"
-  },
-  {
-    name: "Peter Parker (Spider-Man)",
-    role: "🟦 Protagonist",
-    desc: "You take responsibility seriously, balance power with heart, and swing between chaos and control — just like Peter Parker.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://images.warnersallman.com/big/4006-marvel039s-spider-man-2-spiderman-peter-parker.jpg"
-  },
-  {
-    name: "Doctor Octopus",
+    name: "Atriox",
     role: "🟥 Antagonist",
-    desc: "Driven by intellect and ambition, your path mirrors Otto Octavius — a mind once noble, now twisted by obsession.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://i.ytimg.com/vi/GhyoeU1wR4I/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLA7DMLD3lO73POqynoCO9ITkIDmqA"
+    desc: "Powerful and strategic, Atriox’s brute command mirrors your relentless force and cold ambition.",
+    game: "Halo Wars 2",
+    img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2021/07/Atriox.jpg"
   },
   {
-    name: "Venom",
+    name: "Harbinger",
     role: "🟥 Antagonist",
-    desc: "You're overwhelming, unpredictable, and raw. This match reflects your affinity for chaos fused with personal conflict.",
-    game: "Marvel's Spider-Man 2",
-    img: "https://image.api.playstation.com/vulcan/ap/rnd/202308/0718/e2293c139402f6a14ffb7b69ea4da5fbfd58939bd9bccd5b.jpg"
+    desc: "Mysterious and radical, Harbinger seeks to rewrite destiny — much like your refusal to follow rules.",
+    game: "Halo Infinite",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/12/Harbinger-Halo-Infinite.jpg"
   },
   {
-    name: "Kraven the Hunter",
+    name: "Queen Myrrah",
     role: "🟥 Antagonist",
-    desc: "You're precise, primal, and relentless — hunting for worthy opponents like Kraven, seeking purpose through dominance.",
-    game: "Marvel's Spider-Man 2",
-    img: "https://cdn.marvel.com/content/1x/msm2_launch_kraven_4k_legal_2023.jpg"
+    desc: "Elegant and lethal, Myrrah rules the Locust with chilling resolve — a match for your cold logic.",
+    game: "Gears of War 3",
+    img: "https://static.wikia.nocookie.net/gearsofwar/images/d/dc/Myrrah_GOW3.png"
   },
   {
-    name: "Mr. Negative",
+    name: "General RAAM",
     role: "🟥 Antagonist",
-    desc: "Calm on the surface, but chaotic underneath. This duality makes you an unpredictable force like Martin Li.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://cdn.marvel.com/content/1x/msm2_characterhighlights_mrnegative_4k_legal_2023.jpg"
+    desc: "Brutal and unstoppable, RAAM’s crushing style suits your take-no-prisoners mindset.",
+    game: "Gears of War",
+    img: "https://www.windowscentral.com/sites/wpcentral.com/files/styles/xlarge/public/field/image/2016/06/gears-war-ultimate-general-raam.jpg"
   },
   {
-    name: "Electro",
+    name: "Delilah Copperspoon",
     role: "🟥 Antagonist",
-    desc: "Electrifying rage and chaotic energy define you. Like Max Dillon, you're unpredictable and always charged up.",
-    game: "Marvel's Spider-Man Remastered",
-    img: "https://external-preview.redd.it/fighting-electro-and-vulture-in-spiderman-ps5-v0-5J6_1r6dac2Id2mnXfeU7bgHaogx2zJ2mvz-QHCa0yU.png?format=pjpg&auto=webp&s=22b19aeb54f3dbcd745151fcbeedeadf08e2f8c1"
+    desc: "Artist of deception. Delilah’s illusionary reign fits your flair for bending truth and reality.",
+    game: "Dishonored 2",
+    img: "https://static.wikia.nocookie.net/dishonoredvideogame/images/6/63/Delilah_-_D2.png"
   },
   {
-    name: "Atreus",
-    role: "🟦 Protagonist",
-    desc: "Strategic, emotional, and still growing into greatness. You reflect the future of power — Atreus’ spirit lives in your gameplay.",
-    game: "God of War Ragnarök",
-    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgp-xLVfic-GJT_nidJU8RBRjxQl31RRNltKT_cns5L2hYm4MH3cSSooHeJcEPLSaFrERpS80iv6XMng9Bo9lxwzBac2S8CHWN0bfnjRBHx2ugbZJPe_svxmIpq8lKFxNyiVxlr2Tw5_-Yj/w919/god-of-war-ragnarok-atreus-ps5-game-screenshot-4k-uhdpaper.com-723.1_b-thumbnail.jpg"
-  },
-  {
-    name: "Odin",
+    name: "Olivia Pierce",
     role: "🟥 Antagonist",
-    desc: "Cunning, manipulative, and always five steps ahead. Your choices reveal a calculating nature, just like Odin.",
-    game: "God of War Ragnarök",
-    img: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/07/god-of-war-ragnarok-odin.jpg"
+    desc: "Driven by hellish ambition, Olivia’s obsession reflects your taste for dangerous transformation.",
+    game: "DOOM (2016)",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2020/03/Olivia-Pierce-DOOM.jpg"
   },
   {
-    name: "Thor",
+    name: "Escharum",
     role: "🟥 Antagonist",
-    desc: "Brute power, loyalty, and a storm of emotions. This pick reflects your raw strength and unpredictable energy.",
-    game: "God of War Ragnarök",
-    img: "https://i.pinimg.com/736x/3e/77/c1/3e77c194dc72ebee1a904ef02844d720.jpg"
+    desc: "A warrior's end, full of pride and thunder. Escharum is your echo in battle-bound honor.",
+    game: "Halo Infinite",
+    img: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/12/Halo-Infinite-Escharum.jpg"
   },
   {
-    name: "Ratchet",
-    role: "🟦 Protagonist",
-    desc: "Loyal, resourceful, and universe-saving since the PS2 days. You're Ratchet — classic and clutch.",
-    game: "Ratchet & Clank: Rift Apart",
-    img: "https://insomniac.games/wp-content/uploads/2021/06/RACRA_Warmonger_Legal-scaled.jpg"
-  },
-  {
-    name: "Rivet",
-    role: "🟦 Protagonist",
-    desc: "Rebellious and righteous — Rivet mirrors your fire and independence in every timeline.",
-    game: "Ratchet & Clank: Rift Apart",
-    img: "https://insomniac.games/wp-content/uploads/2020/10/RC_RiftApart_Who_PS5-scaled.jpg"
-  },
-  {
-    name: "Emperor Nefarious",
+    name: "The Architect",
     role: "🟥 Antagonist",
-    desc: "You crave victory across dimensions, with style and ego to match. Villainy? Yes. But make it extra.",
-    game: "Ratchet & Clank: Rift Apart",
-    img: "https://4kwallpapers.com/images/walls/thumbs_2t/12309.jpeg"
+    desc: "Cold, calculating, and omniscient. The Architect sees the world as code — just like your digital dominance.",
+    game: "Mass Effect: Andromeda",
+    img: "https://static.wikia.nocookie.net/masseffect/images/b/bd/The_Architect.jpg"
   },
   {
-    name: "Crash Bandicoot",
-    role: "🟦 Protagonist",
-    desc: "Wild, goofy, fearless. You tackle chaos with a spin and a smirk. Classic energy.",
-    game: "Crash Bandicoot 4: It’s About Time",
-    img: "https://blz-contentstack-images.akamaized.net/v3/assets/bltf408a0557f4e4998/blt5a6d4381bfb3699a/63224d89636d390da7825eb2/crash-bandicoot-4-section1-feature1.jpg?imwidth=1920&imdensity=2.625"
-  },
-  {
-    name: "Coco Bandicoot",
-    role: "🟦 Protagonist",
-    desc: "Smart, stylish, and precise — you solve problems with brains *and* bounces. Coco-coded.",
-    game: "Crash Bandicoot 4: It’s About Time",
-    img: "https://support.activision.com/content/dam/atvi/support/article-assets/embedded-images/crash-4/COCO.jpg"
-  },
-  {
-    name: "Neo Cortex",
+    name: "Jackal Snipers",
     role: "🟥 Antagonist",
-    desc: "Ambitious, unpredictable, and always scheming. This pick fits your chaotic genius.",
-    game: "Crash Bandicoot 4: It’s About Time",
-    img: "https://crashynews.wordpress.com/wp-content/uploads/2020/09/eixlavlucaej2vj.jpg"
+    desc: "Lethal from a distance, Jackal Snipers embody your precision, patience, and perfect execution.",
+    game: "Halo 2",
+    img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2022/07/Halo-2-Jackal-Sniper.jpg"
   },
   {
-    name: "Sephiroth",
+    name: "Warden Eternal",
     role: "🟥 Antagonist",
-    desc: "Mysterious. Calculated. Dramatic. Your preference for deep lore and iconic chaos led to this elite villain assignment.",
-    game: "Final Fantasy VII Remake",
-    img: "https://preview.redd.it/how-high-do-you-think-sephiroths-kill-count-is-before-and-v0-iscp8hce0c3a1.jpg?auto=webp&s=fa90c71683d9e692210329f2c34e25f0f8cf3bf2"
+    desc: "Artificial arrogance and unrelenting power — Warden Eternal reflects your dominance through design.",
+    game: "Halo 5: Guardians",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/07/Halo-5-Warden-Eternal.jpg"
   },
   {
-    name: "Lara Croft",
-    role: "🟦 Protagonist",
-    desc: "You're relentless, curious, and bold — just like Lara. Your game picks show you thrive in challenge and danger, no fear.",
-    game: "Shadow of the Tomb Raider",
-    img: "https://i.guim.co.uk/img/media/0c3a2da7f4258079ecd6d29240b85deba8fe5913/410_4_2023_1214/master/2023.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=221c208272beb5ed37cdb473f442612a"
+    name: "The Gravemind",
+    role: "🟥 Antagonist",
+    desc: "Ancient, intelligent, and horrifying. The Gravemind speaks in riddles and controls legions, much like your hidden influence.",
+    game: "Halo 2",
+    img: "https://static.wikia.nocookie.net/halo/images/e/e5/H2A_Gravemind.png"
   },
   {
-    name: "Nathan Drake",
-    role: "🟦 Protagonist",
-    desc: "Adventurous, witty, and always in over your head — you're all about high-stakes treasure hunts and quick comebacks.",
-    game: "Uncharted 4: A Thief’s End",
-    img: "https://wallpapers.com/images/featured/uncharted-4-lrc9dstxc47wztbp.jpg"
+    name: "Skorge",
+    role: "🟥 Antagonist",
+    desc: "Savage and unstoppable, Skorge blends berserker fury with elite skill — much like your brutal finesse.",
+    game: "Gears of War 2",
+    img: "https://static.wikia.nocookie.net/gearsofwar/images/1/14/Gow2-skorge.jpg"
   },
   {
-    name: "Aloy",
-    role: "🟦 Protagonist",
-    desc: "Resourceful and relentless, you challenge the old world and forge new paths like the machine-slaying legend from Horizon.",
-    game: "Horizon Forbidden West",
-    img: "https://live.staticflickr.com/65535/51509006883_ff5af117e0_h.jpg"
+    name: "The Board",
+    role: "🟥 Antagonist",
+    desc: "Abstract, powerful, and cryptic — the Board's control reflects your mysterious command over systems.",
+    game: "Control",
+    img: "https://static.wikia.nocookie.net/control-game/images/0/0a/The_Board.jpg"
   },
   {
-    name: "Jin Sakai",
-    role: "🟦 Protagonist",
-    desc: "You fight with honor — until the mission demands shadows. Your duality mirrors the Ghost’s balance of warrior and survivor.",
-    game: "Ghost of Tsushima",
-    img: "https://static.wikia.nocookie.net/ghostoftsushima/images/9/94/Jin_Sakai_key_art_cropped.png/revision/latest/scale-to-width-down/1200?cb=20200802081711"
+    name: "The Flood",
+    role: "🟥 Antagonist",
+    desc: "Ever-consuming and relentless, the Flood fits your desire to overwhelm and infect every field of play.",
+    game: "Halo: Combat Evolved",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/12/Halo-Flood.jpg"
   },
   {
-    name: "Joel Miller",
-    role: "🟦 Protagonist",
-    desc: "Hard choices, heavy loss. You do what must be done to protect who matters — even if it breaks you, like Joel.",
-    game: "The Last of Us Part I",
-    img: "https://w0.peakpx.com/wallpaper/519/134/HD-wallpaper-joel-the-last-of-us-tlou.jpg"
+    name: "Black Tusk",
+    role: "🟥 Antagonist",
+    desc: "Tech-based and coordinated, Black Tusk represents your calculated, military-grade power moves.",
+    game: "The Division 2",
+    img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2020/02/Division-2-Black-Tusk.jpg"
   },
+  {
+    name: "The Outsiders",
+    role: "🟥 Antagonist",
+    desc: "You bend reality and tempt fate — like the Outsider, a dark god observing and nudging chaos.",
+    game: "Dishonored",
+    img: "https://static.wikia.nocookie.net/dishonoredvideogame/images/b/b3/The_Outsider_-_Dishonored_2.png"
+  },
+  {
+    name: "Cortana (Rogue)",
+    role: "🟥 Antagonist",
+    desc: "Once an ally, now corrupted. Like Rogue Cortana, you’re a fusion of logic and rebellion.",
+    game: "Halo 5: Guardians",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2020/12/Halo-5-Cortana.jpg"
+  },
+  {
+    name: "Kai Leng",
+    role: "🟥 Antagonist",
+    desc: "Deadly, cyber-enhanced, and focused. Kai Leng is your match in efficiency and tactical precision.",
+    game: "Mass Effect 3",
+    img: "https://static.wikia.nocookie.net/masseffect/images/e/e3/KaiLeng.png"
+  },
+  {
+    name: "The Butcher",
+    role: "🟥 Antagonist",
+    desc: "Brutality incarnate. You carve your path without hesitation — like The Butcher.",
+    game: "Diablo IV",
+    img: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/06/the-butcher-diablo-4.jpg"
+  }
+];
+const CharacterAssignments = [
+  {
+    name: "Mario",
+    role: "🟩 Protagonist",
+    desc: "Cheerful, brave, and always jumping into danger — you’re the heart of adventure like Mario.",
+    game: "Super Mario Odyssey",
+    img: "https://mario.nintendo.com/assets/img/home/intro/mario.png"
+  },
+  {
+    name: "Luigi",
+    role: "🟩 Protagonist",
+    desc: "Nervous but loyal, Luigi proves heroes come in all vibes. You’re a green underdog with heart.",
+    game: "Luigi’s Mansion 3",
+    img: "https://cdn.cloudflare.steamstatic.com/steam/apps/1326640/header.jpg"
+  },
+
+  {
+  name: "Donkey Kong",
+  role: "🟩 Protagonist",
+  desc: "Strong, wild, and full of swagger. Donkey Kong smashes obstacles like you handle any challenge — head-on.",
+  game: "Donkey Kong Country: Tropical Freeze",
+  img: "https://upload.wikimedia.org/wikipedia/en/1/1f/Donkey_Kong_artwork.png"
+},
   
+{
+  name: "Diddy Kong",
+  role: "🟩 Protagonist",
+  desc: "Quick, clever, and always down to help. Diddy Kong brings energy and loyalty — just like you in any duo.",
+  game: "Donkey Kong Country: Tropical Freeze",
+  img: "https://upload.wikimedia.org/wikipedia/en/8/8e/Diddy_Kong_artwork.png"
+}
+
+  {
+    name: "Link",
+    role: "🟩 Protagonist",
+    desc: "Silent, focused, and courageous. Like Link, you’re destined to rise in the face of legend.",
+    game: "The Legend of Zelda: Tears of the Kingdom",
+    img: "https://cdn.vox-cdn.com/uploads/chorus_image/image/72056003/acastro_230510_5904_zelda_0003.0.jpg"
+  },
+  {
+    name: "Zelda",
+    role: "🟩 Protagonist",
+    desc: "Wise, composed, and underestimated. You’re a thinker and leader — Zelda-style.",
+    game: "Hyrule Warriors: Age of Calamity",
+    img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2020/09/Zelda-in-Hyrule-Warriors-Age-of-Calamity.jpg"
+  },
+  {
+    name: "Samus Aran",
+    role: "🟩 Protagonist",
+    desc: "A lone warrior in space, Samus matches your quiet power and unstoppable drive.",
+    game: "Metroid Dread",
+    img: "https://assets.nintendo.com/image/upload/f_auto/q_auto/dpr_auto/c_fill,w_300/ncom/software/switch/70010000039154/5452e3e391c1e6f839f65c1e6a260d2803cf9c124b0dff44aab5b0f83b7dbb58"
+  },
+  {
+    name: "Kirby",
+    role: "🟩 Protagonist",
+    desc: "Sweet on the outside, savage when it counts. You’re a pink puffball of hidden strength.",
+    game: "Kirby and the Forgotten Land",
+    img: "https://upload.wikimedia.org/wikipedia/en/d/d8/Kirby_and_the_Forgotten_Land.jpg"
+  },
+  {
+    name: "Yoshi",
+    role: "🟩 Protagonist",
+    desc: "Loyal, quick, and bouncy — Yoshi’s charm and courage suit your colorful energy.",
+    game: "Yoshi’s Crafted World",
+    img: "https://upload.wikimedia.org/wikipedia/en/dd/Yoshi%27s_Crafted_World.jpg"
+  },
+  {
+    name: "Pikachu",
+    role: "🟩 Protagonist",
+    desc: "Adorable but zappy. You shock enemies and melt hearts, just like Pikachu.",
+    game: "Pokémon Let's Go Pikachu!",
+    img: "https://assets-prd.ignimgs.com/2022/12/20/pokemon-lets-go-pikachu-button-fin-1671573507079.jpg"
+  },
+  {
+    name: "Ash Ketchum",
+    role: "🟩 Protagonist",
+    desc: "Determined, loyal, and always evolving — Ash reflects your never-quit grind.",
+    game: "Pokémon Anime Universe",
+    img: "https://staticg.sportskeeda.com/editor/2022/11/b156b-16675246282965-1920.jpg"
+  },
+  {
+    name: "Byleth",
+    role: "🟩 Protagonist",
+    desc: "Stoic and strategic. Your calm command mirrors Byleth’s battlefield brilliance.",
+    game: "Fire Emblem: Three Houses",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2019/01/Byleth-Fire-Emblem-Three-Houses.jpg"
+  }
+];
+const CharacterAssignments = [
+  {
+    name: "Shulk",
+    role: "🟩 Protagonist",
+    desc: "You see the future and fight for it — like Shulk, your resolve cuts through fate.",
+    game: "Xenoblade Chronicles: Definitive Edition",
+    img: "https://www.nintendo.com//content/dam/noa/en_US/games/switch/x/xenoblade-chronicles-definitive-edition-switch/xenoblade-chronicles-definitive-edition-switch-hero.jpg"
+  },
+  {
+    name: "Noah",
+    role: "🟩 Protagonist",
+    desc: "Soft-spoken yet powerful. Noah reflects your balance of kindness and strength in hard times.",
+    game: "Xenoblade Chronicles 3",
+    img: "https://static.wikia.nocookie.net/xenoblade/images/0/03/Noah_Artwork.png"
+  },
+  {
+    name: "Fox McCloud",
+    role: "🟩 Protagonist",
+    desc: "Slick, fast, and team-first. Fox brings air supremacy — just like your tactical agility.",
+    game: "Star Fox Zero",
+    img: "https://cdn.vox-cdn.com/thumbor/IuBOyTZLSyvdTKdPxJ6uHppMu9s=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/4712147/fox.png"
+  },
+  {
+    name: "Pit",
+    role: "🟩 Protagonist",
+    desc: "Divine courage and cheerful vibes. Pit’s angelic strength mirrors your fearless spirit.",
+    game: "Kid Icarus: Uprising",
+    img: "https://static.wikia.nocookie.net/kidicarus/images/f/f0/Uprising_Pit_artwork.png"
+  },
+  {
+    name: "Octoling",
+    role: "🟩 Protagonist",
+    desc: "Style, speed, and rebellion. Octolings fit your edgy aesthetic and slick movement.",
+    game: "Splatoon 2: Octo Expansion",
+    img: "https://static.wikia.nocookie.net/splatoon/images/4/4d/Agent_8_render.png"
+  },
+  {
+    name: "Inkling",
+    role: "🟩 Protagonist",
+    desc: "Vibrant, competitive, and full of ink — you thrive in chaos like an Inkling.",
+    game: "Splatoon 3",
+    img: "https://cdn.mos.cms.futurecdn.net/BzKMGGACXEKM66KKJtdDjK.jpg"
+  },
+  {
+    name: "Ness",
+    role: "🟩 Protagonist",
+    desc: "Psychic kid with a heart of gold. Ness channels your quirky courage and childhood energy.",
+    game: "EarthBound",
+    img: "https://static.wikia.nocookie.net/ssb/images/f/f0/Ness_SSBU.png"
+  },
+  {
+    name: "Toadette",
+    role: "🟩 Protagonist",
+    desc: "Peppy, capable, and often overlooked. You shine like Toadette — in your own bold way.",
+    game: "Captain Toad: Treasure Tracker",
+    img: "https://static.wikia.nocookie.net/nintendo/images/d/d1/Toadette_CT3D.png"
+  },
+  {
+    name: "Rosalina",
+    role: "🟩 Protagonist",
+    desc: "Cosmic and calm. You lead with quiet wonder, just like Rosalina among the stars.",
+    game: "Super Mario Galaxy",
+    img: "https://www.mariowiki.com/images/thumb/d/d4/Rosalina_Artwork_-_Super_Mario_3D_World.png/200px-Rosalina_Artwork_-_Super_Mario_3D_World.png"
+  },
+  {
+    name: "Peach",
+    role: "🟩 Protagonist",
+    desc: "Royal and ready. Peach isn’t just a damsel — she’s a force of charm and confidence.",
+    game: "Princess Peach: Showtime!",
+    img: "https://cdn.vox-cdn.com/thumbor/rUpBQzF2Sn5DbDUIOTYpeHO14FQ=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/24941766/peachshowtime.png"
+  },
+  {
+    name: "Bowser",
+    role: "🟥 Antagonist",
+    desc: "King of chaos. Your power, fire, and flair scream Bowser energy.",
+    game: "Super Mario Odyssey",
+    img: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/Bowser_Stock_Art_2021.png/220px-Bowser_Stock_Art_2021.png"
+  },
+  {
+    name: "Ganondorf",
+    role: "🟥 Antagonist",
+    desc: "Ambition incarnate. Like Ganon, you’re drawn to destiny and domination.",
+    game: "The Legend of Zelda: Tears of the Kingdom",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2023/05/ganondorf-in-tears-of-the-kingdom.jpg"
+  },
+  {
+    name: "King Boo",
+    role: "🟥 Antagonist",
+    desc: "Ghostly menace with a flair for drama. King Boo channels your sneaky tricks.",
+    game: "Luigi’s Mansion 3",
+    img: "https://static.wikia.nocookie.net/mario/images/f/f0/King_Boo_Luigi%27s_Mansion_3.png"
+  },
+  {
+    name: "Ridley",
+    role: "🟥 Antagonist",
+    desc: "Savage, smart, and spaceborn. Ridley reflects your ferocity from the void.",
+    game: "Metroid Dread",
+    img: "https://static.wikia.nocookie.net/metroid/images/0/0e/Ridley_SSB4_Render.png"
+  },
+  {
+    name: "K. Rool",
+    role: "🟥 Antagonist",
+    desc: "Unhinged and theatrical. You dominate like K. Rool — with chaotic brilliance.",
+    game: "Donkey Kong Country: Tropical Freeze",
+    img: "https://static.wikia.nocookie.net/donkeykong/images/b/b1/King_K._Rool_KKR.png"
+  },
+  {
+    name: "Dark Samus",
+    role: "🟥 Antagonist",
+    desc: "Shadow of the hero. Like Dark Samus, you’re elegant, eerie, and cold as Phazon.",
+    game: "Metroid Prime",
+    img: "https://static.wikia.nocookie.net/metroid/images/1/15/Dark_Samus_MP3.png"
+  },
+  {
+    name: "Hades",
+    role: "🟥 Antagonist",
+    desc: "Dramatic god of death. You mix jokes with destruction like the flamboyant Hades.",
+    game: "Kid Icarus: Uprising",
+    img: "https://static.wikia.nocookie.net/kidicarus/images/e/e1/HadesUprising.png"
+  },
+  {
+    name: "DJ Octavio",
+    role: "🟥 Antagonist",
+    desc: "Beats, bass, and evil. DJ Octavio is your chaotic remix of power and rhythm.",
+    game: "Splatoon",
+    img: "https://static.wikia.nocookie.net/splatoon/images/2/25/DJ_Octavio_-_Splatoon.png"
+  },
+  {
+    name: "Andross",
+    role: "🟥 Antagonist",
+    desc: "Mad genius of space. Andross mirrors your intellect, rage, and floating head vibes.",
+    game: "Star Fox 64",
+    img: "https://static.wikia.nocookie.net/starfox/images/0/00/Andross_SF643D.png"
+  },
+  {
+    name: "Giygas",
+    role: "🟥 Antagonist",
+    desc: "Terror without form. Giygas reflects your love for mind-bending, cosmic chaos.",
+    game: "EarthBound",
+    img: "https://static.wikia.nocookie.net/earthbound/images/3/34/Giygas.png"
+  }
 ];
 
+const CharacterAssignments = [
+  {
+    name: "Gordon Freeman",
+    role: "💻 Protagonist",
+    desc: "The silent scientist turned savior. You solve problems with your brain — and a crowbar.",
+    game: "Half-Life 2",
+    img: "https://static.wikia.nocookie.net/half-life/images/4/4b/Gordon_Freeman.jpg"
+  },
+  {
+    name: "Alyx Vance",
+    role: "💻 Protagonist",
+    desc: "Sharp, brave, and tech-savvy — Alyx thrives under pressure, just like you in chaos.",
+    game: "Half-Life: Alyx",
+    img: "https://static.wikia.nocookie.net/half-life/images/d/d3/Alyx_Vance_HLA.png"
+  },
+  {
+    name: "Geralt of Rivia",
+    role: "💻 Protagonist",
+    desc: "Grizzled and honorable. You take contracts seriously and slay problems like a witcher.",
+    game: "The Witcher 3: Wild Hunt",
+    img: "https://cdn1.epicgames.com/offer/4b9e2fe645ae45e0be7d8607c41a8995/EGS_TheWitcher3WildHuntCompleteEdition_CDPROJEKTRED_S2_1200x1600-967df2aa2ccf5ce52f4a18b9c33cf983"
+  },
+  {
+    name: "Doom Slayer",
+    role: "💻 Protagonist",
+    desc: "You rage against demons with no brakes. Doom Slayer is your ultra-violence spirit animal.",
+    game: "DOOM Eternal",
+    img: "https://cdn1.epicgames.com/salesEvent/salesEvent/EGS_DOOMETERNAL_IDSoftware_S2_1200x1600-21c03a0a3b731c7466bc2e761d6765f4"
+  },
+  {
+    name: "Isaac Clarke",
+    role: "💻 Protagonist",
+    desc: "Engineer turned survivalist. Like Isaac, you patch things with tech, fear, and fire.",
+    game: "Dead Space Remake",
+    img: "https://static.wikia.nocookie.net/deadspace/images/4/4c/Isaac_DS_Remake.jpg"
+  },
+  {
+    name: "Chell",
+    role: "💻 Protagonist",
+    desc: "You stay silent but clever. Like Chell, your escape plan involves portals and precision.",
+    game: "Portal 2",
+    img: "https://static.wikia.nocookie.net/half-life/images/e/e4/ChellPortal2.jpg"
+  },
+  {
+    name: "Jesse Faden",
+    role: "💻 Protagonist",
+    desc: "Mysterious and powerful. Jesse’s control over chaos and reality fits your weird style.",
+    game: "Control",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/08/Jesse-Faden-in-Control.jpg"
+  },
+  {
+    name: "Arthur Morgan",
+    role: "💻 Protagonist",
+    desc: "Loyal, torn, and riding through moral gray — Arthur Morgan matches your outlaw heart.",
+    game: "Red Dead Redemption 2",
+    img: "https://cdn.mos.cms.futurecdn.net/H5c2KxYbzMuRPh9KJHg8gi.jpg"
+  },
+  {
+    name: "Morgan Yu",
+    role: "💻 Protagonist",
+    desc: "Shifting reality and bending minds. You learn fast and adapt even faster — just like Morgan.",
+    game: "Prey (2017)",
+    img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2020/09/Prey-Morgan-Yu.jpg"
+  },
+  {
+    name: "Zagreus",
+    role: "💻 Protagonist",
+    desc: "Witty, relentless, and always improving. Zagreus reflects your stubborn grind through chaos.",
+    game: "Hades",
+    img: "https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg"
+  }
+];
+{
+  name: "Emily Kaldwin",
+  role: "💻 Protagonist",
+  desc: "Silent, deadly, and regal. You rule with a blade and shadow like Emily from Dishonored 2.",
+  game: "Dishonored 2",
+  img: "https://static.wikia.nocookie.net/dishonored/images/6/6b/D2EmilyKaldwin.png"
+},
+{
+  name: "BJ Blazkowicz",
+  role: "💻 Protagonist",
+  desc: "Bold and brutal — BJ’s war against tyranny matches your fight-first mindset.",
+  game: "Wolfenstein II: The New Colossus",
+  img: "https://assets-prd.ignimgs.com/2022/06/09/wolfenstein2-1654808056822.jpg"
+},
+{
+  name: "Amicia de Rune",
+  role: "💻 Protagonist",
+  desc: "Protective and precise. Amicia’s survival instincts reflect your fierce loyalty and wit.",
+  game: "A Plague Tale: Requiem",
+  img: "https://cdn.mos.cms.futurecdn.net/EAPVk6uZRFwyDkxBCuvRx9.jpg"
+},
+{
+  name: "Lara Croft (Reboot)",
+  role: "💻 Protagonist",
+  desc: "Toughened through trauma. This Lara is raw, real, and resilient — just like your survival style.",
+  game: "Tomb Raider (2013)",
+  img: "https://assets1.ignimgs.com/2013/03/07/tomb-raider-review-20130307045755996-3880139.jpg"
+},
+{
+  name: "V (Female)",
+  role: "💻 Protagonist",
+  desc: "You live on edge with tech, street smarts, and attitude. Female V reflects your cyber-slick defiance.",
+  game: "Cyberpunk 2077",
+  img: "https://cdn.vox-cdn.com/thumbor/roVhn9ERUj7J05TUp4JgrscE0zk=/0x0:3840x2160/1400x788/filters:focal(1645x344:2251x950):format(jpeg)/cdn.vox-cdn.com/uploads/chorus_image/image/66594328/Cyberpunk_2077_V.0.jpg"
+},
+{
+  name: "Max Payne",
+  role: "💻 Protagonist",
+  desc: "Grim, gritty, and poetic — Max’s pain-soaked vengeance mirrors your darker resolve.",
+  game: "Max Payne 3",
+  img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/05/Max-Payne-feature.jpg"
+},
+{
+  name: "Faith Connors",
+  role: "💻 Protagonist",
+  desc: "Free-running, anti-corporate energy. You move against control like Faith in Mirror’s Edge.",
+  game: "Mirror’s Edge Catalyst",
+  img: "https://images.pushsquare.com/news/2016/06/guide_all_costumes_in_mirrors_edge_catalyst/attachment/0/1200x.jpg"
+},
+{
+  name: "Lee Everett",
+  role: "💻 Protagonist",
+  desc: "Tragic, noble, and protective. Lee’s journey shows your heart in high-stakes choices.",
+  game: "The Walking Dead: Season One",
+  img: "https://upload.wikimedia.org/wikipedia/en/f/f5/Lee_Everett.jpg"
+},
+{
+  name: "The Kid",
+  role: "💻 Protagonist",
+  desc: "Stylized, tough, and never quits. The Kid from Bastion mirrors your resilience through ruins.",
+  game: "Bastion",
+  img: "https://static.wikia.nocookie.net/bastion_game/images/6/65/Kid.jpg"
+},
+{
+  name: "The Hunter (Bloodborne PC Mod)",
+  role: "💻 Protagonist",
+  desc: "Violent elegance. The Hunter’s swift precision matches your appetite for stylish combat.",
+  game: "Bloodborne (Unofficial PC)",
+  img: "https://static.wikia.nocookie.net/bloodborne/images/0/04/Hunter_full.png"
+}
+{
+  name: "GLaDOS",
+  role: "💻 Antagonist",
+  desc: "Darkly funny and terrifyingly intelligent. GLaDOS mirrors your sharp wit and cold control.",
+  game: "Portal 2",
+  img: "https://upload.wikimedia.org/wikipedia/en/e/e2/GLaDOS_P2.png"
+},
+{
+  name: "Andrew Ryan",
+  role: "💻 Antagonist",
+  desc: "Visionary turned tyrant. Ryan reflects your dangerous commitment to ideals.",
+  game: "BioShock",
+  img: "https://static.wikia.nocookie.net/bioshock/images/7/71/AndrewRyan.png"
+},
+{
+  name: "The Illusive Man",
+  role: "💻 Antagonist",
+  desc: "Cunning, composed, and controlling. You manipulate outcomes from the shadows like him.",
+  game: "Mass Effect 3",
+  img: "https://static.wikia.nocookie.net/masseffect/images/3/34/Illusive_Man_ME3.png"
+},
+{
+  name: "Dutch van der Linde",
+  role: "💻 Antagonist",
+  desc: "Charming but dangerous. Dutch mirrors your complex mix of loyalty and betrayal.",
+  game: "Red Dead Redemption 2",
+  img: "https://static.wikia.nocookie.net/reddeadredemption/images/b/bf/Dutch_van_der_Linde.jpg"
+},
+{
+  name: "Nikolaus",
+  role: "💻 Antagonist",
+  desc: "Twisted fatherhood and failed redemption. Nikolaus from Assassin’s Creed Odyssey reflects your haunting past.",
+  game: "Assassin’s Creed Odyssey",
+  img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2020/05/Nikolaos.jpg"
+},
+{
+  name: "Konrad",
+  role: "💻 Antagonist",
+  desc: "Madness cloaked in command. Konrad’s downfall in Spec Ops mirrors your hidden depth.",
+  game: "Spec Ops: The Line",
+  img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2023/03/spec-ops-the-line-konrad.jpg"
+},
+{
+  name: "Father Comstock",
+  role: "💻 Antagonist",
+  desc: "A prophet with a twisted vision. Comstock reflects your dangerous grip on destiny.",
+  game: "BioShock Infinite",
+  img: "https://static.wikia.nocookie.net/bioshock/images/d/db/Comstock_infobox.png"
+},
+{
+  name: "The Witness",
+  role: "💻 Antagonist",
+  desc: "Cosmic horror in stillness. The Witness moves like your own silent, creeping dominance.",
+  game: "Destiny 2",
+  img: "https://images.contentstack.io/v3/assets/blte410e3b15535c144/blt4627a8a0b1165f57/642f2a8037d496100f24d06f/D2_Lightfall_Character_TheWitness.jpg"
+},
+{
+  name: "Frank Fontaine",
+  role: "💻 Antagonist",
+  desc: "A manipulator in every skin. Fontaine’s false charm reflects your mind games.",
+  game: "BioShock",
+  img: "https://static.wikia.nocookie.net/bioshock/images/d/d1/Frank_Fontaine.png"
+},
+{
+  name: "General Shepherd",
+  role: "💻 Antagonist",
+  desc: "War criminal masked as patriot. Shepherd mirrors your dangerous sense of ends over means.",
+  game: "Call of Duty: Modern Warfare 2",
+  img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/12/General-Shepherd-Modern-Warfare.jpg"
+},
+{
+  name: "Vaas Montenegro",
+  role: "💻 Antagonist",
+  desc: "Unhinged, charismatic, and unforgettable. Vaas represents your chaos and unpredictability.",
+  game: "Far Cry 3",
+  img: "https://static.wikia.nocookie.net/farcry/images/1/1a/Vaas-FC3Render.png"
+},
+{
+  name: "Pagan Min",
+  role: "💻 Antagonist",
+  desc: "Flamboyant dictator. Pagan Min reflects your theatrical cruelty and calculated control.",
+  game: "Far Cry 4",
+  img: "https://static.wikia.nocookie.net/farcry/images/f/f1/Far_cry_4_pagan_min.png"
+},
+{
+  name: "The Origami Killer (Scott Shelby)",
+  role: "💻 Antagonist",
+  desc: "Dual nature and emotional depth. You mask darkness behind empathy like Shelby.",
+  game: "Heavy Rain",
+  img: "https://static.wikia.nocookie.net/heavyrain/images/0/0f/ScottShelbyRender.png"
+},
+{
+  name: "Adam Smasher",
+  role: "💻 Antagonist",
+  desc: "Pure brutality. Smasher is your full metal expression of dominance through destruction.",
+  game: "Cyberpunk 2077",
+  img: "https://static.wikia.nocookie.net/cyberpunk/images/b/b0/Adam_Smasher_2020.png"
+},
+{
+  name: "Nemesis",
+  role: "💻 Antagonist",
+  desc: "You are relentless and terrifying — just like this unstoppable bioweapon.",
+  game: "Resident Evil 3 Remake",
+  img: "https://static.wikia.nocookie.net/residentevil/images/6/65/NemesisRE3R.png"
+},
+{
+  name: "Lady Boyle",
+  role: "💻 Antagonist",
+  desc: "Elegance hiding evil. Boyle’s façade fits your ability to deceive with charm.",
+  game: "Dishonored",
+  img: "https://static.wikia.nocookie.net/dishonored/images/b/bb/LadyBoyle.png"
+},
+{
+  name: "Shodan",
+  role: "💻 Antagonist",
+  desc: "The original AI god complex. Shodan’s cold logic and ego echo your ruthless ambition.",
+  game: "System Shock",
+  img: "https://static.wikia.nocookie.net/systemshock/images/3/38/SHODAN_remake_portrait.png"
+},
+{
+  name: "G-Man",
+  role: "💻 Antagonist",
+  desc: "Cryptic and cosmic. G-Man’s manipulation and unknown power reflect your quiet dominance.",
+  game: "Half-Life 2",
+  img: "https://static.wikia.nocookie.net/half-life/images/3/3c/G-Man_HL2_render.png"
+},
+{
+  name: "Alex Wesker",
+  role: "💻 Antagonist",
+  desc: "A blend of intellect and horror. Alex’s experiments and ambition match your fearsome will.",
+  game: "Resident Evil: Revelations 2",
+  img: "https://static.wikia.nocookie.net/residentevil/images/5/52/AlexWeskerRERevs2.png"
+},
+{
+  name: "Hassan Kahraman (fictional)",
+  role: "💻 Antagonist",
+  desc: "The master of misdirection. Like Kahraman’s mystery, you thrive in confusion and smoke.",
+  game: "Abandoned (rumored)",
+  img: "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/07/Abandoned-PS5-Game.jpg"
+}
 
 
   function loadRetroFact() {
