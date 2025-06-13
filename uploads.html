@@ -793,9 +793,12 @@ div.innerHTML = `
     ${friendListHTML}
   </details>
 
-  <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-    ${user.favoriteImages?.map(url => `<img src="${url}" style="height:50px; border-radius:6px;" />`).join("") || ""}
-  </div>
+  <div style="display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; justify-content: flex-start;">
+  ${user.favoriteImages?.map(url => `
+    <img src="${url}" style="height:140px; width:auto; border-radius:12px; box-shadow: 0 0 10px rgba(0,0,0,0.5);" />
+  `).join("") || ""}
+</div>
+
 
   <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
     ${friendActions}
