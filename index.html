@@ -1883,60 +1883,32 @@ When the Union highlights you — it means something. If your name’s echoing i
 
     </main>
 
-    <aside>
-      
+   <aside>
+  <!-- ✅ New Aside Content with Challenge and Shoutout -->
 
-  <script>
-    const imageRow = document.getElementById("fav-images");
-    const noImagesMsg = document.getElementById("no-images-msg");
+  <div class="box">
+    <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">🎯 Challenge of the Day</h2>
+    <p style="font-size: 0.9rem; color: #ccc;">
+      Execute a flawless 10-hit combo in a ranked match without taking damage. 
+    </p>
+    <button class="btn" style="margin-top: 0.6rem;">Try Now</button>
+  </div>
 
-    function displayFavoriteImages(imageUrls) {
-      imageRow.innerHTML = "";
-      const preview = document.getElementById("fav-cover-display");
-      preview.innerHTML = "";
-      
-      if (!imageUrls || imageUrls.length === 0) {
-        noImagesMsg.style.display = "block";
-        return;
-      }
+  <div class="box">
+    <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif;">📢 Union Shoutout</h2>
+    <p style="font-size: 0.9rem; color: #ccc;">
+      Shoutout to <strong>@QuantumX</strong> for dropping heat in the Lounge chat and flexing a top-tier trophy haul this week!
+    </p>
+  </div>
 
-      noImagesMsg.style.display = "none";
+  <!-- Spotlight 3 stays after these -->
+  <div class="box" id="spotlight3">
+    <h2>🎮 GameSync Spotlight 3</h2>
+    <p>Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
+    <div id="fav-game-updates"></div>
+  </div>
+</aside>
 
-      imageUrls.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.alt = "Game cover";
-        img.classList.add("profile-fav-img");
-        img.style.width = "120px";
-        img.style.borderRadius = "8px";
-        img.style.transition = "transform 0.3s";
-        img.style.cursor = "pointer";
-        img.onmouseover = () => img.style.transform = "scale(1.1)";
-        img.onmouseout = () => img.style.transform = "scale(1)";
-        img.onclick = () => {
-          preview.innerHTML = "";
-          const bigImg = document.createElement("img");
-          bigImg.src = url;
-          bigImg.alt = "Full game cover";
-          bigImg.style.maxWidth = "300px";
-          bigImg.style.marginTop = "1rem";
-          bigImg.style.borderRadius = "10px";
-          bigImg.style.boxShadow = "0 0 15px rgba(255,255,255,0.2)";
-          preview.appendChild(bigImg);
-        };
-        imageRow.appendChild(img);
-      });
-    }
-  </script>
-</div>
-
-      <div class="box" id="spotlight3">
-        <h2>🎮 GameSync Spotlight 3</h2>
-        <p>Built from your profile picks. Get daily drops of gameplay, news, and updates from the 3 favorite games you locked in.</p>
-            <div id="fav-game-updates"></div>
-      </div>
-
-    </aside>
   </div>
 
   <footer>
