@@ -8,6 +8,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
 
 <style>
+  .retro-body .game-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--gsu-red); /* 🔥 Highlight in GSU red */
+  margin-bottom: 0.4rem;
+}
+
+/* Highlight the review box border in GSU red */
+#reviewGame,
+#reviewText {
+  border: 1px solid var(--gsu-red); /* 🔥 GSU red border */
+}
+
+/* Optional: Add glowing hover effect */
+#reviewGame:focus,
+#reviewText:focus {
+  outline: none;
+  box-shadow: 0 0 6px rgba(230, 0, 35, 0.6);
+}
+
   main > .box:not(:last-child) {
   margin-bottom: 2.2rem;
 }
