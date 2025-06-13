@@ -814,7 +814,7 @@ if (friendUIDs.length) {
   const friendListContainer = div.querySelector(`#friend-list-${userId}`);
   Promise.all(friendUIDs.map(getUsernameFromUID)).then(usernames => {
     friendListContainer.innerHTML = usernames.map(name =>
-      `<p style="margin-left:1rem; color:#ccc;">🔹 @${name}</p>`
+      `<p style="margin-left:1rem; color:#ccc;">💯 @${name}</p>`
     ).join('');
   });
 }
