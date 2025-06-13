@@ -90,14 +90,39 @@
   border: 2px solid #333;
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  animation: fadeSlideIn 0.5s ease-out;
 }
 
+/* 🔴 Always shows red glow on hover */
 #quick-review-box:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.2);
+  transform: scale(1.02);
+  box-shadow: 0 0 18px rgba(230, 0, 35, 0.5);
 }
+
+#quick-review-box h2 {
+  color: #e60023;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 8px rgba(230, 0, 35, 0.7);
+  border-bottom: 2px solid #e60023;
+  padding-bottom: 0.5rem;
+}
+
+/* Fade-in effect */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 
   main > .box:not(:last-child) {
@@ -792,15 +817,14 @@ nav a:hover {
   </div>
 </div>
 
-<div class="match-review-style" id="quick-review-box">
+<div id="quick-review-box">
   <h2>📝 Quick Game Review</h2>
-  <p style="font-size: 0.85rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.5rem;">
-    Leave a fast review for a game you’ve played — quick, honest, and saved for the community.
-  </p>
+  <p>...</p>
   <input type="text" id="reviewGame" placeholder="Game Title" />
   <textarea id="reviewText" placeholder="Your review..."></textarea>
   <button class="btn" onclick="submitGameReview()">📤 Submit Review</button>
 </div>
+
 
 
 
