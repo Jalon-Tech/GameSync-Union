@@ -500,18 +500,17 @@
   if (!user || user.uid === targetUserId) return;
 
   const userRef = db.collection("users").doc(user.uid);
-  const friendUsername = targetUsername;
 
-  // Add the username of the friend to the 'friends' array
   userRef.update({
-    friends: firebase.firestore.FieldValue.arrayUnion(friendUsername)
+    friends: firebase.firestore.FieldValue.arrayUnion(targetUserId)
   }).then(() => {
-    alert(`You added @${friendUsername} as a friend!`);
+    alert(`You added @${targetUsername} as a friend!`);
   }).catch(err => {
     console.error("Error adding friend:", err);
     alert("Something went wrong adding your friend.");
   });
 }
+
 window.addFriend = addFriend;
 
 
@@ -706,6 +705,17 @@ firebase.auth().onAuthStateChanged(authUser => {
     userRef.update({ online: false });
   });
 
+  async function getUsernameFromUID(uid) {
+  try {
+    const doc = await db.collection("users").doc(uid).get();
+    return doc.exists ? doc.data().username : "(unknown)";
+  } catch (error) {
+    console.error("Error fetching username:", error);
+    return "(error)";
+  }
+}
+
+
   // 🔥 Show ALL registered users
   db.collection("users").orderBy("username").onSnapshot(snapshot => {
     const container = document.getElementById("connectPlayers");
@@ -716,14 +726,22 @@ firebase.auth().onAuthStateChanged(authUser => {
       return;
     }
 
+    let authUserData = {};
+    snapshot.forEach(doc => {
+      if (doc.id === authUser.uid) {
+        authUserData = doc.data();
+      }
+    });
+
     snapshot.forEach(doc => {
       const user = doc.data();
       const userId = doc.id;
 
       const isCurrentUser = authUser.uid === userId;
-      const isFriend = user.friends?.includes(authUser.uid);
-      const sentRequest = (user.pendingRequests || []).includes(authUser.uid);
-      const receivedRequest = (user.friendRequests || []).includes(authUser.uid);
+      const isFriend = (authUserData.friends || []).includes(userId);
+      const sentRequest = (authUserData.pendingRequests || []).includes(userId);
+      const receivedRequest = (authUserData.friendRequests || []).includes(userId);
+
 
       const lastActive = user.lastActive?.toDate();
       const now = new Date();
@@ -747,29 +765,55 @@ firebase.auth().onAuthStateChanged(authUser => {
         }
       }
 
-      const div = document.createElement("div");
-      div.classList.add("upload-card");
-      div.innerHTML = `
-          <h3>
-          <span class="status-dot ${status}"></span>
-          <span style="color: ${status === 'online' ? 'var(--gsu-red)' : '#aaa'}; font-weight: bold;">
-            ${status.toUpperCase()}
-          </span>
-          🎮 @${user.username}
-        </h3>
+    const div = document.createElement("div");
+div.classList.add("upload-card");
 
-        <p><strong>Platform:</strong> ${user.platform || "Not set"}</p>
-        <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
-        <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
-        <p><strong>Trophy Stats:</strong> ${user.trophyCount || "N/A"}</p>
-        <p><strong>Friends:</strong> ${user.friends?.length || 0}</p>
-        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-          ${user.favoriteImages?.map(url => `<img src="${url}" style="height:50px; border-radius:6px;" />`).join("") || ""}
-        </div>
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
-          ${friendActions}
-        </div>`;
-      container.appendChild(div);
+const friendUIDs = user.friends || [];
+const friendListHTML = friendUIDs.length
+  ? `<div id="friend-list-${userId}"><p style="color:#aaa;">Loading...</p></div>`
+  : `<p style="color:#888; margin-left:1rem;">No friends yet.</p>`;
+
+div.innerHTML = `
+  <h3>
+    <span class="status-dot ${status}"></span>
+    <span style="color: ${status === 'online' ? 'var(--gsu-red)' : '#aaa'}; font-weight: bold;">
+      ${status.toUpperCase()}
+    </span>
+    🎮 @${user.username}
+  </h3>
+
+  <p><strong>Platform:</strong> ${user.platform || "Not set"}</p>
+  <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
+  <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
+  <p><strong>Trophy Stats:</strong> ${user.trophyCount || "N/A"}</p>
+  <p><strong>Friends:</strong> ${friendUIDs.length}</p>
+
+  <details style="margin-top: 0.5rem;">
+    <summary style="cursor:pointer; font-weight:bold; color:var(--gsu-red);">🔽 View Friends</summary>
+    ${friendListHTML}
+  </details>
+
+  <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+    ${user.favoriteImages?.map(url => `<img src="${url}" style="height:50px; border-radius:6px;" />`).join("") || ""}
+  </div>
+
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+    ${friendActions}
+  </div>
+`;
+
+// ✅ After the HTML is injected, run the JS logic:
+if (friendUIDs.length) {
+  const friendListContainer = div.querySelector(`#friend-list-${userId}`);
+  Promise.all(friendUIDs.map(getUsernameFromUID)).then(usernames => {
+    friendListContainer.innerHTML = usernames.map(name =>
+      `<p style="margin-left:1rem; color:#ccc;">🔹 @${name}</p>`
+    ).join('');
+  });
+}
+
+container.appendChild(div);
+
     });
   });
 
