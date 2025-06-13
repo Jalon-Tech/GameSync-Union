@@ -9,32 +9,6 @@
 
 <style>
 
-  .match-review-style h2 {
-  color: #e60023;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem;
-  margin-bottom: 0.75rem;
-  text-shadow: 0 0 8px rgba(230, 0, 35, 0.7);
-  border-bottom: 2px solid #e60023;
-  padding-bottom: 0.5rem;
-}
-
-
-  .match-review-style {
-  background-color: #1f1f1f;
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.match-review-style:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.2);
-}
-
-
   .review-box {
   border: 2px solid #fff;
   background: #1c1c1c;
@@ -636,80 +610,6 @@ nav a:hover {
 }
 
 
-.match-review-style {
-  background-color: #1f1f1f;
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: fadeSlideIn 0.5s ease-out;
-}
-
-.match-review-style:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.2);
-}
-
-.match-review-style h2 {
-  color: #e60023;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem;
-  margin-bottom: 0.75rem;
-  text-shadow: 0 0 8px rgba(230, 0, 35, 0.7);
-  border-bottom: 2px solid #e60023;
-  padding-bottom: 0.5rem;
-}
-
-#quick-review-box input,
-#quick-review-box textarea {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.75rem;
-  border-radius: 8px;
-  background: #2c2c2c;
-  border: 1px solid #444;
-  color: #fff;
-  font-family: 'Roboto', sans-serif;
-}
-
-#quick-review-box input:focus,
-#quick-review-box textarea:focus {
-  border-color: #e60023;
-  outline: none;
-  box-shadow: 0 0 4px rgba(230, 0, 35, 0.4);
-}
-
-#quick-review-box .btn {
-  background-color: #e60023;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-weight: bold;
-  font-family: 'Roboto', sans-serif;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
-
-#quick-review-box .btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.5);
-}
-
-@keyframes fadeSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-
   </style>
 </head>
 <body>
@@ -742,7 +642,7 @@ nav a:hover {
       </div>
       
      <!-- 🕹️ Retro Game Flashback -->
-<div class="box match-review-style">
+<div class="box retro-flashback">
   <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
     Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry — a reminder of where the journey began.
@@ -757,7 +657,7 @@ nav a:hover {
 </div>
 
 <!-- 🧬 GSU Character Sync Assignment -->
-<div class="box match-review-style">
+<div class="box retro-flashback">
   <h2 class="retro-header">🧬 GSU Character Sync Assignment</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
     Based on your top 3 favorite games, we've scanned your vibe, playstyle, and energy to sync you with a legendary character.
@@ -792,8 +692,8 @@ nav a:hover {
   </div>
 </div>
 
-<<div class="match-review-style" id="quick-review-box">
-  <h2>📝 Quick Game Review</h2>
+<div class="box" id="quick-review-box">
+  <h2 class="retro-header">📝 Quick Game Review</h2>
   <p style="font-size: 0.85rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.5rem;">
     Leave a fast review for a game you’ve played — quick, honest, and saved for the community.
   </p>
@@ -801,7 +701,6 @@ nav a:hover {
   <textarea id="reviewText" placeholder="Your review..."></textarea>
   <button class="btn" onclick="submitGameReview()">📤 Submit Review</button>
 </div>
-
 
 
 
@@ -2071,7 +1970,7 @@ When the Union highlights you — it means something. If your name’s echoing i
 
    <aside>
  <!-- 🎮 GSU Mini Games Zone -->
-<div class="box match-review-style">
+<div class="box retro-flashback2">
   <h2 class="retro-header">🎮 GSU Mini Games Zone</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
     Take a quick break and test your skills with one of our community-made mini games. Whether you're flexing combos or racing through retro maps, there’s always something fun waiting.
@@ -2084,7 +1983,7 @@ When the Union highlights you — it means something. If your name’s echoing i
 </div>
 
 <!-- 🧠 Game Dev Knowledge Drop -->
-<div class="box match-review-style">
+<div class="box retro-flashback2">
   <h2 class="retro-header">🧠 Game Dev Knowledge Drop</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
     Game development goes way beyond just code. Level design, engines, AI, and even psychology play a role. Level up your dev brain here.
@@ -2095,7 +1994,7 @@ When the Union highlights you — it means something. If your name’s echoing i
   </div>
 </div>
 
-<div class="box match-review-style">
+<div class="box retro-flashback2">
   <h2 class="retro-header">💬 GSU Vibe Check</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
     What’s the vibe across GameSync Union right now? We scanned the Lounge, uploads, and current plays to bring you the mood.
