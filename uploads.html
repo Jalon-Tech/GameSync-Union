@@ -495,21 +495,25 @@
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
   
-    function addFriend(targetUserId, targetUsername) {
+  function addFriend(targetUID) {
   const user = firebase.auth().currentUser;
-  if (!user || user.uid === targetUserId) return;
+  if (!user || !targetUID) return;
 
-  const userRef = db.collection("users").doc(user.uid);
+  const currentUserRef = db.collection("users").doc(user.uid);
 
-  userRef.update({
-    friends: firebase.firestore.FieldValue.arrayUnion(targetUserId)
+  // Send friend request by updating recipient's friendRequests array
+  const targetUserRef = db.collection("users").doc(targetUID);
+
+  targetUserRef.update({
+    friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
   }).then(() => {
-    alert(`You added @${targetUsername} as a friend!`);
-  }).catch(err => {
-    console.error("Error adding friend:", err);
-    alert("Something went wrong adding your friend.");
+    showFeedback("✅ Friend request sent!");
+  }).catch((error) => {
+    console.error("Error sending friend request:", error);
+    showFeedback("❌ Failed to send friend request.");
   });
 }
+
 
 window.addFriend = addFriend;
 
@@ -761,7 +765,7 @@ firebase.auth().onAuthStateChanged(authUser => {
             <button onclick="acceptFriend('${userId}')">✅ Accept</button>
             <button onclick="declineFriend('${userId}')">❌ Decline</button>`;
         } else {
-          friendActions = `<button onclick="sendFriendRequest('${userId}')">✅ Add Friend</button>`;
+          friendActions = `<button onclick="addFriend('${userId}')">✅ Add Friend</button>`;
         }
       }
 
