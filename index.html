@@ -636,6 +636,80 @@ nav a:hover {
 }
 
 
+.match-review-style {
+  background-color: #1f1f1f;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeSlideIn 0.5s ease-out;
+}
+
+.match-review-style:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 14px rgba(230, 0, 35, 0.2);
+}
+
+.match-review-style h2 {
+  color: #e60023;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 8px rgba(230, 0, 35, 0.7);
+  border-bottom: 2px solid #e60023;
+  padding-bottom: 0.5rem;
+}
+
+#quick-review-box input,
+#quick-review-box textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  background: #2c2c2c;
+  border: 1px solid #444;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+}
+
+#quick-review-box input:focus,
+#quick-review-box textarea:focus {
+  border-color: #e60023;
+  outline: none;
+  box-shadow: 0 0 4px rgba(230, 0, 35, 0.4);
+}
+
+#quick-review-box .btn {
+  background-color: #e60023;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+#quick-review-box .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.5);
+}
+
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
   </style>
 </head>
 <body>
@@ -718,8 +792,8 @@ nav a:hover {
   </div>
 </div>
 
-<div  class="match-review-style" id="quick-review-box">
-  <h2 class="retro-header">📝 Quick Game Review</h2>
+<<div class="match-review-style" id="quick-review-box">
+  <h2>📝 Quick Game Review</h2>
   <p style="font-size: 0.85rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.5rem;">
     Leave a fast review for a game you’ve played — quick, honest, and saved for the community.
   </p>
@@ -727,6 +801,7 @@ nav a:hover {
   <textarea id="reviewText" placeholder="Your review..."></textarea>
   <button class="btn" onclick="submitGameReview()">📤 Submit Review</button>
 </div>
+
 
 
 
