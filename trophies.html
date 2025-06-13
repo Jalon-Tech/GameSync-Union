@@ -268,119 +268,137 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "YOUR_MSG_ID",
-      appId: "YOUR_APP_ID"
-    };
+  <!-- Everything above remains the same (head, styles, HTML structure) -->
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "YOUR_MSG_ID",
+    appId: "YOUR_APP_ID"
+  };
 
-    let currentUser = null;
-    let currentUsername = null;
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
 
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        currentUser = user;
-        try {
-          const doc = await db.collection("users").doc(user.uid).get();
-          if (doc.exists) {
-            currentUsername = doc.data().username || "Unknown";
-            loadTrophies();
-          } else {
-            alert("User profile not found.");
-          }
-        } catch (err) {
-          console.error("Failed to fetch user data:", err);
-        }
-      }
-    });
+  let currentUser = null;
+  let currentUsername = null;
 
-    function uploadTrophy() {
-      const title = document.getElementById("trophyTitle").value.trim();
-      const game = document.getElementById("gameName").value.trim();
-      const cover = document.getElementById("coverURL").value.trim();
-      const description = document.getElementById("description").value.trim();
-
-      if (!currentUser || !currentUsername) {
-        alert("Please log in and wait for your username.");
-        return;
-      }
-
-      if (!title || !game || !cover) {
-        alert("All fields except description are required.");
-        return;
-      }
-
-      db.collection("community_trophies").add({
-        title,
-        game,
-        cover,
-        description,
-        username: currentUsername,
-        userId: currentUser.uid,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert("Trophy uploaded!");
-        document.getElementById("trophyTitle").value = "";
-        document.getElementById("gameName").value = "";
-        document.getElementById("coverURL").value = "";
-        document.getElementById("description").value = "";
-        loadTrophies();
-      }).catch(err => {
-        console.error("Upload failed:", err);
-        alert("Could not upload trophy.");
-      });
-    }
-
-    function deleteTrophy(id) {
-      db.collection("community_trophies").doc(id).delete()
-        .then(() => {
-          alert("Trophy deleted.");
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      try {
+        const doc = await db.collection("users").doc(user.uid).get();
+        if (doc.exists) {
+          currentUsername = doc.data().username || "Unknown";
           loadTrophies();
-        })
-        .catch(err => {
-          console.error("Deletion failed:", err);
-          alert("Could not delete trophy.");
-        });
+        } else {
+          alert("User profile not found.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch user data:", err);
+      }
+    }
+  });
+
+  function uploadTrophy() {
+    const title = document.getElementById("trophyTitle").value.trim();
+    const game = document.getElementById("gameName").value.trim();
+    const cover = document.getElementById("coverURL").value.trim();
+    const description = document.getElementById("description").value.trim();
+
+    if (!currentUser || !currentUsername) {
+      alert("Please log in and wait for your username.");
+      return;
     }
 
-    function loadTrophies() {
-      const list = document.getElementById("trophyList");
-      list.innerHTML = "<p>Loading trophies...</p>";
-
-      db.collection("community_trophies")
-        .orderBy("timestamp", "desc")
-        .get()
-        .then(snapshot => {
-          list.innerHTML = "";
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const card = document.createElement("div");
-            card.className = "trophy-card";
-            card.innerHTML = `
-              <img src="${data.cover}" alt="${data.game}" />
-              <h3>${data.title} – ${data.game}</h3>
-              <p>${data.description || "No description provided."}</p>
-              <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${data.username || "Unknown"}</strong></p>
-              ${currentUser && currentUser.uid === data.userId
-                ? `<button class="delete-btn" onclick="deleteTrophy('${doc.id}')">Delete</button>`
-                : ""}
-            `;
-            list.appendChild(card);
-          });
-        })
-        .catch(err => {
-          console.error("Fetch failed:", err);
-          list.innerHTML = "<p>Could not load trophies.</p>";
-        });
+    if (!title || !game || !cover) {
+      alert("All fields except description are required.");
+      return;
     }
-  </script>
+
+    db.collection("community_trophies").add({
+      title,
+      game,
+      cover,
+      description,
+      userId: currentUser.uid,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      alert("Trophy uploaded!");
+      document.getElementById("trophyTitle").value = "";
+      document.getElementById("gameName").value = "";
+      document.getElementById("coverURL").value = "";
+      document.getElementById("description").value = "";
+      loadTrophies();
+    }).catch(err => {
+      console.error("Upload failed:", err);
+      alert("Could not upload trophy.");
+    });
+  }
+
+  function deleteTrophy(id) {
+    db.collection("community_trophies").doc(id).delete()
+      .then(() => {
+        alert("Trophy deleted.");
+        loadTrophies();
+      })
+      .catch(err => {
+        console.error("Deletion failed:", err);
+        alert("Could not delete trophy.");
+      });
+  }
+
+  async function loadTrophies() {
+    const list = document.getElementById("trophyList");
+    list.innerHTML = "<p>Loading trophies...</p>";
+
+    try {
+      const snapshot = await db.collection("community_trophies").orderBy("timestamp", "desc").get();
+      list.innerHTML = "";
+
+      const userCache = {};
+
+      for (const doc of snapshot.docs) {
+        const data = doc.data();
+        let username = "Unknown";
+
+        if (data.userId) {
+          if (userCache[data.userId]) {
+            username = userCache[data.userId];
+          } else {
+            try {
+              const userDoc = await db.collection("users").doc(data.userId).get();
+              username = userDoc.exists ? (userDoc.data().username || "Unknown") : "Unknown";
+              userCache[data.userId] = username;
+            } catch (err) {
+              console.error("Failed to fetch user for trophy:", err);
+            }
+          }
+        }
+
+        const card = document.createElement("div");
+        card.className = "trophy-card";
+        card.innerHTML = `
+          <img src="${data.cover}" alt="${data.game}" />
+          <h3>${data.title} – ${data.game}</h3>
+          <p>${data.description || "No description provided."}</p>
+          <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${username}</strong></p>
+          ${currentUser && currentUser.uid === data.userId
+            ? `<button class="delete-btn" onclick="deleteTrophy('${doc.id}')">Delete</button>`
+            : ""}
+        `;
+        list.appendChild(card);
+      }
+    } catch (err) {
+      console.error("Fetch failed:", err);
+      list.innerHTML = "<p>Could not load trophies.</p>";
+    }
+  }
+</script>
+
 </body>
 </html>
