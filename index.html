@@ -626,6 +626,20 @@ nav a:hover {
   </div>
 </div>
 
+<div class="box">
+  <h2 class="retro-header">📝 Quick Game Review</h2>
+  <p style="font-size: 0.85rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.5rem;">
+    Leave a fast review for a game you’ve played — quick, honest, and saved for the community.
+  </p>
+  <input type="text" id="reviewGame" placeholder="Game Title"
+    style="width: 100%; padding: 6px; margin-bottom: 0.4rem; font-size: 0.8rem; border-radius: 6px; border: none; background: #1e1e1e; color: #eee;" />
+
+  <textarea id="reviewText" placeholder="Your review..."
+    style="width: 100%; height: 60px; padding: 6px; font-size: 0.8rem; border-radius: 6px; border: none; background: #1e1e1e; color: #eee; resize: none;"></textarea>
+
+  <button class="btn" onclick="submitGameReview()" style="margin-top: 0.5rem; font-size: 0.8rem;">📤 Submit Review</button>
+</div>
+
 
 <!-- 🔧 Scripts -->
 <script>
@@ -2514,6 +2528,42 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 </script>
+
+<script type="module">
+  import {
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  window.submitGameReview = async () => {
+    const title = document.getElementById("reviewGame").value.trim();
+    const content = document.getElementById("reviewText").value.trim();
+    const user = window.auth.currentUser;
+
+    if (!user || !title || !content) {
+      alert("⚠️ You must be signed in and fill out both fields.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(window.db, "game_reviews"), {
+        title,
+        review: content,
+        userId: user.uid,
+        username: user.email,
+        timestamp: serverTimestamp()
+      });
+      alert("✅ Review submitted successfully!");
+      document.getElementById("reviewGame").value = "";
+      document.getElementById("reviewText").value = "";
+    } catch (err) {
+      console.error("❌ Error submitting review:", err);
+      alert("Something went wrong while saving your review.");
+    }
+  };
+</script>
+
   
 </body>
 
