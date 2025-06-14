@@ -1310,19 +1310,8 @@ firebase.auth().onAuthStateChanged(user => {
   if (user) {
     renderWeeklyPolls();
     showEndOfWeekCard();
-    showEndOfWeekCard();
+     showEndOfWeekCard();
   }
-});
-
-// Run this in your browser console or Firebase Functions if needed
-
-firebase.firestore().collection("poll_manager").doc("current").set({
-  username: "PhantomWeb",  // 🔁 Change this to your actual username
-  quote: "Which game should be remastered next?" // 🔁 Creator's poll quote
-}).then(() => {
-  console.log("✅ Poll creator successfully set!");
-}).catch(error => {
-  console.error("❌ Failed to set poll creator:", error);
 });
 
 
