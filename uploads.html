@@ -422,12 +422,30 @@
 
 
 
-.upload-card img {
-  max-height: 50px;
-  object-fit: cover;
-  border-radius: 6px;
-  flex-shrink: 0;
+.upload-card .fav-img-strip {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.25rem;
 }
+
+.upload-card .fav-img-strip img {
+  max-height: 140px;
+  object-fit: contain;
+  scroll-snap-align: center;
+  background: #111;
+  padding: 6px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.upload-card .fav-img-strip img:hover {
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
+}
+
 
 #connectPlayers {
   margin-top: 3rem;
@@ -942,11 +960,12 @@ div.innerHTML = `
     ${friendListHTML}
   </details>
 
-  <div style="display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; justify-content: flex-start;">
+  <div class="fav-img-strip">
   ${user.favoriteImages?.map(url => `
-    <img src="${url}" style="height:140px; width:auto; border-radius:12px; box-shadow: 0 0 10px rgba(0,0,0,0.5);" />
+    <img src="${url}" alt="Favorite Game" />
   `).join("") || ""}
 </div>
+
 
 
   <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
