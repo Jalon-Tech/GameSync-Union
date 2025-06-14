@@ -29,7 +29,6 @@
 
     .poll-card {
   background-color: #1f1f1f;
-  min-height: 200px;
   border: 2px solid #fff;
   border-radius: 12px;
   padding: 1.4rem;
@@ -70,14 +69,11 @@
 }
 
 .poll-card img {
+  margin-top: 1rem;
   width: 100%;
-  height: auto;
-  max-height: 200px; /* Adjusted based on your poll-card height */
-  object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
 }
-
 
 .poll-theme {
   display: inline-block;
@@ -317,24 +313,10 @@
       font-weight: bold;
     }
     #weeklyPoll {
-  scrollbar-gutter: stable both-edges; /* Helps keep space aligned */
-  padding-right: 8px; /* Adds breathing room */
+  min-height: 180px;
+  max-height: 220px;
+  overflow-y: auto;
 }
-
-#weeklyPoll::-webkit-scrollbar {
-  width: 8px;
-  margin-left: 4px; /* Slight bump for spacing */
-}
-
-#weeklyPoll::-webkit-scrollbar-thumb {
-  background-color: var(--gsu-red);
-  border-radius: 4px;
-}
-
-#weeklyPoll::-webkit-scrollbar-track {
-  background: #2a2a2a;
-}
-
 
 .box#weeklyPollBox {
   height: fit-content;
