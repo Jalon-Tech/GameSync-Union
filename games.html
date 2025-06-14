@@ -648,15 +648,21 @@ try {
 
   
  // ✅ First: set username before anything else loads
-firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      const uid = user.uid;
-      const userDoc = await firebase.firestore().collection("users").doc(uid).get();
-      const username = userDoc.exists ? userDoc.data().username : "Anonymous";
-  
-      localStorage.setItem('gsu_username', username);
-    }
-  });
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    const uid = user.uid;
+    const userRef = firebase.firestore().collection("users").doc(uid);
+
+    // Listen for real-time username changes
+    userRef.onSnapshot((doc) => {
+      if (doc.exists) {
+        const username = doc.data().username || "Anonymous";
+        localStorage.setItem('gsu_username', username);
+      }
+    });
+  }
+});
+
   
   // ✅ Then trigger content setup
   document.addEventListener('DOMContentLoaded', () => {
