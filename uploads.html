@@ -432,7 +432,8 @@
 }
 
 .upload-card .fav-img-strip img {
-  max-height: 140px;
+  height: 280px;
+  width: auto;
   object-fit: contain;
   scroll-snap-align: center;
   background: #111;
@@ -441,6 +442,16 @@
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.upload-card .fav-img-strip {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+}
+
 
 .upload-card .fav-img-strip img:hover {
   box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
