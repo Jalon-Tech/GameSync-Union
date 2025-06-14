@@ -186,21 +186,34 @@
     }).then(() => location.reload());
   }
 
-  function loadArtGallery(user) {
-    const container = document.getElementById("artGallery");
-    db.collection("community_art").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-      container.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const card = document.createElement("div");
-        card.className = "art-card";
-        card.innerHTML = `
-          <img src="${data.imageURL}" alt="${data.title}" />
-          <h3>${data.title}</h3>
-          <p>${data.description || "No description provided."}</p>
-          <div style="margin-top: 0.8rem;">
+  function loadArtGallery(currentUser) {
+  const container = document.getElementById("artGallery");
+
+  db.collection("community_art").orderBy("timestamp", "desc").onSnapshot(async (snapshot) => {
+    container.innerHTML = "";
+
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+
+      let displayUsername = "Unknown";
+      try {
+        const userDoc = await db.collection("users").doc(data.userId).get();
+        if (userDoc.exists) {
+          displayUsername = userDoc.data().username || "Unknown";
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+
+      const card = document.createElement("div");
+      card.className = "art-card";
+      card.innerHTML = `
+        <img src="${data.imageURL}" alt="${data.title}" />
+        <h3>${data.title}</h3>
+        <p>${data.description || "No description provided."}</p>
+        <div style="margin-top: 0.8rem;">
           <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-bottom: 0.3rem;">
-            Uploaded by: <span style="font-weight: bold;">${data.username || "Unknown"}</span>
+            Uploaded by: <span style="font-weight: bold;">${displayUsername}</span>
           </p>
           <p style="font-size: 0.9rem; color: var(--gsu-red); margin-top: 0.2rem;">
             📅 Posted on: ${data.timestamp?.toDate().toLocaleDateString(undefined, {
@@ -209,19 +222,18 @@
               day: 'numeric'
             }) || 'Unknown'}
           </p>
-
-            ${data.shoutout ? `
-              <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-top: 0.2rem;">
-                Shoutout to artist: <span style="font-weight: bold;">@${data.shoutout}</span>
-              </p>
-            ` : ""}
-          </div>
-          ${user && user.uid === data.userId ? `<button class="delete-btn" onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
-        `;
-        container.appendChild(card);
-      });
-    });
-  }
+          ${data.shoutout ? `
+            <p style="font-size: 1rem; font-weight: bold; color: var(--gsu-red); margin-top: 0.2rem;">
+              Shoutout to artist: <span style="font-weight: bold;">@${data.shoutout}</span>
+            </p>
+          ` : ""}
+        </div>
+        ${currentUser && currentUser.uid === data.userId ? `<button class="delete-btn" onclick="deleteArt('${doc.id}')">Delete</button>` : ""}
+      `;
+      container.appendChild(card);
+    }
+  });
+}
 
   function deleteArt(id) {
     if (confirm("Are you sure you want to delete this artwork?")) {
