@@ -500,12 +500,16 @@
   if (!user || !targetUID) return;
 
   const currentUserRef = db.collection("users").doc(user.uid);
-
-  // Send friend request by updating recipient's friendRequests array
   const targetUserRef = db.collection("users").doc(targetUID);
 
+  // Update the target's friendRequests
   targetUserRef.update({
     friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+  });
+
+  // Update current user's pendingRequests (so we can check it later)
+  currentUserRef.update({
+    pendingRequests: firebase.firestore.FieldValue.arrayUnion(targetUID)
   }).then(() => {
     showFeedback("✅ Friend request sent!");
   }).catch((error) => {
@@ -513,6 +517,7 @@
     showFeedback("❌ Failed to send friend request.");
   });
 }
+
 
 
 window.addFriend = addFriend;
@@ -600,13 +605,16 @@ function acceptFriend(targetId) {
     const received = currentUser.friendRequests || [];
 
     if (received.includes(targetId)) {
+      // Update current user (accept request)
       db.collection("users").doc(user.uid).update({
         friends: firebase.firestore.FieldValue.arrayUnion(targetId),
         friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
       });
 
+      // Update sender's friend list and remove the pendingRequests entry
       db.collection("users").doc(targetId).update({
-        friends: firebase.firestore.FieldValue.arrayUnion(user.uid)
+        friends: firebase.firestore.FieldValue.arrayUnion(user.uid),
+        pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
       });
 
       showFeedback("🎉 Friend request accepted!");
@@ -615,6 +623,7 @@ function acceptFriend(targetId) {
     }
   });
 }
+
 
 
 function declineFriend(targetId) {
@@ -628,6 +637,10 @@ function declineFriend(targetId) {
     if (received.includes(targetId)) {
       db.collection("users").doc(user.uid).update({
         friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
+      });
+
+      db.collection("users").doc(targetId).update({
+        pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
       }).then(() => {
         showFeedback("❌ Friend request declined", "#444");
       });
@@ -636,6 +649,7 @@ function declineFriend(targetId) {
     }
   });
 }
+
 
 
 
