@@ -7,67 +7,86 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    .result-popup {
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 600px) {
+  .poll-card {
+    padding: 1rem;
+  }
+
+  .poll-card button {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}
+
+.result-popup {
+  text-align: center;
+  font-weight: bold;
+}
+
     .poll-card {
-  background: #1e1e1e;
-  border: 2px solid #e60023;
+  background-color: #1f1f1f;
+  border: 2px solid #fff;
   border-radius: 12px;
-  padding: 1rem 1.2rem;
-  margin-top: 1.2rem;
-  font-family: 'Roboto', sans-serif;
-  box-shadow: 0 0 10px rgba(230, 0, 35, 0.2);
+  padding: 1.4rem;
+  margin-top: 1.5rem;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.poll-card:hover {
+  border-color: var(--gsu-red);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.4);
 }
 
 .poll-card h3 {
-  color: #fff;
-  font-size: 1.2rem;
-  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .poll-card button {
-  background: #e60023;
+  background-color: var(--gsu-red);
   color: #fff;
-  border: none;
-  padding: 0.55rem 1rem;
+  border: 2px solid transparent;
+  padding: 0.6rem 1rem;
   border-radius: 8px;
-  margin: 0.25rem 0.5rem 0.25rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.5rem 0.5rem 0.5rem 0;
   cursor: pointer;
-}
-.poll-card button:hover {
-  background: #ff3344;
+  transition: all 0.3s ease;
 }
 
-.result-popup.correct {
-  background: #1f8a5d;
-  color: #fff;
-  padding: 1rem;
+.poll-card button:hover {
+  background-color: #fff;
+  color: var(--gsu-red);
+  border-color: var(--gsu-red);
+}
+
+.poll-card img {
   margin-top: 1rem;
+  width: 100%;
   border-radius: 10px;
-}
-.result-popup.wrong {
-  background: #a11313;
-  color: #fff;
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 10px;
-}
-.result-popup.visible {
-  animation: fadeInUp 0.4s ease forwards;
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(15px); }
-  to   { opacity: 1; transform: translateY(0); }
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
 }
 
 .poll-theme {
   display: inline-block;
-  background: #333;
-  border-left: 4px solid #e60023;
+  background-color: #2a2a2a;
+  border-left: 4px solid var(--gsu-red);
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
   font-weight: bold;
-  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
   color: #fff;
 }
+
 
     #connectPlayersContainer:hover::-webkit-scrollbar-thumb {
     background-color: #fff;
