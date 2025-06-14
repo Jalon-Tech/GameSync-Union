@@ -606,7 +606,7 @@ function sendFriendRequest(targetId) {
 
 
 
-function acceptFriend(targetId) {
+function acceptFriend(targetId, buttonElement = null) {
   const user = firebase.auth().currentUser;
   if (!user) return;
 
@@ -620,30 +620,43 @@ function acceptFriend(targetId) {
     const userData = userDoc.data();
     const targetData = targetDoc.data();
 
-    const newUserFriends = [...(userData.friends || []), targetId];
-    const newTargetFriends = [...(targetData.friends || []), user.uid];
+    const userFriends = userData.friends || [];
+    const targetFriends = targetData.friends || [];
+
+    const updatedUserFriends = userFriends.includes(targetId) ? userFriends : [...userFriends, targetId];
+    const updatedTargetFriends = targetFriends.includes(user.uid) ? targetFriends : [...targetFriends, user.uid];
 
     transaction.update(userRef, {
-      friends: newUserFriends,
-      friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId),
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetId) // ✅ CORRECTLY inside transaction
+      friends: updatedUserFriends,
+      friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
     });
 
     transaction.update(targetRef, {
-      friends: newTargetFriends,
+      friends: updatedTargetFriends,
       pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
     });
   }).then(() => {
     showFeedback("🎉 Friend request accepted!");
-    setTimeout(() => location.reload(), 1200); // 🔄 reload to reflect updates
-  }).catch(err => console.error("Transaction failed:", err));
+    
+    // 🧼 Remove button group from UI
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<span style="color:var(--gsu-red); font-weight:bold;">✅ Accepted</span>`;
+    }
+
+  }).catch(err => {
+    console.error("❌ Transaction failed:", err);
+    showFeedback("❌ Failed to accept friend request.");
+  });
 }
 
 
 
 
 
-function declineFriend(targetId) {
+
+
+function declineFriend(targetId, buttonElement = null) {
   const user = firebase.auth().currentUser;
   if (!user) return;
 
@@ -660,8 +673,16 @@ function declineFriend(targetId) {
     });
   }).then(() => {
     showFeedback("❌ Friend request declined", "#444");
+    
+    // 🧼 Remove button group from UI
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<span style="color:gray;">Request Declined</span>`;
+    }
+
   }).catch(err => console.error("Decline failed:", err));
 }
+
 
 
 
@@ -770,8 +791,8 @@ firebase.auth().onAuthStateChanged(authUser => {
           friendActions = `<span style="color: var(--gsu-red); font-weight: bold;">🔴 Pending</span>`;
         } else if (receivedRequest) {
           friendActions = `
-            <button onclick="acceptFriend('${userId}')">✅ Accept</button>
-            <button onclick="declineFriend('${userId}')">❌ Decline</button>`;
+            <button onclick="acceptFriend('${userId}', this)">✅ Accept</button>
+            <button onclick="declineFriend('${userId}', this)">❌ Decline</button>`;
         } else {
           friendActions = `<button onclick="addFriend('${userId}')">✅ Add Friend</button>`;
         }
