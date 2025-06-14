@@ -666,14 +666,30 @@ firebase.auth().onAuthStateChanged((user) => {
   
   // ✅ Then trigger content setup
   document.addEventListener('DOMContentLoaded', () => {
-    fetchGames();  // loads first 20
-    fetchTrendingGames();
-    displaySuggestions();
-  
-    const suggestBtn = document.querySelector('button.btn[style*="margin-top"]');
-    if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
+  fetchGames();  // loads first 20
+  fetchTrendingGames();
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      const uid = user.uid;
+      const userRef = firebase.firestore().collection("users").doc(uid);
+
+      userRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          const username = doc.data().username || "Anonymous";
+          localStorage.setItem('gsu_username', username);
+        }
+        displaySuggestions(); // 🔥 Only call this AFTER user and username is confirmed
+      });
+    } else {
+      displaySuggestions(); // Fallback if not signed in
+    }
   });
-  
+
+  const suggestBtn = document.querySelector('button.btn[style*="margin-top"]');
+  if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
+});
+
   
   
 </script>
