@@ -5,8 +5,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GSU Player Lounge | GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
+  
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+
+    .poll-reactions button {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  margin: 0 0.3rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.poll-reactions button:hover {
+  transform: scale(1.25);
+}
+
+
+    .poll-card {
+  background: #1c1c1c;
+  border: 2px solid #e60023;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.poll-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 18px rgba(230, 0, 35, 0.35);
+}
+
+.poll-card h3 {
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.poll-card button {
+  background: #111;
+  color: #fff;
+  border: 2px solid #e60023;
+  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
+  margin: 0.4rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.poll-card button:hover {
+  background: #e60023;
+  border-color: #fff;
+  color: #fff;
+}
+
+.result-popup.correct {
+  background: #1f8a5d;
+  color: #fff;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(31, 138, 93, 0.4);
+}
+
+.result-popup.wrong {
+  background: #a11313;
+  color: #fff;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(161, 19, 19, 0.4);
+}
+
+.result-popup.visible {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.poll-theme {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(230, 0, 35, 0.3);
+}
+
     #connectPlayersContainer:hover::-webkit-scrollbar-thumb {
     background-color: #fff;
     }
@@ -415,6 +513,13 @@
   <h2>🗳️ Weekly GSU Poll (Created by You)</h2>
   <p>Each week, a new player is chosen to run the poll. Cast your vote, settle debates, and shape what’s trending.</p>
   <div id="weeklyPoll"></div>
+  <section id="gsuPollsArea">
+  <div id="pollCreatorBox"></div>
+  <div id="pollListContainer"></div>
+  <div id="pollResultBox"></div>
+  <div id="voteBreakdown"></div>
+  <div id="weeklyScorecard"></div>
+</section>
 </div>
 
 
@@ -975,6 +1080,217 @@ function showFeedback(message, bgColor = '#e60023') {
   }, 3200);
 }
 
+// ✅ GSU Weekly Poll System — All 10 Features Integrated
+// Requires Firebase v9+ modular SDK already initialized with auth + firestore
+// Place inside your <script> tag
+
+// Constants
+const pollsRef = db.collection("weekly_polls");
+const pollStatsRef = db.collection("users");
+const currentUser = firebase.auth().currentUser;
+
+// 1️⃣ Poll Voting + XP + Lock Answer
+function voteOnPoll(pollId, chosenOption, correctAnswer) {
+  const user = firebase.auth().currentUser;
+  if (!user) return alert("Please log in.");
+
+  const voteRef = db.collection("users").doc(user.uid).collection("poll_votes").doc(pollId);
+
+  voteRef.get().then(doc => {
+    if (doc.exists) return alert("You’ve already voted.");
+
+    const correct = chosenOption === correctAnswer;
+
+    voteRef.set({ chosenOption, correct });
+
+    // Update vote count
+    pollsRef.doc(pollId).update({
+      [`voteCounts.${chosenOption}`]: firebase.firestore.FieldValue.increment(1)
+    });
+
+    // XP + Streak logic
+    const statsRef = pollStatsRef.doc(user.uid);
+    statsRef.get().then(snap => {
+      let data = snap.exists ? snap.data() : {};
+      let summary = data.pollStats || {
+        currentStreak: 0,
+        longestStreak: 0,
+        correctAnswersTotal: 0,
+        weeklyXP: 0
+      };
+
+      if (correct) {
+        summary.currentStreak += 1;
+        summary.correctAnswersTotal += 1;
+        summary.weeklyXP += 10;
+        if (summary.currentStreak > summary.longestStreak) summary.longestStreak = summary.currentStreak;
+      } else {
+        summary.currentStreak = 0;
+      }
+
+      statsRef.set({ pollStats: summary }, { merge: true });
+
+      // 🔥 2️⃣ Animated Reveal
+      setTimeout(() => showResultBox(chosenOption, correctAnswer, correct), 200);
+    });
+  });
+}
+
+// 2️⃣ Show Result Box (Animated Reveal)
+function showResultBox(userAnswer, correctAnswer, correct) {
+  const box = document.getElementById("pollResultBox");
+  box.innerHTML = `
+    <div class="result-popup ${correct ? 'correct' : 'wrong'}">
+      ✅ You chose: “${userAnswer}”<br />
+      ✔️ Correct answer: “${correctAnswer}”<br />
+      ${correct ? '🔥 +10 XP earned!' : '😬 No XP this time.'}
+    </div>
+  `;
+  box.classList.add("visible");
+  setTimeout(() => box.classList.remove("visible"), 4000);
+}
+
+// 3️⃣ Reactions to Polls
+function reactToPoll(pollId, option, emoji) {
+  const ref = db.collection("weekly_polls").doc(pollId);
+  ref.update({
+    [`pollReactions.${option}.${emoji}`]: firebase.firestore.FieldValue.increment(1)
+  });
+}
+
+// 4️⃣ Poll Creator Shoutout
+function loadPollCreator() {
+  db.collection("poll_manager").doc("current").get().then(doc => {
+    if (!doc.exists) return;
+    const data = doc.data();
+    document.getElementById("pollCreatorBox").innerHTML = `
+      <div class="creator-shoutout">
+        🗳️ This week’s polls by <strong>@${data.username}</strong><br />
+        “${data.quote}”
+      </div>
+    `;
+  });
+}
+
+// 5️⃣ GSU Vote Breakdown
+function loadVoteChart(pollId) {
+  db.collection("weekly_polls").doc(pollId).get().then(doc => {
+    const data = doc.data();
+    const counts = data.voteCounts || {};
+    let html = "<h4>📊 How GSU Voted:</h4>";
+    for (let opt in counts) {
+      html += `<p>${opt}: ${counts[opt]} votes</p>`;
+    }
+    document.getElementById("voteBreakdown").innerHTML = html;
+  });
+}
+
+// 6️⃣ End of Week Scorecard
+function showEndOfWeekCard() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const statsRef = db.collection("users").doc(user.uid);
+  statsRef.get().then(doc => {
+    const summary = doc.data()?.pollStats || {};
+    document.getElementById("weeklyScorecard").innerHTML = `
+      ✅ You got ${summary.correctAnswersTotal}/3 this week!<br />
+      🔥 Current Streak: ${summary.currentStreak}<br />
+      🏅 Total XP: ${summary.weeklyXP}
+    `;
+  });
+}
+
+// 7️⃣ Poll Themes
+function stylePollCard(theme, icon, color) {
+  return `<div class="poll-theme" style="background:${color};">
+    ${icon} <strong>${theme}</strong>
+  </div>`;
+}
+
+// 8️⃣ Perfect Guess Badge
+function checkPerfectGuessBadge(userId) {
+  const statsRef = db.collection("users").doc(userId);
+  statsRef.get().then(doc => {
+    const s = doc.data()?.pollStats;
+    if (s?.correctAnswersTotal === 3) {
+      db.collection("users").doc(userId).update({
+        badges: firebase.firestore.FieldValue.arrayUnion("poll_prophet")
+      });
+    }
+  });
+}
+
+// 9️⃣ Livewire Shoutouts
+function postPollShoutout(text) {
+  db.collection("livewire_events").add({
+    type: "poll",
+    text,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+// 🔟 Poll Feedback
+function submitPollFeedback(pollId, comment) {
+  if (!comment) return;
+  db.collection("poll_feedback").doc(pollId).update({
+    feedback: firebase.firestore.FieldValue.arrayUnion(comment)
+  });
+}
+
+// 📢 To run: call these when polls load or close
+// voteOnPoll(pollId, selected, correct);
+// reactToPoll(pollId, option, emoji);
+// loadPollCreator();
+// loadVoteChart(pollId);
+// showEndOfWeekCard();
+// submitPollFeedback(pollId, "🔥 Loved this!");
+
+function renderWeeklyPolls() {
+  db.collection("weekly_polls").orderBy("timestamp").limit(3).get().then(snapshot => {
+    const container = document.getElementById("pollListContainer");
+    container.innerHTML = "";
+
+    snapshot.forEach(doc => {
+      const poll = doc.data();
+      const pollId = doc.id;
+
+      const themeBox = stylePollCard(poll.theme, poll.icon, poll.color || "#222");
+
+      let html = `
+        <div class="poll-card">
+          ${themeBox}
+          <h3>${poll.question}</h3>
+          ${poll.options.map(option => `
+            <button onclick="voteOnPoll('${pollId}', '${option}', '${poll.answer}')">
+              ${option}
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="poll-reactions" data-poll-id="POLL_ID" data-option="OPTION_TEXT">
+          <button onclick="reactToPollUI(this, '😂')">😂</button>
+          <button onclick="reactToPollUI(this, '💀')">💀</button>
+          <button onclick="reactToPollUI(this, '🤔')">🤔</button>
+          <button onclick="reactToPollUI(this, '👍')">👍</button>
+        </div>
+
+      `;
+
+      container.innerHTML += html;
+    });
+
+    loadPollCreator(); // ✅ Show creator shoutout
+  });
+}
+
+// Auto load on page
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    renderWeeklyPolls();
+    showEndOfWeekCard();
+  }
+});
 
 </script>
   <script>
@@ -1050,6 +1366,112 @@ function clearDMChat() {
 }
 
 </script>
+
+<script>
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) return;
+
+  const weeklyPollContainer = document.getElementById("weeklyPoll");
+
+  // Load current weekly polls
+  db.collection("weekly_polls").orderBy("timestamp").get().then(snapshot => {
+    if (snapshot.empty) {
+      weeklyPollContainer.innerHTML = "<p style='color:#aaa;'>No active polls right now. Check back later!</p>";
+      return;
+    }
+
+    snapshot.forEach(doc => {
+      const poll = doc.data();
+      const pollId = doc.id;
+      const userVoteRef = db.collection("users").doc(user.uid).collection("poll_votes").doc(pollId);
+
+      userVoteRef.get().then(voteDoc => {
+        const userVoted = voteDoc.exists;
+        const selected = voteDoc.data()?.answer;
+
+        const pollDiv = document.createElement("div");
+        pollDiv.style.marginBottom = "1.5rem";
+        pollDiv.style.padding = "1rem";
+        pollDiv.style.border = "1px solid #444";
+        pollDiv.style.borderRadius = "8px";
+        pollDiv.style.background = "#2a2a2a";
+
+        let optionsHTML = "";
+        poll.options.forEach((opt, i) => {
+          const btnId = `vote_${pollId}_${i}`;
+          optionsHTML += `
+            <button id="${btnId}" class="pollOption" style="
+              margin: 6px 0;
+              padding: 8px 12px;
+              border-radius: 6px;
+              background-color: #191818;
+              color: #fff;
+              border: 1px solid #444;
+              width: 100%;
+              text-align: left;
+              cursor: ${userVoted ? "not-allowed" : "pointer"};
+              opacity: ${userVoted && selected !== opt ? 0.5 : 1};
+              background-color: ${userVoted && selected === opt ? "#e60023" : "#191818"};
+            " ${userVoted ? "disabled" : `onclick="submitPollVote('${pollId}', '${opt}', this)"`}>
+              ${opt}
+            </button>
+          `;
+        });
+
+        pollDiv.innerHTML = `
+          <h3 style="color: var(--gsu-red); font-size: 1.2rem;">🎮 ${poll.question}</h3>
+          <div>${optionsHTML}</div>
+          ${userVoted ? `<p style='color:#aaa; font-size:0.85rem; margin-top:6px;'>✅ You voted: <strong>${selected}</strong></p>` : ""}
+        `;
+
+        weeklyPollContainer.appendChild(pollDiv);
+      });
+    });
+  });
+});
+
+// Submit vote to Firestore
+function submitPollVote(pollId, answer, buttonEl) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const voteRef = db.collection("users").doc(user.uid).collection("poll_votes").doc(pollId);
+
+  voteRef.get().then(docSnap => {
+    if (docSnap.exists) return; // already voted
+
+    voteRef.set({
+      answer: answer,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      // Increment vote count in poll
+      db.collection("weekly_polls").doc(pollId).update({
+        [`voteCount.${answer}`]: firebase.firestore.FieldValue.increment(1)
+      });
+      location.reload(); // refresh poll section
+    });
+  });
+}
+function reactToPollUI(button, emoji) {
+  const wrapper = button.closest('.poll-reactions');
+  const pollId = wrapper.dataset.pollId;
+  const option = wrapper.dataset.option;
+
+  // Disable all emoji buttons temporarily to avoid spamming
+  Array.from(wrapper.children).forEach(btn => btn.disabled = true);
+
+  db.collection("weekly_polls").doc(pollId).update({
+    [`pollReactions.${option}.${emoji}`]: firebase.firestore.FieldValue.increment(1)
+  }).then(() => {
+    showFeedback(`You reacted with ${emoji}!`);
+  }).catch(err => {
+    console.error("Failed to react:", err);
+    showFeedback("❌ Couldn't react.");
+  });
+}
+
+</script>
+
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
