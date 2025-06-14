@@ -7,6 +7,68 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    .poll-card {
+  background: #1e1e1e;
+  border: 2px solid #e60023;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-top: 1.2rem;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 0 10px rgba(230, 0, 35, 0.2);
+}
+
+.poll-card h3 {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.poll-card button {
+  background: #e60023;
+  color: #fff;
+  border: none;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  margin: 0.25rem 0.5rem 0.25rem 0;
+  cursor: pointer;
+}
+.poll-card button:hover {
+  background: #ff3344;
+}
+
+.result-popup.correct {
+  background: #1f8a5d;
+  color: #fff;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 10px;
+}
+.result-popup.wrong {
+  background: #a11313;
+  color: #fff;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 10px;
+}
+.result-popup.visible {
+  animation: fadeInUp 0.4s ease forwards;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.poll-theme {
+  display: inline-block;
+  background: #333;
+  border-left: 4px solid #e60023;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-bottom: 0.6rem;
+  color: #fff;
+}
+
     #connectPlayersContainer:hover::-webkit-scrollbar-thumb {
     background-color: #fff;
     }
@@ -1050,6 +1112,29 @@ function clearDMChat() {
 }
 
 </script>
+
+<script>
+  const weeklyPoll = document.getElementById("weeklyPoll");
+
+  weeklyPoll.innerHTML = `
+    <div class="poll-card">
+      <div class="poll-theme">🕹️ Game Mechanics</div>
+      <h3>Which mechanic makes a game feel more intense?</h3>
+      <button onclick="showResult(true)">Parrying</button>
+      <button onclick="showResult(false)">Dodging</button>
+      <button onclick="showResult(false)">Blocking</button>
+      <div class="result-popup" id="pollResultBox" style="display:none;"></div>
+    </div>
+  `;
+
+  function showResult(isCorrect) {
+    const box = document.getElementById("pollResultBox");
+    box.className = `result-popup visible ${isCorrect ? 'correct' : 'wrong'}`;
+    box.innerText = isCorrect ? "✅ That’s the top choice!" : "❌ Interesting pick, but not the top choice.";
+    box.style.display = "block";
+  }
+</script>
+
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
