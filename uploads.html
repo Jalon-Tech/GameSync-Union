@@ -1187,15 +1187,111 @@ weeklyPoll.innerHTML = `
     <div class="result-popup" id="pollResultBox" style="display:none;"></div>
   </div>
 `;
-
-  function showResult(isCorrect) {
-    const box = document.getElementById("pollResultBox");
-    box.className = `result-popup visible ${isCorrect ? 'correct' : 'wrong'}`;
-    box.innerText = isCorrect ? "✅ That’s the top choice!" : "❌ Interesting pick, but not the top choice.";
-    box.style.display = "block";
+  function submitVote(choiceId) {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    showFeedback("🚫 You must be logged in to vote.");
+    return;
   }
+
+  const voteRef = db.collection("pollVotes").doc(user.uid);
+
+  voteRef.set({
+    choice: choiceId,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    const readableChoice = {
+      KravenKillsScorpion: "Kraven killing Scorpion",
+      VenomBreakout: "Venom’s full escape at Oscorp",
+      VenomFinalBattle: "Peter & Miles vs. Venom"
+    }[choiceId] || choiceId;
+
+    const resultBox = document.getElementById("pollResultBox");
+    resultBox.innerText = `🗳️ You voted: ${readableChoice}`;
+    resultBox.style.display = "block";
+  }).catch(error => {
+    console.error("Vote failed:", error);
+    showFeedback("❌ Failed to record your vote.");
+  });
+}
+
 </script>
 
+<script>
+  const weeklyPoll = document.getElementById("weeklyPoll");
+
+  function showFeedback(msg) {
+    const resultBox = document.getElementById("pollResultBox");
+    resultBox.innerText = msg;
+    resultBox.style.display = "block";
+  }
+
+  function submitVote(choiceId) {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      showFeedback("🚫 You must be logged in to vote.");
+      return;
+    }
+
+    const voteRef = db.collection("pollVotes").doc(user.uid);
+
+    voteRef.set({
+      choice: choiceId,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      const readableChoice = {
+        KravenKillsScorpion: "Kraven killing Scorpion",
+        VenomBreakout: "Venom’s full escape at Oscorp",
+        VenomFinalBattle: "Peter & Miles vs. Venom"
+      }[choiceId] || choiceId;
+
+      const resultBox = document.getElementById("pollResultBox");
+      resultBox.innerText = `🗳️ You voted: ${readableChoice}`;
+      resultBox.style.display = "block";
+
+      document.querySelectorAll(".poll-card button").forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText.includes(readableChoice)) {
+          btn.style.borderColor = "#e60023";
+          btn.style.backgroundColor = "#fff";
+          btn.style.color = "#e60023";
+        }
+      });
+    }).catch(error => {
+      console.error("Vote failed:", error);
+      showFeedback("❌ Failed to record your vote.");
+    });
+  }
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) return;
+
+    const voteRef = db.collection("pollVotes").doc(user.uid);
+    voteRef.get().then(doc => {
+      if (doc.exists) {
+        const choiceId = doc.data().choice;
+        const readableChoice = {
+          KravenKillsScorpion: "Kraven killing Scorpion",
+          VenomBreakout: "Venom’s full escape at Oscorp",
+          VenomFinalBattle: "Peter & Miles vs. Venom"
+        }[choiceId] || choiceId;
+
+        const resultBox = document.getElementById("pollResultBox");
+        resultBox.innerText = `🗳️ You voted: ${readableChoice}`;
+        resultBox.style.display = "block";
+
+        document.querySelectorAll(".poll-card button").forEach(btn => {
+          btn.disabled = true;
+          if (btn.innerText.includes(readableChoice)) {
+            btn.style.borderColor = "#e60023";
+            btn.style.backgroundColor = "#fff";
+            btn.style.color = "#e60023";
+          }
+        });
+      }
+    });
+  });
+</script>
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
