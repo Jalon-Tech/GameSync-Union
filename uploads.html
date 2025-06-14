@@ -497,19 +497,29 @@
   
   function addFriend(targetUID) {
   const user = firebase.auth().currentUser;
-  if (!user || !targetUID) return;
+  if (!user || !targetUID || user.uid === targetUID) return;
 
   const currentUserRef = db.collection("users").doc(user.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
-  // Update the target's friendRequests
-  targetUserRef.update({
-    friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
-  });
+  db.runTransaction(async (transaction) => {
+    const currentDoc = await transaction.get(currentUserRef);
+    const targetDoc = await transaction.get(targetUserRef);
 
-  // Update current user's pendingRequests (so we can check it later)
-  currentUserRef.update({
-    pendingRequests: firebase.firestore.FieldValue.arrayUnion(targetUID)
+    const pending = currentDoc.data().pendingRequests || [];
+    const requests = targetDoc.data().friendRequests || [];
+
+    if (!pending.includes(targetUID)) {
+      transaction.update(currentUserRef, {
+        pendingRequests: firebase.firestore.FieldValue.arrayUnion(targetUID)
+      });
+    }
+
+    if (!requests.includes(user.uid)) {
+      transaction.update(targetUserRef, {
+        friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+      });
+    }
   }).then(() => {
     showFeedback("✅ Friend request sent!");
   }).catch((error) => {
@@ -600,29 +610,36 @@ function acceptFriend(targetId) {
   const user = firebase.auth().currentUser;
   if (!user) return;
 
-  db.collection("users").doc(user.uid).get().then(doc => {
-    const currentUser = doc.data();
-    const received = currentUser.friendRequests || [];
+  const userRef = db.collection("users").doc(user.uid);
+  const targetRef = db.collection("users").doc(targetId);
 
-    if (received.includes(targetId)) {
-      // Update current user (accept request)
-      db.collection("users").doc(user.uid).update({
-        friends: firebase.firestore.FieldValue.arrayUnion(targetId),
-        friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
-      });
+  db.runTransaction(async (transaction) => {
+    const userDoc = await transaction.get(userRef);
+    const targetDoc = await transaction.get(targetRef);
 
-      // Update sender's friend list and remove the pendingRequests entry
-      db.collection("users").doc(targetId).update({
-        friends: firebase.firestore.FieldValue.arrayUnion(user.uid),
-        pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-      });
+    const userData = userDoc.data();
+    const targetData = targetDoc.data();
 
-      showFeedback("🎉 Friend request accepted!");
-    } else {
-      alert("You can only accept requests sent to you.");
-    }
-  });
+    const newUserFriends = [...(userData.friends || []), targetId];
+    const newTargetFriends = [...(targetData.friends || []), user.uid];
+
+    transaction.update(userRef, {
+      friends: newUserFriends,
+      friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId),
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetId) // ✅ CORRECTLY inside transaction
+    });
+
+    transaction.update(targetRef, {
+      friends: newTargetFriends,
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+    });
+  }).then(() => {
+    showFeedback("🎉 Friend request accepted!");
+    setTimeout(() => location.reload(), 1200); // 🔄 reload to reflect updates
+  }).catch(err => console.error("Transaction failed:", err));
 }
+
+
 
 
 
@@ -630,25 +647,22 @@ function declineFriend(targetId) {
   const user = firebase.auth().currentUser;
   if (!user) return;
 
-  db.collection("users").doc(user.uid).get().then(doc => {
-    const currentUser = doc.data();
-    const received = currentUser.friendRequests || [];
+  const userRef = db.collection("users").doc(user.uid);
+  const targetRef = db.collection("users").doc(targetId);
 
-    if (received.includes(targetId)) {
-      db.collection("users").doc(user.uid).update({
-        friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
-      });
+  db.runTransaction(async (transaction) => {
+    transaction.update(userRef, {
+      friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
+    });
 
-      db.collection("users").doc(targetId).update({
-        pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-      }).then(() => {
-        showFeedback("❌ Friend request declined", "#444");
-      });
-    } else {
-      alert("You can only decline requests sent to you.");
-    }
-  });
+    transaction.update(targetRef, {
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+    });
+  }).then(() => {
+    showFeedback("❌ Friend request declined", "#444");
+  }).catch(err => console.error("Decline failed:", err));
 }
+
 
 
 
@@ -657,18 +671,20 @@ function removeFriend(targetId, username) {
   const user = firebase.auth().currentUser;
   if (!user) return;
 
-  const currentUserRef = db.collection("users").doc(user.uid);
-  const targetUserRef = db.collection("users").doc(targetId);
+  const userRef = db.collection("users").doc(user.uid);
+  const targetRef = db.collection("users").doc(targetId);
 
-  currentUserRef.update({
-    friends: firebase.firestore.FieldValue.arrayRemove(targetId)
-  });
+  db.runTransaction(async (transaction) => {
+    transaction.update(userRef, {
+      friends: firebase.firestore.FieldValue.arrayRemove(targetId)
+    });
 
-  targetUserRef.update({
-    friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
+    transaction.update(targetRef, {
+      friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
+    });
   }).then(() => {
     showFeedback(`👋 Removed @${username} as a friend`, "#444");
-  });
+  }).catch(err => console.error("Unfriend failed:", err));
 }
 
 firebase.auth().onAuthStateChanged(user => {
@@ -686,29 +702,7 @@ firebase.auth().onAuthStateChanged(authUser => {
     console.warn("🚫 Not logged in.");
     return;
   }
-  firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    const userRef = db.collection("users").doc(user.uid);
-    userRef.get().then(doc => {
-      if (!doc.exists) {
-        userRef.set({
-          username: user.email.split("@")[0],  // or prompt them
-          online: true,
-          friends: [],
-          favoriteGames: [],
-          favoriteImages: [],
-          platform: "Not set",
-          gamesPlayed: 0,
-          trophyCount: 0,
-          lastActive: firebase.firestore.FieldValue.serverTimestamp()
-          
-        });
-      } else {
-        userRef.update({ online: true });
-      }
-    });
-  }
-});
+ 
 
 
 
