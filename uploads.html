@@ -961,7 +961,11 @@ div.innerHTML = `
   </h3>
 
   <p><strong>Platform:</strong> ${user.platform || "Not set"}</p>
-  <p><strong>Favorite Games:</strong> ${user.favoriteGames?.join(", ") || "None listed"}</p>
+  <p><strong>Favorite Games:</strong> ${
+  user.favoriteGames && user.favoriteGames.length > 0
+    ? user.favoriteGames.join(", ")
+    : "None listed"
+  }</p>
   <p><strong>Number Of Games Played:</strong> ${user.gamesPlayed || "Not tracked"}</p>
   <p><strong>Trophy Stats:</strong> ${user.trophyCount || "N/A"}</p>
   <p><strong>Friends:</strong> ${friendUIDs.length}</p>
