@@ -74,14 +74,39 @@
 }
 
 .poll-card img {
-  width: 100%;
-  height: auto;
-  max-height: 50px; /* or less if needed */
-  object-fit: cover;
-  border-radius: 10px;
-  display: block;
+  height: 280px;
+  width: auto;
+  object-fit: contain;
+  background: #111;
+  padding: 6px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.poll-card img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
+}
+
+#poll-images {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  justify-content: flex-start;
+  max-width: 100%;
+}
+
+#poll-images::-webkit-scrollbar {
+  height: 8px;
+}
+
+#poll-images::-webkit-scrollbar-thumb {
+  background-color: var(--gsu-red);
+  border-radius: 6px;
+}
 
 .poll-theme {
   display: inline-block;
@@ -1126,23 +1151,25 @@ function clearDMChat() {
 </script>
 
 <script>
-  const weeklyPoll = document.getElementById("weeklyPoll");
+ const weeklyPoll = document.getElementById("weeklyPoll");
 
-  weeklyPoll.innerHTML = `
-    <div class="poll-card">
-      <div class="poll-theme">🕸️ Marvel’s Spider-Man 2 – Most Jaw-Dropping Moment</div>
-      <h3>Which moment made you stop everything and say “no way that just happened”? 😱</h3>
-      <button onclick="submitVote('KravenKillsScorpion')">Kraven killing Scorpion with no hesitation</button>
-      <button onclick="submitVote('VenomBreakout')">Venom’s full escape at Oscorp – chaos unleashed</button>
-      <button onclick="submitVote('VenomFinalBattle')">Peter & Miles vs. Venom – The final battle that nearly killed Harry</button>
-      <img 
-        src="https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/60eca3ac155247e21850c7d075d01ebf0f3f5dbf19ccd2a1.jpg" 
-        alt="Spider-Man 2 cover" 
-        style="margin-top:1rem; width:100%; border-radius:10px; box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);">
-      <div class="result-popup" id="pollResultBox" style="display:none;"></div>
+weeklyPoll.innerHTML = `
+  <div class="poll-card">
+    <div class="poll-theme">🕸️ Marvel’s Spider-Man 2 – Most Jaw-Dropping Moment</div>
+    <h3>Which moment made you stop everything and say “no way that just happened”? 😱</h3>
+    <button onclick="submitVote('KravenKillsScorpion')">Kraven killing Scorpion with no hesitation</button>
+    <button onclick="submitVote('VenomBreakout')">Venom’s full escape at Oscorp – chaos unleashed</button>
+    <button onclick="submitVote('VenomFinalBattle')">Peter & Miles vs. Venom – The final battle that nearly killed Harry</button>
+
+    <div id="poll-images">
+      <img src="https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/60eca3ac155247e21850c7d075d01ebf0f3f5dbf19ccd2a1.jpg" alt="Venom Final Battle">
+      <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/10/spider-man-2-scene.jpg" alt="Venom Breakout Chaos">
+      <img src="https://static1.thegamerimages.com/wordpress/wp-content/uploads/2023/10/spider-man-2-kraven-kills.jpg" alt="Kraven Kills Scorpion">
     </div>
 
-  `;
+    <div class="result-popup" id="pollResultBox" style="display:none;"></div>
+  </div>
+`;
 
   function showResult(isCorrect) {
     const box = document.getElementById("pollResultBox");
