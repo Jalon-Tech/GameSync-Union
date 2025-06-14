@@ -1376,7 +1376,23 @@ firebase.auth().onAuthStateChanged(user => {
   // Load current weekly polls
   db.collection("weekly_polls").orderBy("timestamp").get().then(snapshot => {
     if (snapshot.empty) {
-      weeklyPollContainer.innerHTML = "<p style='color:#aaa;'>No active polls right now. Check back later!</p>";
+      weeklyPollContainer.innerHTML = `
+      <div style="
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background-color: #2a2a2a;
+        border: 2px solid #e60023;
+        border-radius: 10px;
+        text-align: center;
+        color: #e60023;
+        font-size: 1.3rem;
+        font-weight: bold;
+        box-shadow: 0 0 12px rgba(230, 0, 35, 0.4);
+      ">
+        🚫 No active polls this week. Check back later to cast your vote!
+      </div>
+`;
+
       return;
     }
 
