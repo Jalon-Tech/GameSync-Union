@@ -1158,37 +1158,40 @@ function reactToPoll(pollId, option, emoji) {
   });
 }
 
-// 4️⃣ Poll Creator Shoutout
+// ✅ Poll Creator Shoutout – Always visible to ALL users
 function loadPollCreator() {
+  const creatorBox = document.getElementById("pollCreatorBox");
+
   db.collection("poll_manager").doc("current").get().then(doc => {
-    if (!doc.exists) return;
+    if (!doc.exists) {
+      creatorBox.innerHTML = "<p style='color:#aaa;'>No poll creator selected yet.</p>";
+      return;
+    }
 
     const data = doc.data();
-    const username = data.username || "unknown";
+    const username = data.username || "Unknown";
+    const quote = data.quote || "";
 
-    document.getElementById("pollCreatorBox").innerHTML = `
-      <div class="creator-shoutout">
-        🗳️ This week’s polls by <strong>@${username}</strong><br />
-        “${data.quote}”
+    creatorBox.innerHTML = `
+      <div class="poll-card" style="background:#1f1f1f; border:2px solid #e60023; padding:1rem; margin-top:1rem; border-radius:12px; box-shadow:0 0 12px rgba(230,0,35,0.3);">
+        <p style="font-size:1.05rem; color:#fff;">
+          🗳️ This week’s polls were created by <strong style="color:#e60023;">@${username}</strong>
+        </p>
+        <blockquote style="margin-top:0.5rem; color:#aaa; font-style:italic;">“${quote}”</blockquote>
       </div>
     `;
-
-    // 🔍 Now check if they submitted any polls
-    db.collection("weekly_polls")
-      .where("creator", "==", username)
-      .get()
-      .then(snapshot => {
-        if (snapshot.empty) {
-          const warning = document.createElement("div");
-          warning.className = "poll-card";
-          warning.style = "text-align:center; border:2px dashed #e60023; padding:1rem; color:#aaa;";
-          warning.innerHTML = `👤 @${username} was chosen to create this week’s polls, but nothing’s been submitted yet!`;
-
-          document.getElementById("pollListContainer").appendChild(warning);
-        }
-      });
+  }).catch(err => {
+    console.error("❌ Error loading poll creator:", err);
+    creatorBox.innerHTML = "<p style='color:red;'>Error loading poll creator info.</p>";
   });
 }
+
+// Call immediately after auth loads
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    loadPollCreator(); // 🔥 Always run this regardless of polls submitted
+  }
+});
 
 // 5️⃣ GSU Vote Breakdown
 function loadVoteChart(pollId) {
