@@ -9,6 +9,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
 
+    .creator-shoutout {
+  background: #1e1e1e;
+  border-left: 4px solid #e60023;
+  padding: 1rem;
+  margin: 1rem 0;
+  font-family: 'Roboto', sans-serif;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(230, 0, 35, 0.3);
+}
+
+
     .poll-reactions button {
   background: transparent;
   border: none;
@@ -462,6 +474,7 @@
     </header>
 
     <main>
+
       <div class="section-header">
         <h1>🚀 Welcome to the GSU Player Lounge | GameSync Union</h1>
         <p>🎮 Squad up, show out, cast your vote — GSU’s the place where gamers don’t choke. 📸 Post your wins, 🔥 drop your heat — 💬 Chat, 🤝 connect, and 👑 claim your seat.</p>
@@ -531,7 +544,7 @@
   </div>
 </div>
 
-      
+
     </main>
 
     <footer>
@@ -547,6 +560,11 @@
   </div>
 
   <script>
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) loadPollCreator();
+    });
+
 
     const connectBox = document.getElementById('connectPlayersContainer');
     const connectDesc = document.getElementById('connectDesc');
@@ -640,9 +658,20 @@ window.addFriend = addFriend;
 
 
 
-  </script>
+  </script> 
+  
   <script>
-    
+
+
+firebase.firestore().collection("poll_manager").doc("current").set({
+  username: "DevGodSync",
+  quote: "Which game should be remastered next?"
+}).then(() => {
+  console.log("✅ Poll creator set with quote.");
+}).catch((error) => {
+  console.error("❌ Error setting poll creator:", error);
+});
+
 let currentDMUser = "";
 
 function getChatRoomId(uid1, uid2) {
