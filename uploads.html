@@ -364,16 +364,21 @@
   scrollbar-gutter: stable;
 }
 
+/* GSU red scrollbar for weekly poll */
 #weeklyPoll::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
+
 #weeklyPoll::-webkit-scrollbar-thumb {
   background-color: var(--gsu-red);
-  border-radius: 4px;
+  border-radius: 6px;
+  border: 2px solid #1f1f1f; /* subtle background contrast */
 }
+
 #weeklyPoll::-webkit-scrollbar-track {
   background: #2a2a2a;
 }
+
 
 #connectPlayersContainer {
   max-height: 600px;
