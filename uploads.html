@@ -978,7 +978,7 @@ div.innerHTML = `
   ${Array.isArray(user.favoriteImages) && user.favoriteImages.length > 0 ? `
   <div class="fav-img-strip">
     ${user.favoriteImages.map(url => `
-      <img src="${url}" alt="Favorite Game" />
+      <img src="${url}" />
     `).join("")}
   </div>
 ` : ""}
