@@ -20,14 +20,19 @@
     width: 100%;
     margin: 0.5rem 0;
   }
+
+  .poll-card img {
+    max-height: 160px;
+  }
 }
 
 .result-popup {
   text-align: center;
   font-weight: bold;
+  margin-bottom: 1rem;
 }
 
-    .poll-card {
+.poll-card {
   background-color: #1f1f1f;
   border: 2px solid #fff;
   border-radius: 12px;
@@ -69,11 +74,14 @@
 }
 
 .poll-card img {
-  margin-top: 1rem;
   width: 100%;
+  height: auto;
+  max-height: 50px; /* or less if needed */
+  object-fit: cover;
   border-radius: 10px;
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
+  display: block;
 }
+
 
 .poll-theme {
   display: inline-block;
@@ -313,38 +321,23 @@
       font-weight: bold;
     }
     #weeklyPoll {
-  min-height: 180px;
-  max-height: 220px;
+  max-height: 100vh;
   overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
 }
-
-.box#weeklyPollBox {
-  height: fit-content;
-  max-height: 300px;
-}
-  @media (max-width: 768px) {
-  .box#weeklyPollBox {
-    max-height: none;
-  }
-
-  #weeklyPoll {
-    max-height: none;
-  }
-}
-
 
 #weeklyPoll::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
-
 #weeklyPoll::-webkit-scrollbar-thumb {
   background-color: var(--gsu-red);
   border-radius: 4px;
 }
-
 #weeklyPoll::-webkit-scrollbar-track {
   background: #2a2a2a;
 }
+
 #connectPlayersContainer {
   max-height: 600px;
   overflow-y: auto;
