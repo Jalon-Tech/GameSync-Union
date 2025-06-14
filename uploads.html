@@ -1118,11 +1118,12 @@ function clearDMChat() {
 
   weeklyPoll.innerHTML = `
     <div class="poll-card">
-      <div class="poll-theme">🕹️ Game Mechanics</div>
-      <h3>Which mechanic makes a game feel more intense?</h3>
-      <button onclick="showResult(true)">Parrying</button>
-      <button onclick="showResult(false)">Dodging</button>
-      <button onclick="showResult(false)">Blocking</button>
+      <div class="poll-theme">🕸️ Marvel’s Spider-Man 2 – Most Jaw-Dropping Moment</div>
+      <h3>Which moment made you stop everything and say “no way that just happened”? 😱</h3>
+      <button onclick="submitVote('KravenKillsScorpion')">Kraven killing Scorpion with no hesitation</button>
+      <button onclick="submitVote('VenomBreakout')">Venom’s full escape at Oscorp – chaos unleashed</button>
+      <button onclick="submitVote('MJVenomChase')"> Peter & Miles vs. Venom – The Final Battle That Nearly Killed Harry</button>
+      <img src="https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/60eca3ac155247e21850c7d075d01ebf0f3f5dbf19ccd2a1.jpg" alt="Spider-Man 2 cover" style="margin-top:1rem; width:100%; border-radius:10px; box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);">
       <div class="result-popup" id="pollResultBox" style="display:none;"></div>
     </div>
   `;
