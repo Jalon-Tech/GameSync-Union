@@ -1162,13 +1162,31 @@ function reactToPoll(pollId, option, emoji) {
 function loadPollCreator() {
   db.collection("poll_manager").doc("current").get().then(doc => {
     if (!doc.exists) return;
+
     const data = doc.data();
+    const username = data.username || "unknown";
+
     document.getElementById("pollCreatorBox").innerHTML = `
       <div class="creator-shoutout">
-        🗳️ This week’s polls by <strong>@${data.username}</strong><br />
+        🗳️ This week’s polls by <strong>@${username}</strong><br />
         “${data.quote}”
       </div>
     `;
+
+    // 🔍 Now check if they submitted any polls
+    db.collection("weekly_polls")
+      .where("creator", "==", username)
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          const warning = document.createElement("div");
+          warning.className = "poll-card";
+          warning.style = "text-align:center; border:2px dashed #e60023; padding:1rem; color:#aaa;";
+          warning.innerHTML = `👤 @${username} was chosen to create this week’s polls, but nothing’s been submitted yet!`;
+
+          document.getElementById("pollListContainer").appendChild(warning);
+        }
+      });
   });
 }
 
