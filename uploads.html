@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>GSU Player Lounge | GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
@@ -486,165 +485,8 @@
   max-width: 700px;
   margin: 0 auto;
 }
-@media (max-width: 768px) {
-  header {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
-  }
 
-  .logo {
-    flex: 1 1 auto;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-width: 0;
-  }
-
-  .logo img {
-    height: 40px;
-    flex-shrink: 0;
-  }
-
-  .logo-text {
-    font-size: 1.3rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  nav {
-    display: flex;
-    flex: 2 1 auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    min-width: 0;
-  }
-
-  nav a {
-    font-size: 0.85rem;
-    padding: 0.25rem 0.5rem;
-    white-space: nowrap;
-  }
-
-  footer {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.8rem 1rem;
-    overflow-x: auto;
-    flex-shrink: 0;
-  }
-
-  .platform-icons {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .platform-icons img {
-    height: 26px;
-    flex-shrink: 0;
-  }
-
-  footer p {
-    font-size: 0.75rem;
-    white-space: nowrap;
-    margin-left: auto;
-  }
-}
-header, footer {
-  width: 100vw; /* Full viewport width */
-  max-width: 100%;
-  box-sizing: border-box;
-}
-.page-wrapper {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-    @media (max-width: 768px) {
-  nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-wrap: nowrap;
-    width: 100%;
-  }
-
-  nav a {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 0.75rem 0;
-    font-size: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .logo {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .logo img {
-    margin: 0 auto 0.5rem;
-    height: 50px;
-  }
-
-  .logo-text {
-    font-size: 1.4rem;
-    word-break: break-word;
-  }
-
-  body {
-    overflow-x: hidden;
-  }
-}
-
-  
-  * {
-    box-sizing: border-box;
-  }
-
-  html, body {
-    width: 100%;
-    min-width: 320px;
-    overflow-x: auto !important;
-    overscroll-behavior-x: contain;
-  }
-
-
-  .page-wrapper {
-    width: 100%;
-    overflow-x: auto !important;
-  }
-
-  header, footer {
-    width: 100%;
-    overflow-x: visible !important;
-    box-sizing: border-box;
-  }
-
-  /* Allow wrapping and zoom-friendly grid adjustments */
-  @media (max-width: 768px) {
-    .two-column-grid {
-      display: block !important;
-      width: 100%;
-    }
-
-    .guides-container {
-      grid-template-columns: 1fr !important;
-    }
-  }
-</style>
-
+  </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -689,8 +531,7 @@ header, footer {
       <div class="guides-container" id="gamerOfTheWeek"></div>
     </div>
 
-      <div class="two-column-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
       <div class="box">
   <h2>🎯💪 Find a Squad</h2>
   <p>Browse active players by game, platform, and playstyle — build your ideal team for any mission.</p>
