@@ -384,21 +384,22 @@
         card.className = "trophy-card";
         card.innerHTML = `
           <img src="${data.cover}" alt="${data.game}" />
-          
-          <h3 style="color: #e60023; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700;">
-            Trophy/achievement name : ${data.title} – ${data.game}
-          </h3>
 
-          <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem;">
-            <span style="color: #e60023; font-weight: 600;">How the trophy/achievement was earned:</span>
-            <span style="color: #ffffff; font-weight: 500;"> ${data.description || "No description provided."}</span>
-          </p>
+        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem;">
+          <span style="color: #e60023;">Trophy/achievement name:</span>
+          <span style="color: #ffffff;"> ${data.title} – ${data.game}</span>
+        </h3>
 
+        <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem;">
+          <span style="color: #e60023; font-weight: 600;">How the trophy/achievement was earned:</span>
+          <span style="color: #ffffff; font-weight: 500;"> ${data.description || "No description provided."}</span>
+        </p>
 
+        <p style="font-size: 1.1rem; font-family: 'Montserrat', sans-serif;">
+          <span style="color: #e60023; font-weight: 700;">Uploaded by:</span>
+          <span style="color: #ffffff; font-weight: 600;"> <strong>${username}</strong></span>
+        </p>
 
-          <p style="font-size: 1.1rem; color: #e60023; font-weight: 700; font-family: 'Montserrat', sans-serif;">
-            Uploaded by: <strong>${username}</strong>
-          </p>
 
           ${currentUser && currentUser.uid === data.userId
             ? `<button class="delete-btn" onclick="deleteTrophy('${doc.id}')">Delete</button>`
