@@ -546,73 +546,98 @@
   }
 
   async function handleGameSuggestion() {
-    const title = document.getElementById('suggestTitle').value.trim();
-    const platform = document.getElementById('suggestPlatform').value.trim();
-    const review = document.getElementById('suggestReview').value.trim();
-    const user = localStorage.getItem('gsu_username') || 'Anonymous';
-  
-    if (!title || !platform || !review) {
-      alert("Please fill out all fields.");
-      return;
-    }
-  
-    try {
-      await firebase.firestore().collection('suggested_games').add({
-        title,
-        platform,
-        review,
-        user,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-  
-      alert("Suggestion submitted successfully!");
-      displaySuggestions(); // optional: refresh display
-      document.getElementById('suggestTitle').value = '';
-      document.getElementById('suggestPlatform').value = '';
-      document.getElementById('suggestReview').value = '';
-    } catch (e) {
-      console.error("Error submitting suggestion:", e);
-      alert("Failed to submit suggestion.");
-    }
+  const title = document.getElementById('suggestTitle').value.trim();
+  const platform = document.getElementById('suggestPlatform').value.trim();
+  const review = document.getElementById('suggestReview').value.trim();
+  const currentUser = firebase.auth().currentUser;
+
+  if (!title || !platform || !review) {
+    alert("Please fill out all fields.");
+    return;
   }
+
+  if (!currentUser) {
+    alert("You must be logged in to submit a suggestion.");
+    return;
+  }
+
+  try {
+    const userDoc = await firebase.firestore().collection("users").doc(currentUser.uid).get();
+    const username = userDoc.exists ? userDoc.data().username : "Anonymous";
+
+    await firebase.firestore().collection('suggested_games').add({
+      title,
+      platform,
+      review,
+      userId: currentUser.uid,
+      username,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert("Suggestion submitted successfully!");
+    displaySuggestions();
+    document.getElementById('suggestTitle').value = '';
+    document.getElementById('suggestPlatform').value = '';
+    document.getElementById('suggestReview').value = '';
+  } catch (e) {
+    console.error("Error submitting suggestion:", e);
+    alert("Failed to submit suggestion.");
+  }
+}
+
   
 
   async function displaySuggestions() {
-    const container = document.querySelector('main .box:last-of-type');
-    container.innerHTML = '<h2>User-Suggested Games</h2>';
-    const list = document.createElement('div');
-  
-    try {
-      const snapshot = await firebase.firestore()
-        .collection('suggested_games')
-        .orderBy('timestamp', 'desc')
-        .get();
-  
-      if (snapshot.empty) {
-        list.innerHTML = '<p>No suggestions yet.</p>';
-      } else {
-        const username = localStorage.getItem('gsu_username');
-        snapshot.forEach((doc, index) => {
-          const game = doc.data();
-          const isOwner = game.user === username;
-          list.innerHTML += `
-            <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
-              <strong>${game.title}</strong> (${game.platform})<br />
-              <small style="color:#aaa;">"${game.review}"</small><br />
-              <small>– <span style="color: var(--gsu-red); font-weight: bold;">${game.user}</span></small><br />
-              ${isOwner ? `<button onclick="removeSuggestion('${doc.id}')" class="btn" style="margin-top:4px; width:auto; padding:4px 10px;">🗑️ Remove</button>` : ''}
-            </div>
-          `;
-        });
+  const container = document.querySelector('main .box:last-of-type');
+  container.innerHTML = '<h2>User-Suggested Games</h2>';
+  const list = document.createElement('div');
+
+  try {
+    const snapshot = await firebase.firestore()
+      .collection('suggested_games')
+      .orderBy('timestamp', 'desc')
+      .get();
+
+    if (snapshot.empty) {
+      list.innerHTML = '<p>No suggestions yet.</p>';
+    } else {
+      const currentUser = firebase.auth().currentUser;
+
+      for (const doc of snapshot.docs) {
+        const game = doc.data();
+        const userId = game.userId || "unknown";
+        let username = game.username || "Anonymous";
+
+        try {
+          const userDoc = await firebase.firestore().collection("users").doc(userId).get();
+          if (userDoc.exists) {
+            username = userDoc.data().username || "Anonymous";
+          }
+        } catch (err) {
+          console.warn("Could not fetch updated username for", userId, err);
+        }
+
+        const isOwner = currentUser && currentUser.uid === userId;
+
+        list.innerHTML += `
+          <div style="margin-bottom:1rem; border-bottom:1px solid #444; padding-bottom:0.6rem;">
+            <strong>${game.title}</strong> (${game.platform})<br />
+            <small style="color:#aaa;">"${game.review}"</small><br />
+            <small>– <span style="color: var(--gsu-red); font-weight: bold;">${username}</span></small><br />
+            ${isOwner ? `<button onclick="removeSuggestion('${doc.id}')" class="btn" style="margin-top:4px; width:auto; padding:4px 10px;">🗑️ Remove</button>` : ''}
+          </div>
+        `;
       }
-  
-      container.appendChild(list);
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-      list.innerHTML = "<p>Couldn't load suggestions.</p>";
-      container.appendChild(list);
     }
+
+    container.appendChild(list);
+  } catch (error) {
+    console.error("Error fetching suggestions:", error);
+    list.innerHTML = "<p>Couldn't load suggestions.</p>";
+    container.appendChild(list);
   }
+}
+
   
   
   async function removeSuggestion(docId) {
