@@ -540,6 +540,81 @@
   }
 }
 
+@media (max-width: 768px) {
+  .guides-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  header, footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav a {
+    display: block;
+    margin: 0.5rem 0;
+  }
+
+  .logo {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo img {
+    margin: 0 auto 0.5rem;
+  }
+
+  .box {
+    padding: 1rem;
+  }
+
+  .chat-input {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .chat-input input,
+  .chat-input button {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  #dmModal {
+    width: 94% !important;
+    left: 3% !important;
+    height: 80% !important;
+    top: 10% !important;
+  }
+
+  #dmInput {
+    width: 100% !important;
+    margin-top: 0.5rem;
+  }
+
+  /* ✅ Fix 2-column layout issue */
+  main > div[style*="grid-template-columns"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  /* ✅ Fix left/right side boxes */
+  aside {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
 
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
