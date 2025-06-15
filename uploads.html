@@ -605,6 +605,10 @@ header, footer {
   box-sizing: border-box;
 }
 
+body {
+  -webkit-text-size-adjust: 100%; /* Prevents font scaling issues on iOS */
+  touch-action: manipulation;
+}
 
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
