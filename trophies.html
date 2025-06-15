@@ -385,25 +385,26 @@
         card.innerHTML = `
           <img src="${data.cover}" alt="${data.game}" />
 
-        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem;">
+        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem;">
           <span style="color: #e60023;">Title of the In-Game Reward: </span>
           <span style="color: #ffffff;">${data.title}</span>
         </h3>
 
-        <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif; margin-top: -0.25rem; margin-bottom: 0.75rem;">
+        <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif; margin-bottom: 0.75rem;">
           <span style="color: #e60023; font-weight: 600;">Game Title: </span>
           <span style="color: #ffffff; font-weight: 500;">${data.game}</span>
         </p>
 
-        <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem;">
+        <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif; margin-bottom: 0.75rem;">
           <span style="color: #e60023; font-weight: 600;">In-Game Reward Conditions: </span>
           <span style="color: #ffffff; font-weight: 500;">${data.description || "No description provided."}</span>
         </p>
 
-        <p style="font-size: 1.1rem; font-family: 'Montserrat', sans-serif;">
+        <p style="font-size: 1.1rem; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem;">
           <span style="color: #e60023; font-weight: 700;">Posted by GSU Member: </span>
           <span style="color: #ffffff; font-weight: 600;"><strong>${username}</strong></span>
         </p>
+
 
 
 
