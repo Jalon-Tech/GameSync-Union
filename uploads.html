@@ -7,7 +7,7 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-    
+
     /* Force full width and prevent layout shifts */
 html, body {
   margin: 0;
@@ -632,6 +632,20 @@ nav {
   justify-content: center;
 }
 
+.mobile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .mobile-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.2rem;
+  }
+}
+
+
 
   </style>
   
@@ -679,7 +693,7 @@ nav {
       <div class="guides-container" id="gamerOfTheWeek"></div>
     </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+      <div class="mobile-grid">
       <div class="box">
   <h2>🎯💪 Find a Squad</h2>
   <p>Browse active players by game, platform, and playstyle — build your ideal team for any mission.</p>
