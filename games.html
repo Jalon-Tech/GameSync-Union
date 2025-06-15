@@ -557,13 +557,18 @@ if (!user || !title || !platform || !review) {
 }
 
 try {
-  await firebase.firestore().collection('suggested_games').add({
-    title,
-    platform,
-    review,
-    userId: user.uid,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
+  const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+const username = userDoc.exists ? userDoc.data().username || "Anonymous" : "Anonymous";
+
+await firebase.firestore().collection('suggested_games').add({
+  title,
+  platform,
+  review,
+  userId: user.uid,
+  username: username, // 🔥 Store it directly
+  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+});
+
 
   alert("Suggestion submitted successfully!");
   displaySuggestions();
@@ -595,17 +600,8 @@ try {
       for (const doc of snapshot.docs) {
         const game = doc.data();
         const userId = game.userId || "unknown";
-        let username = "Anonymous";
-
-        try {
-          const userDoc = await firebase.firestore().collection("users").doc(userId).get();
-          if (userDoc.exists) {
-            username = userDoc.data().username || "Anonymous";
-          }
-        } catch (err) {
-          console.warn("Username fetch failed for:", userId, err);
-        }
-
+        let username = game.username || "Anonymous";
+        
         const isOwner = currentUser && currentUser.uid === userId;
 
         list.innerHTML += `
