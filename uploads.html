@@ -1144,7 +1144,7 @@ function showFeedback(message, bgColor = '#e60023') {
         const sender = doc.data()?.username || "Anonymous"; // fallback only if absolutely no username exists
     
         db.collection("chat").add({
-          uid: user.uid, // ✅ store UID instead
+          sender: sender,
           text: message,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(() => {
@@ -1162,36 +1162,21 @@ db.collection("chat").orderBy("timestamp").onSnapshot(snapshot => {
   const chatBox = document.getElementById("liveChat");
   chatBox.innerHTML = "";
 
-snapshot.forEach(doc => {
+  snapshot.forEach(doc => {
   const msg = doc.data();
   const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "";
 
-  const uid = msg.uid || null;
-  const text = msg.text || "";
-
-  if (!uid) return; // Skip if UID missing
-
-  getUsernameFromUID(uid).then(username => {
-    const messageElement = document.createElement("div");
-    messageElement.className = "chat-message";
-    messageElement.style.display = "flex";
-    messageElement.style.justifyContent = "space-between";
-    messageElement.style.alignItems = "center";
-
-    messageElement.innerHTML = `
+  chatBox.innerHTML += `
+    <div class="chat-message" style="display: flex; justify-content: space-between; align-items: center;">
       <div>
-        <span>@${username}</span> ${text}
+        <span>@${msg.sender}</span> ${msg.text}
       </div>
       <div class="chat-time" style="font-size: 0.75rem; color:#aaa; margin-left: 1rem; min-width: 60px; text-align: right;">
         ${time}
       </div>
-    `;
-
-    chatBox.appendChild(messageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  });
+    </div>
+  `;
 });
-
 
 
   chatBox.scrollTop = chatBox.scrollHeight;
