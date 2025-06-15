@@ -893,6 +893,20 @@ firebase.auth().onAuthStateChanged(authUser => {
   }
 }
 
+async function updateUsernameEverywhere(userId, newUsername) {
+  const chatRef = db.collection("chat").where("senderUID", "==", userId);
+  const snapshot = await chatRef.get();
+
+  const batch = db.batch();
+  snapshot.forEach(doc => {
+    batch.update(doc.ref, { sender: newUsername });
+  });
+
+  await batch.commit();
+  console.log("✅ Username updated in all chat messages.");
+}
+
+
 
   // 🔥 Show ALL registered users
   db.collection("users").orderBy("username").onSnapshot(snapshot => {
@@ -1129,6 +1143,8 @@ function showFeedback(message, bgColor = '#e60023') {
   }, 3200);
 }
 
+await db.collection("users").doc(userId).update({ username: newUsername });
+await updateUsernameEverywhere(userId, newUsername);
 
 </script>
   <script>
@@ -1145,9 +1161,11 @@ function showFeedback(message, bgColor = '#e60023') {
     
         db.collection("chat").add({
           sender: sender,
+          senderUID: user.uid, // ✅ Add this line
           text: message,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
+        })
+        .then(() => {
           input.value = "";
         }).catch((error) => {
           console.error("Error sending message:", error);
