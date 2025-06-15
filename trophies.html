@@ -385,8 +385,15 @@
         card.innerHTML = `
           <img src="${data.cover}" alt="${data.game}" />
           <h3>${data.title} – ${data.game}</h3>
-          <p>${data.description || "No description provided."}</p>
-          <p style="font-size: 0.8rem; opacity: 0.6;">Uploaded by: <strong>${username}</strong></p>
+          <p style="font-size: 1rem; color: #e60023; font-weight: 600; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem;">
+            ${data.description || "No description provided."}
+          </p>
+
+
+          <p style="font-size: 1.1rem; color: #e60023; font-weight: 700; font-family: 'Montserrat', sans-serif;">
+            Uploaded by: <strong>${username}</strong>
+          </p>
+
           ${currentUser && currentUser.uid === data.userId
             ? `<button class="delete-btn" onclick="deleteTrophy('${doc.id}')">Delete</button>`
             : ""}
