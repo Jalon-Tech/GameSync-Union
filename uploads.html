@@ -567,19 +567,29 @@ nav {
   .upload-card .fav-img-strip img,
   #poll-images img {
     height: auto;
-    max-height: 160px;
-    width: 100%;
-    object-fit: cover;
+    max-height: 180px;
+    width: auto;
+    object-fit: contain;
   }
+
 
   #poll-images {
-    flex-direction: column;
-  }
+  display: flex !important;
+  flex-direction: row !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+}
+
 
   .upload-card .fav-img-strip {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+  display: flex !important;
+  flex-direction: row !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+}
+
 
   .chat-message {
     max-width: 100%;
