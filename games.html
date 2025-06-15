@@ -615,7 +615,6 @@ await firebase.firestore().collection('suggested_games').add({
           }
         }
 
-        
         const isOwner = currentUser && currentUser.uid === userId;
 
         list.innerHTML += `
@@ -636,6 +635,7 @@ await firebase.firestore().collection('suggested_games').add({
     container.appendChild(list);
   }
 }
+
 
   
   
