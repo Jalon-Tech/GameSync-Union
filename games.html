@@ -599,8 +599,22 @@ await firebase.firestore().collection('suggested_games').add({
 
       for (const doc of snapshot.docs) {
         const game = doc.data();
-        const userId = game.userId;
-        let username = game.username;
+        const userId = game.userId || "unknown";
+        let username = "Anonymous";
+
+        if (game.username) {
+          username = game.username;
+        } else {
+          try {
+            const userDoc = await firebase.firestore().collection("users").doc(userId).get();
+            if (userDoc.exists) {
+              username = userDoc.data().username || "Anonymous";
+            }
+          } catch (err) {
+            console.warn("Could not fetch updated username for", userId, err);
+          }
+        }
+
         
         const isOwner = currentUser && currentUser.uid === userId;
 
