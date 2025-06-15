@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>GSU Player Lounge | GameSync Union</title>
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
@@ -607,8 +608,43 @@ header, footer {
   }
 }
 
+  
+  * {
+    box-sizing: border-box;
+  }
 
-  </style>
+  html, body {
+    width: 100%;
+    min-width: 320px;
+    overflow-x: auto !important;
+    overscroll-behavior-x: contain;
+  }
+
+
+  .page-wrapper {
+    width: 100%;
+    overflow-x: auto !important;
+  }
+
+  header, footer {
+    width: 100%;
+    overflow-x: visible !important;
+    box-sizing: border-box;
+  }
+
+  /* Allow wrapping and zoom-friendly grid adjustments */
+  @media (max-width: 768px) {
+    .two-column-grid {
+      display: block !important;
+      width: 100%;
+    }
+
+    .guides-container {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
+
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -653,7 +689,8 @@ header, footer {
       <div class="guides-container" id="gamerOfTheWeek"></div>
     </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+      <div class="two-column-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
       <div class="box">
   <h2>🎯💪 Find a Squad</h2>
   <p>Browse active players by game, platform, and playstyle — build your ideal team for any mission.</p>
