@@ -198,6 +198,95 @@
       font-size: 1rem;
       font-family: 'Roboto', sans-serif;
     }
+
+    @media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .logo-text {
+    font-size: 1.3rem;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  nav a {
+    margin: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  main {
+    padding: 0 1rem;
+    margin: 1.5rem auto;
+  }
+
+  .section-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .section-header p {
+    font-size: 1rem;
+  }
+
+  .guides-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .add-guide-btn {
+    font-size: 0.95rem;
+    padding: 0.8rem 1.5rem;
+    width: 100%;
+  }
+
+  .platform-icons {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .platform-icons img {
+    height: 28px;
+  }
+
+  footer {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo img {
+    height: 45px;
+  }
+
+  .logo-text {
+    font-size: 1.1rem;
+  }
+
+  nav a {
+    font-size: 0.85rem;
+  }
+
+  .guide-card h3 {
+    font-size: 1.05rem;
+  }
+
+  .guide-card p {
+    font-size: 0.85rem;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+}
+
   </style>
 </head>
 <body>
