@@ -599,8 +599,8 @@ await firebase.firestore().collection('suggested_games').add({
 
       for (const doc of snapshot.docs) {
         const game = doc.data();
-        const userId = game.userId || "unknown";
-        let username = game.username || "Anonymous";
+        const userId = game.userId;
+        let username = game.username;
         
         const isOwner = currentUser && currentUser.uid === userId;
 
