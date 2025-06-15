@@ -384,10 +384,16 @@
         card.className = "trophy-card";
         card.innerHTML = `
           <img src="${data.cover}" alt="${data.game}" />
-          <h3>${data.title} – ${data.game}</h3>
-          <p style="font-size: 1rem; color: #e60023; font-weight: 600; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem;">
-            ${data.description || "No description provided."}
+          
+          <h3 style="color: #e60023; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700;">
+            Trophy/achievement name : ${data.title} – ${data.game}
+          </h3>
+
+          <p style="font-size: 1rem; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem;">
+            <span style="color: #e60023; font-weight: 600;">How the trophy/achievement was earned:</span>
+            <span style="color: #ffffff; font-weight: 500;"> ${data.description || "No description provided."}</span>
           </p>
+
 
 
           <p style="font-size: 1.1rem; color: #e60023; font-weight: 700; font-family: 'Montserrat', sans-serif;">
