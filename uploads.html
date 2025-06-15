@@ -486,6 +486,123 @@
   margin: 0 auto;
 }
 
+    @media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .logo-text {
+    font-size: 1.3rem;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  nav a {
+    margin: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  main {
+    padding: 1rem 1rem 3rem;
+  }
+
+  .section-header h1 {
+    font-size: 1.8rem;
+    line-height: 1.3;
+  }
+
+  .section-header p {
+    font-size: 1rem;
+  }
+
+  .guides-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .chat-input {
+    flex-direction: column;
+  }
+
+  .chat-input input,
+  .chat-input button {
+    width: 100%;
+  }
+
+  .upload-card .fav-img-strip {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .upload-card .fav-img-strip img {
+    height: auto;
+    max-width: 100%;
+  }
+
+  .poll-card img {
+    height: auto;
+    max-width: 100%;
+  }
+
+  .poll-card button {
+    width: 100%;
+    font-size: 0.95rem;
+    margin: 0.5rem 0;
+  }
+
+  #dmModal {
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 85%;
+    padding: 1rem;
+  }
+
+  #dmInput {
+    width: 100% !important;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo img {
+    height: 48px;
+  }
+
+  .logo-text {
+    font-size: 1.1rem;
+  }
+
+  nav a {
+    font-size: 0.85rem;
+  }
+
+  .poll-theme {
+    font-size: 0.85rem;
+  }
+
+  .poll-card h3 {
+    font-size: 1rem;
+  }
+
+  .chat-message span {
+    font-size: 0.9rem;
+  }
+
+  .gamer-of-week p {
+    font-size: 0.95rem;
+  }
+}
+
+
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
