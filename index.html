@@ -2571,20 +2571,29 @@ if (Array.isArray(data.favoriteImages)) {
     }
   }
   onAuthStateChanged(auth, (user) => {
-    const currentPath = window.location.pathname.toLowerCase();
-    const isLoginPage = currentPath.includes("account_creation.html");
+  const currentPath = window.location.pathname.toLowerCase();
+  const isLoginPage = currentPath.includes("account_creation.html");
+  const authBox = document.getElementById("auth-box");
 
-    if (user) {
-      loadProfile(user.uid);
-      document.getElementById("auth-box").style.display = "none";
-    } else {
-      document.getElementById("auth-box").style.display = "block";
-      if (!isLoginPage && currentPath !== "/index.html") {
-        alert("Please log in to access GameSync Union.");
-        window.location.href = "account_creation.html";
-      }
+  if (user) {
+    loadProfile(user.uid);
+    if (authBox) authBox.style.display = "none";
+  } else {
+    // Guest logic
+    console.log("Guest mode: browsing without login.");
+    if (authBox) authBox.style.display = "block";
+
+    // Optional: hide profile-only sections
+    const profileBox = document.getElementById("profile-box");
+    if (profileBox) profileBox.style.display = "none";
+
+    // Optional: hide review submission if not logged in
+    const reviewBtn = document.querySelector("#quick-review-box button");
+    if (reviewBtn) {
+      reviewBtn.onclick = () => alert("Sign in to submit a review.");
     }
-  });
+  }
+});
 
   const logoutBtn = document.getElementById("logoutBtn");
 
