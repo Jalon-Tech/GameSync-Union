@@ -2417,6 +2417,7 @@ When the Union highlights you — it means something. If your name’s echoing i
 </style>
 
 <script>
+
   document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
   const authOverlay = document.getElementById('authOverlay');
@@ -2506,6 +2507,33 @@ if (user) {
   closeEditModal();
 }
 </script>
+
+<script>
+  const logoutBtn = document.getElementById('logoutBtn');
+  const authOverlay = document.getElementById('authOverlay');
+  const authNotice = document.getElementById('authNotice');
+
+  if (logoutBtn && authOverlay && authNotice) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // Show your visual overlay
+      authOverlay.style.display = 'block';
+      authNotice.style.display = 'block';
+
+      // ✅ Sign out using compat version
+      firebase.auth().signOut()
+        .then(() => {
+          console.log("User signed out");
+          window.location.href = 'index.html'; // redirect after logout
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+        });
+    });
+  }
+</script>
+
 
 <script type="module">
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
