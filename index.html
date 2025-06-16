@@ -2539,6 +2539,8 @@ if (user) {
     const logoutBtn = document.getElementById('logoutBtn');
     const authOverlay = document.getElementById('authOverlay');
     const authNotice = document.getElementById('authNotice');
+    const authBox = document.getElementById('auth-box');
+    const mainContainer = document.querySelector('.main-container');
 
     if (logoutBtn && authOverlay && authNotice) {
       logoutBtn.addEventListener('click', (e) => {
@@ -2547,11 +2549,30 @@ if (user) {
         authOverlay.style.display = 'block';
         authNotice.style.display = 'block';
 
-        // ✅ Sign out safely using compat Firebase
         firebase.auth().signOut()
           .then(() => {
             console.log("Signed out");
-            window.location.href = 'index.html';
+
+            // ✅ Clear or hide the main content
+            mainContainer.innerHTML = ''; // wipe contents or hide dynamic stuff
+
+            // ✅ Add login box back into the DOM
+            const newAuthBox = document.createElement('div');
+            newAuthBox.className = 'box';
+            newAuthBox.innerHTML = `
+              <h2>Create Account or Sign In</h2>
+              <input type="text" class="input-field" placeholder="Email" />
+              <input type="text" class="input-field" placeholder="Username" />
+              <input type="password" class="input-field" placeholder="Password" />
+              <button class="btn">Sign In</button>
+              <p style="text-align:center; margin-top:0.6rem;">
+                Become a member? 
+                <a href="account_Creation.html" style="color: #e60023;">Create Account</a>
+              </p>
+            `;
+
+            // ✅ Append the auth box into the main container
+            mainContainer.appendChild(newAuthBox);
           })
           .catch((err) => {
             console.error("Sign out error", err);
@@ -2560,6 +2581,7 @@ if (user) {
     }
   };
 </script>
+
 
 
 
