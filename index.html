@@ -2495,7 +2495,6 @@ if (user) {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
       const uid = userCred.user.uid;
       loadProfile(uid);
       alert("Signed in successfully");
