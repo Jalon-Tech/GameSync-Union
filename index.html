@@ -769,7 +769,22 @@ nav a:hover {
   box-shadow: 0 0 20px rgba(0,0,0,0.3);
   text-align: center;
 ">
+  <span style="color: #000000;">Signed out:</span>
   Access limited — sign in or create your GSU account to get the full GSU experience.
+  <button onclick="window.location.href='index.html'" style="
+  background-color: #000000;
+  color: #e60023;
+  border: 2px solid #e60023;
+  padding: 0.5rem 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  cursor: pointer;
+">
+  Close
+</button>
+
 </div>
 
   <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
@@ -2648,19 +2663,6 @@ if (Array.isArray(data.favoriteImages)) {
   }
 });
 
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await auth.signOut();
-        alert("You have been logged out.");
-        window.location.href = "account_creation.html";
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
-    });
-  }
     // ✅ Expose Firebase services globally
     window.db = db;
     window.doc = doc;
