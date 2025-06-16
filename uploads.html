@@ -1392,7 +1392,7 @@ weeklyPoll.innerHTML = `
   function submitVote(choiceId) {
   const user = firebase.auth().currentUser;
   if (!user) {
-    showFeedback("🚫 You must be logged in to vote.");
+    showFeedback("You must be logged in to vote.");
     return;
   }
 
