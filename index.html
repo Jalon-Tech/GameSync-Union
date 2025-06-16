@@ -739,63 +739,6 @@ nav a:hover {
   </style>
 </head>
 <body>
-  <!-- Overlay and notice HTML goes outside JavaScript -->
-<div id="authOverlay" style="
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 9998;
-"></div>
-
-<div id="authNotice" style="
-  display: none;
-  position: fixed;
-  top: 12%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #ffffff;
-  color: #e60023;
-  border: 2px solid #e60023;
-  padding: 1.25rem 1.5rem;
-  border-radius: 12px;
-  z-index: 9999;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.95rem;
-  max-width: 360px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  line-height: 1.6;
-">
-  <div style="color: #000000; font-weight: bold; margin-bottom: 0.75rem; font-size: 1rem;">
-    Signed out:
-  </div>
-
-  <div style="margin-bottom: 1rem;">
-    Access limited — sign in or create your GSU account to get the full GSU experience.
-  </div>
-
-  <button id="closeLogoutOverlay" style="
-  background-color: #000000;
-  color: #e60023;
-  border: 2px solid #e60023;
-  padding: 0.6rem 1.2rem;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-">
-  Close
-</button>
-
-</div>
-
-
-
   <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
     <header>
   <div class="logo">
@@ -821,7 +764,7 @@ nav a:hover {
         <input type="text" class="input-field" placeholder="Username" />
         <input type="password" class="input-field" placeholder="Password" />
         <button class="btn">Sign In</button>
-        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="account_Creation.html" style="color: #e60023;">Create Account</a></p>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
       
      <!-- 🕹️ Retro Game Flashback -->
@@ -889,14 +832,6 @@ nav a:hover {
 
 <!-- 🔧 Scripts -->
 <script>
-  const closeBtn = document.getElementById('closeLogoutOverlay');
-if (closeBtn && authOverlay && authNotice) {
-  closeBtn.addEventListener('click', () => {
-    authOverlay.style.display = 'none';
-    authNotice.style.display = 'none';
-  });
-}
-
   const RetroFacts = [
     "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
     "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
@@ -2426,27 +2361,6 @@ When the Union highlights you — it means something. If your name’s echoing i
 </style>
 
 <script>
-
-  document.addEventListener('DOMContentLoaded', () => {
-  const logoutBtn = document.getElementById('logoutBtn');
-  const authOverlay = document.getElementById('authOverlay');
-  const authNotice = document.getElementById('authNotice');
-
-  if (logoutBtn && authOverlay && authNotice) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault(); // optional: stop default behavior
-      authOverlay.style.display = 'block';
-      authNotice.style.display = 'block';
-    });
-
-    // Optional: hide notice on clicking overlay
-    authOverlay.addEventListener('click', () => {
-      authOverlay.style.display = 'none';
-      authNotice.style.display = 'none';
-    });
-  }
-});
-
   function openEditModal() {
 
   document.getElementById('editModal').style.display = 'block';
@@ -2516,83 +2430,6 @@ if (user) {
   closeEditModal();
 }
 </script>
-
-<script>
-  const logoutBtn = document.getElementById('logoutBtn');
-  const authOverlay = document.getElementById('authOverlay');
-  const authNotice = document.getElementById('authNotice');
-
-  if (logoutBtn && authOverlay && authNotice) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      // Show your visual overlay
-      authOverlay.style.display = 'block';
-      authNotice.style.display = 'block';
-
-      // ✅ Sign out using compat version
-      firebase.auth().signOut()
-        .then(() => {
-          console.log("User signed out");
-          window.location.href = 'index.html'; // redirect after logout
-        })
-        .catch((error) => {
-          console.error("Logout error:", error);
-        });
-    });
-  }
-</script>
-
-<script>
-  window.onload = () => {
-    const logoutBtn = document.getElementById('logoutBtn');
-    const authOverlay = document.getElementById('authOverlay');
-    const authNotice = document.getElementById('authNotice');
-    const authBox = document.getElementById('auth-box');
-    const mainContainer = document.querySelector('.main-container');
-
-    if (logoutBtn && authOverlay && authNotice) {
-      logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        authOverlay.style.display = 'block';
-        authNotice.style.display = 'block';
-
-        firebase.auth().signOut()
-          .then(() => {
-            console.log("Signed out");
-
-            // ✅ Clear or hide the main content
-            mainContainer.innerHTML = ''; // wipe contents or hide dynamic stuff
-
-            // ✅ Add login box back into the DOM
-            const newAuthBox = document.createElement('div');
-            newAuthBox.className = 'box';
-            newAuthBox.innerHTML = `
-              <h2>Create Account or Sign In</h2>
-              <input type="text" class="input-field" placeholder="Email" />
-              <input type="text" class="input-field" placeholder="Username" />
-              <input type="password" class="input-field" placeholder="Password" />
-              <button class="btn">Sign In</button>
-              <p style="text-align:center; margin-top:0.6rem;">
-                Become a member? 
-                <a href="account_Creation.html" style="color: #e60023;">Create Account</a>
-              </p>
-            `;
-
-            // ✅ Append the auth box into the main container
-            mainContainer.appendChild(newAuthBox);
-          })
-          .catch((err) => {
-            console.error("Sign out error", err);
-          });
-      });
-    }
-  };
-</script>
-
-
-
 
 <script type="module">
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -2734,30 +2571,34 @@ if (Array.isArray(data.favoriteImages)) {
     }
   }
   onAuthStateChanged(auth, (user) => {
-  const currentPath = window.location.pathname.toLowerCase();
-  const isLoginPage = currentPath.includes("account_creation.html");
-  const authBox = document.getElementById("auth-box");
+    const currentPath = window.location.pathname.toLowerCase();
+    const isLoginPage = currentPath.includes("account_creation.html");
 
-  if (user) {
-    loadProfile(user.uid);
-    if (authBox) authBox.style.display = "none";
-  } else {
-    // Guest logic
-    console.log("Guest mode: browsing without login.");
-    if (authBox) authBox.style.display = "block";
-
-    // Optional: hide profile-only sections
-    const profileBox = document.getElementById("profile-box");
-    if (profileBox) profileBox.style.display = "none";
-
-    // Optional: hide review submission if not logged in
-    const reviewBtn = document.querySelector("#quick-review-box button");
-    if (reviewBtn) {
-      reviewBtn.onclick = () => alert("Sign in to submit a review.");
+    if (user) {
+      loadProfile(user.uid);
+      document.getElementById("auth-box").style.display = "none";
+    } else {
+      document.getElementById("auth-box").style.display = "block";
+      if (!isLoginPage && currentPath !== "/index.html") {
+        alert("Please log in to access GameSync Union.");
+        window.location.href = "account_creation.html";
+      }
     }
-  }
-});
+  });
 
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await auth.signOut();
+        alert("You have been logged out.");
+        window.location.href = "account_creation.html";
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
+    });
+  }
     // ✅ Expose Firebase services globally
     window.db = db;
     window.doc = doc;
