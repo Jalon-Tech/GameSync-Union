@@ -2457,8 +2457,42 @@ When the Union highlights you — it means something. If your name’s echoing i
 }
 
 </style>
+<script type="module">
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { app } from "./firebase-init.js"; // adjust if needed
+
+  const auth3 = getAuth(app);
+  const logoutBtn3 = document.getElementById("logoutBtn");
+  const authNotice3 = document.getElementById("authNotice");
+
+  // 👤 Toggle logout button visibility based on auth state
+  onAuthStateChanged(auth3, (user) => {
+    if (user) {
+      logoutBtn3.style.display = "block";
+    } else {
+      logoutBtn3.style.display = "none";
+    }
+  });
+
+  // 🔓 Handle logout
+  logoutBtn3.addEventListener("click", () => {
+    signOut(auth3)
+      .then(() => {
+        console.log("Signed out");
+        authNotice3.style.display = "block";
+        setTimeout(() => {
+          authNotice3.style.display = "none";
+        }, 4000); // fades out after 4 sec
+      })
+      .catch((error) => {
+        console.error("Logout error:", error.message);
+      });
+  });
+</script>
 
 <script>
+
+  
 
   document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
