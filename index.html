@@ -2570,30 +2570,63 @@ if (Array.isArray(data.favoriteImages)) {
       console.warn("User profile data not found.");
     }
   }
+
+  function disableRestrictedFeatures() {
+  // Disable Quick Review
+  const reviewBtn = document.querySelector("#quick-review-box button");
+  if (reviewBtn) {
+    reviewBtn.onclick = () => alert("Sign in to submit a review.");
+  }
+
+  // Disable Trophy Upload
+  const trophyUploadBtn = document.getElementById("upload-trophy-btn");
+  if (trophyUploadBtn) {
+    trophyUploadBtn.onclick = () => alert("Sign in to upload a trophy.");
+  }
+
+  // Disable Fan Art Upload
+  const fanArtUploadBtn = document.getElementById("upload-fanart-btn");
+  if (fanArtUploadBtn) {
+    fanArtUploadBtn.onclick = () => alert("Sign in to upload fan art.");
+  }
+
+  // Disable Community Poll Voting
+  const voteBtns = document.querySelectorAll(".poll-card button");
+  voteBtns.forEach(btn => {
+    btn.onclick = () => alert("og in to vote in this poll.");
+  });
+
+  // Disable Chat or DM
+  const dmButtons = document.querySelectorAll(".dm-button");
+  dmButtons.forEach(btn => {
+    btn.onclick = () => alert("Sign in to send messages.");
+  });
+
+  // Optional: dim or style restricted elements
+  voteBtns.forEach(btn => btn.classList.add("disabled"));
+}
+
   onAuthStateChanged(auth, (user) => {
-  const currentPath = window.location.pathname.toLowerCase();
-  const isLoginPage = currentPath.includes("account_creation.html");
   const authBox = document.getElementById("auth-box");
+  const profileBox = document.getElementById("profile-box");
 
   if (user) {
     loadProfile(user.uid);
-    if (authBox) authBox.style.display = "none";
-  } else {
-    // Guest logic
-    console.log("Guest mode: browsing without login.");
-    if (authBox) authBox.style.display = "block";
 
-    // Optional: hide profile-only sections
-    const profileBox = document.getElementById("profile-box");
+    // 🔒 Logged-in view
+    if (authBox) authBox.style.display = "none";
+    if (profileBox) profileBox.style.display = "block";
+  } else {
+    // 🔓 Guest view
+    console.log("Guest mode active.");
+    if (authBox) authBox.style.display = "block";
     if (profileBox) profileBox.style.display = "none";
 
-    // Optional: hide review submission if not logged in
-    const reviewBtn = document.querySelector("#quick-review-box button");
-    if (reviewBtn) {
-      reviewBtn.onclick = () => alert("Sign in to submit a review.");
-    }
+    disableRestrictedFeatures(); // Optional, if you’re disabling features for guests
   }
 });
+
+
 
   const logoutBtn = document.getElementById("logoutBtn");
 
@@ -2717,6 +2750,7 @@ async function rotateYouTubeVideosForUser(uid) {
 
 }
 
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
@@ -2740,7 +2774,7 @@ onAuthStateChanged(auth, (user) => {
     const user = window.auth.currentUser;
 
     if (!user || !title || !content) {
-      alert("⚠️ You must be signed in and fill out both fields.");
+      alert("You must be signed in and fill out both fields.");
       return;
     }
 
