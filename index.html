@@ -778,19 +778,20 @@ nav a:hover {
     Access limited — sign in or create your GSU account to get the full GSU experience.
   </div>
 
-  <button onclick="window.location.href='index.html'" style="
-    background-color: #000000;
-    color: #e60023;
-    border: 2px solid #e60023;
-    padding: 0.6rem 1.2rem;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.85rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  ">
-    Close
-  </button>
+  <button id="closeLogoutOverlay" style="
+  background-color: #000000;
+  color: #e60023;
+  border: 2px solid #e60023;
+  padding: 0.6rem 1.2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+">
+  Close
+</button>
+
 </div>
 
 
@@ -888,6 +889,14 @@ nav a:hover {
 
 <!-- 🔧 Scripts -->
 <script>
+  const closeBtn = document.getElementById('closeLogoutOverlay');
+if (closeBtn && authOverlay && authNotice) {
+  closeBtn.addEventListener('click', () => {
+    authOverlay.style.display = 'none';
+    authNotice.style.display = 'none';
+  });
+}
+
   const RetroFacts = [
     "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
     "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
