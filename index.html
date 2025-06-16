@@ -2534,6 +2534,34 @@ if (user) {
   }
 </script>
 
+<script>
+  window.onload = () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    const authOverlay = document.getElementById('authOverlay');
+    const authNotice = document.getElementById('authNotice');
+
+    if (logoutBtn && authOverlay && authNotice) {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        authOverlay.style.display = 'block';
+        authNotice.style.display = 'block';
+
+        // ✅ Sign out safely using compat Firebase
+        firebase.auth().signOut()
+          .then(() => {
+            console.log("Signed out");
+            window.location.href = 'index.html';
+          })
+          .catch((err) => {
+            console.error("Sign out error", err);
+          });
+      });
+    }
+  };
+</script>
+
+
 
 <script type="module">
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
