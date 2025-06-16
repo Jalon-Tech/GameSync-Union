@@ -739,6 +739,7 @@ nav a:hover {
   </style>
 </head>
 <body>
+  
   <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
     <header>
   <div class="logo">
@@ -1928,6 +1929,7 @@ nav a:hover {
   }
 
   window.addEventListener('DOMContentLoaded', () => {
+    
     loadRetroFact();
     assignCharacter();
   });
@@ -2134,9 +2136,6 @@ When the Union highlights you — it means something. If your name’s echoing i
   </div>
 </div>
 
-
-
-  </div>
 </aside>
 
   </div>
@@ -2435,11 +2434,7 @@ if (user) {
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import {
-    getAuth,
-    signInWithEmailAndPassword,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+ import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -2453,6 +2448,23 @@ if (user) {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  window.addEventListener("DOMContentLoaded", () => {
+  const notice = document.getElementById("authNotice");
+  const currentPath = window.location.pathname.toLowerCase();
+
+  // ✅ Only run on pages that are NOT account_creation.html
+  if (!currentPath.includes("account_creation")) {
+    onAuthStateChanged(auth, (user) => {
+      if (!user && notice) {
+        notice.style.display = "block";
+        setTimeout(() => {
+          notice.style.display = "none";
+        }, 6000);
+      }
+    });
+  }
+});
+
   const db = getFirestore(app);
 
   const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
@@ -2711,6 +2723,8 @@ onAuthStateChanged(auth, (user) => {
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
 });
+
+
 </script>
 
 <script type="module">
@@ -2726,7 +2740,7 @@ onAuthStateChanged(auth, (user) => {
     const user = window.auth.currentUser;
 
     if (!user || !title || !content) {
-      alert("⚠️ You must be signed in and fill out both fields.");
+      alert("You must be signed in and fill out both fields.");
       return;
     }
 
@@ -2748,7 +2762,26 @@ onAuthStateChanged(auth, (user) => {
   };
 </script>
 
-  
+ <div id="authNotice" style="
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #e60023;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  z-index: 9999;
+  font-family: 'Montserrat', sans-serif;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  font-size: 0.95rem;
+  text-align: center;
+  max-width: 90%;
+">
+  Full access requires a GSU account. Sign in or create an account to continue.
+</div>
+
 </body>
 
 </html>
