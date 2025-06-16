@@ -739,6 +739,21 @@ nav a:hover {
   </style>
 </head>
 <body>
+  <button id="logoutBtn" onclick="logoutUser()" style="
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background-color: #e60023;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  z-index: 999;
+  cursor: pointer;
+">Log Out</button>
+
   <!-- Overlay and notice HTML goes outside JavaScript -->
 <div id="authOverlay" style="
   display: none;
@@ -751,6 +766,7 @@ nav a:hover {
   z-index: 9998;
 "></div>
 
+<!-- Styled Logout Notice -->
 <div id="authNotice" style="
   display: none;
   position: fixed;
@@ -773,26 +789,20 @@ nav a:hover {
   <div style="color: #000000; font-weight: bold; margin-bottom: 0.75rem; font-size: 1rem;">
     Signed out:
   </div>
-
   <div style="margin-bottom: 1rem;">
     Access limited — sign in or create your GSU account to get the full GSU experience.
   </div>
-
-  <button id="closeLogoutOverlay" style="
-  background-color: #000000;
-  color: #e60023;
-  border: 2px solid #e60023;
-  padding: 0.6rem 1.2rem;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-">
-  Close
-</button>
-
+  <button onclick="closeNotice()" style="
+    background-color: #e60023;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  ">Close</button>
 </div>
+
 
 
 
@@ -821,7 +831,7 @@ nav a:hover {
         <input type="text" class="input-field" placeholder="Username" />
         <input type="password" class="input-field" placeholder="Password" />
         <button class="btn">Sign In</button>
-        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="account_Creation.html" style="color: #e60023;">Create Account</a></p>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="account_creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
       
      <!-- 🕹️ Retro Game Flashback -->
@@ -2426,6 +2436,23 @@ When the Union highlights you — it means something. If your name’s echoing i
 </style>
 
 <script>
+  function logoutUser() {
+  signOut(auth)
+    .then(() => {
+      const notice = document.getElementById("authNotice");
+      if (notice) {
+        notice.style.display = "block";
+      }
+
+      // Delay the reload so the user sees the logout message
+      setTimeout(() => {
+        window.location.reload(); // Optional: you can also redirect to homepage
+      }, 2500); // Show the message for 2.5 seconds
+    })
+    .catch((error) => {
+      console.error("Logout error:", error);
+    });
+}
 
   document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
@@ -2446,6 +2473,16 @@ When the Union highlights you — it means something. If your name’s echoing i
     });
   }
 });
+
+onAuthStateChanged(auth, (user) => {
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (user) {
+    logoutBtn.style.display = "block";
+  } else {
+    logoutBtn.style.display = "none";
+  }
+});
+
 
   function openEditModal() {
 
@@ -2541,6 +2578,23 @@ if (user) {
         });
     });
   }
+  import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+
+function logoutUser() {
+  signOut(auth).then(() => {
+    document.getElementById("authNotice").style.display = "block";
+    setTimeout(() => {
+      window.location.reload(); // Optional: refresh to reset UI
+    }, 2500);
+  }).catch((error) => {
+    console.error("Error during sign-out:", error);
+  });
+}
+
+function closeNotice() {
+  document.getElementById("authNotice").style.display = "none";
+}
+
 </script>
 
 <script>
