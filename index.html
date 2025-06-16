@@ -2571,20 +2571,15 @@ if (Array.isArray(data.favoriteImages)) {
     }
   }
   onAuthStateChanged(auth, (user) => {
-    const currentPath = window.location.pathname.toLowerCase();
-    const isLoginPage = currentPath.includes("account_creation.html");
-
-    if (user) {
-      loadProfile(user.uid);
-      document.getElementById("auth-box").style.display = "none";
-    } else {
-      document.getElementById("auth-box").style.display = "block";
-      if (!isLoginPage && currentPath !== "/index.html") {
-        alert("Please log in to access GameSync Union.");
-        window.location.href = "account_creation.html";
-      }
-    }
-  });
+  if (user) {
+    loadProfile(user.uid);
+    document.getElementById("auth-box").style.display = "none";
+  } else {
+    document.getElementById("auth-box").style.display = "block";
+    // ✅ Do not force redirect on index.html
+    // The user will only go to Account_Creation.html when they click the link manually
+  }
+});
 
   const logoutBtn = document.getElementById("logoutBtn");
 
