@@ -464,6 +464,15 @@ nav {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.upload-card .fav-img-strip {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+}
+
 
 .upload-card .fav-img-strip img:hover {
   box-shadow: 0 0 12px rgba(230, 0, 35, 0.3);
@@ -558,29 +567,19 @@ nav {
   .upload-card .fav-img-strip img,
   #poll-images img {
     height: auto;
-    max-height: 180px;
-    width: auto;
-    object-fit: contain;
+    max-height: 160px;
+    width: 100%;
+    object-fit: cover;
   }
 
-
   #poll-images {
-  display: flex !important;
-  flex-direction: row !important;
-  overflow-x: auto !important;
-  scroll-snap-type: x mandatory;
-  gap: 1rem;
-}
-
+    flex-direction: column;
+  }
 
   .upload-card .fav-img-strip {
-  display: flex !important;
-  flex-direction: row !important;
-  overflow-x: auto !important;
-  scroll-snap-type: x mandatory;
-  gap: 1rem;
-}
-
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 
   .chat-message {
     max-width: 100%;
@@ -644,25 +643,7 @@ nav {
     grid-template-columns: 1fr !important;
     gap: 1.2rem;
   }
-  .upload-card .fav-img-strip {
-  overflow-x: auto !important;
-  display: flex !important;
-  flex-wrap: nowrap;
-  max-width: 100%;
 }
-
-.upload-card .fav-img-strip img {
-  height: auto;
-  width: 180px;
-  flex-shrink: 0;
-}
-.upload-card .fav-img-strip {
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-}
-
-}
-
 
 
 
