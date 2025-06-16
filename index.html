@@ -739,6 +739,48 @@ nav a:hover {
   </style>
 </head>
 <body>
+  <div id="authNotice" style="
+  display: none;
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #e60023;
+  border: 2px solid #e60023;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  z-index: 9999;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  max-width: 360px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  line-height: 1.6;
+">
+  <div style="color: #000000; font-weight: bold; margin-bottom: 0.75rem; font-size: 1rem;">
+    Signed out:
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    Access limited — sign in or create your GSU account to get the full GSU experience.
+  </div>
+
+  <button style="
+    background-color: #000000;
+    color: #e60023;
+    border: 2px solid #e60023;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  ">
+    Close
+  </button>
+</div>
+
   <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
     <header>
   <div class="logo">
@@ -2586,19 +2628,29 @@ if (Array.isArray(data.favoriteImages)) {
     }
   });
 
-  const logoutBtn = document.getElementById("logoutBtn");
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await auth.signOut();
-        alert("You have been logged out.");
-        window.location.href = "account_creation.html";
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
-    });
-  }
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+const logoutBtn = document.getElementById("logoutBtn");
+const authNotice = document.getElementById("authNotice");
+const closeAuthNotice = document.getElementById("closeAuthNotice");
+
+if (logoutBtn && authNotice && closeAuthNotice) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      authNotice.style.display = "block";
+    } catch (err) {
+      console.error("Sign out error:", err);
+    }
+  });
+
+  closeAuthNotice.addEventListener("click", () => {
+    authNotice.style.display = "none";
+    window.location.href = "account_creation.html"; // or your login page
+  });
+}
+
     // ✅ Expose Firebase services globally
     window.db = db;
     window.doc = doc;
