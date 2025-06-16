@@ -2488,6 +2488,36 @@ When the Union highlights you — it means something. If your name’s echoing i
         console.error("Logout error:", error.message);
       });
   });
+
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+const logoutBtn2 = document.getElementById("logoutBtn");
+const authNotice2 = document.getElementById("authNotice");
+
+onAuthStateChanged(window.auth, (user) => {
+  if (user) {
+    logoutBtn2.style.display = "block";
+  } else {
+    logoutBtn2.style.display = "none";
+    if (authNotice2) {
+      authNotice2.style.display = "block";
+      setTimeout(() => {
+        authNotice2.style.display = "none";
+      }, 4000);
+    }
+  }
+});
+
+logoutBtn2.addEventListener("click", () => {
+  signOut(window.auth)
+    .then(() => {
+      console.log("✅ Signed out");
+    })
+    .catch((error) => {
+      console.error("❌ Sign-out error:", error);
+    });
+});
+
 </script>
 
 <script>
