@@ -2594,7 +2594,7 @@ function logoutUser() {
 function closeNotice() {
   document.getElementById("authNotice").style.display = "none";
 }
-
+window.logoutUser = logoutUser;
 </script>
 
 <script>
@@ -2667,6 +2667,7 @@ function closeNotice() {
     appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
     measurementId: "G-CP48EXW1EV"
   };
+  
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
