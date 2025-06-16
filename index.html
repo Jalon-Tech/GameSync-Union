@@ -739,7 +739,60 @@ nav a:hover {
   </style>
 </head>
 <body>
-  <!-- HTML CONTENT REMAINS UNCHANGED UNTIL FOOTER -->
+
+  <!-- Overlay and notice HTML goes outside JavaScript -->
+<div id="authOverlay" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9998;
+"></div>
+
+<div id="authNotice" style="
+  display: none;
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #e60023;
+  border: 2px solid #e60023;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  z-index: 9999;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  max-width: 360px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  line-height: 1.6;
+">
+  <div style="color: #000000; font-weight: bold; margin-bottom: 0.75rem; font-size: 1rem;">
+    Signed out:
+  </div>
+
+  <div style="margin-bottom: 1rem;">
+    Access limited — sign in or create your GSU account to get the full GSU experience.
+  </div>
+
+  <button onclick="window.location.href='index.html'" style="
+    background-color: #000000;
+    color: #e60023;
+    border: 2px solid #e60023;
+    padding: 0.6rem 1.2rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  ">
+    Close
+  </button>
+</div>
     <header>
   <div class="logo">
     <img src="GSU_LOGO.png" alt="GSU Logo" />
@@ -2589,15 +2642,17 @@ if (Array.isArray(data.favoriteImages)) {
   const logoutBtn = document.getElementById("logoutBtn");
 
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await auth.signOut();
-        alert("You have been logged out.");
-        window.location.href = "account_creation.html";
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
+    logoutBtn.addEventListener("click", () => {
+  signOut(window.auth)
+    .then(() => {
+      console.log("✅ Signed out");
+      window.location.href = "index.html"; // 👈 Change to your actual homepage path
+    })
+    .catch((error) => {
+      console.error("❌ Sign-out error:", error);
     });
+});
+
   }
     // ✅ Expose Firebase services globally
     window.db = db;
