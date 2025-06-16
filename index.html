@@ -754,7 +754,9 @@ nav a:hover {
     <a href="game-guides.html">Guides</a>
     <a href="uploads.html">GSU Player Lounge</a>
   </nav>
-     <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
+  
+    <button id="logout-btn" style="display: none; max-width: 120px; background-color: #777;">Log Out</button>
+
   </header>
 
   <div class="main-container">
@@ -765,7 +767,7 @@ nav a:hover {
         <input type="text" class="input-field" placeholder="Username" />
         <input type="password" class="input-field" placeholder="Password" />
         <button class="btn">Sign In</button>
-        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="Account_Creation.html" style="color: #e60023;">Create Account</a></p>
+        <p style="text-align:center; margin-top:0.6rem;">Become a member? <a href="account_creation.html" style="color: #e60023;">Create Account</a></p>
       </div>
       
      <!-- 🕹️ Retro Game Flashback -->
@@ -2608,7 +2610,7 @@ if (Array.isArray(data.favoriteImages)) {
   } else {
     document.getElementById("auth-box").style.display = "block";
     // ✅ Do not force redirect on index.html
-    // The user will only go to Account_Creation.html when they click the link manually
+    // The user will only go to account_creation.html when they click the link manually
   }
 });
 
@@ -2741,6 +2743,41 @@ onAuthStateChanged(auth, (user) => {
   } else {
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
+});
+
+// Show or hide the logout button based on login state
+firebase.auth().onAuthStateChanged(function(user) {
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.style.display = user ? "inline-block" : "none";
+  }
+});
+
+// Logout button functionality
+document.getElementById("logout-btn").addEventListener("click", function () {
+  firebase.auth().signOut().then(function () {
+    console.log("User signed out.");
+    window.location.href = "index.html"; // Optional: redirect on logout
+  }).catch(function (error) {
+    console.error("Sign out error:", error);
+  });
+});
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.getElementById("logout-btn");
+
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (logoutBtn) {
+      logoutBtn.style.display = user ? "inline-block" : "none";
+    }
+  });
+
+  logoutBtn.addEventListener("click", function () {
+    firebase.auth().signOut().then(() => {
+      window.location.href = "index.html";
+    }).catch(console.error);
+  });
 });
 
 
