@@ -78,9 +78,6 @@
   <div class="modal-overlay" id="createAccountModal">
     <div class="modal-content">
       <h2>Create GSU Account</h2>
-      <p style="text-align:center; color: #ccc; margin-bottom: 1rem;">
-        Already have an account? <a href="#" style="color: var(--gsu-red);" onclick="switchToLogin()">Log in here</a>
-      </p>
       <input type="email" id="regEmail" placeholder="Email">
       <input type="password" id="regPassword" placeholder="Password">
       <input type="text" id="regUsername" placeholder="Username">
@@ -97,25 +94,14 @@
       <input type="number" id="regPlayed" placeholder="Games Played">
       <input type="number" id="regTrophies" placeholder="Trophy Count">
       <button class="btn" onclick="register()">Create Account</button>
-      <button class="btn" style="background:#777;" onclick="document.getElementById('createAccountModal').style.display='none'; window.location.href='index.html';">Cancel</button>
-
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="loginModal" style="display: none;">
-    <div class="modal-content">
-      <h2>Log In to GSU</h2>
-      <input type="email" id="loginEmail" placeholder="Email">
-      <input type="password" id="loginPassword" placeholder="Password">
-      <button class="btn" onclick="login()">Log In</button>
-      <button class="btn" style="background:#777;" onclick="document.getElementById('loginModal').style.display='none'">Cancel</button>
+      <button class="btn" style="background:#777;" onclick="window.location.href='index.html';">Cancel</button>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -156,51 +142,11 @@
         });
 
         alert("Account created!");
-        document.getElementById("createAccountModal").style.display = "none";
         window.location.href = "index.html";
       } catch (err) {
         alert("Failed to create account: " + err.message);
       }
     };
-
-    window.login = async () => {
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-
-      try {
-        const userCred = await signInWithEmailAndPassword(auth, email, password);
-        alert("Login successful!");
-        document.getElementById("loginModal").style.display = "none";
-        window.location.href = "index.html";
-      } catch (err) {
-        alert("Login failed: " + err.message);
-      }
-    };
-
-    window.switchToLogin = () => {
-      document.getElementById("createAccountModal").style.display = "none";
-      document.getElementById("loginModal").style.display = "flex";
-    };
-
-    async function loadProfile(uid) {
-      const snap = await getDoc(doc(db, "users", uid));
-      if (snap.exists()) {
-        const data = snap.data();
-        const profileBox = document.querySelector("aside .box");
-        profileBox.innerHTML = `
-          <h2>Your Profile</h2>
-          <p><strong>Platform:</strong> ${data.platform}</p>
-          <p>🎯 Favorite Games:</p>
-          <ul>${data.favoriteGames.map((game, i) => `<li><img src="${data.favoriteImages[i]}" alt="${game}" style="height:20px; margin-right:6px; vertical-align:middle;"> ${game}</li>`).join('')}</ul>
-          <p>🎮 Games Played: ${data.gamesPlayed}</p>
-          <p>🏆 Trophy Stats: ${data.trophyCount}</p>
-        `;
-      }
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) loadProfile(user.uid);
-    });
 
     window.onload = () => {
       document.getElementById("createAccountModal").style.display = "flex";
