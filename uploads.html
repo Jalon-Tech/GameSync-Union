@@ -566,11 +566,13 @@ nav {
   .poll-card img,
   .upload-card .fav-img-strip img,
   #poll-images img {
-    height: auto;
-    max-height: 160px;
-    width: 100%;
-    object-fit: cover;
-  }
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 
   #poll-images {
     flex-direction: column;
