@@ -778,7 +778,7 @@ nav a:hover {
     Access limited — sign in or create your GSU account to get the full GSU experience.
   </div>
 
-  <button onclick="window.location.href='index2.html'" style="
+  <button style="
     background-color: #000000;
     color: #e60023;
     border: 2px solid #e60023;
@@ -2831,7 +2831,7 @@ onAuthStateChanged(auth, (user) => {
     const user = window.auth.currentUser;
 
     if (!user || !title || !content) {
-      alert("You must be signed in and fill out both fields.");
+      alert("⚠️ You must be signed in and fill out both fields.");
       return;
     }
 
