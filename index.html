@@ -2443,16 +2443,21 @@ if (user) {
 </script>
 
 <script type="module">
-  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
- import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc
+  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -2468,40 +2473,48 @@ if (user) {
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // ✅ Ensure persistent login
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+      console.log("✅ Auth persistence enabled.");
+    })
+    .catch((error) => {
+      console.error("Auth persistence error:", error);
+    });
+
+  // 🔐 Login logic
   const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
   const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
   const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
   const signInBtn = document.querySelector('#auth-box .btn');
-
   const createAccountBtn = document.getElementById('createAccountBtn');
 
-if (createAccountBtn) {
-  createAccountBtn.addEventListener('click', () => {
-    window.location.href = "account_creation.html";
-  });
-}
-
+  if (createAccountBtn) {
+    createAccountBtn.addEventListener('click', () => {
+      window.location.href = "account_creation.html";
+    });
+  }
 
   signInBtn.addEventListener('click', async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-  if (!email || !password) {
-    alert("Enter both Email and Password to sign into your GSU account.");
-    return;
-  }
+    if (!email || !password) {
+      alert("Enter both Email and Password to sign into your GSU account.");
+      return;
+    }
 
-  try {
-    const userCred = await signInWithEmailAndPassword(auth, email, password);
-    const uid = userCred.user.uid;
-    loadProfile(uid);
-    alert("Signed in successfully");
-  } catch (err) {
-    alert("Login failed: " + err.message);
-  }
-});
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      loadProfile(uid);
+      alert("Signed in successfully");
+    } catch (err) {
+      alert("Login failed: " + err.message);
+    }
+  });
 
-
+  // 🔄 Load Profile Box
   async function loadProfile(uid) {
     window.favoriteCoverMap = {};
     const snap = await getDoc(doc(db, "users", uid));
@@ -2528,120 +2541,95 @@ if (createAccountBtn) {
       const gamesPlayedEl = document.getElementById("games-played");
       const trophyStatsEl = document.getElementById("trophy-stats");
 
-     let imageRow = document.getElementById("fav-images");
+      let imageRow = document.getElementById("fav-images");
+      if (!imageRow) {
+        imageRow = document.createElement("div");
+        imageRow.id = "fav-images";
+        imageRow.style.display = "flex";
+        imageRow.style.flexWrap = "wrap";
+        imageRow.style.gap = "0.5rem";
+        imageRow.style.marginTop = "0.8rem";
+        imageRow.style.justifyContent = "center";
+        profileBox.appendChild(imageRow);
+      }
 
-if (!imageRow) {
-  imageRow = document.createElement("div");
-  imageRow.id = "fav-images";
-  imageRow.style.display = "flex";
-  imageRow.style.flexWrap = "wrap";
-  imageRow.style.gap = "0.5rem";
-  imageRow.style.marginTop = "0.8rem";
-  imageRow.style.justifyContent = "center";
-  profileBox.appendChild(imageRow);
-}
+      imageRow.innerHTML = "";
 
-imageRow.innerHTML = "";
+      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
 
-favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+      if (Array.isArray(data.favoriteImages)) {
+        data.favoriteImages.forEach((url, index) => {
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = data.favoriteGames[index] || `Game ${index + 1}`;
+          img.classList.add("profile-fav-img");
+          imageRow.appendChild(img);
+        });
 
-if (Array.isArray(data.favoriteImages)) {
-  data.favoriteImages.forEach((url, index) => {
-    const img = document.createElement("img");
-    img.src = url;
-    img.alt = data.favoriteGames[index] || `Game ${index + 1}`;
-    img.classList.add("profile-fav-img");
-    imageRow.appendChild(img);
-  });
-}
+        data.favoriteGames.forEach((title, index) => {
+          const option = document.createElement("option");
+          option.value = title;
+          option.textContent = title;
+          coverDropdown.appendChild(option);
+          const titleKey = title.trim().toLowerCase();
+          window.favoriteCoverMap[titleKey] = data.favoriteImages[index];
+        });
 
+        if (data.favoriteGames.length > 0) {
+          coverDropdown.value = data.favoriteGames[0];
+          displaySelectedCover();
+        }
 
-
-     if (Array.isArray(data.favoriteImages)) {
-  data.favoriteImages.forEach((url, index) => {
-    const title = data.favoriteGames[index] || `Game ${index + 1}`;
-    const option = document.createElement("option");
-    option.value = title;
-    option.textContent = title;
-    coverDropdown.appendChild(option);
-    const titleKey = title.trim().toLowerCase(); // Normalize
-    window.favoriteCoverMap[titleKey] = url;
-
-  });
-
-  // 👇 Ensure the first game is selected (optional)
-  if (data.favoriteGames.length > 0) {
-    coverDropdown.value = data.favoriteGames[0];
-  }
-
-  displaySelectedCover();
-}
-
-
-
-       if (data.favoriteGames?.length && data.favoriteImages?.length) {
         const firstTitle = data.favoriteGames[0];
         const firstCover = window.favoriteCoverMap[firstTitle];
-
-  if (firstCover) {
-    displayArea.innerHTML = `<img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-
-    // Optional: set dropdown to match default image
-    document.getElementById("fav-select").value = firstTitle;
-  }
-}
-    }
-
-    
-     else {
+        if (firstCover) {
+          displayArea.innerHTML = `<img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+        }
+      }
+    } else {
       console.warn("User profile data not found.");
     }
   }
 
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.setItem("gsu_logged_out", "true"); // mark as manually logged out
-  auth.signOut();
-});
-
+  // 🔓 Logout
   const logoutBtn = document.getElementById("logoutBtn");
-
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       try {
         await auth.signOut();
+        localStorage.setItem("gsu_logged_out", "true");
         window.location.href = "index.html";
       } catch (err) {
         alert("Error signing out: " + err.message);
       }
     });
   }
-    // ✅ Expose Firebase services globally
-    window.db = db;
-    window.doc = doc;
-    window.setDoc = setDoc;
-    window.getAuth = getAuth;
-    window.auth = auth;
+
+  // 🌎 Expose Firebase globals
+  window.db = db;
+  window.doc = doc;
+  window.setDoc = setDoc;
+  window.getAuth = getAuth;
+  window.auth = auth;
 
   function displaySelectedCover() {
-  const select = document.getElementById("fav-select");
-  const display = document.getElementById("fav-cover-display");
-  const selectedTitle = select.value.trim().toLowerCase(); // Normalize
-  const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
+    const select = document.getElementById("fav-select");
+    const display = document.getElementById("fav-cover-display");
+    const selectedTitle = select.value.trim().toLowerCase();
+    const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
 
-  if (selectedUrl) {
-    display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-  } else {
-    display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
+    if (selectedUrl) {
+      display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
+    } else {
+      display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
+    }
   }
-}
 
-
-
-window.displaySelectedCover = displaySelectedCover;
-
+  window.displaySelectedCover = displaySelectedCover;
 </script>
+
 <script type="module">
  
 
@@ -2833,64 +2821,6 @@ function hideAuthNotice() {
   background-color: rgba(0, 0, 0, 0.5); /* Dark transparent */
   z-index: 9998;
 "></div>
-<script type="module">
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import { app } from './firebase-init.js';
-
-const auth = getAuth(app);
-const db = getFirestore(app);
-const profileBox = document.querySelector("#profile-box");
-
-// 🔁 Reusable function to show player profile
-function showProfileCard(userData) {
-  const favGamesList = userData.Favorite_Games?.map(game => `<li>${game}</li>`).join('') || '';
-  
-  profileBox.innerHTML = `
-    <div class="player-profile-card">
-      <h3>${userData.username}</h3>
-      <p><strong>Console:</strong> ${userData.console}</p>
-      <p><strong>Favorite Games:</strong></p>
-      <ul>${favGamesList}</ul>
-      <button id="logoutBtn" style="margin-top: 10px;">Log Out</button>
-    </div>
-  `;
-  
-  profileBox.style.display = 'block';
-
-  // 🔐 Log out button logic
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    auth.signOut().then(() => {
-      profileBox.innerHTML = '';
-      profileBox.style.display = 'none';
-      sessionStorage.clear(); // optional reset
-    });
-  });
-}
-
-// 🔄 Check if user is already logged in (even after refresh)
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    try {
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        showProfileCard(docSnap.data());
-      } else {
-        profileBox.innerHTML = "<p>User profile not found.</p>";
-        profileBox.style.display = 'block';
-      }
-    } catch (err) {
-      console.error("Failed to load profile data:", err);
-    }
-  } else {
-    profileBox.style.display = 'none';
-  }
-});
-</script>
-
-
-
 
 
 </body>
