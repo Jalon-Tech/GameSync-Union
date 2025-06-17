@@ -1,4 +1,5 @@
 window.addEventListener("DOMContentLoaded", () => {
+  
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const userRef = doc(db, "users", user.uid);
