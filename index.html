@@ -9,6 +9,16 @@
 
 <style>
 
+  #authNotice {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+
   .match-review-style h2 {
   color: #e60023;
   font-family: 'Montserrat', sans-serif;
@@ -2728,6 +2738,11 @@ onAuthStateChanged(auth, (user) => {
   } else {
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
+  if (!user) {
+  showAuthNotice(); // 🔔 shows the styled message box
+  setTimeout(hideAuthNotice, 6000);
+}
+
 });
 </script>
 
@@ -2766,7 +2781,48 @@ onAuthStateChanged(auth, (user) => {
   };
 </script>
 
-  
+  <div id="authNotice" style="
+  display: none;
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #e60023;
+  border: 2px solid #e60023;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  z-index: 9999;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  max-width: 360px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  line-height: 1.6;
+">
+  <div style="color: #000000; font-weight: bold; margin-bottom: 0.75rem; font-size: 1rem;">
+    Signed out:
+  </div>
+  <div style="margin-bottom: 1rem;">
+    Access limited — sign in or create your GSU account to get the full GSU experience.
+  </div>
+  <button onclick="hideAuthNotice()" style="background-color: #e60023; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-family: 'Montserrat'; cursor: pointer;">
+    Close
+  </button>
+</div>
+<script>
+  // Auth Notice functions
+  function showAuthNotice() {
+    const box = document.getElementById("authNotice");
+    if (box) box.style.display = "block";
+  }
+
+  function hideAuthNotice() {
+    const box = document.getElementById("authNotice");
+    if (box) box.style.display = "none";
+  }
+</script>
+
 </body>
 
 </html>
