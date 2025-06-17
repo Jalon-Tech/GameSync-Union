@@ -2817,47 +2817,6 @@ function hideAuthNotice() {
 }
 
 </script>
-
-<script>
-function renderPlayerCard(data) {
-  const card = document.getElementById("playerCard");
-  if (!card) return;
-
-  card.innerHTML = `
-    <div class="profile-box">
-      <h2>${data.username}</h2>
-      <p><strong>Console:</strong> ${data.console || "N/A"}</p>
-      <p><strong>Trophies:</strong> ${JSON.stringify(data.Trophy_Stats || {})}</p>
-      <h3>Favorite Games:</h3>
-      <ul>
-        ${(data.Favorite_Games || [])
-          .map(g => `<li>${g.title}</li>`)
-          .join("")}
-      </ul>
-    </div>
-  `;
-}
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const username = user.displayName || user.email.split("@")[0];
-    const docSnap = await getDoc(doc(db, "users", username));
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      renderPlayerCard(userData); // 💡
-      rotateYouTubeVideosForUser(username);
-      setInterval(() => rotateYouTubeVideosForUser(username), 86400000);
-    }
-  } else {
-    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
-    showAuthNotice();
-    setTimeout(hideAuthNotice, 6000);
-  }
-});
-
-</script>
-
-
-
 <div id="authOverlay" style="
   display: none;
   position: fixed;
