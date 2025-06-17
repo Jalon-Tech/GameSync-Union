@@ -12,10 +12,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-// 🔁 Make auth and db available globally
-window.auth = getAuth(app);
-window.db = getFirestore(app);
-
-// ✅ Export app for use in modules
-export { app };
+export { app, auth, db };
