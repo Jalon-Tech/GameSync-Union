@@ -759,9 +759,9 @@ nav a:hover {
     <aside>
       <div class="box" id="auth-box">
         <h2>Create Account or Sign In</h2>
-        <input type="text" class="input-field" placeholder="Username" />
-        <input type="password" class="input-field" placeholder="Password" />
-        <button class="btn">Sign In</button>
+        <input type="text" id="usernameInput" placeholder="Username" />
+        <input type="password" id="passwordInput" placeholder="Password" />
+        <button id="signInBtn" class="btn">Sign In</button>
         <p style="text-align: center; margin-top: 0.6rem;">
         Create your GSU account?
         <button class="btn" id="createAccountBtn" style="
@@ -2466,10 +2466,10 @@ if (user) {
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
-  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
-  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
-  const signInBtn = document.querySelector('#auth-box .btn');
+  const usernameInput = document.getElementById('usernameInput');
+  const passwordInput = document.getElementById('passwordInput');
+  const signInBtn = document.getElementById('signInBtn');
+
 
   const createAccountBtn = document.getElementById('createAccountBtn');
 
@@ -2480,24 +2480,44 @@ if (createAccountBtn) {
 }
 
 
-  signInBtn.addEventListener('click', async () => {
-  const email = emailInput.value.trim();
+ signInBtn.addEventListener('click', async () => {
+  const username = usernameInput.value.trim();
   const password = passwordInput.value;
 
-  if (!Username || !password) {
-    alert("Enter both Username and Password to sign into your GSU account.");
+  if (!username || !password) {
+    alert("Please enter both your username and password.");
     return;
   }
 
   try {
+    // 🔍 Look up the user's email from Firestore using the username
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("username", "==", username));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      alert("❌ Username not found. Please check and try again.");
+      return;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+    const email = userData.email;
+
+    // 🔐 Sign in with retrieved email and entered password
     const userCred = await signInWithEmailAndPassword(auth, email, password);
+
     const uid = userCred.user.uid;
-    loadProfile(uid);
-    alert("Signed in successfully");
-  } catch (err) {
-    alert("Login failed: " + err.message);
+    console.log("✅ Signed in as:", username);
+    alert(`Welcome back, ${username}!`);
+    loadProfile(uid); // custom function to load your user profile
+
+  } catch (error) {
+    console.error("❗ Sign-in failed:", error);
+    alert("Sign-in error: " + error.message);
   }
 });
+
 
 
   async function loadProfile(uid) {
@@ -2743,7 +2763,7 @@ onAuthStateChanged(auth, (user) => {
     const user = window.auth.currentUser;
 
     if (!user || !title || !content) {
-      alert("⚠️ You must be signed in and fill out both fields.");
+      alert("You must be signed in and fill out both fields.");
       return;
     }
 
