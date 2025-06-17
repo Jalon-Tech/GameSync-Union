@@ -757,7 +757,19 @@ nav a:hover {
 
   <div class="main-container">
     <aside>
-    
+      <div class="box" id="auth-box">
+        <h2>Create Account or Sign In</h2>
+        <input type="text" class="input-field" placeholder="Email" />
+        <input type="text" class="input-field" placeholder="Username" />
+        <input type="password" class="input-field" placeholder="Password" />
+        <button class="btn">Sign In</button>
+        <p style="text-align: center; margin-top: 0.6rem;">
+        Become a member?
+        <button class="btn" id="createAccountBtn" style="margin-left: 0.5rem; padding: 0.25rem 0.75rem; font-size: 0.85rem;">
+          Create Account
+        </button>
+      </p>
+      </div>
       
      <!-- 🕹️ Retro Game Flashback -->
 <div class="box match-review-style">
@@ -2427,11 +2439,13 @@ if (user) {
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import {
-    getAuth,
-    signInWithEmailAndPassword,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+ import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
 
   const firebaseConfig = {
     apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -2451,6 +2465,42 @@ if (user) {
   const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
   const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
   const signInBtn = document.querySelector('#auth-box .btn');
+
+  const createAccountBtn = document.getElementById('createAccountBtn');
+
+if (createAccountBtn) {
+  createAccountBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const username = usernameInput.value.trim();
+
+    if (!email || !password || !username) {
+      alert("⚠️ Please fill out Email, Password, and Username.");
+      return;
+    }
+
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+
+      await setDoc(doc(db, "users", uid), {
+        email,
+        username,
+        platform: "Unknown",
+        favoriteGames: [],
+        favoriteImages: [],
+        gamesPlayed: 0,
+        trophyCount: 0
+      });
+
+      loadProfile(uid); // 👈 Reuse your profile loading logic
+      alert("✅ Account created successfully!");
+
+    } catch (err) {
+      alert("❌ Account creation failed: " + err.message);
+    }
+  });
+}
 
   signInBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
@@ -2562,21 +2612,6 @@ if (Array.isArray(data.favoriteImages)) {
       console.warn("User profile data not found.");
     }
   }
-  onAuthStateChanged(auth, (user) => {
-    const currentPath = window.location.pathname.toLowerCase();
-    const isLoginPage = currentPath.includes("account_creation.html");
-
-    if (user) {
-      loadProfile(user.uid);
-      document.getElementById("auth-box").style.display = "none";
-    } else {
-      document.getElementById("auth-box").style.display = "block";
-      if (!isLoginPage && currentPath !== "/index.html") {
-        alert("Please log in to access GameSync Union.");
-        window.location.href = "account_creation.html";
-      }
-    }
-  });
 
   const logoutBtn = document.getElementById("logoutBtn");
 
