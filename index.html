@@ -2957,24 +2957,29 @@ onAuthStateChanged(auth, (user) => {
   };
 </script>
 <script type="module">
-  import { auth } from './firebase-init.js';
-  import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { auth } from './firebase-init.js'; // ✅ Imports initialized Firebase app + auth
+  import {
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"; // ✅ uses correct modular version
 
   const logoutBtn = document.getElementById("logoutBtn");
   const authNotice = document.getElementById("authNotice");
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
+      console.log("Logout button clicked ✅");
+
       signOut(auth)
         .then(() => {
           authNotice.style.display = "block";
           setTimeout(() => {
             authNotice.style.display = "none";
-            window.location.href = "/index.html"; // or another landing page
+            window.location.replace("/index.html");
           }, 3500);
         })
         .catch((error) => {
-          console.error("Logout error:", error);
+          console.error("Logout error:", error.message);
         });
     });
   }
@@ -2985,6 +2990,7 @@ onAuthStateChanged(auth, (user) => {
     }
   });
 </script>
+
 
 
   
