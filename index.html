@@ -2501,58 +2501,6 @@ if (createAccountBtn) {
   }
 });
 
-signInButton.addEventListener('click', async () => {
-  const username = document.getElementById('usernameInput').value;
-  const password = document.getElementById('passwordInput').value;
-
-  try {
-    const q = query(collection(db, 'users'), where('username', '==', username), where('password', '==', password));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const userData = querySnapshot.docs[0].data();
-      // Save to localStorage
-      localStorage.setItem('gsuUser', JSON.stringify({
-        username: userData.username,
-        favoriteGames: userData.Favorite_Games || [],
-        trophyStats: userData.Trophy_Stats || {}
-      }));
-
-      // Show player card
-      showPlayerCard(userData);
-    } else {
-      alert("Incorrect login");
-    }
-  } catch (error) {
-    console.error("Login failed", error);
-  }
-});
-document.addEventListener('DOMContentLoaded', () => {
-  const user = JSON.parse(localStorage.getItem('gsuUser'));
-  if (user) {
-    showPlayerCard(user);
-  }
-});
-function showPlayerCard(user) {
-  const playerCard = document.getElementById('playerCard');
-  if (!playerCard) return;
-
-  playerCard.innerHTML = `
-    <div class="card-style">
-      <h3>🎮 ${user.username}</h3>
-      <p><strong>Trophies:</strong> ${user.trophyStats.total || 0}</p>
-      <p><strong>Favorite Games:</strong></p>
-      <ul>${user.favoriteGames.map(game => `<li>${game}</li>`).join('')}</ul>
-    </div>
-  `;
-  playerCard.style.display = 'block';
-}
-logoutButton.addEventListener('click', () => {
-  localStorage.removeItem('gsuUser');
-  document.getElementById('playerCard').style.display = 'none';
-  showSignedOutNotice(); // optional function you’ve styled
-});
-
 
   async function loadProfile(uid) {
     window.favoriteCoverMap = {};
@@ -2688,8 +2636,6 @@ if (Array.isArray(data.favoriteImages)) {
 
 window.displaySelectedCover = displaySelectedCover;
 
-
-
 </script>
 <script type="module">
  
@@ -2775,48 +2721,19 @@ async function rotateYouTubeVideosForUser(uid) {
 
 }
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Get the username-based document
-    const username = user.displayName || user.email.split("@")[0];
-    const userDocRef = doc(db, "users", username);
-    const userDocSnap = await getDoc(userDocRef);
-
-    if (userDocSnap.exists()) {
-      const data = userDocSnap.data();
-
-      // ✅ Render Player Card
-      const card = document.getElementById("playerCard");
-      if (card) {
-        card.innerHTML = `
-          <div class="player-card">
-            <h2>${data.username}</h2>
-            <p><strong>Console:</strong> ${data.console || "N/A"}</p>
-            <p><strong>Trophies:</strong> ${JSON.stringify(data.Trophy_Stats || {})}</p>
-            <h3>Favorite Games:</h3>
-            <ul>
-              ${(data.Favorite_Games || [])
-                .map(game => `<li>${game.title}</li>`)
-                .join("")}
-            </ul>
-          </div>
-        `;
-      }
-
-      // ✅ Rotate YouTube Videos
-      rotateYouTubeVideosForUser(username);
-      setInterval(() => rotateYouTubeVideosForUser(username), 86400000);
-    } else {
-      console.warn("User document not found.");
-    }
+    rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
+    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
   } else {
-    // ❌ Not logged in
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
-    showAuthNotice();
-    setTimeout(hideAuthNotice, 6000);
   }
-});
+  if (!user) {
+  showAuthNotice(); // 🔔 shows the styled message box
+  setTimeout(hideAuthNotice, 6000);
+}
 
+});
 </script>
 
 <script type="module">
