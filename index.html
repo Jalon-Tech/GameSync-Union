@@ -2600,6 +2600,11 @@ if (Array.isArray(data.favoriteImages)) {
     }
   }
 
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.setItem("gsu_logged_out", "true"); // mark as manually logged out
+  auth.signOut();
+});
+
   const logoutBtn = document.getElementById("logoutBtn");
 
   if (logoutBtn) {
@@ -2721,6 +2726,7 @@ async function rotateYouTubeVideosForUser(uid) {
 
 }
 
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
@@ -2839,8 +2845,10 @@ function hideAuthNotice() {
     const trophyStats = document.getElementById("trophy-stats");
     const favImages = document.getElementById("fav-images");
 
+
     onAuthStateChanged(auth, async (user) => {
-      if (user && box) {
+      const manuallyLoggedOut = localStorage.getItem("gsu_logged_out") === "true";
+      if (user && !manuallyLoggedOut) {
         box.style.display = "block";
 
         try {
@@ -2870,7 +2878,7 @@ function hideAuthNotice() {
         } catch (err) {
           console.error("Error loading profile:", err);
         }
-      } else if (box) {
+      } else {
         box.style.display = "none";
       }
     });
