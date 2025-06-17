@@ -2828,62 +2828,52 @@ function hideAuthNotice() {
   z-index: 9998;
 "></div>
 <script type="module">
-  import {
-    getAuth,
-    onAuthStateChanged,
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import { auth, db } from "./firebase-init.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-  import {
-    getFirestore,
-    doc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-  import { app } from "./firebase-init.js"; // make sure this path matches your project
-
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  onAuthStateChanged(auth, async (user) => {
+  document.addEventListener("DOMContentLoaded", () => {
     const box = document.getElementById("profile-box");
     const favGames = document.getElementById("fav-games");
     const gamesPlayed = document.getElementById("games-played");
     const trophyStats = document.getElementById("trophy-stats");
     const favImages = document.getElementById("fav-images");
 
-    if (user && box) {
-      box.style.display = "block";
+    onAuthStateChanged(auth, async (user) => {
+      if (user && box) {
+        box.style.display = "block";
 
-      try {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          favGames.textContent = `🌟 Favorite Games: ${data.Favorite_Games?.map(g => g.title).join(", ") || 'None'}`;
-          gamesPlayed.textContent = `🎮 Games Played: ${data.Games_Played || 0}`;
-          trophyStats.textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "No data"}`;
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            favGames.textContent = `🌟 Favorite Games: ${data.Favorite_Games?.map(g => g.title).join(", ") || 'None'}`;
+            gamesPlayed.textContent = `🎮 Games Played: ${data.Games_Played || 0}`;
+            trophyStats.textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "No data"}`;
 
-          favImages.innerHTML = "";
-          if (Array.isArray(data.Favorite_Games)) {
-            data.Favorite_Games.forEach(game => {
-              const img = document.createElement("img");
-              img.src = game.image;
-              img.alt = game.title;
-              img.style.width = "100px";
-              img.style.height = "150px";
-              img.style.borderRadius = "10px";
-              img.style.objectFit = "cover";
-              favImages.appendChild(img);
-            });
+            favImages.innerHTML = "";
+            if (Array.isArray(data.Favorite_Games)) {
+              data.Favorite_Games.forEach(game => {
+                const img = document.createElement("img");
+                img.src = game.image;
+                img.alt = game.title;
+                img.style.width = "100px";
+                img.style.height = "150px";
+                img.style.borderRadius = "10px";
+                img.style.objectFit = "cover";
+                favImages.appendChild(img);
+              });
+            }
           }
+        } catch (err) {
+          console.error("Error loading profile:", err);
         }
-      } catch (err) {
-        console.error("Error loading profile data:", err);
+      } else if (box) {
+        box.style.display = "none";
       }
-    } else if (box) {
-      box.style.display = "none";
-    }
+    });
   });
 </script>
 
