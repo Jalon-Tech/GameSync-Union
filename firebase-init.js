@@ -1,4 +1,3 @@
-// firebase-init.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import {
   getAuth,
@@ -22,16 +21,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ✅ Always persist session
 setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Auth session will persist.");
-  })
-  .catch((error) => {
-    console.error("Persistence error:", error);
-  });
+  .then(() => console.log("Persistence set"))
+  .catch((error) => console.error("Persistence error:", error));
 
-// 🔁 Make available globally if needed
 window.auth = auth;
 window.db = db;
 
