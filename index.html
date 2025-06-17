@@ -2834,60 +2834,63 @@ function hideAuthNotice() {
   z-index: 9998;
 "></div>
 <script type="module">
-  import { auth, db } from "./firebase-init.js";
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { app } from './firebase-init.js';
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const box = document.getElementById("profile-box");
-    const favGames = document.getElementById("fav-games");
-    const gamesPlayed = document.getElementById("games-played");
-    const trophyStats = document.getElementById("trophy-stats");
-    const favImages = document.getElementById("fav-images");
+const auth = getAuth(app);
+const db = getFirestore(app);
+const profileBox = document.querySelector("#profile-box");
 
-   onAuthStateChanged(auth, async (user) => {
-  const box = document.getElementById("profile-box");
+// 🔁 Reusable function to show player profile
+function showProfileCard(userData) {
+  const favGamesList = userData.Favorite_Games?.map(game => `<li>${game}</li>`).join('') || '';
+  
+  profileBox.innerHTML = `
+    <div class="player-profile-card">
+      <h3>${userData.username}</h3>
+      <p><strong>Console:</strong> ${userData.console}</p>
+      <p><strong>Favorite Games:</strong></p>
+      <ul>${favGamesList}</ul>
+      <button id="logoutBtn" style="margin-top: 10px;">Log Out</button>
+    </div>
+  `;
+  
+  profileBox.style.display = 'block';
 
+  // 🔐 Log out button logic
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    auth.signOut().then(() => {
+      profileBox.innerHTML = '';
+      profileBox.style.display = 'none';
+      sessionStorage.clear(); // optional reset
+    });
+  });
+}
+
+// 🔄 Check if user is already logged in (even after refresh)
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    localStorage.removeItem("gsu_logged_out"); // ✅ Clear any logout flag
-    box.style.display = "block";
-
     try {
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
-
       if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("fav-games").textContent = `🌟 Favorite Games: ${data.Favorite_Games?.map(g => g.title).join(", ") || 'None'}`;
-        document.getElementById("games-played").textContent = `🎮 Games Played: ${data.Games_Played || 0}`;
-        document.getElementById("trophy-stats").textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "No data"}`;
-
-        const favImages = document.getElementById("fav-images");
-        favImages.innerHTML = "";
-        if (Array.isArray(data.Favorite_Games)) {
-          data.Favorite_Games.forEach(game => {
-            const img = document.createElement("img");
-            img.src = game.image;
-            img.alt = game.title;
-            img.style.width = "100px";
-            img.style.height = "150px";
-            img.style.borderRadius = "10px";
-            img.style.objectFit = "cover";
-            favImages.appendChild(img);
-          });
-        }
+        showProfileCard(docSnap.data());
+      } else {
+        profileBox.innerHTML = "<p>User profile not found.</p>";
+        profileBox.style.display = 'block';
       }
     } catch (err) {
-      console.error("Error loading profile:", err);
+      console.error("Failed to load profile data:", err);
     }
   } else {
-    box.style.display = "none";
+    profileBox.style.display = 'none';
   }
 });
-
-  });
-  
 </script>
+
+
+
 
 
 </body>
