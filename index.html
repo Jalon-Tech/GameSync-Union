@@ -759,7 +759,6 @@ nav a:hover {
     <aside>
       <div class="box" id="auth-box">
         <h2>Create Account or Sign In</h2>
-        <input type="text" class="input-field" placeholder="Email" />
         <input type="text" class="input-field" placeholder="Username" />
         <input type="password" class="input-field" placeholder="Password" />
         <button class="btn">Sign In</button>
@@ -2485,8 +2484,8 @@ if (createAccountBtn) {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
-  if (!email || !password) {
-    alert("Enter both Email and Password to sign into your GSU account.");
+  if (!Username || !password) {
+    alert("Enter both Username and Password to sign into your GSU account.");
     return;
   }
 
@@ -2606,7 +2605,7 @@ if (Array.isArray(data.favoriteImages)) {
       try {
         await auth.signOut();
         alert("You have been logged out.");
-        window.location.href = "account_creation.html";
+        window.location.href = "index.html";
       } catch (err) {
         alert("Error signing out: " + err.message);
       }
