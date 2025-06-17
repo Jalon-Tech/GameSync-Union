@@ -1,6 +1,13 @@
+// firebase-init.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import {
+  getFirestore
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -14,5 +21,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// ✅ Always persist session
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Auth session will persist.");
+  })
+  .catch((error) => {
+    console.error("Persistence error:", error);
+  });
+
+// 🔁 Make available globally if needed
+window.auth = auth;
+window.db = db;
 
 export { app, auth, db };
