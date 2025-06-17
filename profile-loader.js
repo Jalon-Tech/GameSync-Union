@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
       if (userSnap.exists()) {
         const data = userSnap.data();
 
-        const profileBox = document.querySelector(".profile-box");
+        const profileBox = document.getElementById("profile-box");
         if (profileBox) {
           profileBox.innerHTML = `
             <h3>${data.username || "Unknown"}</h3>
