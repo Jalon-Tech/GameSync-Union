@@ -167,6 +167,7 @@
       <a href="uploads.html">GSU Player Lounge</a>
     </nav>
   </header>
+<div id="profile-box" style="display: none;"></div>
 
  <div class="main-container">
   <div class="box">
@@ -318,6 +319,56 @@
       db.collection("community_art").doc(id).delete();
     }
   }
+</script>
+
+  <script type="module">
+  import { app } from './firebase-init.js';
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const profileBox = document.getElementById("profile-box");
+
+  function showProfileCard(userData) {
+    const favGames = userData.Favorite_Games?.map(g => `<li>${g}</li>`).join('') || '';
+    profileBox.innerHTML = `
+      <div class="player-profile-card">
+        <h3>${userData.username}</h3>
+        <p><strong>Console:</strong> ${userData.console}</p>
+        <p><strong>Favorite Games:</strong></p>
+        <ul>${favGames}</ul>
+        <button id="logoutBtn">Log Out</button>
+      </div>
+    `;
+    profileBox.style.display = 'block';
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => {
+        profileBox.innerHTML = '';
+        profileBox.style.display = 'none';
+      });
+    });
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        if (docSnap.exists()) {
+          showProfileCard(docSnap.data());
+        } else {
+          profileBox.innerHTML = "<p>Profile not found.</p>";
+          profileBox.style.display = 'block';
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    } else {
+      profileBox.style.display = 'none';
+    }
+  });
 </script>
 
 </body>
