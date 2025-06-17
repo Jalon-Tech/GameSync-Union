@@ -2501,6 +2501,58 @@ if (createAccountBtn) {
   }
 });
 
+signInButton.addEventListener('click', async () => {
+  const username = document.getElementById('usernameInput').value;
+  const password = document.getElementById('passwordInput').value;
+
+  try {
+    const q = query(collection(db, 'users'), where('username', '==', username), where('password', '==', password));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userData = querySnapshot.docs[0].data();
+      // Save to localStorage
+      localStorage.setItem('gsuUser', JSON.stringify({
+        username: userData.username,
+        favoriteGames: userData.Favorite_Games || [],
+        trophyStats: userData.Trophy_Stats || {}
+      }));
+
+      // Show player card
+      showPlayerCard(userData);
+    } else {
+      alert("Incorrect login");
+    }
+  } catch (error) {
+    console.error("Login failed", error);
+  }
+});
+document.addEventListener('DOMContentLoaded', () => {
+  const user = JSON.parse(localStorage.getItem('gsuUser'));
+  if (user) {
+    showPlayerCard(user);
+  }
+});
+function showPlayerCard(user) {
+  const playerCard = document.getElementById('playerCard');
+  if (!playerCard) return;
+
+  playerCard.innerHTML = `
+    <div class="card-style">
+      <h3>🎮 ${user.username}</h3>
+      <p><strong>Trophies:</strong> ${user.trophyStats.total || 0}</p>
+      <p><strong>Favorite Games:</strong></p>
+      <ul>${user.favoriteGames.map(game => `<li>${game}</li>`).join('')}</ul>
+    </div>
+  `;
+  playerCard.style.display = 'block';
+}
+logoutButton.addEventListener('click', () => {
+  localStorage.removeItem('gsuUser');
+  document.getElementById('playerCard').style.display = 'none';
+  showSignedOutNotice(); // optional function you’ve styled
+});
+
 
   async function loadProfile(uid) {
     window.favoriteCoverMap = {};
