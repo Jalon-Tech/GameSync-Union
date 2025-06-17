@@ -2603,15 +2603,21 @@ if (Array.isArray(data.favoriteImages)) {
   const logoutBtn = document.getElementById("logoutBtn");
 
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await auth.signOut();
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await auth.signOut();
+      showAuthNotice(); // 🔔 Now it makes sense
+      setTimeout(() => {
+        hideAuthNotice();
         window.location.href = "index.html";
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
-    });
-  }
+      }, 6000);
+    } catch (err) {
+      alert("Error signing out: " + err.message);
+    }
+  });
+}
+
+
     // ✅ Expose Firebase services globally
     window.db = db;
     window.doc = doc;
@@ -2728,10 +2734,7 @@ onAuthStateChanged(auth, (user) => {
   } else {
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
-  if (!user) {
-  showAuthNotice(); // 🔔 shows the styled message box
-  setTimeout(hideAuthNotice, 6000);
-}
+ 
 
 });
 </script>
