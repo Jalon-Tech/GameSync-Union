@@ -764,10 +764,16 @@ nav a:hover {
         <input type="password" class="input-field" placeholder="Password" />
         <button class="btn">Sign In</button>
         <p style="text-align: center; margin-top: 0.6rem;">
-        Become a member?
-        <button class="btn" id="createAccountBtn" style="margin-left: 0.5rem; padding: 0.25rem 0.75rem; font-size: 0.85rem;">
-          Create Account
+        Create your GSU account?
+        <button class="btn" id="createAccountBtn" style="
+          display: block;
+          margin: 1rem auto;
+          padding: 0.25rem 0.75rem;
+          font-size: 0.85rem;
+        ">
+          Click Here
         </button>
+
       </p>
       </div>
       
@@ -2469,51 +2475,31 @@ if (user) {
   const createAccountBtn = document.getElementById('createAccountBtn');
 
 if (createAccountBtn) {
-  createAccountBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    const username = usernameInput.value.trim();
-
-    if (!email || !password || !username) {
-      alert("⚠️ Please fill out Email, Password, and Username.");
-      return;
-    }
-
-    try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-
-      await setDoc(doc(db, "users", uid), {
-        email,
-        username,
-        platform: "Unknown",
-        favoriteGames: [],
-        favoriteImages: [],
-        gamesPlayed: 0,
-        trophyCount: 0
-      });
-
-      loadProfile(uid); // 👈 Reuse your profile loading logic
-      alert("✅ Account created successfully!");
-
-    } catch (err) {
-      alert("❌ Account creation failed: " + err.message);
-    }
+  createAccountBtn.addEventListener('click', () => {
+    window.location.href = "account_creation.html";
   });
 }
 
+
   signInBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-      loadProfile(uid);
-      alert("Signed in successfully");
-    } catch (err) {
-      alert("Login failed: " + err.message);
-    }
-  });
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    alert("Enter both Email and Password to sign into your GSU account.");
+    return;
+  }
+
+  try {
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    const uid = userCred.user.uid;
+    loadProfile(uid);
+    alert("Signed in successfully");
+  } catch (err) {
+    alert("Login failed: " + err.message);
+  }
+});
+
 
   async function loadProfile(uid) {
     window.favoriteCoverMap = {};
