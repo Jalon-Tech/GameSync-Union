@@ -2443,6 +2443,56 @@ if (user) {
 </script>
 
 <script type="module">
+  import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
+const auth2 = getAuth();
+
+window.addEventListener("DOMContentLoaded", () => {
+  const authNotice = document.getElementById("authNotice");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  function showAuthNotice() {
+    if (authNotice) {
+      authNotice.style.display = "block";
+    }
+  }
+
+  // 🔁 Check auth state using auth2
+  onAuthStateChanged(auth2, (user) => {
+    if (user) {
+      logoutBtn.style.display = "inline-block";
+    } else {
+      logoutBtn.style.display = "none";
+
+      const hasVisited = localStorage.getItem("gsuHasVisited");
+      if (!hasVisited) {
+        showAuthNotice();
+        localStorage.setItem("gsuHasVisited", "true");
+      }
+    }
+  });
+
+  // 🔓 Logout using auth2
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth2).then(() => {
+        localStorage.removeItem("gsuHasVisited");
+        window.location.reload();
+      }).catch((error) => {
+        console.error("Logout error:", error);
+      });
+    });
+  }
+
+  // ❌ Dismiss button inside notice
+  const dismissBtn = authNotice?.querySelector("button");
+  if (dismissBtn) {
+    dismissBtn.addEventListener("click", () => {
+      authNotice.style.display = "none";
+    });
+  }
+});
+
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
@@ -2729,9 +2779,14 @@ onAuthStateChanged(auth, (user) => {
     spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
   if (!user) {
-  showAuthNotice(); // 🔔 shows the styled message box
-  setTimeout(hideAuthNotice, 6000);
+  const hasVisited = localStorage.getItem("gsuHasVisited");
+
+  if (!hasVisited) {
+    showAuthNotice(); // 🔔 styled message box
+    localStorage.setItem("gsuHasVisited", "true");
+  }
 }
+
 
 });
 </script>
