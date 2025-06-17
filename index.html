@@ -2397,6 +2397,40 @@ When the Union highlights you — it means something. If your name’s echoing i
 if (user) {
   const uid = user.uid;
   const docRef = doc(db, "users", uid);
+  if (user && box) {
+  // ✅ Ensure box is always shown as soon as user is detected
+  box.style.display = "block";
+
+  try {
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+
+      favGames.textContent = `🌟 Favorite Games: ${data.Favorite_Games?.map(g => g.title).join(", ") || 'None'}`;
+      gamesPlayed.textContent = `🎮 Games Played: ${data.Games_Played || 0}`;
+      trophyStats.textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "No data"}`;
+
+      favImages.innerHTML = "";
+      if (Array.isArray(data.Favorite_Games)) {
+        data.Favorite_Games.forEach(game => {
+          const img = document.createElement("img");
+          img.src = game.image;
+          img.alt = game.title;
+          img.style.width = "100px";
+          img.style.height = "150px";
+          img.style.borderRadius = "10px";
+          img.style.objectFit = "cover";
+          favImages.appendChild(img);
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Error loading profile data:", err);
+  }
+}
+
   try {
     await setDoc(docRef, {
       favoriteGames: games.split(',').map(s => s.trim()),
@@ -2850,41 +2884,7 @@ function hideAuthNotice() {
     const gamesPlayed = document.getElementById("games-played");
     const trophyStats = document.getElementById("trophy-stats");
     const favImages = document.getElementById("fav-images");
-
-    if (user && box) {
-      box.style.display = "block";
-
-      try {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          favGames.textContent = `🌟 Favorite Games: ${data.Favorite_Games?.map(g => g.title).join(", ") || 'None'}`;
-          gamesPlayed.textContent = `🎮 Games Played: ${data.Games_Played || 0}`;
-          trophyStats.textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "No data"}`;
-
-          favImages.innerHTML = "";
-          if (Array.isArray(data.Favorite_Games)) {
-            data.Favorite_Games.forEach(game => {
-              const img = document.createElement("img");
-              img.src = game.image;
-              img.alt = game.title;
-              img.style.width = "100px";
-              img.style.height = "150px";
-              img.style.borderRadius = "10px";
-              img.style.objectFit = "cover";
-              favImages.appendChild(img);
-            });
-          }
-        }
-      } catch (err) {
-        console.error("Error loading profile data:", err);
-      }
-    } else if (box) {
-      box.style.display = "none";
-    }
-  });
+  })
 </script>
 
 </body>
