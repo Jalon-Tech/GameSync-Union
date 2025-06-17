@@ -2606,7 +2606,7 @@ if (Array.isArray(data.favoriteImages)) {
       try {
         await auth.signOut();
         alert("You have been logged out.");
-        window.location.href = "account_creation.html";
+        window.location.href = "index.html";
       } catch (err) {
         alert("Error signing out: " + err.message);
       }
