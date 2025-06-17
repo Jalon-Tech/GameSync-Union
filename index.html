@@ -739,6 +739,38 @@ nav a:hover {
   </style>
 </head>
 <body>
+  <button id="logoutBtn" style="position: absolute; top: 12px; left: 12px;">Log Out</button>
+  <div id="authNotice" style="
+  display: none;
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #e60023;
+  border: 2px solid #e60023;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  z-index: 9999;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  max-width: 360px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  line-height: 1.6;
+">
+  <div style="color: #000000; font-weight: bold; margin-bottom: 0.75rem; font-size: 1rem;">
+    Signed out:
+  </div>
+  <div style="margin-bottom: 1rem;">
+    Access limited — sign in or create your GSU account to get the full GSU experience.
+  </div>
+  <button style="background-color: #e60023; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;" onclick="window.location.href='/Account_Creation.html'">
+    Sign In
+  </button>
+</div>
+
+  
   <button id="logoutBtn" onclick="logoutUser()" style="
   display: none;
   position: fixed;
@@ -2554,48 +2586,6 @@ if (user) {
 }
 </script>
 
-<script>
-  const logoutBtn = document.getElementById('logoutBtn');
-  const authOverlay = document.getElementById('authOverlay');
-  const authNotice = document.getElementById('authNotice');
-
-  if (logoutBtn && authOverlay && authNotice) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      // Show your visual overlay
-      authOverlay.style.display = 'block';
-      authNotice.style.display = 'block';
-
-      // ✅ Sign out using compat version
-      firebase.auth().signOut()
-        .then(() => {
-          console.log("User signed out");
-          window.location.href = 'index.html'; // redirect after logout
-        })
-        .catch((error) => {
-          console.error("Logout error:", error);
-        });
-    });
-  }
-  import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
-
-function logoutUser() {
-  signOut(auth).then(() => {
-    document.getElementById("authNotice").style.display = "block";
-    setTimeout(() => {
-      window.location.reload(); // Optional: refresh to reset UI
-    }, 2500);
-  }).catch((error) => {
-    console.error("Error during sign-out:", error);
-  });
-}
-
-function closeNotice() {
-  document.getElementById("authNotice").style.display = "none";
-}
-window.logoutUser = logoutUser;
-</script>
 
 <script>
   window.onload = () => {
@@ -2966,6 +2956,36 @@ onAuthStateChanged(auth, (user) => {
     }
   };
 </script>
+<script type="module">
+  import { auth } from './firebase-init.js';
+  import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  const authNotice = document.getElementById("authNotice");
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth)
+        .then(() => {
+          authNotice.style.display = "block";
+          setTimeout(() => {
+            authNotice.style.display = "none";
+            window.location.href = "/index.html"; // or another landing page
+          }, 3500);
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+        });
+    });
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (logoutBtn) {
+      logoutBtn.style.display = user ? "inline-block" : "none";
+    }
+  });
+</script>
+
 
   
 </body>
