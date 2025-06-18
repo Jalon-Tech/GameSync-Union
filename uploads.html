@@ -1456,97 +1456,62 @@ function submitVote(pollId, choiceText) {
 <script>
 const weeklyPoll = document.getElementById("weeklyPoll");
 
-db.collection("polls")
-  .orderBy("createdAt", "desc")
-  .get()
-  .then(snapshot => {
-    if (snapshot.empty) {
-      weeklyPoll.innerHTML = ` <div class="poll-card" id="poll-${pollId}">
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) return;
 
-        <p style="color:#ccc;">No polls available yet. Be the first to 
-        <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!</p>
-      </div>`;
-      return;
-    }
+  db.collection("polls")
+    .orderBy("createdAt", "desc")
+    .get()
+    .then(snapshot => {
+      weeklyPoll.innerHTML = "";
 
-    weeklyPoll.innerHTML = ""; // Clear previous content
-
-   snapshot.forEach(doc => {
-  const poll = doc.data();
-  const pollId = doc.id;
-
-  const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
-  const optionButtons = (poll.options || []).map(option => `
-    <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
-  `).join("");
-
-  
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (!user) return;
-
-    const isCreator = poll.creatorId === user.uid;
-
-    const deleteBtnHTML = isCreator
-      ? `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">🗑️ Delete Poll</button>`
-      : "";
-
-    const pollCardHTML = `
-      <div class="poll-card" id="poll-${pollId}">
-        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-        <h3>${poll.question}</h3>
-        <div class="poll-options">${optionButtons}</div>
-        <div id="poll-images">${imageHTML}</div>
-        <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-        ${deleteBtnHTML}
-      </div>
-    `;
-
-    weeklyPoll.innerHTML += pollCardHTML;
-
-    // Check if user already voted
-    const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
-    voteRef.get().then(voteDoc => {
-      if (voteDoc.exists) {
-        const choiceText = voteDoc.data().choice;
-        db.collection("users").doc(user.uid).get().then(userDoc => {
-          const username = userDoc.data()?.username || "You";
-          const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-          resultBox.innerText = `@${username} chose: ${choiceText}`;
-          resultBox.style.display = "block";
-        });
-
-        const pollCard = document.getElementById(`poll-${pollId}`);
-        pollCard.querySelectorAll("button").forEach(btn => {
-          btn.disabled = true;
-          if (btn.innerText === choiceText) {
-            btn.style.borderColor = "#e60023";
-            btn.style.backgroundColor = "#fff";
-            btn.style.color = "#e60023";
-          }
-        });
+      if (snapshot.empty) {
+        weeklyPoll.innerHTML = `
+          <div class="poll-card">
+            <p style="color:#ccc;">No polls available yet. Be the first to 
+              <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!
+            </p>
+          </div>`;
+        return;
       }
-    });
-  });
-});
 
+      snapshot.forEach(doc => {
+        const poll = doc.data();
+        const pollId = doc.id;
+        const isCreator = poll.creatorId === user.uid;
 
+        const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
+        const optionButtons = (poll.options || []).map(option => `
+          <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
+        `).join("");
 
-      // Check vote status for each poll
-      firebase.auth().onAuthStateChanged(user => {
-        if (!user) return;
+        const deleteBtnHTML = isCreator
+          ? `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">🗑️ Delete Poll</button>`
+          : "";
 
-        const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
-        voteRef.get().then(doc => {
-          if (doc.exists) {
-            const choiceText = doc.data().choice;
+        const pollCardHTML = `
+          <div class="poll-card" id="poll-${pollId}">
+            <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
+            <h3>${poll.question}</h3>
+            <div class="poll-options">${optionButtons}</div>
+            <div id="poll-images">${imageHTML}</div>
+            <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
+            ${deleteBtnHTML}
+          </div>
+        `;
+
+        weeklyPoll.innerHTML += pollCardHTML;
+
+        // Check if user already voted
+        db.collection("pollVotes").doc(`${pollId}_${user.uid}`).get().then(voteDoc => {
+          if (voteDoc.exists) {
+            const choiceText = voteDoc.data().choice;
             db.collection("users").doc(user.uid).get().then(userDoc => {
               const username = userDoc.data()?.username || "You";
               const resultBox = document.getElementById(`pollResultBox-${pollId}`);
               resultBox.innerText = `@${username} chose: ${choiceText}`;
               resultBox.style.display = "block";
             });
-
 
             const pollCard = document.getElementById(`poll-${pollId}`);
             pollCard.querySelectorAll("button").forEach(btn => {
@@ -1561,17 +1526,7 @@ db.collection("polls")
         });
       });
     });
-    function deletePoll(pollId) {
-  if (!confirm("Are you sure you want to delete this poll?")) return;
-
-  db.collection("polls").doc(pollId).delete().then(() => {
-    document.getElementById(`poll-${pollId}`).remove();
-    showFeedback("Poll deleted successfully.");
-  }).catch(error => {
-    console.error("Error deleting poll:", error);
-    showFeedback("Failed to delete poll.");
-  });
-}
+});
 
 </script>
 
