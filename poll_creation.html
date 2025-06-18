@@ -1,1 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Weekly GSU Poll</title>
+  <link rel="icon" href="GSU_Logo.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gsu-red: #e60023;
+      --dark-bg: #111;
+      --accent-gray: #242424;
+      --white-text: #ffffff;
+    }
 
+    body {
+      margin: 0;
+      padding: 2rem;
+      background-color: var(--dark-bg);
+      font-family: 'Roboto', sans-serif;
+      color: var(--white-text);
+      display: flex;
+      justify-content: center;
+    }
+
+    .poll-form {
+      background-color: var(--accent-gray);
+      padding: 2rem 2.5rem;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
+      border-left: 6px solid var(--gsu-red);
+    }
+
+    .poll-form h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: var(--gsu-red);
+      text-align: center;
+    }
+
+    .section {
+      margin-bottom: 1.8rem;
+    }
+
+    .section h3 {
+      font-size: 1.1rem;
+      color: var(--gsu-red);
+      margin-bottom: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      margin-bottom: 0.75rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #1b1b1b;
+      border: 1px solid #444;
+      color: var(--white-text);
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    .poll-form button {
+      width: 100%;
+      padding: 0.9rem;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--gsu-red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: 0.25s ease;
+    }
+
+    .poll-form button:hover {
+      opacity: 0.9;
+    }
+
+    .cancel-btn {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="poll-form">
+    <h2>🗳️ Create This Week's GSU Poll</h2>
+
+    <div class="section">
+      <h3>📝 Poll Title & Question</h3>
+      <ul>
+        <li><input type="text" id="pollTitle" placeholder="e.g. Marvel’s Spider-Man 2 – Most Jaw-Dropping Moment" /></li>
+        <li><input type="text" id="pollQuestion" placeholder="e.g. Which moment made you stop everything?" /></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>📊 Poll Options</h3>
+      <ul>
+        <li><input type="text" id="pollOption1" placeholder="Option 1 (required)" /></li>
+        <li><input type="text" id="pollOption2" placeholder="Option 2 (required)" /></li>
+        <li><input type="text" id="pollOption3" placeholder="Option 3 (required)" /></li>
+        <li><input type="text" id="pollOption4" placeholder="Option 4 (optional)" /></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3>🖼️ Image URLs</h3>
+      <ul>
+        <li><input type="text" id="pollImage1" placeholder="Image URL 1" /></li>
+        <li><input type="text" id="pollImage2" placeholder="Image URL 2" /></li>
+        <li><input type="text" id="pollImage3" placeholder="Image URL 3" /></li>
+      </ul>
+    </div>
+
+    <button onclick="createPoll()">✅ Submit Poll</button>
+    <button class="cancel-btn" onclick="window.location.href='index.html'">Cancel</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    window.createPoll = async () => {
+      const title = document.getElementById("pollTitle").value.trim();
+      const question = document.getElementById("pollQuestion").value.trim();
+      const option1 = document.getElementById("pollOption1").value.trim();
+      const option2 = document.getElementById("pollOption2").value.trim();
+      const option3 = document.getElementById("pollOption3").value.trim();
+      const option4 = document.getElementById("pollOption4").value.trim();
+      const image1 = document.getElementById("pollImage1").value.trim();
+      const image2 = document.getElementById("pollImage2").value.trim();
+      const image3 = document.getElementById("pollImage3").value.trim();
+
+      if (!title || !question || !option1 || !option2 || !option3) {
+        alert("Please fill out the title, question, and at least 3 options.");
+        return;
+      }
+
+      const options = [option1, option2, option3];
+      if (option4) options.push(option4);
+
+      const imageURLs = [image1, image2, image3].filter(url => url);
+
+      try {
+        await setDoc(doc(db, "weekly_polls", "latest"), {
+          title,
+          question,
+          options,
+          imageURLs,
+          createdAt: new Date().toISOString()
+        });
+
+        alert("✅ GSU Poll created successfully!");
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("❌ Failed to create poll: " + err.message);
+      }
+    };
+
+    // Optional: restrict poll creation to logged-in users
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        alert("🚫 You must be logged in to create a poll.");
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>
