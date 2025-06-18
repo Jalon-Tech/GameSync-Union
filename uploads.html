@@ -51,10 +51,8 @@ nav {
 .result-popup {
   text-align: center;
   font-weight: bold;
-  margin-top: 1.5rem; /* ✅ Added top margin */
   margin-bottom: 1rem;
 }
-
 .poll-card {
   max-width: 100%;
   overflow: hidden;
@@ -1451,24 +1449,10 @@ function clearDMChat() {
 
   });
 
-  function deletePoll(pollId) {
-  if (confirm("Are you sure you want to delete this poll?")) {
-    db.collection("polls").doc(pollId).delete().then(() => {
-      const card = document.getElementById(`poll-${pollId}`);
-      if (card) card.remove();
-      showFeedback("Poll deleted.");
-    }).catch(error => {
-      console.error("Error deleting poll:", error);
-      showFeedback("Failed to delete poll.");
-    });
-  }
-}
-
-
 function submitVote(pollId, choiceText) {
   const user = firebase.auth().currentUser;
   if (!user) {
-    showFeedback("You must be logged in to vote.");
+    showFeedback("🚫 You must be logged in to vote.");
     return;
   }
 
@@ -1477,9 +1461,12 @@ function submitVote(pollId, choiceText) {
     choice: choiceText,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
-    const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-    resultBox.innerText = `You voted: ${choiceText}`;
-    resultBox.style.display = "block";
+  db.collection("users").doc(user.uid).get().then(doc => {
+  const username = doc.data()?.username || "You";
+  const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+  resultBox.innerText = `@${username} chose: ${choiceText}`;
+  resultBox.style.display = "block";
+});
 
     const pollCard = document.getElementById(`poll-${pollId}`);
     pollCard.querySelectorAll("button").forEach(btn => {
@@ -1492,9 +1479,11 @@ function submitVote(pollId, choiceText) {
     });
   }).catch(error => {
     console.error("Vote failed:", error);
-    showFeedback("Failed to record your vote.");
+    showFeedback("❌ Failed to record your vote.");
   });
 }
+
+
 
 
 </script>
@@ -1526,15 +1515,6 @@ db.collection("polls")
         <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
       `).join("");
 
-     firebase.auth().onAuthStateChanged(user => {
-  if (!user) return;
-
-  const isCreator = poll.createdBy === user.uid;
-
-  const deleteButtonHTML = isCreator
-    ? `<button onclick="deletePoll('${pollId}')" style="margin-top: 1rem; background:#e60023; color:#fff; border:none; padding:0.5rem 1rem; border-radius:8px; cursor:pointer;">🗑️ Delete Poll</button>`
-    : "";
-
       const pollCardHTML = `
         <div class="poll-card" id="poll-${pollId}">
           <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
@@ -1542,38 +1522,8 @@ db.collection("polls")
           <div class="poll-options">${optionButtons}</div>
           <div id="poll-images">${imageHTML}</div>
           <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-          ${deleteButtonHTML}
         </div>
       `;
-
-      weeklyPoll.innerHTML += pollCardHTML;
-
-      const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
-      voteRef.get().then(doc => {
-        if (doc.exists) {
-          const choiceText = doc.data().choice;
-          const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-          db.collection("users").doc(user.uid).get().then(doc => {
-            const votedUsername = doc.data()?.username || "Anonymous";
-            resultBox.innerText = `@${votedUsername} voted: ${choiceText}`;
-          });
-          resultBox.style.display = "block";
-
-          const pollCard = document.getElementById(`poll-${pollId}`);
-          pollCard.querySelectorAll("button").forEach(btn => {
-            if (!btn.innerText.includes("Delete Poll")) {
-              btn.disabled = true;
-              if (btn.innerText === choiceText) {
-                btn.style.borderColor = "#e60023";
-                btn.style.backgroundColor = "#fff";
-                btn.style.color = "#e60023";
-              }
-            }
-          });
-        }
-      });
-    });
-
 
       weeklyPoll.innerHTML += pollCardHTML;
 
@@ -1584,13 +1534,14 @@ db.collection("polls")
         const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
         voteRef.get().then(doc => {
           if (doc.exists) {
-            const choiceText = doc.data().choice;
-            const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-            db.collection("users").doc(user.uid).get().then(doc => {
-            const votedUsername = doc.data()?.username || "Anonymous";
-            resultBox.innerText = `@${votedUsername} voted: ${choiceText}`;
-          });
-            resultBox.style.display = "block";
+           const choiceText = doc.data().choice;
+            db.collection("users").doc(user.uid).get().then(userDoc => {
+              const username = userDoc.data()?.username || "You";
+              const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+              resultBox.innerText = `@${username} chose: ${choiceText}`;
+              resultBox.style.display = "block";
+            });
+
 
             const pollCard = document.getElementById(`poll-${pollId}`);
             pollCard.querySelectorAll("button").forEach(btn => {
@@ -1607,7 +1558,6 @@ db.collection("polls")
     });
   });
 </script>
-
 
 
 
