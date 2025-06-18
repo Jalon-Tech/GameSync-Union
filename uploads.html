@@ -1431,7 +1431,6 @@ function clearDMChat() {
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-    ">Create a GSU Poll</button>
   </div>
 `;
 
@@ -1496,7 +1495,7 @@ db.collection("polls")
 
     weeklyPoll.innerHTML = `
       <div class="poll-card">
-        <div class="poll-theme">${poll.theme || "🔥 GSU Polls created by GSU members"}</div>
+        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
         <h3>${poll.question}</h3>
         ${optionButtons}
         <div id="poll-images">${imageHTML}</div>
@@ -1525,7 +1524,7 @@ db.collection("polls")
         if (doc.exists) {
           const choiceText = doc.data().choice;
           const resultBox = document.getElementById("pollResultBox");
-          resultBox.innerText = `🗳️ You voted: ${choiceText}`;
+          resultBox.innerText = `You voted: ${choiceText}`;
           resultBox.style.display = "block";
 
           document.querySelectorAll(".poll-card button").forEach(btn => {
