@@ -378,12 +378,18 @@ nav {
       color: var(--gsu-red);
       font-weight: bold;
     }
-    #weeklyPoll {
-  max-height: 100vh;
+  #weeklyPoll {
+  height: 580px; /* 👈 Fixed height for scrollable area */
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 8px;
   scrollbar-gutter: stable;
+  border: 2px solid #333;
+  border-radius: 10px;
+  background-color: #1f1f1f;
 }
+
+
 
 /* GSU red scrollbar for weekly poll */
 #weeklyPoll::-webkit-scrollbar {
@@ -721,12 +727,10 @@ nav {
 </div>
 
 <div class="box" id="weeklyPollBox">
-  <h2>🗳️ Weekly GSU Poll (Created by You)</h2>
-  <p>Each week, a new player is chosen to run the poll. Cast your vote, settle debates, and shape what’s trending.</p>
+  <h2>🔥 GSU Polls — You Run This</h2>
+  <p>Players create polls anytime. Drop your vote, shape what’s trending, and show the community what’s really up.</p>
   <div id="weeklyPoll"></div>
 
-  
-  <div id="weeklyPoll"></div>
 
   <button onclick="window.location.href='poll_creation.html'" style="
     margin-top: 1.2rem;
