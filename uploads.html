@@ -1412,49 +1412,6 @@ function clearDMChat() {
 </script>
 
 <script>
- db.collection("polls")
-  .orderBy("createdAt", "desc")
-  .get()
-  .then(snapshot => {
-    if (snapshot.empty) {
-      weeklyPoll.innerHTML = <p style="color:#ccc;">
-  No polls available yet. Be the first to 
-  <span onclick="openPollCreation()" style="color:var(--gsu-red); font-weight:bold; cursor:pointer;">Create a GSU Poll</span>!
-  </p>
-      return;
-    }
-
-    const poll = snapshot.docs[0].data();
-    const pollId = snapshot.docs[0].id;
-
-    const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
-
-    const optionButtons = (poll.options || []).map(option => `
-      <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
-    `).join("");
-
-    weeklyPoll.innerHTML = `
-  <div class="poll-card">
-    <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-    <h3>${poll.question}</h3>
-    <div class="poll-options">${optionButtons}</div>
-    <div id="poll-images">${imageHTML}</div>
-    <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-    <button onclick="window.location.href='poll_creation.html'" style="
-      margin-top: 1.2rem;
-      background-color: var(--gsu-red);
-      color: #fff;
-      border: 2px solid transparent;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-  </div>
-`;
-
-  });
 
 function submitVote(pollId, choiceText) {
   const user = firebase.auth().currentUser;
