@@ -32,7 +32,6 @@
       width: 100%;
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
       border: 2px solid var(--gsu-red);
-
     }
 
     .poll-form h2 {
@@ -136,8 +135,13 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore, collection, addDoc, serverTimestamp,
+      doc, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import {
+      getAuth, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -152,13 +156,21 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
+    // Redirect if not logged in
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        alert("🚫 You must be logged in to create a poll.");
+        window.location.href = "index.html";
+      }
+    });
+
+    // Create Poll Function
     window.createPoll = async () => {
       const title = document.getElementById("pollTitle").value.trim();
       const question = document.getElementById("pollQuestion").value.trim();
       const option1 = document.getElementById("pollOption1").value.trim();
       const option2 = document.getElementById("pollOption2").value.trim();
       const option3 = document.getElementById("pollOption3").value.trim();
-      const option4 = document.getElementById("pollOption4").value.trim();
       const image1 = document.getElementById("pollImage1").value.trim();
       const image2 = document.getElementById("pollImage2").value.trim();
       const image3 = document.getElementById("pollImage3").value.trim();
@@ -169,17 +181,28 @@
       }
 
       const options = [option1, option2, option3];
-      if (option4) options.push(option4);
+      const images = [image1, image2, image3].filter(url => url);
 
-      const imageURLs = [image1, image2, image3].filter(url => url);
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be signed in to create a poll.");
+        return;
+      }
+
+      // Get username from Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      const username = userDocSnap.exists() ? userDocSnap.data().username : "Unknown";
 
       try {
-        await setDoc(doc(db, "weekly_polls", "latest"), {
-          title,
+        await addDoc(collection(db, "polls"), {
+          theme: title,
           question,
           options,
-          imageURLs,
-          createdAt: new Date().toISOString()
+          images,
+          createdAt: serverTimestamp(),
+          createdByUID: user.uid,
+          createdByUsername: username
         });
 
         alert("✅ GSU Poll created successfully!");
@@ -188,13 +211,6 @@
         alert("❌ Failed to create poll: " + err.message);
       }
     };
-
-    onAuthStateChanged(auth, user => {
-      if (!user) {
-        alert("🚫 You must be logged in to create a poll.");
-        window.location.href = "index.html";
-      }
-    });
   </script>
 </body>
 </html>
