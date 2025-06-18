@@ -31,7 +31,8 @@
       max-width: 700px;
       width: 100%;
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
-      border-left: 6px solid var(--gsu-red);
+      border: 2px solid var(--gsu-red);
+
     }
 
     .poll-form h2 {
@@ -73,7 +74,7 @@
     }
 
     input::placeholder {
-      color: #aaa;
+      color: #777;
     }
 
     .poll-form button {
@@ -106,18 +107,17 @@
     <div class="section">
       <h3>📝 Poll Title & Question</h3>
       <ul>
-        <li><input type="text" id="pollTitle" placeholder="e.g. Marvel’s Spider-Man 2 – Most Jaw-Dropping Moment" /></li>
-        <li><input type="text" id="pollQuestion" placeholder="e.g. Which moment made you stop everything?" /></li>
+        <li><input type="text" id="pollTitle" placeholder="Poll Title" /></li>
+        <li><input type="text" id="pollQuestion" placeholder="Poll Question" /></li>
       </ul>
     </div>
 
     <div class="section">
       <h3>📊 Poll Options</h3>
       <ul>
-        <li><input type="text" id="pollOption1" placeholder="Option 1 (required)" /></li>
-        <li><input type="text" id="pollOption2" placeholder="Option 2 (required)" /></li>
-        <li><input type="text" id="pollOption3" placeholder="Option 3 (required)" /></li>
-        <li><input type="text" id="pollOption4" placeholder="Option 4 (optional)" /></li>
+        <li><input type="text" id="pollOption1" placeholder="Option 1" /></li>
+        <li><input type="text" id="pollOption2" placeholder="Option 2" /></li>
+        <li><input type="text" id="pollOption3" placeholder="Option 3" /></li>
       </ul>
     </div>
 
@@ -189,7 +189,6 @@
       }
     };
 
-    // Optional: restrict poll creation to logged-in users
     onAuthStateChanged(auth, user => {
       if (!user) {
         alert("🚫 You must be logged in to create a poll.");
