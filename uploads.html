@@ -1414,7 +1414,6 @@ function clearDMChat() {
 <script>
  db.collection("polls")
   .orderBy("createdAt", "desc")
-  .limit(1)
   .get()
   .then(snapshot => {
     if (snapshot.empty) {
@@ -1440,7 +1439,7 @@ function clearDMChat() {
     <h3>${poll.question}</h3>
     <div class="poll-options">${optionButtons}</div>
     <div id="poll-images">${imageHTML}</div>
-    <div class="result-popup" id="pollResultBox" style="display:none;"></div>
+    <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
     <button onclick="window.location.href='poll_creation.html'" style="
       margin-top: 1.2rem;
       background-color: var(--gsu-red);
@@ -1505,7 +1504,8 @@ db.collection("polls")
   .get()
   .then(snapshot => {
     if (snapshot.empty) {
-      weeklyPoll.innerHTML = `<div class="poll-card">
+      weeklyPoll.innerHTML = ` <div class="poll-card" id="poll-${pollId}">
+
         <p style="color:#ccc;">No polls available yet. Be the first to 
         <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!</p>
       </div>`;
