@@ -1,3 +1,4 @@
+
 window.addEventListener("DOMContentLoaded", () => { 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
