@@ -2443,205 +2443,55 @@ if (user) {
 </script>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import {
-    getAuth,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc,
-    setDoc
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  import { app } from './firebase-init.js';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-    authDomain: "gamesync-union.firebaseapp.com",
-    projectId: "gamesync-union",
-    storageBucket: "gamesync-union.appspot.com",
-    messagingSenderId: "488911705365",
-    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-    measurementId: "G-CP48EXW1EV"
-  };
-
-  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ✅ Ensure persistent login
-  setPersistence(auth, browserLocalPersistence)
-    .then(() => {
-      console.log("✅ Auth persistence enabled.");
-    })
-    .catch((error) => {
-      console.error("Auth persistence error:", error);
-    });
+  const profileBox = document.getElementById("profile-box");
+  const favGames = document.getElementById("fav-games");
+  const gamesPlayed = document.getElementById("games-played");
+  const trophyStats = document.getElementById("trophy-stats");
+  const favImages = document.getElementById("fav-images");
 
-  // 🔐 Login logic
-  const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
-  const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
-  const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
-  const signInBtn = document.querySelector('#auth-box .btn');
-  const createAccountBtn = document.getElementById('createAccountBtn');
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
 
-  if (createAccountBtn) {
-    createAccountBtn.addEventListener('click', () => {
-      window.location.href = "account_creation.html";
-    });
-  }
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
 
-  signInBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+        // 🎮 Display user data
+        favGames.textContent = `🌟 Favorite Games: ${userData.Favorite_Games.map(g => g.title).join(", ")}`;
+        gamesPlayed.textContent = `🎮 Games Played: ${userData.Games_Played || "N/A"}`;
+        trophyStats.textContent = `🏆 Trophy Stats: ${userData.Trophy_Stats || "N/A"}`;
 
-    if (!email || !password) {
-      alert("Enter both Email and Password to sign into your GSU account.");
-      return;
-    }
+        // 🖼️ Render game cover images
+        favImages.innerHTML = ""; // Clear existing
+        userData.Favorite_Games.forEach(game => {
+          const img = document.createElement("img");
+          img.src = game.imageURL;
+          img.alt = game.title;
+          img.style.height = "80px";
+          img.style.borderRadius = "12px";
+          img.style.objectFit = "cover";
+          favImages.appendChild(img);
+        });
 
-    try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCred.user.uid;
-      loadProfile(uid);
-      alert("Signed in successfully");
-    } catch (err) {
-      alert("Login failed: " + err.message);
+        profileBox.style.display = "block"; // Show profile box
+      } else {
+        console.warn("No user data found.");
+        profileBox.style.display = "none";
+      }
+    } else {
+      profileBox.style.display = "none"; // Hide when not logged in
     }
   });
-
-  // 🔄 Load Profile Box
-  async function loadProfile(uid) {
-    window.favoriteCoverMap = {};
-    const snap = await getDoc(doc(db, "users", uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      console.log("User data:", data);
-
-      const profileBox = document.getElementById("profile-box");
-
-      const usernameEl = document.createElement("p");
-      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
-      usernameEl.style.fontWeight = "bold";
-      usernameEl.style.fontSize = "1rem";
-      usernameEl.style.marginBottom = "0.5rem";
-      profileBox.prepend(usernameEl);
-
-      const platformEl = document.createElement("p");
-      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
-      platformEl.style.fontSize = "0.95rem";
-      platformEl.style.marginBottom = "0.5rem";
-      profileBox.insertBefore(platformEl, usernameEl.nextSibling);
-
-      const favGamesEl = document.getElementById("fav-games");
-      const gamesPlayedEl = document.getElementById("games-played");
-      const trophyStatsEl = document.getElementById("trophy-stats");
-
-      let imageRow = document.getElementById("fav-images");
-      if (!imageRow) {
-        imageRow = document.createElement("div");
-        imageRow.id = "fav-images";
-        imageRow.style.display = "flex";
-        imageRow.style.flexWrap = "wrap";
-        imageRow.style.gap = "0.5rem";
-        imageRow.style.marginTop = "0.8rem";
-        imageRow.style.justifyContent = "center";
-        profileBox.appendChild(imageRow);
-      }
-
-      imageRow.innerHTML = "";
-
-      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
-
-      if (Array.isArray(data.favoriteImages)) {
-        data.favoriteImages.forEach((url, index) => {
-          const img = document.createElement("img");
-          img.src = url;
-          img.alt = data.favoriteGames[index] || `Game ${index + 1}`;
-          img.classList.add("profile-fav-img");
-          imageRow.appendChild(img);
-        });
-
-        data.favoriteGames.forEach((title, index) => {
-          const option = document.createElement("option");
-          option.value = title;
-          option.textContent = title;
-          coverDropdown.appendChild(option);
-          const titleKey = title.trim().toLowerCase();
-          window.favoriteCoverMap[titleKey] = data.favoriteImages[index];
-        });
-
-        if (data.favoriteGames.length > 0) {
-          coverDropdown.value = data.favoriteGames[0];
-          displaySelectedCover();
-        }
-
-        const firstTitle = data.favoriteGames[0];
-        const firstCover = window.favoriteCoverMap[firstTitle];
-        if (firstCover) {
-          displayArea.innerHTML = `<img src="${firstCover}" alt="${firstTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-        }
-      }
-    } else {
-      console.warn("User profile data not found.");
-    }
-  }
-
-  // 🔓 Logout
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await auth.signOut();
-        document.getElementById("profile-box").style.display = "none";
-        localStorage.setItem("gsu_logged_out", "true");
-        window.location.href = "index.html";
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
-    });
-  }
-
-  // 🌎 Expose Firebase globals
-  window.db = db;
-  window.doc = doc;
-  window.setDoc = setDoc;
-  window.getAuth = getAuth;
-  window.auth = auth;
-
-  function displaySelectedCover() {
-    const select = document.getElementById("fav-select");
-    const display = document.getElementById("fav-cover-display");
-    const selectedTitle = select.value.trim().toLowerCase();
-    const selectedUrl = window.favoriteCoverMap?.[selectedTitle];
-
-    if (selectedUrl) {
-      display.innerHTML = `<img src="${selectedUrl}" alt="${selectedTitle}" style="height: 140px; object-fit: contain; background-color: #111; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.1); padding: 6px;">`;
-    } else {
-      display.innerHTML = "<p style='color:#ccc;'>Image not found.</p>";
-    }
-  }
-
-  window.displaySelectedCover = displaySelectedCover;
-  // ✅ Auto-load profile on refresh or returning to page
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    loadProfile(user.uid); // 🧠 Already defined above
-    const profileBox = document.getElementById("profile-box");
-    if (profileBox) profileBox.style.display = "block";
-  } else {
-    const profileBox = document.getElementById("profile-box");
-    if (profileBox) profileBox.style.display = "none";
-  }
-});
-
 </script>
+
 
 <script type="module">
  
