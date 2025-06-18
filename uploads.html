@@ -1414,27 +1414,27 @@ function clearDMChat() {
     `).join("");
 
     weeklyPoll.innerHTML = `
-      <div class="poll-card">
-        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-        <h3>${poll.question}</h3>
-        ${optionButtons}
-        <div id="poll-images">${imageHTML}</div>
-        <div class="result-popup" id="pollResultBox" style="display:none;"></div>
+  <div class="poll-card">
+    <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
+    <h3>${poll.question}</h3>
+    <div class="poll-options">${optionButtons}</div>
+    <div id="poll-images">${imageHTML}</div>
+    <div class="result-popup" id="pollResultBox" style="display:none;"></div>
+    <button onclick="window.location.href='poll_creation.html'" style="
+      margin-top: 1.2rem;
+      background-color: var(--gsu-red);
+      color: #fff;
+      border: 2px solid transparent;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    ">Create a GSU Poll</button>
+  </div>
+`;
 
-        <button onclick="window.location.href='poll_creation.html'" style="
-          margin-top: 1.2rem;
-          background-color: var(--gsu-red);
-          color: #fff;
-          border: 2px solid transparent;
-          padding: 0.6rem 1rem;
-          border-radius: 8px;
-          font-size: 0.95rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        ">Create Your GSU Poll</button>
-      </div>
-    `;
   });
 
 function submitVote(pollId, choiceText) {
@@ -1496,7 +1496,7 @@ db.collection("polls")
 
     weeklyPoll.innerHTML = `
       <div class="poll-card">
-        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
+        <div class="poll-theme">${poll.theme || "🔥 GSU Polls created by GSU members"}</div>
         <h3>${poll.question}</h3>
         ${optionButtons}
         <div id="poll-images">${imageHTML}</div>
