@@ -1447,107 +1447,16 @@ function submitVote(pollId, choiceText) {
   }
 
   const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
-
   voteRef.set({
     choice: choiceText,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
-    const resultBox = document.getElementById("pollResultBox");
+    const resultBox = document.getElementById(`pollResultBox-${pollId}`);
     resultBox.innerText = `🗳️ You voted: ${choiceText}`;
     resultBox.style.display = "block";
 
-    document.querySelectorAll(".poll-card button").forEach(btn => {
-      btn.disabled = true;
-      if (btn.innerText.includes(choiceText)) {
-        btn.style.borderColor = "#e60023";
-        btn.style.backgroundColor = "#fff";
-        btn.style.color = "#e60023";
-      }
-    });
-  }).catch(error => {
-    console.error("Vote failed:", error);
-    showFeedback("❌ Failed to record your vote.");
-  });
-}
-
-
-</script>
-
-<script>
-const weeklyPoll = document.getElementById("weeklyPoll");
-
-db.collection("polls")
-  .orderBy("createdAt", "desc")
-  .limit(1)
-  .get()
-  .then(snapshot => {
-    if (snapshot.empty) {
-      weeklyPoll.innerHTML = `<div class="poll-card">
-        <p style="color:#ccc;">No polls available yet. Be the first to <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!</p>
-      </div>`;
-      return;
-    }
-
-    const poll = snapshot.docs[0].data();
-    const pollId = snapshot.docs[0].id;
-
-    const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
-    const optionButtons = (poll.options || []).map(option => `
-      <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
-    `).join("");
-
-    weeklyPoll.innerHTML = `
-      <div class="poll-card">
-        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-        <h3>${poll.question}</h3>
-        ${optionButtons}
-        <div id="poll-images">${imageHTML}</div>
-        <div class="result-popup" id="pollResultBox" style="display:none;"></div>
-      </div>
-    `;
-
-    // 🧠 Check if the user has already voted (AFTER pollId is known)
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) return;
-
-      const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
-      voteRef.get().then(doc => {
-        if (doc.exists) {
-          const choiceText = doc.data().choice;
-          const resultBox = document.getElementById("pollResultBox");
-          resultBox.innerText = `You voted: ${choiceText}`;
-          resultBox.style.display = "block";
-
-          document.querySelectorAll(".poll-card button").forEach(btn => {
-            btn.disabled = true;
-            if (btn.innerText === choiceText) {
-              btn.style.borderColor = "#e60023";
-              btn.style.backgroundColor = "#fff";
-              btn.style.color = "#e60023";
-            }
-          });
-        }
-      });
-    });
-  });
-
-function submitVote(pollId, choiceText) {
-  const user = firebase.auth().currentUser;
-  if (!user) {
-    showFeedback("🚫 You must be logged in to vote.");
-    return;
-  }
-
-  const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
-  voteRef.set({
-    choice: choiceText,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    const resultBox = document.getElementById("pollResultBox");
-    resultBox.innerText = `🗳️ You voted: ${choiceText}`;
-    resultBox.style.display = "block";
-
-    document.querySelectorAll(".poll-card button").forEach(btn => {
+    const pollCard = document.getElementById(`poll-${pollId}`);
+    pollCard.querySelectorAll("button").forEach(btn => {
       btn.disabled = true;
       if (btn.innerText === choiceText) {
         btn.style.borderColor = "#e60023";
@@ -1560,7 +1469,79 @@ function submitVote(pollId, choiceText) {
     showFeedback("❌ Failed to record your vote.");
   });
 }
+
+
+
+
 </script>
+
+<script>
+const weeklyPoll = document.getElementById("weeklyPoll");
+
+db.collection("polls")
+  .orderBy("createdAt", "desc")
+  .get()
+  .then(snapshot => {
+    if (snapshot.empty) {
+      weeklyPoll.innerHTML = `<div class="poll-card">
+        <p style="color:#ccc;">No polls available yet. Be the first to 
+        <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!</p>
+      </div>`;
+      return;
+    }
+
+    weeklyPoll.innerHTML = ""; // Clear previous content
+
+    snapshot.forEach(doc => {
+      const poll = doc.data();
+      const pollId = doc.id;
+
+      const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
+
+      const optionButtons = (poll.options || []).map(option => `
+        <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
+      `).join("");
+
+      const pollCardHTML = `
+        <div class="poll-card" id="poll-${pollId}">
+          <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
+          <h3>${poll.question}</h3>
+          <div class="poll-options">${optionButtons}</div>
+          <div id="poll-images">${imageHTML}</div>
+          <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
+        </div>
+      `;
+
+      weeklyPoll.innerHTML += pollCardHTML;
+
+      // Check vote status for each poll
+      firebase.auth().onAuthStateChanged(user => {
+        if (!user) return;
+
+        const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
+        voteRef.get().then(doc => {
+          if (doc.exists) {
+            const choiceText = doc.data().choice;
+            const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+            resultBox.innerText = `🗳️ You voted: ${choiceText}`;
+            resultBox.style.display = "block";
+
+            const pollCard = document.getElementById(`poll-${pollId}`);
+            pollCard.querySelectorAll("button").forEach(btn => {
+              btn.disabled = true;
+              if (btn.innerText === choiceText) {
+                btn.style.borderColor = "#e60023";
+                btn.style.backgroundColor = "#fff";
+                btn.style.color = "#e60023";
+              }
+            });
+          }
+        });
+      });
+    });
+  });
+</script>
+
 
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
