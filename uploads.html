@@ -1370,52 +1370,80 @@ function clearDMChat() {
 </script>
 
 <script>
- const weeklyPoll = document.getElementById("weeklyPoll");
+ db.collection("polls")
+  .orderBy("createdAt", "desc")
+  .limit(1)
+  .get()
+  .then(snapshot => {
+    if (snapshot.empty) {
+      weeklyPoll.innerHTML = `<p style="color:#ccc;">No polls available yet. Be the first to <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!</p>`;
+      return;
+    }
 
-weeklyPoll.innerHTML = `
-  <div class="poll-card">
-    <div class="poll-theme">🕸️ Marvel’s Spider-Man 2 – Most Jaw-Dropping Moment</div>
-    <h3>Which moment made you stop everything and say “no way that just happened”? 😱</h3>
-    <button onclick="submitVote('KravenKillsScorpion')">Kraven killing Scorpion with no hesitation</button>
-    <button onclick="submitVote('VenomBreakout')">Venom’s full escape at Oscorp – chaos unleashed</button>
-    <button onclick="submitVote('VenomFinalBattle')">Peter & Miles vs. Venom – The final battle that nearly killed Harry</button>
+    const poll = snapshot.docs[0].data();
+    const pollId = snapshot.docs[0].id;
 
-    <div id="poll-images">
-      <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/10/anti-venom-spider-man-2.jpg" alt="Venom Final Battle">
-      <img src="https://ew.com/thmb/FvhCq6RvxM7ul65Lou8wXaqKAGo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/spider-man-2-video-game-101623-4-cc85040df4884083a0e2e23a95310879.jpg" alt="Venom Breakout Chaos">
-      <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/11/spider-man-2-kraven-scorpion.jpg" alt="Kraven Kills Scorpion">
-    </div>
+    const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
 
-    <div class="result-popup" id="pollResultBox" style="display:none;"></div>
-  </div>
-`;
-  function submitVote(choiceId) {
+    const optionButtons = (poll.options || []).map(option => `
+      <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
+    `).join("");
+
+    weeklyPoll.innerHTML = `
+      <div class="poll-card">
+        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
+        <h3>${poll.question}</h3>
+        ${optionButtons}
+        <div id="poll-images">${imageHTML}</div>
+        <div class="result-popup" id="pollResultBox" style="display:none;"></div>
+
+        <button onclick="window.location.href='poll_creation.html'" style="
+          margin-top: 1.2rem;
+          background-color: var(--gsu-red);
+          color: #fff;
+          border: 2px solid transparent;
+          padding: 0.6rem 1rem;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        ">Create Your GSU Poll</button>
+      </div>
+    `;
+  });
+
+function submitVote(pollId, choiceText) {
   const user = firebase.auth().currentUser;
   if (!user) {
-    showFeedback("You must be logged in to vote.");
+    showFeedback("🚫 You must be logged in to vote.");
     return;
   }
 
-  const voteRef = db.collection("pollVotes").doc(user.uid);
+  const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
 
   voteRef.set({
-    choice: choiceId,
+    choice: choiceText,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
-    const readableChoice = {
-      KravenKillsScorpion: "Kraven killing Scorpion",
-      VenomBreakout: "Venom’s full escape at Oscorp",
-      VenomFinalBattle: "Peter & Miles vs. Venom"
-    }[choiceId] || choiceId;
-
     const resultBox = document.getElementById("pollResultBox");
-    resultBox.innerText = `🗳️ You voted: ${readableChoice}`;
+    resultBox.innerText = `🗳️ You voted: ${choiceText}`;
     resultBox.style.display = "block";
+
+    document.querySelectorAll(".poll-card button").forEach(btn => {
+      btn.disabled = true;
+      if (btn.innerText.includes(choiceText)) {
+        btn.style.borderColor = "#e60023";
+        btn.style.backgroundColor = "#fff";
+        btn.style.color = "#e60023";
+      }
+    });
   }).catch(error => {
     console.error("Vote failed:", error);
     showFeedback("❌ Failed to record your vote.");
   });
 }
+
 
 </script>
 
@@ -1428,47 +1456,11 @@ weeklyPoll.innerHTML = `
     resultBox.style.display = "block";
   }
 
-  function submitVote(choiceId) {
-    const user = firebase.auth().currentUser;
-    if (!user) {
-      showFeedback("🚫 You must be logged in to vote.");
-      return;
-    }
-
-    const voteRef = db.collection("pollVotes").doc(user.uid);
-
-    voteRef.set({
-      choice: choiceId,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-      const readableChoice = {
-        KravenKillsScorpion: "Kraven killing Scorpion",
-        VenomBreakout: "Venom’s full escape at Oscorp",
-        VenomFinalBattle: "Peter & Miles vs. Venom"
-      }[choiceId] || choiceId;
-
-      const resultBox = document.getElementById("pollResultBox");
-      resultBox.innerText = `🗳️ You voted: ${readableChoice}`;
-      resultBox.style.display = "block";
-
-      document.querySelectorAll(".poll-card button").forEach(btn => {
-        btn.disabled = true;
-        if (btn.innerText.includes(readableChoice)) {
-          btn.style.borderColor = "#e60023";
-          btn.style.backgroundColor = "#fff";
-          btn.style.color = "#e60023";
-        }
-      });
-    }).catch(error => {
-      console.error("Vote failed:", error);
-      showFeedback("❌ Failed to record your vote.");
-    });
-  }
 
   firebase.auth().onAuthStateChanged(user => {
     if (!user) return;
 
-    const voteRef = db.collection("pollVotes").doc(user.uid);
+    const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
     voteRef.get().then(doc => {
       if (doc.exists) {
         const choiceId = doc.data().choice;
