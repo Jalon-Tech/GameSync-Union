@@ -1461,9 +1461,12 @@ function submitVote(pollId, choiceText) {
     choice: choiceText,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
-    const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-    resultBox.innerText = `🗳️ You voted: ${choiceText}`;
-    resultBox.style.display = "block";
+  db.collection("users").doc(user.uid).get().then(doc => {
+  const username = doc.data()?.username || "You";
+  const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+  resultBox.innerText = `@${username} chose: ${choiceText}`;
+  resultBox.style.display = "block";
+});
 
     const pollCard = document.getElementById(`poll-${pollId}`);
     pollCard.querySelectorAll("button").forEach(btn => {
@@ -1531,10 +1534,14 @@ db.collection("polls")
         const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
         voteRef.get().then(doc => {
           if (doc.exists) {
-            const choiceText = doc.data().choice;
-            const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-            resultBox.innerText = `🗳️ You voted: ${choiceText}`;
-            resultBox.style.display = "block";
+           const choiceText = doc.data().choice;
+            db.collection("users").doc(user.uid).get().then(userDoc => {
+              const username = userDoc.data()?.username || "You";
+              const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+              resultBox.innerText = `@${username} chose: ${choiceText}`;
+              resultBox.style.display = "block";
+            });
+
 
             const pollCard = document.getElementById(`poll-${pollId}`);
             pollCard.querySelectorAll("button").forEach(btn => {
