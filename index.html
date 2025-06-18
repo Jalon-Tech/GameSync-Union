@@ -1954,12 +1954,9 @@ nav a:hover {
 
       <div class="box" id="profile-box">
     <h2 style="color: var(--gsu-red);">Your Profile</h2>
-    <p id="user-name">👤 Username:</p>
-    <p id="platform">🔹 Platform:</p>
     <p id="fav-games">🌟 Favorite Games</p>
     <p id="games-played">🎮 Games Played</p>
     <p id="trophy-stats">🏆 Trophy Stats</p>
-
 
     <div style="margin-top: 1rem;">
       <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
@@ -2540,13 +2537,9 @@ if (user) {
       platformEl.style.marginBottom = "0.5rem";
       profileBox.insertBefore(platformEl, usernameEl.nextSibling);
 
-
-
-    document.getElementById("user-name").textContent = `👤 Username: ${data.username || "N/A"}`;
-    document.getElementById("platform").textContent = `🔹 Platform: ${data.platform || "N/A"}`;
-    document.getElementById("fav-games").textContent = `🌟 Favorite Games: ${data.Favorite_Games?.map(g => g.title).join(", ") || "None"}`;
-    document.getElementById("games-played").textContent = `🎮 Games Played: ${data.Games_Played || 0}`;
-    document.getElementById("trophy-stats").textContent = `🏆 Trophy Stats: ${data.Trophy_Stats || "None"}`;
+      const favGamesEl = document.getElementById("fav-games");
+      const gamesPlayedEl = document.getElementById("games-played");
+      const trophyStatsEl = document.getElementById("trophy-stats");
 
       let imageRow = document.getElementById("fav-images");
       if (!imageRow) {
@@ -2846,8 +2839,6 @@ function hideAuthNotice() {
   import './firebase-init.js';
   import './profile-loader.js';
 </script>
-
-
 
 </body>
 
