@@ -51,8 +51,10 @@ nav {
 .result-popup {
   text-align: center;
   font-weight: bold;
+  margin-top: 1.5rem; /* ✅ Added top margin */
   margin-bottom: 1rem;
 }
+
 .poll-card {
   max-width: 100%;
   overflow: hidden;
@@ -1452,7 +1454,7 @@ function clearDMChat() {
 function submitVote(pollId, choiceText) {
   const user = firebase.auth().currentUser;
   if (!user) {
-    showFeedback("🚫 You must be logged in to vote.");
+    showFeedback("You must be logged in to vote.");
     return;
   }
 
@@ -1461,12 +1463,9 @@ function submitVote(pollId, choiceText) {
     choice: choiceText,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
-  db.collection("users").doc(user.uid).get().then(doc => {
-  const username = doc.data()?.username || "You";
-  const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-  resultBox.innerText = `@${username} chose: ${choiceText}`;
-  resultBox.style.display = "block";
-});
+    const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+    resultBox.innerText = `You voted: ${choiceText}`;
+    resultBox.style.display = "block";
 
     const pollCard = document.getElementById(`poll-${pollId}`);
     pollCard.querySelectorAll("button").forEach(btn => {
@@ -1479,11 +1478,9 @@ function submitVote(pollId, choiceText) {
     });
   }).catch(error => {
     console.error("Vote failed:", error);
-    showFeedback("❌ Failed to record your vote.");
+    showFeedback("Failed to record your vote.");
   });
 }
-
-
 
 
 </script>
@@ -1534,14 +1531,10 @@ db.collection("polls")
         const voteRef = db.collection("pollVotes").doc(`${pollId}_${user.uid}`);
         voteRef.get().then(doc => {
           if (doc.exists) {
-           const choiceText = doc.data().choice;
-            db.collection("users").doc(user.uid).get().then(userDoc => {
-              const username = userDoc.data()?.username || "You";
-              const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-              resultBox.innerText = `@${username} chose: ${choiceText}`;
-              resultBox.style.display = "block";
-            });
-
+            const choiceText = doc.data().choice;
+            const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+            resultBox.innerText = `🗳️ You voted: ${choiceText}`;
+            resultBox.style.display = "block";
 
             const pollCard = document.getElementById(`poll-${pollId}`);
             pollCard.querySelectorAll("button").forEach(btn => {
@@ -1558,6 +1551,7 @@ db.collection("polls")
     });
   });
 </script>
+
 
 
 
