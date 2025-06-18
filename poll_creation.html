@@ -201,7 +201,7 @@
           options,
           images,
           createdAt: serverTimestamp(),
-          createdByUID: user.uid,
+          creatorId: user.uid, // ✅ required for delete check
           createdByUsername: username
         });
 
