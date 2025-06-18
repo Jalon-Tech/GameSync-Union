@@ -1400,7 +1400,10 @@ function clearDMChat() {
   .get()
   .then(snapshot => {
     if (snapshot.empty) {
-      weeklyPoll.innerHTML = `<p style="color:#ccc;">No polls available yet. Be the first to <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!</p>`;
+      weeklyPoll.innerHTML = <p style="color:#ccc;">
+  No polls available yet. Be the first to 
+  <span onclick="openPollCreation()" style="color:var(--gsu-red); font-weight:bold; cursor:pointer;">Create a GSU Poll</span>!
+  </p>
       return;
     }
 
@@ -1500,18 +1503,6 @@ db.collection("polls")
         ${optionButtons}
         <div id="poll-images">${imageHTML}</div>
         <div class="result-popup" id="pollResultBox" style="display:none;"></div>
-        <button onclick="window.location.href='poll_creation.html'" style="
-          margin-top: 1.2rem;
-          background-color: var(--gsu-red);
-          color: #fff;
-          border: 2px solid transparent;
-          padding: 0.6rem 1rem;
-          border-radius: 8px;
-          font-size: 0.95rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        ">Create a GSU Poll</button>
       </div>
     `;
 
