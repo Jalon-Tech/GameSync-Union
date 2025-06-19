@@ -7,6 +7,23 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    
+.poll-delete-btn {
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  }
+
+  .poll-delete-btn:hover {
+  background: #5c5c5c;
+  color: #ff5555;
+}
 
     /* Force full width and prevent layout shifts */
 html, body {
@@ -1485,9 +1502,24 @@ firebase.auth().onAuthStateChanged(user => {
           <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
         `).join("");
 
-        const deleteBtnHTML = isCreator
-          ? `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">Remove your poll</button>`
-          : "";
+        const deleteBtnHTML = isCreator ? `
+        <button
+          onclick="deletePoll('${pollId}')" 
+          style="
+            background: #444; 
+            color: #fff; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            margin-top: 1rem; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.3s ease;
+          ">
+          Remove your poll
+        </button>
+      ` : '';
+
 
         const pollCardHTML = `
           <div class="poll-card" id="poll-${pollId}">
