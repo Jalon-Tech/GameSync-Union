@@ -1139,7 +1139,7 @@ firebase.auth().onAuthStateChanged(authUser => {
             <button onclick="openDM('${userId}', '${user.username}')">💬 DM</button>
             <button onclick="removeFriend('${userId}', '${user.username}')">❌ Unfriend</button>`;
         } else if (sentRequest) {
-          friendActions = `<button onclick="cancelFriendRequest('${userId}', this)">🚫 Cancel Request</button>`;
+          friendActions = `<span style="color: var(--gsu-red); font-weight: bold;">🔴 Pending</span>`;
         } else if (receivedRequest) {
           friendActions = `
             <button onclick="acceptFriend('${userId}', this)">✅ Accept</button>
@@ -1314,36 +1314,6 @@ container.appendChild(div);
   }
   
 ;
-
-function cancelFriendRequest(targetUID, buttonElement = null) {
-  const user = firebase.auth().currentUser;
-  if (!user || !targetUID) return;
-
-  const currentUserRef = db.collection("users").doc(user.uid);
-  const targetUserRef = db.collection("users").doc(targetUID);
-
-  db.runTransaction(async (transaction) => {
-    transaction.update(currentUserRef, {
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
-    });
-
-    transaction.update(targetUserRef, {
-      friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-    });
-  }).then(() => {
-    showFeedback("Friend request cancelled.");
-
-    if (buttonElement) {
-      const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
-    }
-
-  }).catch(err => {
-    console.error("Failed to cancel friend request:", err);
-    showFeedback("❌ Could not cancel request.");
-  });
-}
-
 
 function showFeedback(message, bgColor = '#e60023') {
   const banner = document.getElementById("feedbackBanner");
