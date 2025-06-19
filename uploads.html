@@ -744,6 +744,8 @@ nav {
   <h2>🔥 GSU Polls — You Run This</h2>
   <p>Players create polls anytime. Drop your vote, shape what’s trending, and show the community what’s really up.</p>
   <div id="weeklyPoll"></div>
+</div>
+
 
 
   <button onclick="window.location.href='poll_creation.html'" style="
@@ -1454,6 +1456,7 @@ function submitVote(pollId, choiceText) {
 </script>
 
 <script>
+
 const weeklyPoll = document.getElementById("weeklyPoll");
 
 firebase.auth().onAuthStateChanged(user => {
@@ -1489,16 +1492,19 @@ firebase.auth().onAuthStateChanged(user => {
           ? `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">🗑️ Delete Poll</button>`
           : "";
 
-        const pollCardHTML = `
-          <div class="poll-card" id="poll-${pollId}">
-            <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-            <h3>${poll.question}</h3>
-            <div class="poll-options">${optionButtons}</div>
-            <div id="poll-images">${imageHTML}</div>
-            <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-            ${deleteBtnHTML}
-          </div>
-        `;
+       const pollCardHTML = `
+        <div class="poll-card" id="poll-${pollId}">
+          <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
+          <h3>${poll.question}</h3>
+          <div class="poll-options">${optionButtons}</div>
+          <div id="poll-images">${imageHTML}</div>
+          <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
+
+          ${isCreator ? `<button onclick="deletePoll('${pollId}')" style="background:#444;margin-top:1rem;">Delete Poll</button>` : ""}
+          
+        </div>
+      `;
+
 
         weeklyPoll.innerHTML += pollCardHTML;
 
@@ -1527,6 +1533,8 @@ firebase.auth().onAuthStateChanged(user => {
       });
     });
 });
+
+
 
 </script>
 
