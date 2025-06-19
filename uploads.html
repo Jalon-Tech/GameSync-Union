@@ -1530,7 +1530,39 @@ firebase.auth().onAuthStateChanged(user => {
 
 </script>
 
+  <script>
+function deletePoll(pollId) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
 
+  if (confirm("Are you sure you want to delete this poll?")) {
+    // Delete poll document
+    db.collection("polls").doc(pollId).delete()
+      .then(() => {
+        // Optionally delete associated votes
+        db.collection("pollVotes")
+          .where(firebase.firestore.FieldPath.documentId(), '>=', `${pollId}_`)
+          .where(firebase.firestore.FieldPath.documentId(), '<=', `${pollId}_\uf8ff`)
+          .get()
+          .then(snapshot => {
+            const batch = db.batch();
+            snapshot.forEach(doc => batch.delete(doc.ref));
+            return batch.commit();
+          });
+
+        // Remove from DOM
+        const card = document.getElementById(`poll-${pollId}`);
+        if (card) card.remove();
+
+        showFeedback("Poll deleted.");
+      })
+      .catch(err => {
+        console.error("Error deleting poll:", err);
+        showFeedback("ailed to delete poll.");
+      });
+  }
+}
+</script>
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
