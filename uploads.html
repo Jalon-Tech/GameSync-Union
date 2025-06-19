@@ -7,6 +7,23 @@
   <link rel="icon" href="GSU_Logo.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
   <style>
+    
+.poll-delete-btn {
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  }
+
+  .poll-delete-btn:hover {
+  background: #5c5c5c;
+  color: #ff5555;
+}
 
     /* Force full width and prevent layout shifts */
 html, body {
@@ -1485,32 +1502,23 @@ firebase.auth().onAuthStateChanged(user => {
           <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
         `).join("");
 
-        const createdAt = poll.createdAt?.toDate();
-        const now = new Date();
-        const hoursSinceCreation = createdAt ? (now - createdAt) / (1000 * 60 * 60) : 0;
-
-        let deleteBtnHTML = "";
-        let autoRemove = false;
-
-        if (isCreator) {
-          db.collection("pollVotes").where(firebase.firestore.FieldPath.documentId(), ">=", `${pollId}_`)
-            .where(firebase.firestore.FieldPath.documentId(), "<=", `${pollId}_\uf8ff`)
-            .get().then(voteSnap => {
-              const voteCount = voteSnap.size;
-
-              if (voteCount === 0 && hoursSinceCreation >= 24) {
-                // Show delete button if no one voted in 24 hours
-                document.querySelector(`#poll-${pollId} .poll-options`).insertAdjacentHTML("afterend",
-                  `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">Remove your poll</button>`);
-              }
-
-              if (voteCount > 0 && hoursSinceCreation >= 24) {
-                // Auto-hide this poll
-                const card = document.getElementById(`poll-${pollId}`);
-                if (card) card.remove();
-              }
-            });
-}
+        const deleteBtnHTML = isCreator ? `
+        <button
+          onclick="deletePoll('${pollId}')" 
+          style="
+            background: #444; 
+            color: #fff; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            margin-top: 1rem; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.3s ease;
+          ">
+          Remove your poll
+        </button>
+      ` : '';
 
 
         const pollCardHTML = `
@@ -1586,22 +1594,6 @@ function deletePoll(pollId) {
       });
   }
 }
-window.deletePoll = function(pollId) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-
-  firebase.firestore().collection("weekly_polls").doc(pollId)
-    .delete()
-    .then(() => {
-      const card = document.getElementById(`poll-${pollId}`);
-      if (card) card.remove();
-      console.log("Poll deleted successfully.");
-    })
-    .catch(error => {
-      console.error("Error deleting poll:", error);
-    });
-};
-
 </script>
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
