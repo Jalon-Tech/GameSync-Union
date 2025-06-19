@@ -1332,7 +1332,7 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
       friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
     });
   }).then(() => {
-    showFeedback("🚫 Friend request cancelled.");
+    showFeedback("Friend request cancelled.");
 
     if (buttonElement) {
       const container = buttonElement.closest("div");
