@@ -1156,7 +1156,8 @@ firebase.auth().onAuthStateChanged(authUser => {
             <button onclick="openDM('${userId}', '${user.username}')">💬 DM</button>
             <button onclick="removeFriend('${userId}', '${user.username}')">❌ Unfriend</button>`;
         } else if (sentRequest) {
-          friendActions = `<span style="color: var(--gsu-red); font-weight: bold;">🔴 Pending</span>`;
+          friendActions = `
+        <button onclick="cancelFriendRequest('${userId}', this)">🚫 Cancel Request</button>`;
         } else if (receivedRequest) {
           friendActions = `
             <button onclick="acceptFriend('${userId}', this)">✅ Accept</button>
