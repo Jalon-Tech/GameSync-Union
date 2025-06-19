@@ -1486,7 +1486,7 @@ firebase.auth().onAuthStateChanged(user => {
         `).join("");
 
         const deleteBtnHTML = isCreator
-          ? `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">🗑️ Delete Poll</button>`
+          ? `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">Remove your poll</button>`
           : "";
 
         const pollCardHTML = `
@@ -1558,7 +1558,7 @@ function deletePoll(pollId) {
       })
       .catch(err => {
         console.error("Error deleting poll:", err);
-        showFeedback("ailed to delete poll.");
+        showFeedback("Failed to your GSU delete poll.");
       });
   }
 }
