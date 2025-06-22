@@ -742,7 +742,7 @@ nav {
 
 <div class="box" id="weeklyPollBox">
   <h2>🔥 GSU Polls — You Run This</h2>
-  <p>Players create polls anytime. Drop your vote, shape what’s trending, and show the community what’s really up.</p>
+  <p>Players create polls anytime. Drop your vote, shape what’s trending, and show the community what’s really up — but act fast, polls expire 24 hours after being posted.</p>
   <div id="weeklyPoll"></div>
 
 
@@ -1518,7 +1518,9 @@ firebase.auth().onAuthStateChanged(user => {
 
         const createdAt = poll.createdAt?.toDate();
         const now = new Date();
-        const hoursSinceCreation = createdAt ? (now - createdAt) / (1000 * 60 * 60) : 0;
+        const expired = createdAt && (now - createdAt) > 24 * 60 * 60 * 1000; // 24 hours in ms
+        if (expired) return; // skip rendering this poll
+
 
         let deleteBtnHTML = "";
         let autoRemove = false;
@@ -1535,11 +1537,6 @@ firebase.auth().onAuthStateChanged(user => {
                   `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">Remove your poll</button>`);
               }
 
-              if (voteCount > 0 && hoursSinceCreation >= 24) {
-                // Auto-hide this poll
-                const card = document.getElementById(`poll-${pollId}`);
-                if (card) card.remove();
-              }
             });
 }
 
