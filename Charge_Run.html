@@ -282,12 +282,18 @@
               alert("FULL SYNC COMPLETE! You win!");
               return false;
             }
+
+            // Clear positions before next spawn
+            batteryPositions = [];
+            firePositions = [];
+            render();
+
             powerBar.textContent = `Surge power: ⚡${level}`;
             surgeLevelDisplay.textContent = `Surge Level: ${level}`;
             spawnLevel();
             startTimer();
             return false;
-          }
+}
           return false;
         }
         return true;
