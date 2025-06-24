@@ -68,7 +68,7 @@
     .controller {
       background-image: url('GSU_LOGO.png');
       z-index: 5;
-      transform: scale(1.7); /* Enlarged GSU controller */
+      transform: scale(2.2); /* Very much enlarged */
     }
     .battery {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
@@ -170,19 +170,18 @@
       for (let i = 0; i < requiredHazards; i++) spawnRandomItem('hazard');
     }
 
-    function spawnRandomItem(forcedType = null) {
-      const type = forcedType || (Math.random() < 0.5 ? 'battery' : 'hazard');
+    function spawnRandomItem(type) {
       const x = Math.floor(Math.random() * 10);
       const y = Math.floor(Math.random() * 12);
       const cell = [...grid.children].find(c => c.dataset.x == x && c.dataset.y == y);
       if (cell) {
-        const existing = cell.querySelector('.battery, .hazard, .controller');
-        if (!existing) {
+        const taken = cell.querySelector('.battery, .hazard, .controller');
+        if (!taken) {
           const item = document.createElement('div');
           item.className = type;
           cell.appendChild(item);
         } else {
-          spawnRandomItem(forcedType); // retry if cell is taken
+          spawnRandomItem(type); // try again if occupied
         }
       }
     }
