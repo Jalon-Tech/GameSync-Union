@@ -70,7 +70,7 @@
     .grid-cell div {
       width: 100%;
       height: 100%;
-      background-size: 100%;
+      background-size: 140%;
       background-repeat: no-repeat;
       background-position: center;
       position: absolute;
@@ -83,10 +83,12 @@
 
     .battery {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
+      z-index: 2;
     }
 
     .hazard {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Fire_icon.svg');
+      z-index: 1;
     }
 
     #startGameBtn {
@@ -185,20 +187,28 @@
       livesDisplay.innerHTML = `Life Count: ${"❤️".repeat(lives)}`;
     }
 
-    function getRandomPos(exclude = []) {
-      let pos;
-      do {
-        pos = {
+    function getRandomUniquePositions(count, exclude = []) {
+      const positions = [];
+      while (positions.length < count) {
+        const pos = {
           x: Math.floor(Math.random() * cols),
           y: Math.floor(Math.random() * rows)
         };
-      } while (exclude.some(e => e.x === pos.x && e.y === pos.y));
-      return pos;
+        const key = `${pos.x},${pos.y}`;
+        if (
+          !exclude.some(e => `${e.x},${e.y}` === key) &&
+          !positions.some(e => `${e.x},${e.y}` === key)
+        ) {
+          positions.push(pos);
+        }
+      }
+      return positions;
     }
 
     function spawnLevel() {
-      batteryPositions = Array.from({ length: 10 }, () => getRandomPos([controllerPos]));
-      firePositions = Array.from({ length: 20 }, () => getRandomPos([controllerPos, ...batteryPositions]));
+      const exclude = [controllerPos];
+      batteryPositions = getRandomUniquePositions(10, exclude);
+      firePositions = getRandomUniquePositions(20, [...exclude, ...batteryPositions]);
       collectedBatteries = 0;
       timer = 30;
       render();
@@ -265,6 +275,7 @@
       level = 0;
       powerBar.textContent = `Surge power: ⚡0`;
       surgeLevelDisplay.textContent = `Surge Level: 0`;
+      controllerPos = { x: 10, y: 10 };
       createGrid();
       spawnLevel();
       startTimer();
