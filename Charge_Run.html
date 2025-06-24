@@ -81,14 +81,26 @@
       z-index: 3;
     }
 
-    .battery {
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
-      z-index: 2;
+    .battery::after {
+      content: '🔋';
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      text-align: center;
     }
 
-    .hazard {
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Fire_icon.svg');
-      z-index: 1;
+    .hazard::after {
+      content: '🔥';
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      text-align: center;
     }
 
     #startGameBtn {
