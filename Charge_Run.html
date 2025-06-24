@@ -22,24 +22,24 @@
     }
 
     header h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
       color: #e60023;
     }
 
     header h2 {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       color: #00ffee;
       margin-top: -10px;
     }
 
     #startGameBtn {
-      padding: 10px 20px;
-      font-size: 1rem;
+      padding: 14px 28px;
+      font-size: 1.1rem;
       background-color: #e60023;
       color: white;
       border: none;
       border-radius: 8px;
-      margin: 15px;
+      margin: 20px;
       cursor: pointer;
     }
 
@@ -50,53 +50,51 @@
 
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(10, 60px);
-      grid-template-rows: repeat(12, 60px);
-      border: 2px solid #e60023;
-      box-shadow: 0 0 10px #e60023cc;
+      grid-template-columns: repeat(10, 80px);
+      grid-template-rows: repeat(12, 80px);
+      border: 3px solid #e60023;
+      box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-      background-size: 60px 60px;
+      background-size: 80px 80px;
     }
 
     .grid-cell {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       position: relative;
+    }
+
+    .grid-cell div {
+      width: 100%;
+      height: 100%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      transition: transform 0.1s ease;
+      position: absolute;
     }
 
     .controller {
-      background: url('GSU_LOGO.png') center/contain no-repeat;
-      width: 100%;
-      height: 100%;
+      background-image: url('GSU_LOGO.png');
+      z-index: 5;
       transform: scale(1.5);
-      z-index: 2;
-      position: relative;
     }
 
     .battery {
-      background: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg') center/contain no-repeat;
-      width: 100%;
-      height: 100%;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
       z-index: 1;
-      position: relative;
     }
 
     .power {
-      background: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Lightning_bolt_icon.svg') center/contain no-repeat;
-      width: 100%;
-      height: 100%;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Lightning_bolt_icon.svg');
       z-index: 1;
-      position: relative;
     }
 
     .hazard {
-      background: url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Fire_icon.svg') center/contain no-repeat;
-      width: 100%;
-      height: 100%;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Fire_icon.svg');
       z-index: 1;
-      position: relative;
     }
 
     #hud {
@@ -104,7 +102,7 @@
     }
 
     #powerBar, #lives {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
     }
 
     footer {
@@ -203,10 +201,7 @@
       const cell = [...grid.children].find(c => c.dataset.x == playerX && c.dataset.y == playerY);
       const item = cell.querySelector('.battery, .power, .hazard');
       if (item) {
-        if (item.classList.contains('battery')) {
-          power++;
-          collected++;
-        } else if (item.classList.contains('power')) {
+        if (item.classList.contains('battery') || item.classList.contains('power')) {
           power++;
           collected++;
         } else if (item.classList.contains('hazard')) {
@@ -243,7 +238,7 @@
       totalCollectibles = 0;
       drawGrid();
       updateUI();
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 6; i++) {
         spawn("battery", Math.floor(Math.random() * 10), Math.floor(Math.random() * 12));
         spawn("power", Math.floor(Math.random() * 10), Math.floor(Math.random() * 12));
         spawn("hazard", Math.floor(Math.random() * 10), Math.floor(Math.random() * 12));
