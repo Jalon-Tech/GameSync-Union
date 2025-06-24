@@ -15,8 +15,16 @@
       flex-direction: column;
       align-items: center;
       padding: 20px;
-      min-height: 100vh;
       overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    #pageWrapper {
+      transform: scale(0.75);
+      transform-origin: top center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     header {
@@ -32,15 +40,6 @@
       font-size: 1.5rem;
       color: #00ffee;
       margin-top: -10px;
-    }
-
-    #gameArea {
-      text-align: center;
-      margin-top: 20px;
-
-      /* ✅ Zoom out just the game container */
-      transform: scale(0.75);
-      transform-origin: top center;
     }
 
     #hud {
@@ -69,13 +68,13 @@
       width: 40px;
       height: 40px;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .grid-cell div {
       width: 100%;
       height: 100%;
-      background-size: contain;
+      background-size: 85%; /* 💎 This centers the logo without scaling it too large */
       background-repeat: no-repeat;
       background-position: center;
       position: absolute;
@@ -84,7 +83,6 @@
     .controller {
       background-image: url('GSU_LOGO.png');
       z-index: 5;
-      transform: scale(1.7);
     }
 
     .battery {
@@ -106,6 +104,7 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 15px;
+      box-shadow: 0 0 10px #e60023cc;
     }
 
     footer {
@@ -113,22 +112,15 @@
       font-size: 0.9em;
       color: #666;
     }
-
-    /* 🔁 Optional: Auto scale even smaller on narrower screens */
-    @media (max-width: 1300px) {
-      #gameArea {
-        transform: scale(0.65);
-      }
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>GSU DATA SURGE</h1>
-    <h2>CONTROLLER CORE</h2>
-  </header>
+  <div id="pageWrapper">
+    <header>
+      <h1>GSU DATA SURGE</h1>
+      <h2>CONTROLLER CORE</h2>
+    </header>
 
-  <div id="gameArea">
     <div id="hud">
       <span>🔋 Collect 10 batteries!</span>
       <span>🔥 Avoid 20 fires</span>
@@ -140,9 +132,9 @@
 
     <div id="gameCanvas"></div>
     <button id="startGameBtn">▶️ Start GSU Charge Run</button>
-  </div>
 
-  <footer>Built for GameSync Union — GSU Charge Run™</footer>
+    <footer>Built for GameSync Union — GSU Charge Run™</footer>
+  </div>
 
   <script>
     const rows = 20;
@@ -203,11 +195,12 @@
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp' && controllerPos.y > 0) controllerPos.y--;
-      if (e.key === 'ArrowDown' && controllerPos.y < rows - 1) controllerPos.y++;
-      if (e.key === 'ArrowLeft' && controllerPos.x > 0) controllerPos.x--;
-      if (e.key === 'ArrowRight' && controllerPos.x < cols - 1) controllerPos.x++;
-      render();
+      let moved = false;
+      if (e.key === 'ArrowUp' && controllerPos.y > 0) { controllerPos.y--; moved = true; }
+      if (e.key === 'ArrowDown' && controllerPos.y < rows - 1) { controllerPos.y++; moved = true; }
+      if (e.key === 'ArrowLeft' && controllerPos.x > 0) { controllerPos.x--; moved = true; }
+      if (e.key === 'ArrowRight' && controllerPos.x < cols - 1) { controllerPos.x++; moved = true; }
+      if (moved) render();
     });
 
     startBtn.addEventListener('click', () => {
@@ -215,7 +208,7 @@
       startGame();
     });
 
-    createGrid();
+    createGrid(); // initialize on load
   </script>
 </body>
 </html>
