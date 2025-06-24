@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,20 +43,21 @@
     }
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(10, 30px);
-      grid-template-rows: repeat(12, 30px);
+      grid-template-columns: repeat(10, 40px);
+      grid-template-rows: repeat(12, 40px);
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-      background-size: 30px 30px;
+      background-size: 40px 40px;
       margin-bottom: 20px;
     }
     .grid-cell {
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       position: relative;
+      overflow: hidden;
     }
     .grid-cell div {
       width: 100%;
@@ -68,7 +70,7 @@
     .controller {
       background-image: url('GSU_LOGO.png');
       z-index: 5;
-      transform: scale(2.2); /* Very much enlarged */
+      transform: scale(1.7);
     }
     .battery {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
@@ -121,175 +123,5 @@
   </div>
 
   <footer>Built for GameSync Union — GSU Charge Run™</footer>
-
-  <script>
-    const grid = document.getElementById("gameCanvas");
-    const powerBar = document.getElementById("powerBar");
-    const livesEl = document.getElementById("lives");
-    const timerEl = document.getElementById("timer");
-    const goalText = document.getElementById("goalText");
-    const avoidText = document.getElementById("avoidText");
-    const surgeLevelEl = document.getElementById("surgeLevel");
-    const startGameBtn = document.getElementById("startGameBtn");
-    const nextSurgeBtn = document.getElementById("nextSurgeBtn");
-
-    let lives = 3;
-    let power = 0;
-    let playerX = 5;
-    let playerY = 6;
-    let collected = 0;
-    let timer = 0;
-    let interval;
-    let requiredBatteries = 10;
-    let surgeLevel = 0;
-    let requiredHazards = 20;
-
-    function updateUI() {
-      powerBar.textContent = `Surge power: ${'⚡'.repeat(power)}`;
-      livesEl.textContent = `Life Count: ${'❤️ '.repeat(lives)}`;
-      goalText.textContent = `🔋 Collect ${requiredBatteries} batteries!`;
-      avoidText.textContent = `🔥 Avoid ${requiredHazards} fires`;
-      surgeLevelEl.textContent = `Surge Level: ${surgeLevel}`;
-    }
-
-    function drawGrid() {
-      grid.innerHTML = '';
-      for (let y = 0; y < 12; y++) {
-        for (let x = 0; x < 10; x++) {
-          const cell = document.createElement('div');
-          cell.className = 'grid-cell';
-          cell.dataset.x = x;
-          cell.dataset.y = y;
-          grid.appendChild(cell);
-        }
-      }
-    }
-
-    function fillGridWithItems() {
-      for (let i = 0; i < requiredBatteries; i++) spawnRandomItem('battery');
-      for (let i = 0; i < requiredHazards; i++) spawnRandomItem('hazard');
-    }
-
-    function spawnRandomItem(type) {
-      const x = Math.floor(Math.random() * 10);
-      const y = Math.floor(Math.random() * 12);
-      const cell = [...grid.children].find(c => c.dataset.x == x && c.dataset.y == y);
-      if (cell) {
-        const taken = cell.querySelector('.battery, .hazard, .controller');
-        if (!taken) {
-          const item = document.createElement('div');
-          item.className = type;
-          cell.appendChild(item);
-        } else {
-          spawnRandomItem(type); // try again if occupied
-        }
-      }
-    }
-
-    function movePlayer(dx, dy) {
-      const newX = Math.max(0, Math.min(9, playerX + dx));
-      const newY = Math.max(0, Math.min(11, playerY + dy));
-      playerX = newX;
-      playerY = newY;
-      renderPlayer();
-      checkCollision();
-    }
-
-    function renderPlayer() {
-      [...grid.children].forEach(cell => {
-        const existing = cell.querySelector('.controller');
-        if (existing) existing.remove();
-      });
-      const cell = [...grid.children].find(c => c.dataset.x == playerX && c.dataset.y == playerY);
-      if (cell) {
-        const controller = document.createElement('div');
-        controller.className = 'controller';
-        cell.appendChild(controller);
-      }
-    }
-
-    function checkCollision() {
-      const cell = [...grid.children].find(c => c.dataset.x == playerX && c.dataset.y == playerY);
-      const item = cell.querySelector('.battery, .hazard');
-      if (item) {
-        if (item.classList.contains('battery')) {
-          collected++;
-          power++;
-        } else if (item.classList.contains('hazard')) {
-          lives--;
-          alert('🔥 You touched fire and lost a life!');
-          if (lives <= 0) return endGame(false, '💀 Burned out! Game Over!');
-        }
-        item.remove();
-        updateUI();
-
-        if (collected >= requiredBatteries) {
-          clearInterval(interval);
-          alert("🎉 FULL SYNC – SURGE ACTIVATED!");
-          nextSurgeBtn.style.display = "inline-block";
-        }
-      }
-    }
-
-    function startTimer() {
-      timer = 30 * (surgeLevel + 1);
-      timerEl.textContent = `⏱️ Time Left: ${timer}`;
-      interval = setInterval(() => {
-        timer--;
-        timerEl.textContent = `⏱️ Time Left: ${timer}`;
-        if (timer <= 0) {
-          clearInterval(interval);
-          lives--;
-          if (lives <= 0) return endGame(false, '⏰ Time’s up and lives exhausted. Game Over!');
-          alert('⏰ Time’s up! You lost a life.');
-          startSurge(); // retry same level
-        }
-      }, 1000);
-    }
-
-    function endGame(won, msg) {
-      clearInterval(interval);
-      alert(msg);
-      nextSurgeBtn.style.display = "none";
-      startGameBtn.style.display = "inline-block";
-      lives = 3;
-      power = 0;
-      surgeLevel = 0;
-    }
-
-    function startSurge() {
-      nextSurgeBtn.style.display = "none";
-      startGameBtn.style.display = "none";
-      collected = 0;
-      requiredBatteries = (surgeLevel + 1) * 10;
-      requiredHazards = requiredBatteries + 10;
-      drawGrid();
-      fillGridWithItems();
-      updateUI();
-      renderPlayer();
-      startTimer();
-    }
-
-    startGameBtn.addEventListener("click", () => {
-      lives = 3;
-      power = 0;
-      surgeLevel = 0;
-      startSurge();
-    });
-
-    nextSurgeBtn.addEventListener("click", () => {
-      surgeLevel++;
-      startSurge();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-        if (e.key === "ArrowUp") movePlayer(0, -1);
-        else if (e.key === "ArrowDown") movePlayer(0, 1);
-        else if (e.key === "ArrowLeft") movePlayer(-1, 0);
-        else if (e.key === "ArrowRight") movePlayer(1, 0);
-      }
-    });
-  </script>
 </body>
 </html>
