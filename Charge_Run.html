@@ -16,55 +16,47 @@
       align-items: center;
       padding: 20px;
     }
-
     header {
       text-align: center;
     }
-
     header h1 {
       font-size: 3rem;
       color: #e60023;
     }
-
     header h2 {
       font-size: 1.5rem;
       color: #00ffee;
       margin-top: -10px;
     }
-
     #gameArea {
       text-align: center;
       margin-top: 20px;
     }
-
     #hud {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 25px;
       flex-wrap: wrap;
       margin-bottom: 15px;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
     }
-
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(10, 70px);
-      grid-template-rows: repeat(12, 70px);
+      grid-template-columns: repeat(10, 30px);
+      grid-template-rows: repeat(12, 30px);
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-      background-size: 70px 70px;
+      background-size: 30px 30px;
       margin-bottom: 20px;
     }
-
     .grid-cell {
-      width: 70px;
-      height: 70px;
+      width: 30px;
+      height: 30px;
       position: relative;
     }
-
     .grid-cell div {
       width: 100%;
       height: 100%;
@@ -73,23 +65,19 @@
       background-position: center;
       position: absolute;
     }
-
     .controller {
       background-image: url('GSU_LOGO.png');
       z-index: 5;
-      transform: scale(1.7);
+      transform: scale(1.1);
     }
-
     .battery {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
       z-index: 1;
     }
-
     .hazard {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Fire_icon.svg');
       z-index: 1;
     }
-
     #startGameBtn, #nextSurgeBtn {
       padding: 10px 22px;
       font-size: 1.1rem;
@@ -100,12 +88,10 @@
       cursor: pointer;
       margin-top: 15px;
     }
-
     #startGameBtn {
       background-color: #e60023;
       color: #fff;
     }
-
     footer {
       margin-top: 30px;
       font-size: 0.9em;
@@ -117,15 +103,16 @@
   <header>
     <h1>GSU DATA SURGE</h1>
     <h2>CONTROLLER CORE</h2>
-  
   </header>
 
   <div id="gameArea">
     <div id="hud">
-      <span id="goalText">🔋 Collect batteries! 🔥 Avoid fires</span>
+      <span id="goalText">Collect: 🔋</span>
+      <span id="avoidText">Avoid: 🔥</span>
       <span id="timer">⏱️ Time Left: 30</span>
-      <span id="powerBar">Power Surges: ⚡</span>
+      <span id="powerBar">Surge power: ⚡</span>
       <span id="lives">Life Count: ❤️ ❤️ ❤️</span>
+      <span id="surgeLevel">Surge Level: 0</span>
     </div>
 
     <div id="gameCanvas"></div>
@@ -140,8 +127,9 @@
     const powerBar = document.getElementById("powerBar");
     const livesEl = document.getElementById("lives");
     const timerEl = document.getElementById("timer");
-    const gameArea = document.getElementById("gameArea");
     const goalText = document.getElementById("goalText");
+    const avoidText = document.getElementById("avoidText");
+    const surgeLevelEl = document.getElementById("surgeLevel");
     const startGameBtn = document.getElementById("startGameBtn");
     const nextSurgeBtn = document.getElementById("nextSurgeBtn");
 
@@ -152,15 +140,16 @@
     let collected = 0;
     let timer = 0;
     let interval;
-    let activeItems = [];
     let requiredBatteries = 10;
-    let surgeLevel = 1;
+    let surgeLevel = 0;
     let requiredHazards = 20;
 
     function updateUI() {
-      powerBar.textContent = '⚡'.repeat(power);
-      livesEl.textContent = '❤️ '.repeat(lives);
-      goalText.textContent = `🔋 Collect ${requiredBatteries} batteries! 🔥 Avoid ${requiredHazards} fires`;
+      powerBar.textContent = `Surge power: ${'⚡'.repeat(power)}`;
+      livesEl.textContent = `Life Count: ${'❤️ '.repeat(lives)}`;
+      goalText.textContent = `🔋 Collect ${requiredBatteries} batteries!`;
+      avoidText.textContent = `🔥 Avoid ${requiredHazards} fires`;
+      surgeLevelEl.textContent = `Surge Level: ${surgeLevel}`;
     }
 
     function drawGrid() {
@@ -187,7 +176,6 @@
           const item = document.createElement('div');
           item.className = type;
           cell.appendChild(item);
-          activeItems.push(item);
         }
       }
     }
@@ -203,14 +191,14 @@
 
     function renderPlayer() {
       [...grid.children].forEach(cell => {
-        const controller = cell.querySelector('.controller');
-        if (controller) controller.remove();
+        const existing = cell.querySelector('.controller');
+        if (existing) existing.remove();
       });
       const cell = [...grid.children].find(c => c.dataset.x == playerX && c.dataset.y == playerY);
       if (cell) {
-        const playerDiv = document.createElement('div');
-        playerDiv.className = 'controller';
-        cell.appendChild(playerDiv);
+        const controller = document.createElement('div');
+        controller.className = 'controller';
+        cell.appendChild(controller);
       }
     }
 
@@ -238,7 +226,7 @@
     }
 
     function startTimer() {
-      timer = 30 * surgeLevel;
+      timer = 30 * (surgeLevel + 1);
       timerEl.textContent = `⏱️ Time Left: ${timer}`;
       interval = setInterval(() => {
         timer--;
@@ -261,14 +249,14 @@
       startGameBtn.style.display = "inline-block";
       lives = 3;
       power = 0;
-      surgeLevel = 1;
+      surgeLevel = 0;
     }
 
     function startSurge() {
       nextSurgeBtn.style.display = "none";
       startGameBtn.style.display = "none";
       collected = 0;
-      requiredBatteries = surgeLevel * 10;
+      requiredBatteries = (surgeLevel + 1) * 10;
       requiredHazards = requiredBatteries + 10;
       drawGrid();
       updateUI();
@@ -279,7 +267,7 @@
     startGameBtn.addEventListener("click", () => {
       lives = 3;
       power = 0;
-      surgeLevel = 1;
+      surgeLevel = 0;
       startSurge();
     });
 
