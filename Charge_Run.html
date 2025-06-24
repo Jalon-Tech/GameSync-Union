@@ -54,6 +54,9 @@
       background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
       background-size: 60px 60px;
     }
+    .grid-cell {
+      position: relative;
+    }
     .controller {
       width: 60px;
       height: 60px;
@@ -193,10 +196,14 @@
       movePlayer(0, 0);
       updateUI();
 
-      // Clear old items
-      canvas.querySelectorAll('.battery, .power, .hazard').forEach(el => el.remove());
+      canvas.querySelectorAll('.grid-cell, .battery, .power, .hazard').forEach(cell => cell.remove());
 
-      // Spawn items in grid
+      for (let i = 0; i < 120; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell';
+        canvas.appendChild(cell);
+      }
+
       spawnItem('battery', 2, 2);
       spawnItem('power', 5, 4);
       spawnItem('hazard', 3, 6);
