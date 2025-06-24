@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -160,7 +161,7 @@
     let lives = 3;
     let timer = 30;
     let level = 0;
-    let gameInterval;
+    let gameInterval, moveInterval;
 
     function createGrid() {
       canvas.innerHTML = "";
@@ -217,23 +218,43 @@
       return positions;
     }
 
+    function moveItemsRandomly(list) {
+      return list.map(pos => {
+        const directions = [
+          { x: 0, y: -1 }, { x: 0, y: 1 },
+          { x: -1, y: 0 }, { x: 1, y: 0 }
+        ];
+        const dir = directions[Math.floor(Math.random() * directions.length)];
+        const newX = Math.max(0, Math.min(cols - 1, pos.x + dir.x));
+        const newY = Math.max(0, Math.min(rows - 1, pos.y + dir.y));
+        return { x: newX, y: newY };
+      });
+    }
+
     function spawnLevel() {
+      const batteriesNeeded = 10 + level * 2;
+      const firesNeeded = 20 + level * 2;
       const exclude = [controllerPos];
-      batteryPositions = getRandomUniquePositions(10, exclude);
-      firePositions = getRandomUniquePositions(20, [...exclude, ...batteryPositions]);
+      batteryPositions = getRandomUniquePositions(batteriesNeeded, exclude);
+      firePositions = getRandomUniquePositions(firesNeeded, [...exclude, ...batteryPositions]);
       collectedBatteries = 0;
-      timer = 30;
+      timer = 30 + level * 5;
       render();
     }
 
     function startTimer() {
       clearInterval(gameInterval);
+      clearInterval(moveInterval);
       gameInterval = setInterval(() => {
         timer--;
         timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
-        if (timer <= 0) {
-          loseLife();
-        }
+        if (timer <= 0) loseLife();
+      }, 1000);
+
+      moveInterval = setInterval(() => {
+        batteryPositions = moveItemsRandomly(batteryPositions);
+        firePositions = moveItemsRandomly(firePositions);
+        checkCollision();
       }, 1000);
     }
 
@@ -241,6 +262,7 @@
       lives--;
       if (lives <= 0) {
         clearInterval(gameInterval);
+        clearInterval(moveInterval);
         alert("Game Over!");
       } else {
         spawnLevel();
@@ -252,12 +274,19 @@
       batteryPositions = batteryPositions.filter(pos => {
         if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
           collectedBatteries++;
-          if (collectedBatteries === 10) {
+          if (collectedBatteries >= 10 + level * 2) {
             level++;
+            if (level >= 10) {
+              clearInterval(gameInterval);
+              clearInterval(moveInterval);
+              alert("FULL SYNC COMPLETE! You win!");
+              return false;
+            }
             powerBar.textContent = `Surge power: ⚡${level}`;
             surgeLevelDisplay.textContent = `Surge Level: ${level}`;
             spawnLevel();
             startTimer();
+            return false;
           }
           return false;
         }
@@ -265,15 +294,14 @@
       });
 
       firePositions.forEach(pos => {
-        if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
-          loseLife();
-        }
+        if (pos.x === controllerPos.x && pos.y === controllerPos.y) loseLife();
       });
 
       render();
     }
 
     document.addEventListener("keydown", e => {
+      e.preventDefault();
       let moved = false;
       if (e.key === "ArrowUp" && controllerPos.y > 0) { controllerPos.y--; moved = true; }
       if (e.key === "ArrowDown" && controllerPos.y < rows - 1) { controllerPos.y++; moved = true; }
