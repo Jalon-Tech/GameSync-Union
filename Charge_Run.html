@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,24 +71,32 @@
       width: 100%;
       height: 100%;
       transform: scale(1.5);
+      z-index: 2;
+      position: relative;
     }
 
     .battery {
       background: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg') center/contain no-repeat;
       width: 100%;
       height: 100%;
+      z-index: 1;
+      position: relative;
     }
 
     .power {
       background: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Lightning_bolt_icon.svg') center/contain no-repeat;
       width: 100%;
       height: 100%;
+      z-index: 1;
+      position: relative;
     }
 
     .hazard {
       background: url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Fire_icon.svg') center/contain no-repeat;
       width: 100%;
       height: 100%;
+      z-index: 1;
+      position: relative;
     }
 
     #hud {
@@ -116,11 +123,11 @@
   <button id="startGameBtn">▶️ START GSU CHARGE RUN</button>
 
   <div id="gameArea">
-    <div id="gameCanvas" id="grid"></div>
+    <div id="gameCanvas"></div>
     <div id="hud">
       <p style="color: #ffff33;">🔋 Collect all batteries and power!</p>
       <p style="color: #ff3333;">🔥 Avoid hazards to survive!</p>
-      <p><strong style="color: #ffcc00;">SURGE POWER:</strong> <span id="powerBar">⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡</span></p>
+      <p><strong style="color: #ffcc00;">SURGE POWER:</strong> <span id="powerBar">⚡</span></p>
       <p id="lives">❤️ ❤️ ❤️</p>
     </div>
   </div>
@@ -135,7 +142,7 @@
     const gameArea = document.getElementById("gameArea");
 
     let lives = 3;
-    let power = 10;
+    let power = 0;
     let playerX = 5;
     let playerY = 6;
 
@@ -197,10 +204,10 @@
       const item = cell.querySelector('.battery, .power, .hazard');
       if (item) {
         if (item.classList.contains('battery')) {
-          power = Math.min(10, power + 2);
+          power++;
           collected++;
         } else if (item.classList.contains('power')) {
-          power = Math.min(10, power + 1);
+          power++;
           collected++;
         } else if (item.classList.contains('hazard')) {
           lives--;
@@ -230,7 +237,7 @@
       startBtn.style.display = "none";
       playerX = 5;
       playerY = 6;
-      power = 10;
+      power = 0;
       lives = 3;
       collected = 0;
       totalCollectibles = 0;
