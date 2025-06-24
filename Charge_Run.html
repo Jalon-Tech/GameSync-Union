@@ -32,37 +32,36 @@
       margin-top: -10px;
     }
 
-    #startGameBtn {
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      background-color: #e60023;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      margin: 20px;
-      cursor: pointer;
+    #gameArea {
+      text-align: center;
+      margin-top: 20px;
     }
 
-    #gameArea {
-      display: none;
-      text-align: center;
+    #hud {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
     }
 
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(10, 80px);
-      grid-template-rows: repeat(12, 80px);
+      grid-template-columns: repeat(10, 70px);
+      grid-template-rows: repeat(12, 70px);
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-      background-size: 80px 80px;
+      background-size: 70px 70px;
+      margin-bottom: 20px;
     }
 
     .grid-cell {
-      width: 80px;
-      height: 80px;
+      width: 70px;
+      height: 70px;
       position: relative;
     }
 
@@ -72,23 +71,17 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      transition: transform 0.1s ease;
       position: absolute;
     }
 
     .controller {
       background-image: url('GSU_LOGO.png');
       z-index: 5;
-      transform: scale(1.5);
+      transform: scale(1.7);
     }
 
     .battery {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
-      z-index: 1;
-    }
-
-    .power {
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Lightning_bolt_icon.svg');
       z-index: 1;
     }
 
@@ -97,12 +90,20 @@
       z-index: 1;
     }
 
-    #hud {
-      margin-top: 20px;
+    #startGameBtn, #nextSurgeBtn {
+      padding: 10px 22px;
+      font-size: 1.1rem;
+      background-color: #00ffee;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
     }
 
-    #powerBar, #lives {
-      font-size: 1.5rem;
+    #startGameBtn {
+      background-color: #e60023;
+      color: #fff;
     }
 
     footer {
@@ -116,40 +117,50 @@
   <header>
     <h1>GSU DATA SURGE</h1>
     <h2>CONTROLLER CORE</h2>
+  
   </header>
 
-  <button id="startGameBtn">▶️ START GSU CHARGE RUN</button>
-
   <div id="gameArea">
-    <div id="gameCanvas"></div>
     <div id="hud">
-      <p style="color: #ffff33;">🔋 Collect all batteries and power!</p>
-      <p style="color: #ff3333;">🔥 Avoid hazards to survive!</p>
-      <p><strong style="color: #ffcc00;">SURGE POWER:</strong> <span id="powerBar">⚡</span></p>
-      <p id="lives">❤️ ❤️ ❤️</p>
+      <span id="goalText">🔋 Collect batteries! 🔥 Avoid fires</span>
+      <span id="timer">⏱️ Time Left: 30</span>
+      <span id="powerBar">Power Surges: ⚡</span>
+      <span id="lives">Life Count: ❤️ ❤️ ❤️</span>
     </div>
+
+    <div id="gameCanvas"></div>
+    <button id="startGameBtn">▶️ Start GSU Charge Run</button>
+    <button id="nextSurgeBtn" style="display: none;">▶️ Start Next Surge</button>
   </div>
 
   <footer>Built for GameSync Union — GSU Charge Run™</footer>
 
   <script>
     const grid = document.getElementById("gameCanvas");
-    const startBtn = document.getElementById("startGameBtn");
     const powerBar = document.getElementById("powerBar");
     const livesEl = document.getElementById("lives");
+    const timerEl = document.getElementById("timer");
     const gameArea = document.getElementById("gameArea");
+    const goalText = document.getElementById("goalText");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const nextSurgeBtn = document.getElementById("nextSurgeBtn");
 
     let lives = 3;
     let power = 0;
     let playerX = 5;
     let playerY = 6;
-
-    let totalCollectibles = 0;
     let collected = 0;
+    let timer = 0;
+    let interval;
+    let activeItems = [];
+    let requiredBatteries = 10;
+    let surgeLevel = 1;
+    let requiredHazards = 20;
 
     function updateUI() {
       powerBar.textContent = '⚡'.repeat(power);
       livesEl.textContent = '❤️ '.repeat(lives);
+      goalText.textContent = `🔋 Collect ${requiredBatteries} batteries! 🔥 Avoid ${requiredHazards} fires`;
     }
 
     function drawGrid() {
@@ -165,13 +176,19 @@
       }
     }
 
-    function spawn(type, x, y) {
+    function spawnRandomItem() {
+      const type = Math.random() < 0.5 ? 'battery' : 'hazard';
+      const x = Math.floor(Math.random() * 10);
+      const y = Math.floor(Math.random() * 12);
       const cell = [...grid.children].find(c => c.dataset.x == x && c.dataset.y == y);
       if (cell) {
-        const item = document.createElement('div');
-        item.className = type;
-        cell.appendChild(item);
-        if (type === 'battery' || type === 'power') totalCollectibles++;
+        const existing = cell.querySelector('.battery, .hazard');
+        if (!existing) {
+          const item = document.createElement('div');
+          item.className = type;
+          cell.appendChild(item);
+          activeItems.push(item);
+        }
       }
     }
 
@@ -199,57 +216,80 @@
 
     function checkCollision() {
       const cell = [...grid.children].find(c => c.dataset.x == playerX && c.dataset.y == playerY);
-      const item = cell.querySelector('.battery, .power, .hazard');
+      const item = cell.querySelector('.battery, .hazard');
       if (item) {
-        if (item.classList.contains('battery') || item.classList.contains('power')) {
-          power++;
+        if (item.classList.contains('battery')) {
           collected++;
+          power++;
         } else if (item.classList.contains('hazard')) {
           lives--;
-          if (lives <= 0) {
-            alert('💀 You lost all your lives! Game Over!');
-            resetGame();
-            return;
-          }
+          alert('🔥 You touched fire and lost a life!');
+          if (lives <= 0) return endGame(false, '💀 Burned out! Game Over!');
         }
         item.remove();
         updateUI();
-        if (collected === totalCollectibles) {
-          alert("🎉 FULL SYNC COMPLETE – CONTROLLER ONLINE");
-          resetGame();
+
+        if (collected >= requiredBatteries) {
+          clearInterval(interval);
+          alert("🎉 FULL SYNC – SURGE ACTIVATED!");
+          nextSurgeBtn.style.display = "inline-block";
         }
       }
     }
 
-    function resetGame() {
-      startBtn.textContent = "🔁 RESTART GSU CHARGE RUN";
-      startBtn.style.display = "block";
-      gameArea.style.display = "none";
+    function startTimer() {
+      timer = 30 * surgeLevel;
+      timerEl.textContent = `⏱️ Time Left: ${timer}`;
+      interval = setInterval(() => {
+        timer--;
+        timerEl.textContent = `⏱️ Time Left: ${timer}`;
+        spawnRandomItem();
+        if (timer <= 0) {
+          clearInterval(interval);
+          lives--;
+          if (lives <= 0) return endGame(false, '⏰ Time’s up and lives exhausted. Game Over!');
+          alert('⏰ Time’s up! You lost a life.');
+          startSurge(); // retry same level
+        }
+      }, 1000);
     }
 
-    function startGame() {
-      gameArea.style.display = "block";
-      startBtn.style.display = "none";
-      playerX = 5;
-      playerY = 6;
-      power = 0;
+    function endGame(won, msg) {
+      clearInterval(interval);
+      alert(msg);
+      nextSurgeBtn.style.display = "none";
+      startGameBtn.style.display = "inline-block";
       lives = 3;
+      power = 0;
+      surgeLevel = 1;
+    }
+
+    function startSurge() {
+      nextSurgeBtn.style.display = "none";
+      startGameBtn.style.display = "none";
       collected = 0;
-      totalCollectibles = 0;
+      requiredBatteries = surgeLevel * 10;
+      requiredHazards = requiredBatteries + 10;
       drawGrid();
       updateUI();
-      for (let i = 0; i < 6; i++) {
-        spawn("battery", Math.floor(Math.random() * 10), Math.floor(Math.random() * 12));
-        spawn("power", Math.floor(Math.random() * 10), Math.floor(Math.random() * 12));
-        spawn("hazard", Math.floor(Math.random() * 10), Math.floor(Math.random() * 12));
-      }
       renderPlayer();
+      startTimer();
     }
 
-    startBtn.addEventListener("click", startGame);
+    startGameBtn.addEventListener("click", () => {
+      lives = 3;
+      power = 0;
+      surgeLevel = 1;
+      startSurge();
+    });
+
+    nextSurgeBtn.addEventListener("click", () => {
+      surgeLevel++;
+      startSurge();
+    });
 
     document.addEventListener("keydown", (e) => {
-      if (gameArea.style.display === "block") {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
         if (e.key === "ArrowUp") movePlayer(0, -1);
         else if (e.key === "ArrowDown") movePlayer(0, 1);
         else if (e.key === "ArrowLeft") movePlayer(-1, 0);
