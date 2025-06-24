@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +36,7 @@
       font-size: 1.5rem;
       color: #00ffee;
       margin-top: -10px;
+      text-align: center;
     }
 
     #hud {
@@ -196,7 +196,7 @@
         cells[getIndex(pos.x, pos.y)].appendChild(el);
       });
 
-      goalText.textContent = `🔋 Collect: ${collectedBatteries} / 10`;
+      goalText.textContent = `🔋 Collect: ${collectedBatteries} / ${10 + level * 2}`;
       livesDisplay.innerHTML = `Life Count: ${"❤️".repeat(lives)}`;
     }
 
@@ -271,39 +271,41 @@
     }
 
     function checkCollision() {
+      let batteryCollectedThisTick = false;
+
       batteryPositions = batteryPositions.filter(pos => {
         if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
           collectedBatteries++;
-          if (collectedBatteries >= 10 + level * 2) {
-            level++;
-            if (level >= 10) {
-              clearInterval(gameInterval);
-              clearInterval(moveInterval);
-              alert("FULL SYNC COMPLETE! You win!");
-              return false;
-            }
-
-            // Clear positions before next spawn
-            batteryPositions = [];
-            firePositions = [];
-            render();
-
-            powerBar.textContent = `Surge power: ⚡${level}`;
-            surgeLevelDisplay.textContent = `Surge Level: ${level}`;
-            spawnLevel();
-            startTimer();
-            return false;
-}
+          batteryCollectedThisTick = true;
           return false;
         }
         return true;
       });
 
+      if (collectedBatteries >= 10 + level * 2) {
+        level++;
+        if (level >= 10) {
+          clearInterval(gameInterval);
+          clearInterval(moveInterval);
+          alert("FULL SYNC COMPLETE! You win!");
+          return;
+        }
+
+        powerBar.textContent = `Surge power: ⚡${level}`;
+        surgeLevelDisplay.textContent = `Surge Level: ${level}`;
+        batteryPositions = [];
+        firePositions = [];
+        render();
+        spawnLevel();
+        startTimer();
+        return;
+      }
+
       firePositions.forEach(pos => {
         if (pos.x === controllerPos.x && pos.y === controllerPos.y) loseLife();
       });
 
-      render();
+      if (batteryCollectedThisTick) render();
     }
 
     document.addEventListener("keydown", e => {
