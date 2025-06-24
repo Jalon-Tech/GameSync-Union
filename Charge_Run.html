@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>GSU Charge Run</title>
-  <link rel="icon" href="GSU_LOGO.png" type="image/png" />
+  <link rel="icon" href="GSU_LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -27,10 +27,6 @@
       align-items: center;
     }
 
-    header {
-      text-align: center;
-    }
-
     header h1 {
       font-size: 3rem;
       color: #e60023;
@@ -48,25 +44,25 @@
       gap: 25px;
       flex-wrap: wrap;
       margin-bottom: 15px;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
     }
 
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(20, 40px);
-      grid-template-rows: repeat(20, 40px);
+      grid-template-columns: repeat(20, 48px);
+      grid-template-rows: repeat(20, 48px);
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
-        linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-      background-size: 40px 40px;
+        linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 48px 48px;
       margin-bottom: 20px;
     }
 
     .grid-cell {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       position: relative;
       overflow: visible;
     }
@@ -74,7 +70,7 @@
     .grid-cell div {
       width: 100%;
       height: 100%;
-      background-size: 85%; /* 💎 This centers the logo without scaling it too large */
+      background-size: 100%;
       background-repeat: no-repeat;
       background-position: center;
       position: absolute;
@@ -82,28 +78,26 @@
 
     .controller {
       background-image: url('GSU_LOGO.png');
-      z-index: 5;
+      z-index: 3;
     }
 
     .battery {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/44/Battery_icon_green.svg');
-      z-index: 1;
     }
 
     .hazard {
       background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Fire_icon.svg');
-      z-index: 1;
     }
 
     #startGameBtn {
-      padding: 10px 22px;
-      font-size: 1.1rem;
+      padding: 12px 28px;
+      font-size: 1.2rem;
       background-color: #e60023;
       color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      margin-top: 15px;
+      margin-top: 20px;
       box-shadow: 0 0 10px #e60023cc;
     }
 
@@ -122,35 +116,43 @@
     </header>
 
     <div id="hud">
-      <span>🔋 Collect 10 batteries!</span>
+      <span id="goalText">🔋 Collect: 0 / 10</span>
       <span>🔥 Avoid 20 fires</span>
       <span id="timer">⏱️ Time Left: 30</span>
-      <span id="powerBar">Surge power: ⚡⚡</span>
+      <span id="powerBar">Surge power: ⚡0</span>
       <span id="lives">Life Count: ❤️❤️❤️</span>
       <span id="surgeLevel">Surge Level: 0</span>
     </div>
 
     <div id="gameCanvas"></div>
     <button id="startGameBtn">▶️ Start GSU Charge Run</button>
-
     <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
 
   <script>
-    const rows = 20;
-    const cols = 20;
-    const canvas = document.getElementById('gameCanvas');
-    const startBtn = document.getElementById('startGameBtn');
+    const canvas = document.getElementById("gameCanvas");
+    const startBtn = document.getElementById("startGameBtn");
+    const timerDisplay = document.getElementById("timer");
+    const livesDisplay = document.getElementById("lives");
+    const goalText = document.getElementById("goalText");
+    const powerBar = document.getElementById("powerBar");
+    const surgeLevelDisplay = document.getElementById("surgeLevel");
 
-    let controllerPos = { x: 0, y: 0 };
+    const rows = 20, cols = 20;
+    let controllerPos = { x: 10, y: 10 };
     let batteryPositions = [];
     let firePositions = [];
+    let collectedBatteries = 0;
+    let lives = 3;
+    let timer = 30;
+    let level = 0;
+    let gameInterval;
 
     function createGrid() {
-      canvas.innerHTML = '';
+      canvas.innerHTML = "";
       for (let i = 0; i < rows * cols; i++) {
-        const cell = document.createElement('div');
-        cell.classList.add('grid-cell');
+        const cell = document.createElement("div");
+        cell.classList.add("grid-cell");
         canvas.appendChild(cell);
       }
     }
@@ -160,55 +162,115 @@
     }
 
     function render() {
-      const cells = canvas.querySelectorAll('.grid-cell');
-      cells.forEach(cell => cell.innerHTML = '');
+      const cells = canvas.querySelectorAll(".grid-cell");
+      cells.forEach(cell => cell.innerHTML = "");
 
-      const controller = document.createElement('div');
-      controller.classList.add('controller');
+      const controller = document.createElement("div");
+      controller.classList.add("controller");
       cells[getIndex(controllerPos.x, controllerPos.y)].appendChild(controller);
 
       batteryPositions.forEach(pos => {
-        const battery = document.createElement('div');
-        battery.classList.add('battery');
-        cells[getIndex(pos.x, pos.y)].appendChild(battery);
+        const el = document.createElement("div");
+        el.classList.add("battery");
+        cells[getIndex(pos.x, pos.y)].appendChild(el);
       });
 
       firePositions.forEach(pos => {
-        const fire = document.createElement('div');
-        fire.classList.add('hazard');
-        cells[getIndex(pos.x, pos.y)].appendChild(fire);
+        const el = document.createElement("div");
+        el.classList.add("hazard");
+        cells[getIndex(pos.x, pos.y)].appendChild(el);
       });
+
+      goalText.textContent = `🔋 Collect: ${collectedBatteries} / 10`;
+      livesDisplay.innerHTML = `Life Count: ${"❤️".repeat(lives)}`;
     }
 
-    function getRandomPos() {
-      return {
-        x: Math.floor(Math.random() * cols),
-        y: Math.floor(Math.random() * rows)
-      };
+    function getRandomPos(exclude = []) {
+      let pos;
+      do {
+        pos = {
+          x: Math.floor(Math.random() * cols),
+          y: Math.floor(Math.random() * rows)
+        };
+      } while (exclude.some(e => e.x === pos.x && e.y === pos.y));
+      return pos;
     }
 
-    function startGame() {
-      controllerPos = { x: Math.floor(cols / 2), y: Math.floor(rows / 2) };
-      batteryPositions = Array.from({ length: 10 }, getRandomPos);
-      firePositions = Array.from({ length: 20 }, getRandomPos);
+    function spawnLevel() {
+      batteryPositions = Array.from({ length: 10 }, () => getRandomPos([controllerPos]));
+      firePositions = Array.from({ length: 20 }, () => getRandomPos([controllerPos, ...batteryPositions]));
+      collectedBatteries = 0;
+      timer = 30;
       render();
     }
 
-    document.addEventListener('keydown', (e) => {
+    function startTimer() {
+      clearInterval(gameInterval);
+      gameInterval = setInterval(() => {
+        timer--;
+        timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
+        if (timer <= 0) {
+          loseLife();
+        }
+      }, 1000);
+    }
+
+    function loseLife() {
+      lives--;
+      if (lives <= 0) {
+        clearInterval(gameInterval);
+        alert("Game Over!");
+      } else {
+        spawnLevel();
+        startTimer();
+      }
+    }
+
+    function checkCollision() {
+      batteryPositions = batteryPositions.filter(pos => {
+        if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
+          collectedBatteries++;
+          if (collectedBatteries === 10) {
+            level++;
+            powerBar.textContent = `Surge power: ⚡${level}`;
+            surgeLevelDisplay.textContent = `Surge Level: ${level}`;
+            spawnLevel();
+            startTimer();
+          }
+          return false;
+        }
+        return true;
+      });
+
+      firePositions.forEach(pos => {
+        if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
+          loseLife();
+        }
+      });
+
+      render();
+    }
+
+    document.addEventListener("keydown", e => {
       let moved = false;
-      if (e.key === 'ArrowUp' && controllerPos.y > 0) { controllerPos.y--; moved = true; }
-      if (e.key === 'ArrowDown' && controllerPos.y < rows - 1) { controllerPos.y++; moved = true; }
-      if (e.key === 'ArrowLeft' && controllerPos.x > 0) { controllerPos.x--; moved = true; }
-      if (e.key === 'ArrowRight' && controllerPos.x < cols - 1) { controllerPos.x++; moved = true; }
-      if (moved) render();
+      if (e.key === "ArrowUp" && controllerPos.y > 0) { controllerPos.y--; moved = true; }
+      if (e.key === "ArrowDown" && controllerPos.y < rows - 1) { controllerPos.y++; moved = true; }
+      if (e.key === "ArrowLeft" && controllerPos.x > 0) { controllerPos.x--; moved = true; }
+      if (e.key === "ArrowRight" && controllerPos.x < cols - 1) { controllerPos.x++; moved = true; }
+      if (moved) checkCollision();
     });
 
-    startBtn.addEventListener('click', () => {
+    startBtn.addEventListener("click", () => {
+      lives = 3;
+      level = 0;
+      powerBar.textContent = `Surge power: ⚡0`;
+      surgeLevelDisplay.textContent = `Surge Level: 0`;
       createGrid();
-      startGame();
+      spawnLevel();
+      startTimer();
     });
 
-    createGrid(); // initialize on load
+    createGrid();
   </script>
 </body>
 </html>
