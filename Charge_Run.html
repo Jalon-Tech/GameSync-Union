@@ -43,7 +43,6 @@
       margin-bottom: 15px;
       font-size: 1.2rem;
     }
-  
     #gameCanvas {
       display: grid;
       grid-template-columns: repeat(20, 48px);
@@ -107,16 +106,14 @@
       width: 100%;
       text-align: center;
     }
-    .trapped-fire {
-    background-color: #e60023;
-    border: 2px solid white;
-    box-shadow: 0 0 5px white, 0 0 10px #e60023;
-    animation: gsuPulse 1s infinite;
-    transform: scale(0.45);
-    border-radius: 4px;
-    z-index: 1;
-  }
-
+  .trapped-fire {
+  background-color: #e60023;
+  border: 3px solid white;
+  box-shadow: 0 0 8px white, 0 0 14px #e60023;
+  animation: gsuPulse 1s infinite;
+  transform: scale(0.8);
+  border-radius: 6px;
+}
 
 
   @keyframes gsuPulse {
@@ -173,75 +170,42 @@
       <span id="lives">Life Count: ❤️❤️❤️</span>
       <span id="surgeLevel">Surge Level: 0</span>
     </div>
-    <div id="gameWrapper" style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-  <!-- LEFT ALERT -->
-  <div id="trapAlert" style="
-    display: none;
-    font-size: 1.1rem;
-    font-weight: bold;
-    background: linear-gradient(45deg, #e60023, #ff4d4d);
-    padding: 8px 14px;
-    border-radius: 8px;
-    color: white;
-    border: 2px solid white;
-    text-shadow: 0 0 4px #000;
-    box-shadow: 0 0 10px #fff, 0 0 15px #e60023;
-    margin-right: 16px;
-    width: 140px;
-    text-align: center;
-  ">🔥 Trapped!</div>
-
-  <!-- GAME CANVAS -->
-  <div id="gameCanvas"></div>
-
-  <!-- RIGHT TIMER -->
-  <div id="reverseSurgeTimer" style="
-    display: none;
-    font-size: 1.05rem;
-    font-weight: bold;
-    background: #000;
-    color: #fff;
-    padding: 6px 14px;
-    border: 2px solid #e60023;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #e60023;
-    text-shadow: 0 0 4px #000;
-    margin-left: 16px;
-    width: 180px;
-    text-align: center;
-  ">🔄 Fires Trapped: 10s</div>
-</div>
-
-    <div id="trapAlert" style="
-      display: none;
-      font-size: 1.1rem;
-      font-weight: bold;
-      background: linear-gradient(45deg, #e60023, #ff4d4d);
-      padding: 8px 18px;
-      border-radius: 8px;
-      color: white;
-      border: 2px solid white;
-      text-shadow: 0 0 4px #000;
-      box-shadow: 0 0 10px #fff, 0 0 15px #e60023;
-    ">🔥 Fires Trapped!</div>
-
-    <div id="reverseSurgeTimer" style="
-      display: none;
-      font-size: 1.05rem;
-      font-weight: bold;
-      background: #000;
-      color: #fff;
-      padding: 6px 14px;
-      border: 2px solid #e60023;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #e60023;
-      text-shadow: 0 0 4px #000;
-    ">🔄 Reverse Surge Active – Fires Trapped: 10s</div>
-  </div>
-
+    <div id="gameCanvas"></div>
     <button id="startGameBtn">▶️ Start GSU Charge Run</button>
     <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
+
+  <div id="trapAlert" style="
+  display: none;
+  position: absolute;
+  top: 60px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #e60023, #ff4d4d);
+  padding: 8px 18px;
+  border-radius: 8px;
+  color: white;
+  border: 2px solid white;
+  text-shadow: 0 0 4px #000;
+  box-shadow: 0 0 10px #fff, 0 0 15px #e60023;
+  z-index: 999;
+">🔥 Fires Trapped!</div>
+
+  <span id="reverseSurgeTimer" style="
+  display: none;
+  position: absolute;
+  top: 110px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  background: #000;
+  color: #fff;
+  padding: 6px 14px;
+  border: 2px solid #e60023;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #e60023;
+  text-shadow: 0 0 4px #000;
+  z-index: 999;
+">🔄 Reverse Surge Active – Fires Trapped: 10s</span>
 
   <script>
   const canvas = document.getElementById("gameCanvas");
