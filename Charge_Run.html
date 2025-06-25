@@ -144,6 +144,7 @@
     <div id="hud">
       <span id="goalText">🔋 Collect: 0 / 10</span>
       <span>🔥 Avoid 20 fires</span>
+      <span>🔄 Grab the spinning red icon for a power-up!</span>
       <span id="timer">⏱️ Time Left: 30</span>
       <span id="powerBar">Surge power: ⚡0</span>
       <span id="lives">Life Count: ❤️❤️❤️</span>
@@ -262,7 +263,7 @@
     const exclude = [controllerPos];
     batteryPositions = getRandomUniquePositions(batteriesNeeded, exclude);
     firePositions = getRandomUniquePositions(firesNeeded, [...exclude, ...batteryPositions]);
-    reverseSurgeTiles = getRandomUniquePositions(4, [...exclude, ...batteryPositions, ...firePositions]);
+    reverseSurgeTiles = getRandomUniquePositions(2, [...exclude, ...batteryPositions, ...firePositions]);
     trappedFires = [];
     collectedBatteries = 0;
     timer = 30 + level * 5;
@@ -272,28 +273,30 @@
   }
 
   function startTimer() {
-    clearInterval(gameInterval);
-    clearInterval(moveInterval);
+  clearInterval(gameInterval);
+  clearInterval(moveInterval);
 
-    gameInterval = setInterval(() => {
-      if (!isTimerExpired && !surgeActive) {
-        timer--;
-        timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
-        if (timer <= 0) {
-          isTimerExpired = true;
-          loseLife();
-        }
+  gameInterval = setInterval(() => {
+    if (!isTimerExpired && !surgeActive) {
+      timer--;
+      timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
+      if (timer <= 0) {
+        isTimerExpired = true;
+        loseLife();
       }
-    }, 1000);
+    }
+  }, 1000);
 
-    moveInterval = setInterval(() => {
-      batteryPositions = moveItemsRandomly(batteryPositions);
-      if (!surgeActive) {
-        firePositions = moveItemsRandomly(firePositions);
-      }
-      checkCollision();
-    }, 1000);
-  }
+  moveInterval = setInterval(() => {
+    batteryPositions = moveItemsRandomly(batteryPositions);
+    reverseSurgeTiles = moveItemsRandomly(reverseSurgeTiles);
+    if (!surgeActive) {
+      firePositions = moveItemsRandomly(firePositions);
+    }
+    checkCollision();
+  }, 1000);
+}
+
 
   function loseLife() {
     lives--;
