@@ -106,17 +106,18 @@
       width: 100%;
       text-align: center;
     }
-    .trapped-fire {
-      background-image: url('GSU_LOGO.png');
-      animation: flash 1s infinite;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-    @keyframes flash {
-      0%, 100% { filter: hue-rotate(0deg); }
-      50% { filter: hue-rotate(180deg); }
-    }
+  .trapped-fire {
+    background-color: #e60023;
+    border: 3px solid white;
+    box-shadow: 0 0 10px white, 0 0 20px #e60023;
+    animation: gsuPulse 1s infinite;
+  }
+
+  @keyframes gsuPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
     #startGameBtn {
       padding: 12px 28px;
       font-size: 1.2rem;
@@ -170,6 +171,8 @@
     <button id="startGameBtn">▶️ Start GSU Charge Run</button>
     <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
+  <div id="trapAlert" style="display:none; position: absolute; top: 60px; font-size: 1.5rem; background: #e60023; padding: 10px 20px; border-radius: 10px; color: white; box-shadow: 0 0 10px white;">🔥 Fires Trapped!</div>
+  <span id="reverseSurgeTimer" style="display:none; position: absolute; top: 110px; font-size: 1.3rem; background: black; color: white; padding: 8px 16px; border: 2px solid #e60023; border-radius: 10px; box-shadow: 0 0 10px #e60023;">🔄 Reverse Surge Active – Fires Trapped: 5s</span>
   <script>
   const canvas = document.getElementById("gameCanvas");
   const startBtn = document.getElementById("startGameBtn");
@@ -326,10 +329,17 @@
     }
   }
 
-  function activateReverseSurge() {
+function activateReverseSurge() {
   surgeActive = true;
   trappedFires = [...firePositions];
   firePositions = [];
+
+  const alertBox = document.getElementById("trapAlert");
+  const surgeTimerDisplay = document.getElementById("reverseSurgeTimer");
+
+  // Show trap alert
+  alertBox.style.display = "block";
+  setTimeout(() => alertBox.style.display = "none", 2000);
 
   // Add flashing effect to controller
   const cells = canvas.querySelectorAll(".grid-cell");
@@ -339,24 +349,31 @@
     if (controllerDiv) controllerDiv.classList.add("surge-mode");
   }
 
-  // Freeze timer
+  // Show timer
   let freezeCounter = 5;
+  surgeTimerDisplay.style.display = "inline-block";
+  surgeTimerDisplay.textContent = `🔄 Reverse Surge Active – Fires Trapped: ${freezeCounter}s`;
+
   const freezeInterval = setInterval(() => {
     freezeCounter--;
+    surgeTimerDisplay.textContent = `🔄 Reverse Surge Active – Fires Trapped: ${freezeCounter}s`;
+
     if (freezeCounter <= 0) {
       surgeActive = false;
       firePositions = [...firePositions, ...trappedFires];
       trappedFires = [];
 
-      // Remove flashing effect
+      // Remove surge effect
       const controllerCell = cells[getIndex(controllerPos.x, controllerPos.y)];
       if (controllerCell) {
         const controllerDiv = controllerCell.querySelector(".controller");
         if (controllerDiv) controllerDiv.classList.remove("surge-mode");
       }
 
+      surgeTimerDisplay.style.display = "none";
       clearInterval(freezeInterval);
     }
+
     render();
   }, 1000);
 }
