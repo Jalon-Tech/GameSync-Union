@@ -134,17 +134,20 @@
       color: #666;
     }
     .controller.surge-mode {
-      animation: controllerFlash 0.5s infinite;
-    }
+  animation: gsuGlitch 0.2s infinite steps(1);
+  background-image: none;
+  background-color: white;
+  z-index: 3;
+}
 
-    @keyframes controllerFlash {
-      0%, 100% {
-        filter: drop-shadow(0 0 5px white);
-      }
-      50% {
-        filter: drop-shadow(0 0 5px #e60023);
-      }
-    }
+@keyframes gsuGlitch {
+  0%   { background-color: white; }
+  25%  { background-color: #e60023; } /* GSU Red */
+  50%  { background-color: white; }
+  75%  { background-color: #e60023; }
+  100% { background-color: white; }
+}
+
 
   </style>
 </head>
