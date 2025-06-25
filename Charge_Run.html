@@ -306,7 +306,7 @@
 
       if (collectedBatteries >= 10 + level * 2) {
         level++;
-        if (level >= 10) {
+        if (level >= 5) {
           clearInterval(gameInterval);
           clearInterval(moveInterval);
           alert("FULL SYNC COMPLETE! You win!");
