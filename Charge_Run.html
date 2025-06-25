@@ -70,7 +70,7 @@
     .grid-cell div {
       width: 100%;
       height: 100%;
-      background-size: 140%;
+      background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
       position: absolute;
@@ -78,7 +78,21 @@
 
     .controller {
       background-image: url('GSU_LOGO.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #e60023;
+      border: 2px solid #fff;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
       z-index: 3;
+    }
+
+    .controller::after {
+      content: "🎮";
     }
 
     .battery::after {
