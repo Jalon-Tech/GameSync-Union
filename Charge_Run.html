@@ -107,11 +107,14 @@
       text-align: center;
     }
   .trapped-fire {
-    background-color: #e60023;
-    border: 3px solid white;
-    box-shadow: 0 0 10px white, 0 0 20px #e60023;
-    animation: gsuPulse 1s infinite;
-  }
+  background-color: #e60023;
+  border: 3px solid white;
+  box-shadow: 0 0 8px white, 0 0 14px #e60023;
+  animation: gsuPulse 1s infinite;
+  transform: scale(0.8);
+  border-radius: 6px;
+}
+
 
   @keyframes gsuPulse {
     0%, 100% { transform: scale(1); }
@@ -171,8 +174,39 @@
     <button id="startGameBtn">▶️ Start GSU Charge Run</button>
     <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
-  <div id="trapAlert" style="display:none; position: absolute; top: 60px; font-size: 1.5rem; background: #e60023; padding: 10px 20px; border-radius: 10px; color: white; box-shadow: 0 0 10px white;">🔥 Fires Trapped!</div>
-  <span id="reverseSurgeTimer" style="display:none; position: absolute; top: 110px; font-size: 1.3rem; background: black; color: white; padding: 8px 16px; border: 2px solid #e60023; border-radius: 10px; box-shadow: 0 0 10px #e60023;">🔄 Reverse Surge Active – Fires Trapped: 5s</span>
+
+  <div id="trapAlert" style="
+  display: none;
+  position: absolute;
+  top: 60px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #e60023, #ff4d4d);
+  padding: 8px 18px;
+  border-radius: 8px;
+  color: white;
+  border: 2px solid white;
+  text-shadow: 0 0 4px #000;
+  box-shadow: 0 0 10px #fff, 0 0 15px #e60023;
+  z-index: 999;
+">🔥 Fires Trapped!</div>
+
+  <span id="reverseSurgeTimer" style="
+  display: none;
+  position: absolute;
+  top: 110px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  background: #000;
+  color: #fff;
+  padding: 6px 14px;
+  border: 2px solid #e60023;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #e60023;
+  text-shadow: 0 0 4px #000;
+  z-index: 999;
+">🔄 Reverse Surge Active – Fires Trapped: 10s</span>
+
   <script>
   const canvas = document.getElementById("gameCanvas");
   const startBtn = document.getElementById("startGameBtn");
@@ -350,7 +384,7 @@ function activateReverseSurge() {
   }
 
   // Show timer
-  let freezeCounter = 5;
+  let freezeCounter = 10;
   surgeTimerDisplay.style.display = "inline-block";
   surgeTimerDisplay.textContent = `🔄 Reverse Surge Active – Fires Trapped: ${freezeCounter}s`;
 
