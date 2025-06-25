@@ -82,18 +82,9 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      background-color: #e60023;
+      background-color: white;
       border: 2px solid #fff;
-      font-size: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
       z-index: 3;
-    }
-
-    .controller::after {
-      content: "🎮";
     }
 
     .battery::after {
@@ -138,6 +129,7 @@
   </style>
 </head>
 <body>
+  <!-- Game layout -->
   <div id="pageWrapper">
     <header>
       <h1>GSU DATA SURGE</h1>
@@ -158,6 +150,7 @@
     <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
 
+  <!-- JavaScript (unchanged logic) -->
   <script>
     const canvas = document.getElementById("gameCanvas");
     const startBtn = document.getElementById("startGameBtn");
@@ -293,13 +286,11 @@
     }
 
     function checkCollision() {
-      let batteryCollectedThisTick = false;
       let levelUpTriggered = false;
 
       batteryPositions = batteryPositions.filter(pos => {
         if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
           collectedBatteries++;
-          batteryCollectedThisTick = true;
           return false;
         }
         return true;
@@ -317,11 +308,9 @@
       }
 
       firePositions.forEach(pos => {
-        if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
-          if (!isTimerExpired) {
-            isTimerExpired = true;
-            loseLife();
-          }
+        if (pos.x === controllerPos.x && pos.y === controllerPos.y && !isTimerExpired) {
+          isTimerExpired = true;
+          loseLife();
         }
       });
 
@@ -330,8 +319,6 @@
       if (levelUpTriggered) {
         powerBar.textContent = `Surge power: ⚡${level}`;
         surgeLevelDisplay.textContent = `Surge Level: ${level}`;
-        batteryPositions = [];
-        firePositions = [];
         spawnLevel();
         startTimer();
       }
@@ -340,10 +327,10 @@
     document.addEventListener("keydown", e => {
       e.preventDefault();
       let moved = false;
-      if (e.key === "ArrowUp" && controllerPos.y > 0) { controllerPos.y--; moved = true; }
-      if (e.key === "ArrowDown" && controllerPos.y < rows - 1) { controllerPos.y++; moved = true; }
-      if (e.key === "ArrowLeft" && controllerPos.x > 0) { controllerPos.x--; moved = true; }
-      if (e.key === "ArrowRight" && controllerPos.x < cols - 1) { controllerPos.x++; moved = true; }
+      if (e.key === "ArrowUp" && controllerPos.y > 0) controllerPos.y--, moved = true;
+      if (e.key === "ArrowDown" && controllerPos.y < rows - 1) controllerPos.y++, moved = true;
+      if (e.key === "ArrowLeft" && controllerPos.x > 0) controllerPos.x--, moved = true;
+      if (e.key === "ArrowRight" && controllerPos.x < cols - 1) controllerPos.x++, moved = true;
       if (moved) checkCollision();
     });
 
