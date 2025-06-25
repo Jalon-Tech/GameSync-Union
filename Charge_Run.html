@@ -18,7 +18,6 @@
       overflow-x: hidden;
       min-height: 100vh;
     }
-
     #pageWrapper {
       transform: scale(0.75);
       transform-origin: top center;
@@ -26,19 +25,16 @@
       flex-direction: column;
       align-items: center;
     }
-
     header h1 {
       font-size: 3rem;
       color: #e60023;
     }
-
     header h2 {
       font-size: 1.5rem;
       color: white;
       margin-top: -10px;
       text-align: center;
     }
-
     #hud {
       display: flex;
       justify-content: center;
@@ -47,7 +43,6 @@
       margin-bottom: 15px;
       font-size: 1.2rem;
     }
-
     #gameCanvas {
       display: grid;
       grid-template-columns: repeat(20, 48px);
@@ -60,14 +55,12 @@
       background-size: 48px 48px;
       margin-bottom: 20px;
     }
-
     .grid-cell {
       width: 48px;
       height: 48px;
       position: relative;
       overflow: visible;
     }
-
     .grid-cell div {
       width: 100%;
       height: 100%;
@@ -76,7 +69,6 @@
       background-position: center;
       position: absolute;
     }
-
     .controller {
       background-image: url('GSU_LOGO.png');
       background-size: contain;
@@ -84,9 +76,6 @@
       background-position: center;
       z-index: 3;
     }
-
-
-
     .battery::after {
       content: '🔋';
       font-size: 32px;
@@ -97,7 +86,6 @@
       width: 100%;
       text-align: center;
     }
-
     .hazard::after {
       content: '🔥';
       font-size: 32px;
@@ -108,7 +96,27 @@
       width: 100%;
       text-align: center;
     }
-
+    .reverse-surge::after {
+      content: '🔄';
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+    }
+    .trapped-fire {
+      background-image: url('GSU_LOGO.png');
+      animation: flash 1s infinite;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    @keyframes flash {
+      0%, 100% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(180deg); }
+    }
     #startGameBtn {
       padding: 12px 28px;
       font-size: 1.2rem;
@@ -120,7 +128,6 @@
       margin-top: 20px;
       box-shadow: 0 0 10px #e60023cc;
     }
-
     footer {
       margin-top: 30px;
       font-size: 0.9em;
@@ -129,13 +136,11 @@
   </style>
 </head>
 <body>
-  <!-- Game layout -->
   <div id="pageWrapper">
     <header>
       <h1>GSU DATA SURGE</h1>
       <h2>CONTROLLER CORE</h2>
     </header>
-
     <div id="hud">
       <span id="goalText">🔋 Collect: 0 / 10</span>
       <span>🔥 Avoid 20 fires</span>
@@ -144,208 +149,265 @@
       <span id="lives">Life Count: ❤️❤️❤️</span>
       <span id="surgeLevel">Surge Level: 0</span>
     </div>
-
     <div id="gameCanvas"></div>
     <button id="startGameBtn">▶️ Start GSU Charge Run</button>
     <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
-
-  <!-- JavaScript (unchanged logic) -->
   <script>
-    const canvas = document.getElementById("gameCanvas");
-    const startBtn = document.getElementById("startGameBtn");
-    const timerDisplay = document.getElementById("timer");
-    const livesDisplay = document.getElementById("lives");
-    const goalText = document.getElementById("goalText");
-    const powerBar = document.getElementById("powerBar");
-    const surgeLevelDisplay = document.getElementById("surgeLevel");
+  const canvas = document.getElementById("gameCanvas");
+  const startBtn = document.getElementById("startGameBtn");
+  const timerDisplay = document.getElementById("timer");
+  const livesDisplay = document.getElementById("lives");
+  const goalText = document.getElementById("goalText");
+  const powerBar = document.getElementById("powerBar");
+  const surgeLevelDisplay = document.getElementById("surgeLevel");
 
-    const rows = 20, cols = 20;
-    let controllerPos = { x: 10, y: 10 };
-    let batteryPositions = [];
-    let firePositions = [];
-    let collectedBatteries = 0;
-    let lives = 3;
-    let timer = 30;
-    let level = 0;
-    let gameInterval, moveInterval;
-    let isTimerExpired = false;
+  const rows = 20, cols = 20;
+  let controllerPos = { x: 10, y: 10 };
+  let batteryPositions = [];
+  let firePositions = [];
+  let reverseSurgeTiles = [];
+  let trappedFires = [];
+  let collectedBatteries = 0;
+  let lives = 3;
+  let timer = 30;
+  let level = 0;
+  let gameInterval, moveInterval;
+  let isTimerExpired = false;
+  let surgeActive = false;
 
-    function createGrid() {
-      canvas.innerHTML = "";
-      for (let i = 0; i < rows * cols; i++) {
-        const cell = document.createElement("div");
-        cell.classList.add("grid-cell");
-        canvas.appendChild(cell);
+  function createGrid() {
+    canvas.innerHTML = "";
+    for (let i = 0; i < rows * cols; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("grid-cell");
+      canvas.appendChild(cell);
+    }
+  }
+
+  function getIndex(x, y) {
+    return y * cols + x;
+  }
+
+  function render() {
+    const cells = canvas.querySelectorAll(".grid-cell");
+    cells.forEach(cell => cell.innerHTML = "");
+
+    const controller = document.createElement("div");
+    controller.classList.add("controller");
+    cells[getIndex(controllerPos.x, controllerPos.y)].appendChild(controller);
+
+    batteryPositions.forEach(pos => {
+      const el = document.createElement("div");
+      el.classList.add("battery");
+      cells[getIndex(pos.x, pos.y)].appendChild(el);
+    });
+
+    firePositions.forEach(pos => {
+      const el = document.createElement("div");
+      el.classList.add("hazard");
+      cells[getIndex(pos.x, pos.y)].appendChild(el);
+    });
+
+    trappedFires.forEach(pos => {
+      const el = document.createElement("div");
+      el.classList.add("trapped-fire");
+      cells[getIndex(pos.x, pos.y)].appendChild(el);
+    });
+
+    reverseSurgeTiles.forEach(pos => {
+      const el = document.createElement("div");
+      el.classList.add("reverse-surge");
+      cells[getIndex(pos.x, pos.y)].appendChild(el);
+    });
+
+    goalText.textContent = `🔋 Collect: ${collectedBatteries} / ${10 + level * 2}`;
+    livesDisplay.innerHTML = `Life Count: ${"❤️".repeat(lives)}`;
+  }
+
+  function getRandomUniquePositions(count, exclude = []) {
+    const positions = [];
+    while (positions.length < count) {
+      const pos = {
+        x: Math.floor(Math.random() * cols),
+        y: Math.floor(Math.random() * rows)
+      };
+      const key = `${pos.x},${pos.y}`;
+      if (
+        !exclude.some(e => `${e.x},${e.y}` === key) &&
+        !positions.some(e => `${e.x},${e.y}` === key)
+      ) {
+        positions.push(pos);
       }
     }
+    return positions;
+  }
 
-    function getIndex(x, y) {
-      return y * cols + x;
-    }
+  function moveItemsRandomly(list) {
+    return list.map(pos => {
+      const directions = [
+        { x: 0, y: -1 }, { x: 0, y: 1 },
+        { x: -1, y: 0 }, { x: 1, y: 0 }
+      ];
+      const dir = directions[Math.floor(Math.random() * directions.length)];
+      const newX = Math.max(0, Math.min(cols - 1, pos.x + dir.x));
+      const newY = Math.max(0, Math.min(rows - 1, pos.y + dir.y));
+      return { x: newX, y: newY };
+    });
+  }
 
-    function render() {
-      const cells = canvas.querySelectorAll(".grid-cell");
-      cells.forEach(cell => cell.innerHTML = "");
+  function spawnLevel() {
+    const batteriesNeeded = 10 + level * 2;
+    const firesNeeded = 20 + level * 2;
+    const exclude = [controllerPos];
+    batteryPositions = getRandomUniquePositions(batteriesNeeded, exclude);
+    firePositions = getRandomUniquePositions(firesNeeded, [...exclude, ...batteryPositions]);
+    reverseSurgeTiles = getRandomUniquePositions(4, [...exclude, ...batteryPositions, ...firePositions]);
+    trappedFires = [];
+    collectedBatteries = 0;
+    timer = 30 + level * 5;
+    isTimerExpired = false;
+    surgeActive = false;
+    render();
+  }
 
-      const controller = document.createElement("div");
-      controller.classList.add("controller");
-      cells[getIndex(controllerPos.x, controllerPos.y)].appendChild(controller);
+  function startTimer() {
+    clearInterval(gameInterval);
+    clearInterval(moveInterval);
 
-      batteryPositions.forEach(pos => {
-        const el = document.createElement("div");
-        el.classList.add("battery");
-        cells[getIndex(pos.x, pos.y)].appendChild(el);
-      });
-
-      firePositions.forEach(pos => {
-        const el = document.createElement("div");
-        el.classList.add("hazard");
-        cells[getIndex(pos.x, pos.y)].appendChild(el);
-      });
-
-      goalText.textContent = `🔋 Collect: ${collectedBatteries} / ${10 + level * 2}`;
-      livesDisplay.innerHTML = `Life Count: ${"❤️".repeat(lives)}`;
-    }
-
-    function getRandomUniquePositions(count, exclude = []) {
-      const positions = [];
-      while (positions.length < count) {
-        const pos = {
-          x: Math.floor(Math.random() * cols),
-          y: Math.floor(Math.random() * rows)
-        };
-        const key = `${pos.x},${pos.y}`;
-        if (
-          !exclude.some(e => `${e.x},${e.y}` === key) &&
-          !positions.some(e => `${e.x},${e.y}` === key)
-        ) {
-          positions.push(pos);
-        }
-      }
-      return positions;
-    }
-
-    function moveItemsRandomly(list) {
-      return list.map(pos => {
-        const directions = [
-          { x: 0, y: -1 }, { x: 0, y: 1 },
-          { x: -1, y: 0 }, { x: 1, y: 0 }
-        ];
-        const dir = directions[Math.floor(Math.random() * directions.length)];
-        const newX = Math.max(0, Math.min(cols - 1, pos.x + dir.x));
-        const newY = Math.max(0, Math.min(rows - 1, pos.y + dir.y));
-        return { x: newX, y: newY };
-      });
-    }
-
-    function spawnLevel() {
-      const batteriesNeeded = 10 + level * 2;
-      const firesNeeded = 20 + level * 2;
-      const exclude = [controllerPos];
-      batteryPositions = getRandomUniquePositions(batteriesNeeded, exclude);
-      firePositions = getRandomUniquePositions(firesNeeded, [...exclude, ...batteryPositions]);
-      collectedBatteries = 0;
-      timer = 30 + level * 5;
-      isTimerExpired = false;
-      render();
-    }
-
-    function startTimer() {
-      clearInterval(gameInterval);
-      clearInterval(moveInterval);
-
-      gameInterval = setInterval(() => {
-        if (!isTimerExpired) {
-          timer--;
-          timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
-          if (timer <= 0) {
-            isTimerExpired = true;
-            loseLife();
-          }
-        }
-      }, 1000);
-
-      moveInterval = setInterval(() => {
-        batteryPositions = moveItemsRandomly(batteryPositions);
-        firePositions = moveItemsRandomly(firePositions);
-        checkCollision();
-      }, 1000);
-    }
-
-    function loseLife() {
-      lives--;
-      if (lives <= 0) {
-        clearInterval(gameInterval);
-        clearInterval(moveInterval);
-        alert("Game Over!");
-      } else {
-        spawnLevel();
-        startTimer();
-      }
-    }
-
-    function checkCollision() {
-      let levelUpTriggered = false;
-
-      batteryPositions = batteryPositions.filter(pos => {
-        if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
-          collectedBatteries++;
-          return false;
-        }
-        return true;
-      });
-
-      if (collectedBatteries >= 10 + level * 2) {
-        level++;
-        if (level >= 5) {
-          clearInterval(gameInterval);
-          clearInterval(moveInterval);
-          alert("FULL SYNC COMPLETE! You win!");
-          return;
-        }
-        levelUpTriggered = true;
-      }
-
-      firePositions.forEach(pos => {
-        if (pos.x === controllerPos.x && pos.y === controllerPos.y && !isTimerExpired) {
+    gameInterval = setInterval(() => {
+      if (!isTimerExpired && !surgeActive) {
+        timer--;
+        timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
+        if (timer <= 0) {
           isTimerExpired = true;
           loseLife();
         }
-      });
-
-      render();
-
-      if (levelUpTriggered) {
-        powerBar.textContent = `Surge power: ⚡${level}`;
-        surgeLevelDisplay.textContent = `Surge Level: ${level}`;
-        spawnLevel();
-        startTimer();
       }
-    }
+    }, 1000);
 
-    document.addEventListener("keydown", e => {
-      e.preventDefault();
-      let moved = false;
-      if (e.key === "ArrowUp" && controllerPos.y > 0) controllerPos.y--, moved = true;
-      if (e.key === "ArrowDown" && controllerPos.y < rows - 1) controllerPos.y++, moved = true;
-      if (e.key === "ArrowLeft" && controllerPos.x > 0) controllerPos.x--, moved = true;
-      if (e.key === "ArrowRight" && controllerPos.x < cols - 1) controllerPos.x++, moved = true;
-      if (moved) checkCollision();
-    });
+    moveInterval = setInterval(() => {
+      batteryPositions = moveItemsRandomly(batteryPositions);
+      if (!surgeActive) {
+        firePositions = moveItemsRandomly(firePositions);
+      }
+      checkCollision();
+    }, 1000);
+  }
 
-    startBtn.addEventListener("click", () => {
-      lives = 3;
-      level = 0;
-      powerBar.textContent = `Surge power: ⚡0`;
-      surgeLevelDisplay.textContent = `Surge Level: 0`;
-      controllerPos = { x: 10, y: 10 };
-      createGrid();
+  function loseLife() {
+    lives--;
+    if (lives <= 0) {
+      clearInterval(gameInterval);
+      clearInterval(moveInterval);
+      alert("Game Over!");
+    } else {
       spawnLevel();
       startTimer();
+    }
+  }
+
+  function activateReverseSurge() {
+    surgeActive = true;
+    // Convert fire to trapped
+    trappedFires = [...firePositions];
+    firePositions = [];
+
+    // Freeze timer
+    let freezeCounter = 10;
+    const freezeInterval = setInterval(() => {
+      freezeCounter--;
+      if (freezeCounter <= 0) {
+        // End surge
+        surgeActive = false;
+        firePositions = [...firePositions, ...trappedFires];
+        trappedFires = [];
+        clearInterval(freezeInterval);
+      }
+      render();
+    }, 1000);
+  }
+
+  function checkCollision() {
+    let levelUpTriggered = false;
+
+    // Collect battery
+    batteryPositions = batteryPositions.filter(pos => {
+      if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
+        collectedBatteries++;
+        return false;
+      }
+      return true;
     });
 
+    // Activate 🔄
+    reverseSurgeTiles = reverseSurgeTiles.filter(pos => {
+      if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
+        activateReverseSurge();
+        return false;
+      }
+      return true;
+    });
+
+    // Trap fires during surge
+    trappedFires = trappedFires.filter(pos => {
+      if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
+        return false; // collected into trap
+      }
+      return true;
+    });
+
+    // Check if fire hit
+    firePositions.forEach(pos => {
+      if (pos.x === controllerPos.x && pos.y === controllerPos.y && !isTimerExpired) {
+        isTimerExpired = true;
+        loseLife();
+      }
+    });
+
+    if (collectedBatteries >= 10 + level * 2) {
+      level++;
+      if (level >= 5) {
+        clearInterval(gameInterval);
+        clearInterval(moveInterval);
+        alert("FULL SYNC COMPLETE! You win!");
+        return;
+      }
+      levelUpTriggered = true;
+    }
+
+    render();
+
+    if (levelUpTriggered) {
+      powerBar.textContent = `Surge power: ⚡${level}`;
+      surgeLevelDisplay.textContent = `Surge Level: ${level}`;
+      spawnLevel();
+      startTimer();
+    }
+  }
+
+  document.addEventListener("keydown", e => {
+    e.preventDefault();
+    let moved = false;
+    if (e.key === "ArrowUp" && controllerPos.y > 0) controllerPos.y--, moved = true;
+    if (e.key === "ArrowDown" && controllerPos.y < rows - 1) controllerPos.y++, moved = true;
+    if (e.key === "ArrowLeft" && controllerPos.x > 0) controllerPos.x--, moved = true;
+    if (e.key === "ArrowRight" && controllerPos.x < cols - 1) controllerPos.x++, moved = true;
+    if (moved) checkCollision();
+  });
+
+  startBtn.addEventListener("click", () => {
+    lives = 3;
+    level = 0;
+    powerBar.textContent = `Surge power: ⚡0`;
+    surgeLevelDisplay.textContent = `Surge Level: 0`;
+    controllerPos = { x: 10, y: 10 };
     createGrid();
-  </script>
+    spawnLevel();
+    startTimer();
+  });
+
+  createGrid();
+</script>
 </body>
 </html>
