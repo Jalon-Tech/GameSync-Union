@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
   <meta charset="UTF-8" />
   <title>GSU Charge Run</title>
   <link rel="icon" href="GSU_LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <style>
+    .red-circle-btn {
+    background-color: #e60023;
+    border: 2px solid white;
+    color: white;
+    font-size: 20px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    box-shadow: 0 0 8px #e60023;
+    cursor: pointer;
+    user-select: none;
+  }
+  .red-circle-btn:active {
+    box-shadow: 0 0 14px white;
+  }
+
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
@@ -245,14 +263,14 @@
 
   <!-- ✅ Mobile Controls (ONLY ONCE, BELOW the gameCanvas) -->
   <div id="mobileControls" style="display: none; margin: 20px 0;">
-    <div style="display: flex; justify-content: center;">
-      <button class="dpad" onclick="moveController('ArrowUp')">⬆️</button>
-    </div>
-    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 5px;">
-      <button class="dpad" onclick="moveController('ArrowLeft')">⬅️</button>
-      <button class="dpad" onclick="moveController('ArrowDown')">⬇️</button>
-      <button class="dpad" onclick="moveController('ArrowRight')">➡️</button>
-    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+  <div><button class="red-circle-btn" onclick="moveController('ArrowUp')">⬆️</button></div>
+  <div style="display: flex; gap: 8px;">
+    <button class="red-circle-btn" onclick="moveController('ArrowLeft')">⬅️</button>
+    <button class="red-circle-btn" onclick="moveController('ArrowDown')">⬇️</button>
+    <button class="red-circle-btn" onclick="moveController('ArrowRight')">➡️</button>
+  </div>
+</div>
   </div>
 
   <button id="startGameBtn">▶️ Start GSU Charge Run</button>
