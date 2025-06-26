@@ -108,13 +108,24 @@
       text-align: center;
     }
     .trapped-fire {
-    background-color: #e60023;
-    border: 1px solid white;
-    box-shadow: 0 0 3px white, 0 0 6px #e60023;
-    animation: gsuPulse 1s infinite;
-    transform: scale(0.15);
-    border-radius: 2px;
-    z-index: 1;
+      width: 10px;
+      height: 10px;
+      background-color: #e60023;
+      border: 1px solid white;
+      box-shadow: 0 0 1px white, 0 0 3px #e60023;
+      animation: gsuPulse 1s infinite;
+      border-radius: 2px;
+      z-index: 1;
+    }
+
+  .trapped-fire::after {
+    content: '🔥';
+    font-size: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
   }
 
 
