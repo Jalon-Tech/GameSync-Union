@@ -63,16 +63,21 @@
   
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(20, 48px);
-      grid-template-rows: repeat(20, 48px);
+      grid-template-columns: repeat(20, 30px); /* was 48px */
+      grid-template-rows: repeat(20, 30px);     /* was 48px */
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-      background-size: 48px 48px;
+      background-size: 30px 30px;
       margin-bottom: 20px;
     }
+    .grid-cell {
+      width: 50px; /* match new size */
+      height: 50px;
+    }
+
     .grid-cell {
       width: 48px;
       height: 48px;
@@ -96,7 +101,7 @@
     }
     .battery::after {
       content: '🔋';
-      font-size: 32px;
+      font-size: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -106,7 +111,7 @@
     }
     .hazard::after {
       content: '🔥';
-      font-size: 32px;
+      font-size: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -116,7 +121,7 @@
     }
     .reverse-surge::after {
       content: '🔄';
-      font-size: 32px;
+      font-size: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -223,9 +228,10 @@
 
 @media (max-width: 768px) {
   #gameCanvas {
-    transform: scale(0.65);
+    transform: scale(0.85);
     transform-origin: top center;
   }
+
 
   .dpad {
     font-size: 1rem;
