@@ -6,6 +6,13 @@
   <link rel="icon" href="GSU_LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <style>
+    #gameWrapper {
+      max-width: 1000px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: center;
+    }
+
     .dpad {
       padding: 14px 20px;
       font-size: 1.3rem;
@@ -63,8 +70,8 @@
   
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(20, 30px); /* was 48px */
-      grid-template-rows: repeat(20, 30px);     /* was 48px */
+      grid-template-columns: repeat(20, 44px); /* was 48px */
+      grid-template-rows: repeat(20, 44px);     /* was 48px */
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
@@ -74,13 +81,11 @@
       margin-bottom: 20px;
     }
     .grid-cell {
-      width: 50px; /* match new size */
-      height: 50px;
+      width: 44px; /* match new size */
+      height: 44px;
     }
 
     .grid-cell {
-      width: 48px;
-      height: 48px;
       position: relative;
       overflow: visible;
     }
@@ -101,7 +106,7 @@
     }
     .battery::after {
       content: '🔋';
-      font-size: 24px;
+      font-size: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -111,7 +116,7 @@
     }
     .hazard::after {
       content: '🔥';
-      font-size: 24px;
+      font-size: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -121,7 +126,7 @@
     }
     .reverse-surge::after {
       content: '🔄';
-      font-size: 24px;
+      font-size: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -228,9 +233,16 @@
 
 @media (max-width: 768px) {
   #gameCanvas {
-    transform: scale(0.85);
+    transform: scale(0.75);
     transform-origin: top center;
   }
+  .battery::after,
+  .hazard::after,
+  .reverse-surge::after {
+    font-size: 22px;
+  }
+
+
 
 
   .dpad {
