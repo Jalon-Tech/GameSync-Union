@@ -159,20 +159,36 @@
 
 .trap-box {
   position: absolute;
-  background: linear-gradient(45deg, #e60023, #b3001b);
+  background-color: #e60023;
   color: white;
-  font-size: 0.9rem;
-  font-weight: bold;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 2px solid white;
-  box-shadow: 0 0 10px white, 0 0 16px #e60023;
-  text-align: center;
-  text-shadow: 0 0 4px black;
-  z-index: 999;
+  font-size: 1.3rem;
+  width: 48px;
+  height: 48px;
   display: none;
-  width: 160px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: 0 0 6px white, 0 0 12px #e60023;
+  z-index: 999;
+  text-align: center;
 }
+.trap-left {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+.trap-right {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+.trap-box .countdown {
+  font-size: 0.9rem;
+  display: block;
+  margin-top: 2px;
+  color: yellow;
+}
+
 
 .trap-box .alert-line {
   font-size: 1rem;
@@ -181,7 +197,7 @@
 
 .trap-box .countdown-line {
   font-size: 0.95rem;
-  color: #ffff00;
+  color: white;
 }
 
 .trap-left {
