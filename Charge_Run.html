@@ -65,11 +65,11 @@
     .grid-cell div {
       width: 100%;
       height: 100%;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
     .controller {
       background-image: url('GSU_LOGO.png');
       background-size: contain;
@@ -109,13 +109,14 @@
     }
     .trapped-fire {
     background-color: #e60023;
-    border: 2px solid white;
-    box-shadow: 0 0 5px white, 0 0 10px #e60023;
+    border: 1px solid white;
+    box-shadow: 0 0 3px white, 0 0 6px #e60023;
     animation: gsuPulse 1s infinite;
-    transform: scale(0.45);
-    border-radius: 4px;
+    transform: scale(0.15);
+    border-radius: 2px;
     z-index: 1;
   }
+
 
 
 
