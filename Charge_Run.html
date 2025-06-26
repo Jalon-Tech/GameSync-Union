@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GSU Charge Run</title>
   <link rel="icon" href="GSU_LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
@@ -269,27 +268,6 @@
     font-size: 1.1rem;
   }
 }
-
-@media (max-width: 768px) {
-  #pageWrapper {
-    transform: scale(0.78);
-    transform-origin: top center;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1400px) {
-  #pageWrapper {
-    transform: scale(0.9);
-    transform-origin: top center;
-  }
-}
-
-@media (min-width: 1401px) {
-  #pageWrapper {
-    transform: none;
-  }
-}
-
 
 
   </style>
@@ -610,24 +588,15 @@ function activateReverseSurge() {
   });
 
   startBtn.addEventListener("click", () => {
-  lives = 3;
-  level = 0;
-  powerBar.textContent = `Surge power: ⚡0`;
-  surgeLevelDisplay.textContent = `Surge Level: 0`;
-  controllerPos = { x: 10, y: 10 };
-  createGrid();
-  spawnLevel();
-  startTimer();
-
-  // Mobile fullscreen + orientation lock
-  if (window.innerWidth <= 768) {
-    const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
-    if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('portrait').catch(() => {});
-    }
-  }
-});
+    lives = 3;
+    level = 0;
+    powerBar.textContent = `Surge power: ⚡0`;
+    surgeLevelDisplay.textContent = `Surge Level: 0`;
+    controllerPos = { x: 10, y: 10 };
+    createGrid();
+    spawnLevel();
+    startTimer();
+  });
 
   createGrid();
   function moveController(key) {
