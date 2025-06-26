@@ -74,20 +74,20 @@
 
 @media (max-width: 768px) {
   #gameCanvas {
-    grid-template-columns: repeat(20, 32px);
-    grid-template-rows: repeat(20, 32px);
-    background-size: 32px 32px;
+    grid-template-columns: repeat(20, 28px); /* was 32px */
+    grid-template-rows: repeat(20, 28px);
+    background-size: 28px 28px;
   }
 
   .grid-cell {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
 
   .battery::after,
   .hazard::after,
   .reverse-surge::after {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   header h1 {
@@ -121,32 +121,30 @@
       text-align: center;
     }
     #hud {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-      font-size: 1.2rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+
     }
   
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(20, 48px);
-      grid-template-rows: repeat(20, 48px);
+      grid-template-columns: repeat(20, 36px); /* was 48px */
+      grid-template-rows: repeat(20, 36px);    /* was 48px */
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-      background-size: 48px 48px;
+      background-size: 36px 36px; /* was 48px */
       margin-bottom: 20px;
     }
     .grid-cell {
-      width: 48px;
-      height: 48px;
-      position: relative;
-      overflow: visible;
+      width: 36px;  /* was 48px */
+      height: 36px; /* was 48px */
     }
+
     .grid-cell div {
       width: 100%;
       height: 100%;
