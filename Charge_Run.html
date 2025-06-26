@@ -19,53 +19,12 @@
       min-height: 100vh;
     }
     #pageWrapper {
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-  #gameCanvas {
-    grid-template-columns: repeat(20, 32px);
-    grid-template-rows: repeat(20, 32px);
-    background-size: 32px 32px;
-  }
-
-  .grid-cell {
-    width: 32px;
-    height: 32px;
-  }
-
-  .battery::after,
-  .hazard::after,
-  .reverse-surge::after {
-    font-size: 24px;
-  }
-
-  header h1 {
-    font-size: 2rem;
-  }
-
-  header h2 {
-    font-size: 1rem;
-  }
-
-  #hud {
-    font-size: 1rem;
-    gap: 15px;
-  }
-
-  #startGameBtn {
-    font-size: 1rem;
-    padding: 10px 20px;
-  }
-}
-
-
+      transform: scale(0.75);
+      transform-origin: top center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     header h1 {
       font-size: 3rem;
       color: #e60023;
