@@ -1,55 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="UTF-8" />
   <title>GSU Charge Run</title>
   <link rel="icon" href="GSU_LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <style>
-    #mobileControls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  gap: 12px;
-}
-.dpad-button {
-  -webkit-tap-highlight-color: transparent;
-}
-
-.dpad-row {
-  display: flex;
-  gap: 12px;
-}
-
-.dpad-button {
-  width: 60px;
-  height: 60px;
-  background-color: #e60023;
-  color: white;
-  font-size: 1.8rem;
-  font-weight: bold;
-  border: 2px solid white;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #e60023, 0 0 20px white;
-  cursor: pointer;
-  text-align: center;
-  line-height: 60px;
-  user-select: none;
-  transition: transform 0.1s;
-}
-
-.dpad-button:active {
-  transform: scale(0.9);
-}
-
-#gameWrapper {
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
@@ -74,20 +30,20 @@
 
 @media (max-width: 768px) {
   #gameCanvas {
-    grid-template-columns: repeat(20, 28px); /* was 32px */
-    grid-template-rows: repeat(20, 28px);
-    background-size: 28px 28px;
+    grid-template-columns: repeat(20, 32px);
+    grid-template-rows: repeat(20, 32px);
+    background-size: 32px 32px;
   }
 
   .grid-cell {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 
   .battery::after,
   .hazard::after,
   .reverse-surge::after {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   header h1 {
@@ -121,30 +77,32 @@
       text-align: center;
     }
     #hud {
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.95rem;
-
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
     }
   
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(20, 36px); /* was 48px */
-      grid-template-rows: repeat(20, 36px);    /* was 48px */
+      grid-template-columns: repeat(20, 48px);
+      grid-template-rows: repeat(20, 48px);
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-      background-size: 36px 36px; /* was 48px */
+      background-size: 48px 48px;
       margin-bottom: 20px;
     }
     .grid-cell {
-      width: 36px;  /* was 48px */
-      height: 36px; /* was 48px */
+      width: 48px;
+      height: 48px;
+      position: relative;
+      overflow: visible;
     }
-
     .grid-cell div {
       width: 100%;
       height: 100%;
@@ -323,17 +281,16 @@
   </div>
 
   <!-- ✅ Mobile Controls (ONLY ONCE, BELOW the gameCanvas) -->
-  <div id="mobileControls">
-  <div class="dpad-row" style="justify-content: center;">
-    <button class="dpad-button" onclick="moveController('ArrowUp')">⬆️</button>
+  <div id="mobileControls" style="display: none; margin: 20px 0;">
+    <div style="display: flex; justify-content: center;">
+      <button class="dpad" onclick="moveController('ArrowUp')">⬆️</button>
+    </div>
+    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 5px;">
+      <button class="dpad" onclick="moveController('ArrowLeft')">⬅️</button>
+      <button class="dpad" onclick="moveController('ArrowDown')">⬇️</button>
+      <button class="dpad" onclick="moveController('ArrowRight')">➡️</button>
+    </div>
   </div>
-  <div class="dpad-row" style="justify-content: center;">
-    <button class="dpad-button" onclick="moveController('ArrowLeft')">⬅️</button>
-    <button class="dpad-button" onclick="moveController('ArrowDown')">⬇️</button>
-    <button class="dpad-button" onclick="moveController('ArrowRight')">➡️</button>
-  </div>
-</div>
-
 
   <button id="startGameBtn">▶️ Start GSU Charge Run</button>
   <footer>Built for GameSync Union — GSU Charge Run™</footer>
