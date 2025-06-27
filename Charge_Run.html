@@ -6,29 +6,6 @@
   <link rel="icon" href="GSU_LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   <style>
-    #gameWrapper {
-      max-width: 1000px;
-      margin: 0 auto 20px auto;
-      display: flex;
-      justify-content: center;
-    }
-
-    .dpad {
-      padding: 14px 20px;
-      font-size: 1.3rem;
-      background: #111;
-      color: #fff;
-      border: 2px solid #e60023;
-      border-radius: 8px;
-      box-shadow: 0 0 8px #e60023;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-    .dpad:hover {
-      background: #e60023;
-      color: #000;
-    }
-
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
@@ -42,13 +19,12 @@
       min-height: 100vh;
     }
     #pageWrapper {
+      transform: scale(0.75);
+      transform-origin: top center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
     }
-
-
     header h1 {
       font-size: 3rem;
       color: #e60023;
@@ -67,25 +43,21 @@
       margin-bottom: 15px;
       font-size: 1.2rem;
     }
-  
     #gameCanvas {
       display: grid;
-      grid-template-columns: repeat(20, 44px); /* was 48px */
-      grid-template-rows: repeat(20, 44px);     /* was 48px */
+      grid-template-columns: repeat(20, 48px);
+      grid-template-rows: repeat(20, 48px);
       border: 3px solid #e60023;
       box-shadow: 0 0 20px #e60023cc;
       background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-      background-size: 30px 30px;
+      background-size: 48px 48px;
       margin-bottom: 20px;
     }
     .grid-cell {
-      width: 44px; /* match new size */
-      height: 44px;
-    }
-
-    .grid-cell {
+      width: 48px;
+      height: 48px;
       position: relative;
       overflow: visible;
     }
@@ -106,7 +78,7 @@
     }
     .battery::after {
       content: '🔋';
-      font-size: 28px;
+      font-size: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -116,7 +88,7 @@
     }
     .hazard::after {
       content: '🔥';
-      font-size: 28px;
+      font-size: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -126,7 +98,7 @@
     }
     .reverse-surge::after {
       content: '🔄';
-      font-size: 28px;
+      font-size: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -136,29 +108,15 @@
     }
     .trapped-fire {
       background-image: url('GSU_LOGO.png');
+      animation: flash 1s infinite;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid white;
-      border-radius: 4px;
-      animation: flicker 0.6s infinite alternate;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
     }
-
-
-
-
-   @keyframes flicker {
-      0%   { opacity: 1; transform: scale(1); }
-      50%  { opacity: 0.5; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
+    @keyframes flash {
+      0%, 100% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(180deg); }
     }
-
-
-
     #startGameBtn {
       padding: 12px 28px;
       font-size: 1.2rem;
@@ -175,153 +133,26 @@
       font-size: 0.9em;
       color: #666;
     }
-    .controller.surge-mode {
-    animation: gsuGlitch 0.25s infinite steps(1);
-    background-image: none;
-    background-color: white;
-    z-index: 3;
-    box-shadow: 0 0 12px white, 0 0 20px #e60023;
-  }
-
-
-@keyframes gsuGlitch {
-  0%   { background-color: white; }
-  25%  { background-color: #e60023; } /* GSU Red */
-  50%  { background-color: white; }
-  75%  { background-color: #e60023; }
-  100% { background-color: white; }
-}
-
-.trap-box {
-  position: absolute;
-  background: linear-gradient(45deg, #e60023, #b3001b);
-  color: white;
-  font-size: 0.9rem;
-  font-weight: bold;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 2px solid white;
-  box-shadow: 0 0 10px white, 0 0 16px #e60023;
-  text-align: center;
-  text-shadow: 0 0 4px black;
-  z-index: 999;
-  display: none;
-  width: 160px;
-}
-
-.trap-box .alert-line {
-  font-size: 1rem;
-  margin-bottom: 4px;
-}
-
-.trap-box .countdown-line {
-  font-size: 0.95rem;
-  color: #ffff00;
-}
-
-.trap-left {
-  top: 50%;
-  left: 20px;
-  transform: translateY(-50%);
-}
-
-.trap-right {
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-}
-
-@media (max-width: 768px) {
-  #gameCanvas {
-    transform: scale(0.75);
-    transform-origin: top center;
-  }
-  .battery::after,
-  .hazard::after,
-  .reverse-surge::after {
-    font-size: 22px;
-  }
-
-
-
-
-  .dpad {
-    font-size: 1rem;
-    padding: 10px 14px;
-  }
-
-  #hud {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .trap-box {
-    font-size: 0.75rem;
-    width: 120px;
-  }
-
-  header h1 {
-    font-size: 2.2rem;
-  }
-
-  header h2 {
-    font-size: 1.1rem;
-  }
-}
-
-
   </style>
 </head>
 <body>
-  <!-- 🔄 GSU Trap Alert Boxes - Left & Right -->
-<div class="trap-box trap-left">
-  <div class="alert-line">🔥 Fires Trapped!</div>
-  <div class="countdown-line">⏱️ <span class="countdown">10s</span></div>
-</div>
-<div class="trap-box trap-right">
-  <div class="alert-line">🔥 Fires Trapped!</div>
-  <div class="countdown-line">⏱️ <span class="countdown">10s</span></div>
-</div>
-
- <div id="pageWrapper">
-  <header>
-    <h1>GSU DATA SURGE</h1>
-    <h2>CONTROLLER CORE</h2>
-  </header>
-
-  <div id="hud">
-    <span id="goalText">🔋 Collect: 0 / 10</span>
-    <span>🔥 Avoid 20 fires</span>
-    <span id="timer">⏱️ Time Left: 30</span>
-    <span id="powerBar">Surge power: ⚡0</span>
-    <span id="lives">Life Count: ❤️❤️❤️</span>
-    <span id="surgeLevel">Surge Level: 0</span>
-    <span>🔄 Grab for Reverse Surge Mode!</span>
-  </div>
-
-  <div id="gameWrapper" style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-    <!-- GAME CANVAS -->
+  <div id="pageWrapper">
+    <header>
+      <h1>GSU DATA SURGE</h1>
+      <h2>CONTROLLER CORE</h2>
+    </header>
+    <div id="hud">
+      <span id="goalText">🔋 Collect: 0 / 10</span>
+      <span>🔥 Avoid 20 fires</span>
+      <span id="timer">⏱️ Time Left: 30</span>
+      <span id="powerBar">Surge power: ⚡0</span>
+      <span id="lives">Life Count: ❤️❤️❤️</span>
+      <span id="surgeLevel">Surge Level: 0</span>
+    </div>
     <div id="gameCanvas"></div>
+    <button id="startGameBtn">▶️ Start GSU Charge Run</button>
+    <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
-
-  <!-- ✅ Always Visible Controls -->
-<div id="buttonControls" style="margin: 20px 0;">
-  <div style="display: flex; justify-content: center;">
-    <button class="dpad" onclick="moveController('ArrowUp')">⬆️</button>
-  </div>
-  <div style="display: flex; justify-content: center; gap: 10px; margin-top: 5px;">
-    <button class="dpad" onclick="moveController('ArrowLeft')">⬅️</button>
-    <button class="dpad" onclick="moveController('ArrowDown')">⬇️</button>
-    <button class="dpad" onclick="moveController('ArrowRight')">➡️</button>
-  </div>
-</div>
-
-
-  <button id="startGameBtn">▶️ Start GSU Charge Run</button>
-  <footer>Built for GameSync Union — GSU Charge Run™</footer>
-</div>
-
-
   <script>
   const canvas = document.getElementById("gameCanvas");
   const startBtn = document.getElementById("startGameBtn");
@@ -431,7 +262,7 @@
     const exclude = [controllerPos];
     batteryPositions = getRandomUniquePositions(batteriesNeeded, exclude);
     firePositions = getRandomUniquePositions(firesNeeded, [...exclude, ...batteryPositions]);
-    reverseSurgeTiles = getRandomUniquePositions(2, [...exclude, ...batteryPositions, ...firePositions]);
+    reverseSurgeTiles = getRandomUniquePositions(4, [...exclude, ...batteryPositions, ...firePositions]);
     trappedFires = [];
     collectedBatteries = 0;
     timer = 30 + level * 5;
@@ -441,30 +272,28 @@
   }
 
   function startTimer() {
-  clearInterval(gameInterval);
-  clearInterval(moveInterval);
+    clearInterval(gameInterval);
+    clearInterval(moveInterval);
 
-  gameInterval = setInterval(() => {
-    if (!isTimerExpired && !surgeActive) {
-      timer--;
-      timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
-      if (timer <= 0) {
-        isTimerExpired = true;
-        loseLife();
+    gameInterval = setInterval(() => {
+      if (!isTimerExpired && !surgeActive) {
+        timer--;
+        timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
+        if (timer <= 0) {
+          isTimerExpired = true;
+          loseLife();
+        }
       }
-    }
-  }, 1000);
+    }, 1000);
 
-  moveInterval = setInterval(() => {
-    batteryPositions = moveItemsRandomly(batteryPositions);
-    reverseSurgeTiles = moveItemsRandomly(reverseSurgeTiles);
-    if (!surgeActive) {
-      firePositions = moveItemsRandomly(firePositions);
-    }
-    checkCollision();
-  }, 1000);
-}
-
+    moveInterval = setInterval(() => {
+      batteryPositions = moveItemsRandomly(batteryPositions);
+      if (!surgeActive) {
+        firePositions = moveItemsRandomly(firePositions);
+      }
+      checkCollision();
+    }, 1000);
+  }
 
   function loseLife() {
     lives--;
@@ -478,46 +307,26 @@
     }
   }
 
-function activateReverseSurge() {
-  surgeActive = true;
-  trappedFires = [...firePositions];
-  firePositions = [];
+  function activateReverseSurge() {
+    surgeActive = true;
+    // Convert fire to trapped
+    trappedFires = [...firePositions];
+    firePositions = [];
 
-  const boxes = document.querySelectorAll('.trap-box');
-  boxes.forEach(box => {
-    box.style.display = "block";
-    box.querySelector(".countdown").textContent = "10s";
-  });
-
-  const cells = canvas.querySelectorAll(".grid-cell");
-  const controllerCell = cells[getIndex(controllerPos.x, controllerPos.y)];
-  const controllerDiv = controllerCell?.querySelector(".controller");
-  if (controllerDiv) controllerDiv.classList.add("surge-mode");
-
-  let freezeCounter = 10;
-  const freezeInterval = setInterval(() => {
-    freezeCounter--;
-
-    boxes.forEach(box => {
-      box.querySelector(".countdown").textContent = `${freezeCounter}s`;
-    });
-
-    if (freezeCounter <= 0) {
-      clearInterval(freezeInterval);
-      boxes.forEach(box => box.style.display = "none");
-
-      surgeActive = false;
-      firePositions = [...firePositions, ...trappedFires];
-      trappedFires = [];
-
-      if (controllerDiv) controllerDiv.classList.remove("surge-mode");
-    }
-
-    render();
-  }, 1000);
-}
-
-
+    // Freeze timer
+    let freezeCounter = 10;
+    const freezeInterval = setInterval(() => {
+      freezeCounter--;
+      if (freezeCounter <= 0) {
+        // End surge
+        surgeActive = false;
+        firePositions = [...firePositions, ...trappedFires];
+        trappedFires = [];
+        clearInterval(freezeInterval);
+      }
+      render();
+    }, 1000);
+  }
 
   function checkCollision() {
     let levelUpTriggered = false;
@@ -599,16 +408,6 @@ function activateReverseSurge() {
   });
 
   createGrid();
-  function moveController(key) {
-  let moved = false;
-  if (key === "ArrowUp" && controllerPos.y > 0) controllerPos.y--, moved = true;
-  if (key === "ArrowDown" && controllerPos.y < rows - 1) controllerPos.y++, moved = true;
-  if (key === "ArrowLeft" && controllerPos.x > 0) controllerPos.x--, moved = true;
-  if (key === "ArrowRight" && controllerPos.x < cols - 1) controllerPos.x++, moved = true;
-  if (moved) checkCollision();
-}
-
-
 </script>
 </body>
 </html>
