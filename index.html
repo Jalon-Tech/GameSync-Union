@@ -863,7 +863,7 @@ nav a:hover {
 {
   name: "Peter Parker/Spider-Man",
   role: "superhero",
-  desc: "The master of misdirection. Like Kahraman’s mystery, you thrive in confusion and smoke.",
+  desc: "You balance smarts, strength, and soul. In every crisis, you choose the right thing — even when it costs you everything.",
   game: "Marvel's Spider-Man 2",
   img: "https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg"
 }]
@@ -1783,7 +1783,8 @@ function hideAuthNotice() {
   import { getFirestore, collection, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
   import { db2 } from './firebase-init.js'; // db2 must be exported from init file
 
-  const statsBox = document.getElementById('livewire-stats');
+  <div id="livewire-stats" class="statline-supreme"> </div>
+
   if (statsBox) statsBox.innerHTML = 'Loading GSU Data...';
 
   async function loadStatlineSupreme() {
