@@ -1987,19 +1987,11 @@ nav a:hover {
 <div class="box">
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
     🔥 Statline Supreme: All Union. All Synced.
-    <div class="stat-item" id="uploads-stat">📹 ? new uploads this week</div>
-    <div class="stat-item" id="fanart-stat">🎨 ? fan arts added</div>
-    <div class="stat-item" id="trophies-stat">🏆 ? new trophies earned</div>
-    <div class="stat-item" id="lounge-stat">💬 ? new Lounge posts</div>
-    <div class="stat-item" id="users-stat">👥 ? new GSU members joined</div>
-    <div class="stat-item" id="combos-stat">👾 ? combos submitted</div>
-    <div class="stat-item" id="polls-stat">📊 ? polls voted on</div>
   </h2>
-  <div id="livewire-stats" class="livewire-stats">
-    Loading GSU data...
+  <div class="livewire-stats" id="livewire-stats">
+    <div class="stat-item">Loading real GSU stats...</div>
   </div>
 </div>
-
 
 
 <div class="box">
@@ -2845,76 +2837,58 @@ function hideAuthNotice() {
   import './profile-loader.js';
   
 </script>
- <script type="module">
-  import { getFirestore, collection, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-  import { db as db2 } from './firebase-init.js'; // Rename to db2 to avoid conflict
+  <script type="module">
+  import {
+    collection,
+    getDocs,
+    query,
+    where,
+    Timestamp
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-  const statSelectors = {
-    uploads: "uploads-stat",
-    fanArt: "fanart-stat",
-    trophies: "trophies-stat",
-    lounge: "lounge-stat",
-    users: "users-stat",
-    combos: "combos-stat",
-    polls: "polls-stat"
-  };
+  const db2 = window.gsu.db;
 
-  const weekStart = getWeekStartTimestamp();
+  async function loadStatlineSupreme() {
+    const statsBox = document.getElementById('livewire-stats');
+    statsBox.innerHTML = '';
 
-  async function loadGSUStats() {
-    try {
-      // 🔥 Uploads
-      const uploads = await getCollectionCount("uploads", "timestamp");
-      document.getElementById(statSelectors.uploads).textContent = `📹 ${uploads} new uploads this week`;
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
+    startOfWeek.setHours(0, 0, 0, 0);
+    const weekStartTS = Timestamp.fromDate(startOfWeek);
 
-      // 🎨 Fan Art
-      const fanArt = await getCollectionCount("fanArt", "timestamp");
-      document.getElementById(statSelectors.fanArt).textContent = `🎨 ${fanArt} fan arts added`;
+    const collectionsToQuery = [
+      { name: 'uploads', timestampField: 'timestamp', label: '📹', message: 'new uploads this week' },
+      { name: 'fanArt', timestampField: 'timestamp', label: '🎨', message: 'fan arts added' },
+      { name: 'trophies', timestampField: 'timestamp', label: '🏆', message: 'new trophies earned' },
+      { name: 'communitychat', timestampField: 'timestamp', label: '💬', message: 'new Lounge posts' },
+      { name: 'users', timestampField: 'createdAt', label: '👥', message: 'new GSU members joined' },
+      { name: 'combos', timestampField: 'timestamp', label: '👾', message: 'combos submitted' },
+      { name: 'pollVotes', timestampField: 'timestamp', label: '📊', message: 'polls voted on' }
+    ];
 
-      // 🏆 Trophies
-      const trophies = await getCollectionCount("trophies", "timestamp");
-      document.getElementById(statSelectors.trophies).textContent = `🏆 ${trophies} new trophies earned`;
+    for (const entry of collectionsToQuery) {
+      try {
+        const colRef = collection(db2, entry.name);
+        const q = query(colRef, where(entry.timestampField, ">=", weekStartTS));
+        const snapshot = await getDocs(q);
+        const count = snapshot.size;
 
-      // 💬 Lounge Posts
-      const lounge = await getCollectionCount("communitychat", "timestamp");
-      document.getElementById(statSelectors.lounge).textContent = `💬 ${lounge} new Lounge posts`;
-
-      // 👥 New Users
-      const users = await getCollectionCount("users", "createdAt");
-      document.getElementById(statSelectors.users).textContent = `👥 ${users} new GSU members joined`;
-
-      // 👾 Combos
-      const combos = await getCollectionCount("combos", "timestamp");
-      document.getElementById(statSelectors.combos).textContent = `👾 ${combos} combos submitted`;
-
-      // 📊 Poll Votes
-      const polls = await getCollectionCount("pollVotes", "timestamp");
-      document.getElementById(statSelectors.polls).textContent = `📊 ${polls} polls voted on`;
-    } catch (error) {
-      console.error("🔥 Statline Error:", error);
+        statsBox.innerHTML += `
+          <div class="stat-item">${entry.label} ${count} ${entry.message}</div>
+        `;
+      } catch (error) {
+        console.error(`Error fetching ${entry.name}:`, error);
+        statsBox.innerHTML += `
+          <div class="stat-item">${entry.label} ? ${entry.message}</div>
+        `;
+      }
     }
   }
 
-  async function getCollectionCount(collectionName, timeField) {
-    const ref = collection(db2, collectionName);
-    const q = query(ref, where(timeField, ">=", weekStart));
-    const snap = await getDocs(q);
-    return snap.size;
-  }
-
-  function getWeekStartTimestamp() {
-    const now = new Date();
-    const day = now.getDay(); // Sunday = 0
-    const diff = now.getDate() - day;
-    const sunday = new Date(now.setDate(diff));
-    sunday.setHours(0, 0, 0, 0);
-    return Timestamp.fromDate(sunday);
-  }
-
-  loadGSUStats();
+  loadStatlineSupreme();
 </script>
-
-
 
 </body>
 
