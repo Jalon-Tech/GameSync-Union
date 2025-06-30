@@ -855,18 +855,18 @@ nav a:hover {
     "🎤 Mortal Kombat sparked U.S. government hearings that led to the ESRB rating system.",
     "🌀 SNES Mode 7 graphics engine enabled fake 3D effects in F-Zero and Mario Kart.",
     "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
-
-  ];
+  ]; 
   
-  
-  const CharacterAssignments = [
+ const CharacterAssignments = [
 {
   name: "Peter Parker/Spider-Man",
   role: "superhero",
   desc: "You balance smarts, strength, and soul. In every crisis, you choose the right thing — even when it costs you everything.",
   game: "Marvel's Spider-Man 2",
   img: "https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg"
-}]
+}
+
+];
 
 
   function loadRetroFact() {
@@ -925,16 +925,20 @@ nav a:hover {
     </div>
   </div>
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
+
 <div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
-    🔥 Statline Supreme: All Union. All Synced.  
-  </h2>
-  <div id="livewire-stats" class="livewire-stats">
-    Loading GSU data...
+  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
+  <div class="livewire-stats">
+    <div class="stat-item">📹 28 new uploads this week</div>
+    <div class="stat-item">🎨 12 fan arts added</div>
+    <div class="stat-item">🏆 39 new trophies earned</div>
+    <div class="stat-item">💬 52 new Lounge posts</div>
+    <div class="stat-item">👥 17 new GSU members joined</div>
+    <div class="stat-item">👾 14 combos submitted</div>
+    <div class="stat-item">📊 6 polls voted on</div>
   </div>
+
 </div>
-
-
 
 <div class="box">
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">💪 Built by GSU. Flexed by Gamers.</h2>
@@ -1777,62 +1781,7 @@ function hideAuthNotice() {
 <script type="module">
   import './firebase-init.js';
   import './profile-loader.js';
-  
 </script>
-  <script type="module">
-  import { getFirestore, collection, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-  import { db2 } from './firebase-init.js'; // db2 must be exported from init file
-
-  <div id="livewire-stats" class="statline-supreme"> </div>
-
-  if (statsBox) statsBox.innerHTML = 'Loading GSU Data...';
-
-  async function loadStatlineSupreme() {
-    if (!statsBox) {
-      console.error("❌ Could not find #livewire-stats");
-      return;
-    }
-
-    statsBox.innerHTML = '';
-
-    const now = new Date();
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - startOfWeek.getDay()); // Sunday
-    startOfWeek.setHours(0, 0, 0, 0);
-    const weekStartTS = Timestamp.fromDate(startOfWeek);
-
-    const collections = [
-      { name: 'uploads', timestampField: 'timestamp', label: '📹', message: 'new uploads this week' },
-      { name: 'fanArt', timestampField: 'timestamp', label: '🎨', message: 'fan arts added' },
-      { name: 'trophies', timestampField: 'timestamp', label: '🏆', message: 'new trophies earned' },
-      { name: 'communitychat', timestampField: 'timestamp', label: '💬', message: 'new Lounge posts' },
-      { name: 'users', timestampField: 'createdAt', label: '👥', message: 'new GSU members joined' },
-      { name: 'combos', timestampField: 'timestamp', label: '👾', message: 'combos submitted' },
-      { name: 'pollVotes', timestampField: 'timestamp', label: '📊', message: 'polls voted on' }
-    ];
-
-    for (const entry of collections) {
-      try {
-        const colRef = collection(db2, entry.name);
-        const q = query(colRef, where(entry.timestampField, '>=', weekStartTS));
-        const snapshot = await getDocs(q);
-        const count = snapshot.size;
-
-        statsBox.innerHTML += `
-          <div class="stat-item">${entry.label} ${count} ${entry.message}</div>
-        `;
-      } catch (error) {
-        console.error(`⚠️ Error fetching ${entry.name}:`, error);
-        statsBox.innerHTML += `
-          <div class="stat-item">${entry.label} ? ${entry.message}</div>
-        `;
-      }
-    }
-  }
-
-  loadStatlineSupreme();
-</script>
-
 
 </body>
 
