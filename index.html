@@ -1988,10 +1988,11 @@ nav a:hover {
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
     🔥 Statline Supreme: All Union. All Synced.
   </h2>
-  <div class="livewire-stats" id="livewire-stats">
-    <div class="stat-item">Loading real GSU stats...</div>
+  <div id="livewire-stats" class="livewire-stats">
+    Loading GSU data...
   </div>
 </div>
+
 
 
 <div class="box">
@@ -2838,27 +2839,27 @@ function hideAuthNotice() {
   
 </script>
   <script type="module">
-  import {
-    collection,
-    getDocs,
-    query,
-    where,
-    Timestamp
-  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { db2 } from './firebase-init.js'; // db2 must be exported from init file
 
-  const db2 = window.gsu.db;
+  const statsBox = document.getElementById('livewire-stats');
+  if (statsBox) statsBox.innerHTML = 'Loading GSU Data...';
 
   async function loadStatlineSupreme() {
-    const statsBox = document.getElementById('livewire-stats');
+    if (!statsBox) {
+      console.error("❌ Could not find #livewire-stats");
+      return;
+    }
+
     statsBox.innerHTML = '';
 
     const now = new Date();
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
+    startOfWeek.setDate(now.getDate() - startOfWeek.getDay()); // Sunday
     startOfWeek.setHours(0, 0, 0, 0);
     const weekStartTS = Timestamp.fromDate(startOfWeek);
 
-    const collectionsToQuery = [
+    const collections = [
       { name: 'uploads', timestampField: 'timestamp', label: '📹', message: 'new uploads this week' },
       { name: 'fanArt', timestampField: 'timestamp', label: '🎨', message: 'fan arts added' },
       { name: 'trophies', timestampField: 'timestamp', label: '🏆', message: 'new trophies earned' },
@@ -2868,10 +2869,10 @@ function hideAuthNotice() {
       { name: 'pollVotes', timestampField: 'timestamp', label: '📊', message: 'polls voted on' }
     ];
 
-    for (const entry of collectionsToQuery) {
+    for (const entry of collections) {
       try {
         const colRef = collection(db2, entry.name);
-        const q = query(colRef, where(entry.timestampField, ">=", weekStartTS));
+        const q = query(colRef, where(entry.timestampField, '>=', weekStartTS));
         const snapshot = await getDocs(q);
         const count = snapshot.size;
 
@@ -2879,7 +2880,7 @@ function hideAuthNotice() {
           <div class="stat-item">${entry.label} ${count} ${entry.message}</div>
         `;
       } catch (error) {
-        console.error(`Error fetching ${entry.name}:`, error);
+        console.error(`⚠️ Error fetching ${entry.name}:`, error);
         statsBox.innerHTML += `
           <div class="stat-item">${entry.label} ? ${entry.message}</div>
         `;
@@ -2889,6 +2890,7 @@ function hideAuthNotice() {
 
   loadStatlineSupreme();
 </script>
+
 
 </body>
 
