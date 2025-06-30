@@ -1786,6 +1786,56 @@ function hideAuthNotice() {
   import './profile-loader.js';
 </script>
 
+<script type="module">
+  import { collection, getDocs, getFirestore, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadGSUStats() {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const [usersSnap, videosSnap, fanArtSnap, trophiesSnap, combosSnap, pollsSnap] = await Promise.all([
+      getDocs(collection(db, "users")),
+      getDocs(collection(db, "videos")),
+      getDocs(collection(db, "fan_art")),
+      getDocs(collection(db, "trophies")),
+      getDocs(collection(db, "combos")),
+      getDocs(collection(db, "polls")),
+    ]);
+
+    // Total Members
+    const totalMembers = usersSnap.size;
+
+    // New Members This Week
+    let newMembers = 0;
+    usersSnap.forEach(doc => {
+      const created = doc.data().createdAt;
+      if (created?.toDate && created.toDate() >= oneWeekAgo) newMembers++;
+    });
+
+    // Set all counts in DOM
+    document.getElementById("totalMembers").textContent = totalMembers.toLocaleString();
+    document.getElementById("newMembers").textContent = newMembers.toLocaleString();
+    document.getElementById("videoUploads").textContent = videosSnap.size.toLocaleString();
+    document.getElementById("fanArt").textContent = fanArtSnap.size.toLocaleString();
+    document.getElementById("trophies").textContent = trophiesSnap.size.toLocaleString();
+    document.getElementById("combos").textContent = combosSnap.size.toLocaleString();
+    document.getElementById("pollVotes").textContent = pollsSnap.size.toLocaleString();
+  }
+
+  // Run it on load
+  loadGSUStats();
+</script>
+
 </body>
 
 </html>
