@@ -363,19 +363,18 @@ nav {
   flex-wrap: wrap;
   gap: 1rem;
 }
+ 
+    nav a {
+      text-decoration: none;
+      color: var(--white-text);
+      font-family: 'Montserrat', sans-serif;
+      transition: color 0.3s ease;
+      font-size: 1rem;
+    }
 
-nav a {
-  text-decoration: none;
-  color: var(--white-text);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-}
-
-nav a:hover {
-  color: var(--gsu-red);
-}
-
+    nav a:hover {
+      color: var(--gsu-red);
+    }
     .main-container {
       display: grid;
       grid-template-columns: 1fr 3fr 1fr; /* sidebar - main - sidebar */
