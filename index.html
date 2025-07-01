@@ -355,11 +355,16 @@
 .logo-text {
   font-size: 1.6rem;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 600;              /* Bold to match navbar */
-  letter-spacing: 0.6px;         /* Adds spacing like a logo */
+  font-weight: 600;
+  letter-spacing: 0.6px;
   color: var(--white-text);
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.08); /* Subtle glow */
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.08);
   transition: color 0.3s ease;
+}
+
+.logo-text:hover {
+  color: var(--gsu-red);
+  text-shadow: 0 0 8px rgba(230, 0, 35, 0.6);
 }
 
 
@@ -373,16 +378,16 @@ nav a {
   text-decoration: none;
   color: var(--white-text);
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.15rem;       /* 🔥 Bolder and more readable */
-  font-weight: 600;         /* Matches the rest of the site */
-  letter-spacing: 0.4px;    /* Adds a touch of style */
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
   transition: color 0.3s ease;
 }
-
 
 nav a:hover {
   color: var(--gsu-red);
 }
+
 
     .main-container {
       display: grid;
@@ -762,7 +767,6 @@ nav a:hover {
   box-shadow: 0 0 10px rgba(230, 0, 35, 0.4);
   cursor: pointer;
 }
-
 
 
   </style>
