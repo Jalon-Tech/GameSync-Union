@@ -686,8 +686,8 @@ firebase.auth().onAuthStateChanged(async (user) => {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       try {
-        await auth.signOut();
-        document.getElementById("profile-box").style.display = "none";
+        await firebase.auth().signOut();
+        document.getElementById("profile-box")?.style.display = "none";
         localStorage.setItem("gsu_logged_out", "true");
         window.location.href = "index.html";
       } catch (err) {
