@@ -319,7 +319,6 @@
     <a href="game-guides.html">GSU Gameplay Center</a>
     <a href="uploads.html">GSU Player Lounge</a>
   </nav>
-    <button id="logoutBtn" class="btn" style="max-width: 120px; background-color: #777;">Log Out</button>
   </header>
 
   <!-- MAIN CONTENT -->
@@ -681,20 +680,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
     if (suggestBtn) suggestBtn.addEventListener('click', handleGameSuggestion);
   });
   
-   // 🔓 Logout
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await firebase.auth().signOut();
-        document.getElementById("profile-box")?.style.display = "none";
-        localStorage.setItem("gsu_logged_out", "true");
-        window.location.href = "index.html";
-      } catch (err) {
-        alert("Error signing out: " + err.message);
-      }
-    });
-  }
+  
   
 </script>
 
