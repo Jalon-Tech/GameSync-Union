@@ -934,14 +934,41 @@ nav {
 
 ];
 
+function detectPreferredPlatforms(favoriteGames) {
+  const platformCount = {
+    Nintendo: 0,
+    PlayStation: 0,
+    Xbox: 0,
+    PC: 0
+  };
+
+  favoriteGames.forEach(game => {
+    const title = game.toLowerCase();
+
+    if (title.includes("mario") || title.includes("zelda") || title.includes("kirby") || title.includes("donkey kong") || title.includes("metroid") || title.includes("pokemon")) {
+      platformCount.Nintendo++;
+    } else if (title.includes("spider-man") || title.includes("god of war") || title.includes("ratchet") || title.includes("horizon") || title.includes("ghost of tsushima") || title.includes("uncharted") || title.includes("sly cooper")) {
+      platformCount.PlayStation++;
+    } else if (title.includes("halo") || title.includes("gears") || title.includes("fable") || title.includes("forza")) {
+      platformCount.Xbox++;
+    } else {
+      platformCount.PC++; // Default fallback
+    }
+  });
+
+  // Pick the platform with the highest count
+  const sorted = Object.entries(platformCount).sort((a, b) => b[1] - a[1]);
+  return sorted[0][0]; // Return most matched platform
+}
+
 function assignCharacter() {
   const userGames = document.getElementById("fav-games").textContent || "";
   const favGameTitles = userGames.replace("🔥 Favorite Games: ", "").split(",").map(g => g.trim());
 
-  const matchedPlatforms = detectPreferredPlatforms(favGameTitles);
+  const primaryPlatform = detectPreferredPlatforms(favGameTitles);
 
   const filteredCharacters = CharacterAssignments.filter(char =>
-    char.platforms.some(p => matchedPlatforms.includes(p))
+    char.platforms.includes(primaryPlatform)
   );
 
   const selected = filteredCharacters.length > 0
@@ -951,20 +978,22 @@ function assignCharacter() {
   document.getElementById("character-role").innerText = `🎮 You Are: ${selected.name} (${selected.role})`;
   document.getElementById("character-desc").innerText = selected.desc;
   document.getElementById("character-image").src = selected.img;
+
+  const syncNote = document.getElementById("sync-note");
+  if (syncNote) {
+    syncNote.innerText = filteredCharacters.length > 0
+      ? `Synced with: ${primaryPlatform} 🎮`
+      : "Random match shown (no clear platform detected)";
+  }
 }
+
+
 
 
 
   function loadRetroFact() {
     const random = RetroFacts[Math.floor(Math.random() * RetroFacts.length)];
     document.getElementById("retro-fact").innerText = random;
-  }
-
-  function assignCharacter() {
-    const random = CharacterAssignments[Math.floor(Math.random() * CharacterAssignments.length)];
-    document.getElementById("character-role").innerText = `🎮 You Are: ${random.name} (${random.role})`;
-    document.getElementById("character-desc").innerText = random.desc;
-    document.getElementById("character-image").src = random.img;
   }
 
   window.addEventListener('DOMContentLoaded', () => {
