@@ -1630,6 +1630,71 @@ window.deletePoll = function(pollId) {
     });
 };
 
+firebase.auth().onAuthStateChanged(authUser => {
+  if (!authUser) return;
+
+  const userRef = db.collection("users").doc(authUser.uid);
+
+  // Immediately set user online with current timestamp
+  userRef.set({
+    online: true,
+    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  // Update lastActive every 30 seconds
+  setInterval(() => {
+    userRef.update({
+      lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(err => console.error("Failed to update lastActive:", err));
+  }, 30000);
+
+  // Realtime listener for all users
+  db.collection("users").onSnapshot(snapshot => {
+    const container = document.getElementById("playerCards");
+    container.innerHTML = "";
+
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      const userId = doc.id;
+
+      if (!user.username) return;
+
+      const isCurrentUser = authUser.uid === userId;
+      let status;
+
+      if (isCurrentUser) {
+        status = "online";
+      } else {
+        const lastActive = user.lastActive?.toDate();
+        const now = new Date();
+        const secondsAgo = lastActive ? (now - lastActive) / 1000 : Infinity;
+        status = secondsAgo < 90 ? "online" : "offline";
+      }
+
+      const statusDot = status === "online" ? '<span style="color: #0f0;">●</span>' : '<span style="color: #777;">●</span>';
+      const statusText = status === "online" ? "ONLINE" : "OFFLINE";
+      const consoleLabel = user.console || "Console Unknown";
+      const username = user.username || "User";
+
+      const card = `
+        <div class="upload-card">
+          <div class="upload-card-header">
+            <div class="status-badge">${statusDot}</div>
+            <div class="uploader-name">${username}</div>
+          </div>
+          <div class="upload-card-body">
+            <p class="console-label">${consoleLabel}</p>
+            <p class="online-status-label">${statusText}</p>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML += card;
+    });
+  });
+});
+
+
 </script>
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
