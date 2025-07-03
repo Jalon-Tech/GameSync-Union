@@ -1635,20 +1635,25 @@ firebase.auth().onAuthStateChanged(authUser => {
 
   const userRef = db.collection("users").doc(authUser.uid);
 
-  // Immediately set user online with current timestamp
+  // ✅ Set user online + lastActive immediately on login
   userRef.set({
     online: true,
     lastActive: firebase.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
 
-  // Update lastActive every 30 seconds
+  // ✅ Update lastActive every 30 seconds
   setInterval(() => {
-    userRef.update({
-      lastActive: firebase.firestore.FieldValue.serverTimestamp()
-    }).catch(err => console.error("Failed to update lastActive:", err));
+    const now = firebase.firestore.FieldValue.serverTimestamp();
+    db.collection("users").doc(authUser.uid).update({
+      lastActive: now
+    }).then(() => {
+      console.log("✅ lastActive updated at", new Date().toLocaleTimeString());
+    }).catch(err => {
+      console.error("❌ Error updating lastActive:", err);
+    });
   }, 30000);
 
-  // Realtime listener for all users
+  // ✅ Real-time listener for all users
   db.collection("users").onSnapshot(snapshot => {
     const container = document.getElementById("playerCards");
     container.innerHTML = "";
@@ -1659,32 +1664,47 @@ firebase.auth().onAuthStateChanged(authUser => {
 
       if (!user.username) return;
 
+      // ✅ Determine current user status
       const isCurrentUser = authUser.uid === userId;
-      let status;
+      let status = "offline";
 
       if (isCurrentUser) {
         status = "online";
-      } else {
-        const lastActive = user.lastActive?.toDate();
+      } else if (user.lastActive) {
+        const lastActive = user.lastActive.toDate();
         const now = new Date();
-        const secondsAgo = lastActive ? (now - lastActive) / 1000 : Infinity;
+        const secondsAgo = (now - lastActive) / 1000;
         status = secondsAgo < 90 ? "online" : "offline";
       }
 
-      const statusDot = status === "online" ? '<span style="color: #0f0;">●</span>' : '<span style="color: #777;">●</span>';
+      // ✅ Build UI elements
+      const statusDot = status === "online"
+        ? '<span style="color: #0f0;">●</span>'
+        : '<span style="color: #777;">●</span>';
       const statusText = status === "online" ? "ONLINE" : "OFFLINE";
       const consoleLabel = user.console || "Console Unknown";
       const username = user.username || "User";
+      const games = user.Favorite_Games || [];
+      const gameTitles = games.map(g => g.title).join(", ") || "No favorite games";
+      const gameCovers = games.map(g => `<img src="${g.image}" class="game-cover">`).join("");
+      const gameCount = user.Games_Played || 0;
+      const trophyStats = user.Trophy_Stats || 0;
+      const friendCount = user.friends?.length || 0;
 
       const card = `
         <div class="upload-card">
           <div class="upload-card-header">
             <div class="status-badge">${statusDot}</div>
-            <div class="uploader-name">${username}</div>
+            <div class="uploader-name">@${username}</div>
           </div>
           <div class="upload-card-body">
-            <p class="console-label">${consoleLabel}</p>
+            <p><strong>Platform:</strong> ${consoleLabel}</p>
+            <p><strong>Favorite Games:</strong> ${gameTitles}</p>
+            <p><strong>Games Played:</strong> ${gameCount}</p>
+            <p><strong>Trophy Stats:</strong> ${trophyStats}</p>
+            <p><strong>Friends:</strong> ${friendCount}</p>
             <p class="online-status-label">${statusText}</p>
+            <div class="game-covers">${gameCovers}</div>
           </div>
         </div>
       `;
@@ -1693,7 +1713,6 @@ firebase.auth().onAuthStateChanged(authUser => {
     });
   });
 });
-
 
 </script>
 
