@@ -20,6 +20,26 @@ html, body {
 }
 
 
+.status-dot.online {
+  color: #0f0;
+}
+
+.status-dot.offline {
+  color: #777;
+}
+
+.status-label.online {
+  color: #0f0;
+  font-weight: bold;
+  text-shadow: 0 0 4px #0f0;
+}
+
+.status-label.offline {
+  color: #888;
+  opacity: 0.6;
+}
+
+
 
 /* Prevent nav wrapping issues */
 nav {
@@ -1670,18 +1690,20 @@ firebase.auth().onAuthStateChanged(authUser => {
 
       if (isCurrentUser) {
         status = "online";
-      } else if (user.lastActive) {
+      } else if (user.lastActive && user.lastActive.toDate) {
         const lastActive = user.lastActive.toDate();
         const now = new Date();
-        const secondsAgo = (now - lastActive) / 1000;
-        status = secondsAgo < 90 ? "online" : "offline";
+        const secondsAgo = Math.floor((now.getTime() - lastActive.getTime()) / 1000);
+        console.log(`${user.username} last active ${secondsAgo}s ago`);
+        status = secondsAgo < 150 ? "online" : "offline"; // ⬅️ Extended buffer
       }
+
 
       // ✅ Build UI elements
       const statusDot = status === "online"
-        ? '<span style="color: #0f0;">●</span>'
-        : '<span style="color: #777;">●</span>';
-      const statusText = status === "online" ? "ONLINE" : "OFFLINE";
+      ? '<span class="status-dot online">●</span>'
+      : '<span class="status-dot offline">●</span>';
+      const statusTextLabel = `<span class="status-label ${status}">${status.toUpperCase()}</span>`;
       const consoleLabel = user.console || "Console Unknown";
       const username = user.username || "User";
       const games = user.Favorite_Games || [];
@@ -1691,23 +1713,23 @@ firebase.auth().onAuthStateChanged(authUser => {
       const trophyStats = user.Trophy_Stats || 0;
       const friendCount = user.friends?.length || 0;
 
-      const card = `
-        <div class="upload-card">
-          <div class="upload-card-header">
-            <div class="status-badge">${statusDot}</div>
-            <div class="uploader-name">@${username}</div>
-          </div>
-          <div class="upload-card-body">
-            <p><strong>Platform:</strong> ${consoleLabel}</p>
-            <p><strong>Favorite Games:</strong> ${gameTitles}</p>
-            <p><strong>Games Played:</strong> ${gameCount}</p>
-            <p><strong>Trophy Stats:</strong> ${trophyStats}</p>
-            <p><strong>Friends:</strong> ${friendCount}</p>
-            <p class="online-status-label">${statusText}</p>
-            <div class="game-covers">${gameCovers}</div>
-          </div>
+     const card = `
+      <div class="upload-card">
+        <div class="upload-card-header">
+          <div class="status-badge">${statusDot}</div>
+          <div class="uploader-name">@${username}</div>
         </div>
-      `;
+        <div class="upload-card-body">
+          <p><strong>Platform:</strong> ${consoleLabel}</p>
+          <p><strong>Favorite Games:</strong> ${gameTitles}</p>
+          <p><strong>Games Played:</strong> ${gameCount}</p>
+          <p><strong>Trophy Stats:</strong> ${trophyStats}</p>
+          <p><strong>Friends:</strong> ${friendCount}</p>
+          <p class="online-status">${statusTextLabel}</p>
+          <div class="game-covers">${gameCovers}</div>
+        </div>
+      </div>
+    `;
 
       container.innerHTML += card;
     });
