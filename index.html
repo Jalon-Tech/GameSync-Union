@@ -664,67 +664,6 @@ nav {
 }
 
 
-.match-review-style {
-  background-color: #1f1f1f;
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: fadeSlideIn 0.5s ease-out;
-}
-
-.match-review-style:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 14px rgba(230, 0, 35, 0.2);
-}
-
-.match-review-style h2 {
-  color: #e60023;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem;
-  margin-bottom: 0.75rem;
-  text-shadow: 0 0 8px rgba(230, 0, 35, 0.7);
-  border-bottom: 2px solid #e60023;
-  padding-bottom: 0.5rem;
-}
-
-#quick-review-box input,
-#quick-review-box textarea {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.75rem;
-  border-radius: 8px;
-  background: #2c2c2c;
-  border: 1px solid #444;
-  color: #fff;
-  font-family: 'Roboto', sans-serif;
-}
-
-#quick-review-box input:focus,
-#quick-review-box textarea:focus {
-  border-color: #e60023;
-  outline: none;
-  box-shadow: 0 0 4px rgba(230, 0, 35, 0.4);
-}
-
-#quick-review-box .btn {
-  background-color: #e60023;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-weight: bold;
-  font-family: 'Roboto', sans-serif;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
-
-#quick-review-box .btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(230, 0, 35, 0.5);
-}
-
 @keyframes fadeSlideIn {
   0% {
     opacity: 0;
@@ -736,7 +675,60 @@ nav {
   }
 }
 
+#character-sync-box {
+  border: 2px solid #e60023;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 1rem;
+  background-color: #1a1a1a;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px rgba(230, 0, 35, 0.4);
+}
 
+#character-sync-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 18px rgba(230, 0, 35, 0.6);
+}
+
+#character-image {
+  height: 140px;
+  width: 140px;
+  object-fit: contain;
+  border-radius: 10px;
+  padding: 6px;
+  background-color: #000;
+  border: 1px solid #444;
+  transition: transform 0.3s ease;
+}
+
+#character-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+#character-desc {
+  font-size: 0.85rem;
+  max-width: 260px;
+  color: #ccc;
+  text-align: left;
+}
+
+.gsu-sync-box {
+  background-color: #1f1f1f;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(0); /* Default position */
+}
+
+.gsu-sync-box:hover {
+  border: 2px solid #e60023;
+  box-shadow: 0 0 16px rgba(230, 0, 35, 0.4);
+  transform: translateY(-5px); /* Push up on hover */
+}
 
   </style>
 </head>
@@ -795,52 +787,38 @@ nav {
   </div>
 </div>
 
-<!-- 🧬 GSU Character Sync Assignment -->
-<div class="box match-review-style">
-  <h2 class="retro-header">🧬 GSU Character Sync Assignment</h2>
-  <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    Based on your top 3 favorite games, we've scanned your vibe, playstyle, and energy to sync you with a legendary character.
+<!-- 🎮 GSU Character Sync -->
+<div class="gsu-sync-box">
+  <h2 class="retro-header">🎮 GSU Character Sync-Up</h2>
+  <p class="sync-desc">
+    Ready to find out which iconic video game legend you vibe with? Pick your platform and we’ll sync you with a GSU-certified character from your world — or let you pick your champion from the roster.
   </p>
 
-  <div class="retro-body">
-    <div style="text-align: center;">
-      <div style="font-size: 0.85rem; margin-top: 0.3rem;" id="character-role"></div>
+  <label for="platform-select" class="sync-label">🕹️ Choose Your Platform to Begin the Sync:</label>
+  <select id="platform-select" class="input-field" onchange="updateCharacterOptions()">
+    <option value="">-- Choose Platform --</option>
+    <option value="Playstation">PlayStation</option>
+    <option value="PC">PC</option>
+    <option value="Xbox">Xbox</option>
+    <option value="Nintendo">Nintendo</option>
+  </select>
+
+  <div id="no-character-msg" style="color: red; font-size: 0.9rem; margin-bottom: 1rem; text-align: center;">
+  No Video Game Character in Sync.
+</div>
+
+
+  <div id="character-role" class="sync-role"></div>
+
+  <div id="character-sync-box">
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+      <img id="character-image" src="GSU_LOGO.png" />
+      <div id="character-desc">
+        Choose your platform to reveal which video game legend is synced with your GSU energy.
+      </div>
     </div>
-
-  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.8rem;justify-content:center;">
-  <img id="character-image" src="..." class="character-image" 
-
-  style="
-    height: 140px;
-    width: 140px;
-    object-fit: contain;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-    background-color: #111;
-    padding: 6px;
-    transition: transform 0.3s ease;"/>
-
-
-  <div style="font-size: 0.85rem; max-width: 260px;" id="character-desc">
-    Analyzing traits from your favorite games...
   </div>
 </div>
-
-
-    <button class="btn" onclick="assignCharacter()" style="margin-top: 0.8rem; font-size: 0.85rem;">🧬 Sync Your Gaming Identity</button>
-  </div>
-</div>
-
-<div id="quick-review-box">
-  <h2>📝 Quick Game Review</h2>
-  <p>...</p>
-  <input type="text" id="reviewGame" placeholder="Game Title" />
-  <textarea id="reviewText" placeholder="Your review..."></textarea>
-  <button class="btn" onclick="submitGameReview()">📤 Submit Review</button>
-</div>
-
-
-
 
 
 <!-- 🔧 Scripts -->
@@ -857,7 +835,7 @@ nav {
     "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
   ]; 
   
- const CharacterAssignments = [
+  const CharacterAssignments = [
 {
   name: "Peter Parker/Spider-Man",
   role: "superhero",
@@ -929,46 +907,16 @@ nav {
   platforms: ["Nintendo"]
 }
 
-
-
-
 ];
-
-function detectPreferredPlatforms(favoriteGames) {
-  const platformCount = {
-    Nintendo: 0,
-    PlayStation: 0,
-    Xbox: 0,
-    PC: 0
-  };
-
-  favoriteGames.forEach(game => {
-    const title = game.toLowerCase();
-
-    if (title.includes("mario") || title.includes("zelda") || title.includes("kirby") || title.includes("donkey kong") || title.includes("metroid") || title.includes("pokemon")) {
-      platformCount.Nintendo++;
-    } else if (title.includes("spider-man") || title.includes("god of war") || title.includes("ratchet") || title.includes("horizon") || title.includes("ghost of tsushima") || title.includes("uncharted") || title.includes("sly cooper")) {
-      platformCount.PlayStation++;
-    } else if (title.includes("halo") || title.includes("gears") || title.includes("fable") || title.includes("forza")) {
-      platformCount.Xbox++;
-    } else {
-      platformCount.PC++; // Default fallback
-    }
-  });
-
-  // Pick the platform with the highest count
-  const sorted = Object.entries(platformCount).sort((a, b) => b[1] - a[1]);
-  return sorted[0][0]; // Return most matched platform
-}
 
 function assignCharacter() {
   const userGames = document.getElementById("fav-games").textContent || "";
   const favGameTitles = userGames.replace("🔥 Favorite Games: ", "").split(",").map(g => g.trim());
 
-  const primaryPlatform = detectPreferredPlatforms(favGameTitles);
+  const matchedPlatforms = detectPreferredPlatforms(favGameTitles);
 
   const filteredCharacters = CharacterAssignments.filter(char =>
-    char.platforms.includes(primaryPlatform)
+    char.platforms.some(p => matchedPlatforms.includes(p))
   );
 
   const selected = filteredCharacters.length > 0
@@ -978,22 +926,20 @@ function assignCharacter() {
   document.getElementById("character-role").innerText = `🎮 You Are: ${selected.name} (${selected.role})`;
   document.getElementById("character-desc").innerText = selected.desc;
   document.getElementById("character-image").src = selected.img;
-
-  const syncNote = document.getElementById("sync-note");
-  if (syncNote) {
-    syncNote.innerText = filteredCharacters.length > 0
-      ? `Synced with: ${primaryPlatform} 🎮`
-      : "Random match shown (no clear platform detected)";
-  }
 }
-
-
 
 
 
   function loadRetroFact() {
     const random = RetroFacts[Math.floor(Math.random() * RetroFacts.length)];
     document.getElementById("retro-fact").innerText = random;
+  }
+
+  function assignCharacter() {
+    const random = CharacterAssignments[Math.floor(Math.random() * CharacterAssignments.length)];
+    document.getElementById("character-role").innerText = `🎮 You Are: ${random.name} (${random.role})`;
+    document.getElementById("character-desc").innerText = random.desc;
+    document.getElementById("character-image").src = random.img;
   }
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -1493,6 +1439,59 @@ if (user) {
 
   closeEditModal();
 }
+
+function updateCharacterOptions() {
+  const platform = document.getElementById("platform-select").value;
+  const roleEl = document.getElementById("character-role");
+  const descEl = document.getElementById("character-desc");
+  const imgEl = document.getElementById("character-image");
+  const msgEl = document.getElementById("no-character-msg");
+
+  const gsuLogo = "GSU_LOGO.png"; // 🔁 Used when no match
+
+  if (!platform) {
+    roleEl.innerText = "";
+    descEl.innerText = "";
+    imgEl.src = gsuLogo;
+    msgEl.style.display = "block";
+    return;
+  }
+
+  const filtered = CharacterAssignments.filter(char => char.platforms.includes(platform));
+  if (filtered.length === 0) {
+    roleEl.innerText = "";
+    descEl.innerText = "";
+    imgEl.src = gsuLogo;
+    msgEl.style.display = "block";
+  } else {
+    const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+    roleEl.innerText = `🎮 You Are: ${chosen.name} (${chosen.role})`;
+    descEl.innerText = chosen.desc;
+    imgEl.src = chosen.img;
+    msgEl.style.display = "none";
+  }
+}
+
+// 🧠 Show default state on first load
+window.addEventListener('DOMContentLoaded', () => {
+  updateCharacterOptions();
+});
+
+function displayCharacterDetails() {
+  const selectedName = document.getElementById("character-select").value;
+  const character = CharacterAssignments.find(char => char.name === selectedName);
+
+  if (character) {
+    document.getElementById("character-role").innerText = `🎮 You Are: ${character.name} (${character.role})`;
+    document.getElementById("character-desc").innerText = character.desc;
+    document.getElementById("character-image").src = character.img;
+  } else {
+    document.getElementById("character-role").innerText = "";
+    document.getElementById("character-desc").innerText = "Select a character to see their description.";
+    document.getElementById("character-image").src = "";
+  }
+}
+
 </script>
 
 <script type="module">
