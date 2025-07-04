@@ -20,20 +20,7 @@
   margin-bottom: 1rem; /* Increased from 0.8rem to 1rem */
 }
 
-  .box h2,
-  .gsu-sync-box h2,
-  .match-review-style h2,
-  #quick-review-box h2,
-  .retro-header,
-  .red-title-glow {
-    color: #e60023;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.2rem;
-    text-shadow: 0 0 8px rgba(230, 0, 35, 0.7);
-    border-bottom: 2px solid #e60023;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
+
 
 
  
@@ -297,7 +284,7 @@
 .talk-quote {
   background: #2a2a2a;
   padding: 1rem 1.2rem;
-  border-left: 4px solid var(--gsu-red);
+  border: 4px solid var(--gsu-red);
   border-radius: 8px;
   font-style: italic;
 }
@@ -678,13 +665,27 @@ nav {
   background-color: var(--gsu-red);
   border-radius: 6px;
 }
+.box h2,
+#spotlight3 h2,
+.match-review-style h2,
+.retro-header,
+.stat-item h2,
+.showoff-info h3,
+.talk-quote blockquote,
+.certified-caption,
+.gsu-sync-box h2 {
+  color: #fff !important;
+}
 
 .profile-fav-img {
   max-height: 200px;
   width: auto;
 }
 .box h2 {
+  color: #fff !important;
   text-shadow: 0 0 6px rgba(255, 0, 55, 0.3);
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 0.7rem;
 }
 
 #upcoming-events {
@@ -812,7 +813,7 @@ nav {
     <div class="game-fact" id="retro-fact" style="max-height: 90px; overflow-y: auto;">
       Loading fact...
     </div>
-    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">Spin the Retro Wheel</button>
+    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🕹️ Spin the Retro Wheel</button>
   </div>
 </div>
 
@@ -1166,7 +1167,7 @@ When the Union highlights you — it means something. If your name’s echoing i
   </p>
 
   <div class="retro-body" style="display: flex; flex-direction: column; gap: 0.6rem;">
-    <div style="font-size: 1rem; color: var(--gsu-red); font-weight: bold;">🔥 Mood: Hype & Competitive</div>
+    <div style="font-size: 1rem; color: white; font-weight: bold;">🔥 Mood: Hype & Competitive</div>
     <div style="font-size: 0.85rem; color: #bbb;">Top quoted: “Don’t get perfect-parried again.”</div>
     <div style="font-size: 0.85rem; color: #bbb;">Top activity: Trophy flexes + fan art drops</div>
     <button class="btn" style="margin-top: 0.6rem; font-size: 0.85rem;">📡 Scan Live Vibe</button>
