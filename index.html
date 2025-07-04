@@ -20,6 +20,22 @@
   margin-bottom: 1rem; /* Increased from 0.8rem to 1rem */
 }
 
+  .box h2,
+  .gsu-sync-box h2,
+  .match-review-style h2,
+  #quick-review-box h2,
+  .retro-header,
+  .red-title-glow {
+    color: #e60023;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px rgba(230, 0, 35, 0.7);
+    border-bottom: 2px solid #e60023;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+
  
   .match-review-style h2 {
   color: #e60023;
@@ -397,16 +413,20 @@ nav {
     }
     .box {
       background-color: var(--black-faded);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 1rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
       color: var(--white-text);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      border: 2px solid #333;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
     }
+
     .box:hover {
       transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--gsu-red);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 10px rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--gsu-red);
     }
+
     .box li {
       transition: transform 0.3s ease;
     }
@@ -709,6 +729,7 @@ nav {
   transition: transform 0.3s ease;
 }
 
+
 #character-image:hover {
   transform: scale(1.05);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
@@ -723,20 +744,20 @@ nav {
 
 .gsu-sync-box {
   background-color: #1f1f1f;
-  border: 2px solid transparent;
+  border: 2px solid #333;
   border-radius: 12px;
   padding: 1.2rem;
   margin-bottom: 1.5rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-  transform: translateY(0); /* Default position */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .gsu-sync-box:hover {
-  border: 2px solid #e60023;
-  box-shadow: 0 0 16px rgba(230, 0, 35, 0.4);
-  transform: translateY(-5px); /* Push up on hover */
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 10px rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--gsu-red);
 }
+
 
   </style>
 </head>
@@ -791,7 +812,7 @@ nav {
     <div class="game-fact" id="retro-fact" style="max-height: 90px; overflow-y: auto;">
       Loading fact...
     </div>
-    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🕹️ Spin the Retro Wheel</button>
+    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">Spin the Retro Wheel</button>
   </div>
 </div>
 
