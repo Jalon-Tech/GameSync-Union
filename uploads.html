@@ -865,45 +865,34 @@ nav {
 
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
-function addFriend(targetUID, buttonElement = null) {
-  const currentUser = firebase.auth().currentUser;
+function addFriend(targetUID, buttonElement) {
+  if (buttonElement) buttonElement.disabled = true;
 
-  if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
+  const curRef = db.collection("users").doc(user.uid);
+  const tgtRef = db.collection("users").doc(targetUID);
 
-  const currentUserRef = db.collection("users").doc(currentUser.uid);
-  const targetUserRef = db.collection("users").doc(targetUID);
+  db.runTransaction(async tx => {
+    const curDoc = await tx.get(curRef);
+    const tgtDoc = await tx.get(tgtRef);
 
-  db.runTransaction(async (transaction) => {
-    const currentDoc = await transaction.get(currentUserRef);
-    const targetDoc = await transaction.get(targetUserRef);
-
-    const pending = currentDoc.data().pendingRequests || [];
-    const requests = targetDoc.data().friendRequests || [];
-
-    if (!pending.includes(targetUID)) {
-      transaction.update(currentUserRef, {
-        pendingRequests: firebase.firestore.FieldValue.arrayUnion(targetUID)
-      });
-    }
-
-    if (!requests.includes(currentUser.uid)) {
-      transaction.update(targetUserRef, {
-        friendRequests: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-      });
-    }
-  }).then(() => {
-    showFeedback("✅ Friend request sent!");
-    
-    // 👇 Update the UI immediately
-    if (buttonElement) {
-      const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:gray;">Request Sent</span>`;
-    }
-  }).catch((error) => {
+    tx.update(curRef, {
+      pendingRequests: firebase.firestore.FieldValue.arrayUnion(targetUID)
+    });
+    tx.update(tgtRef, {
+      friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+    });
+  })
+  .then(() => {
+    showFeedback("✅ Friend request sent.", "#0f0");
+    loadConnectPlayers();
+  })
+  .catch(error => {
     console.error("Error sending friend request:", error);
-    showFeedback("Failed to send friend request.");
+    showFeedback("Failed to send request.");
+    if (buttonElement) buttonElement.disabled = false;
   });
 }
+
 
 
 
