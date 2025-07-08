@@ -19,22 +19,30 @@
       min-height: 100vh;
     }
     #pageWrapper {
-    transform: scale(0.60);
-    transform-origin: top;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+      transform: scale(0.60);
+      transform-origin: top;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-
-    header h1 {
-      font-size: 3rem;
-      color: #e60023;
+    nav {
+      margin-top: 10px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      font-size: 1rem;
     }
-    header h2 {
-      font-size: 1.5rem;
-      color: white;
-      margin-top: -10px;
-      text-align: center;
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      background-color: #e60023;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+    nav a:hover {
+      background-color: #ff3344;
     }
     #hud {
       display: flex;
@@ -129,32 +137,74 @@
       margin-top: 20px;
       box-shadow: 0 0 10px #e60023cc;
     }
-    footer {
+    #gameOverScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    #gameOverScreen h2 {
+      color: #e60023;
+    }
+    #gameOverScreen button {
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #e60023;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 10px #e60023cc;
+    }
+    #gameOverScreen button:hover {
+      background-color: #ff3344;
+    }
+        footer {
       margin-top: 30px;
       font-size: 0.9em;
       color: #666;
     }
+
+    @media (min-width: 768px) {
+      #mobileControls {
+        display: none !important;
+      }
+    }
+
+
   </style>
 </head>
 <body>
   <header>
-  <div class="logo">
-    <img src="GSU_LOGO.png" alt="GSU Logo" />
-    <div class="logo-text">GAMESYNC UNION</div>
-  </div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="games.html">Games</a>
-    <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
-    <a href="art.html">Art</a>
-    <a href="game-guides.html">GSU Gameplay Center</a>
-    <a href="uploads.html">GSU Player Lounge</a>
-  </nav>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <div class="logo-text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">GSU Gameplay Center</a>
+      <a href="uploads.html">GSU Player Lounge</a>
+    </nav>
   </header>
   <div id="pageWrapper">
-    <header>
-      <h1>GSU DATA SURGE</h1>
-      <h2>CONTROLLER CORE</h2>
+   <header style="text-align: center;">
+      <h1>GSU CHARGE RUN</h1>
+      <h2 style="color: #e60023;">Help the GSU controller collect batteries while avoiding fires!</h2>
+      <h2 style="color: #e60023;">Use the arrow keys to move the controller.</h2>
+
+      <div id="mobileControls" style="margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <button onclick="handleMove('ArrowUp')" style="font-size: 2rem; padding: 10px 20px;">⬆️</button>
+      <div style="display: flex; gap: 20px;">
+        <button onclick="handleMove('ArrowLeft')" style="font-size: 2rem; padding: 10px 20px;">⬅️</button>
+        <button onclick="handleMove('ArrowDown')" style="font-size: 2rem; padding: 10px 20px;">⬇️</button>
+        <button onclick="handleMove('ArrowRight')" style="font-size: 2rem; padding: 10px 20px;">➡️</button>
+      </div>
+    </div>
+
     </header>
     <div id="hud">
       <span id="goalText">🔋 Collect: 0 / 10</span>
@@ -167,9 +217,14 @@
     </div>
     <div id="gameCanvas"></div>
     <button id="startGameBtn">▶️ Start GSU Charge Run</button>
+    <div id="gameOverScreen">
+      <h2>Game Over</h2>
+      <button onclick="startGame()">🔁 Play Again</button>
+      <button onclick="window.location.href='index.html'">🏠 Return to GSU Home</button>
+    </div>
     <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </div>
-  <script>
+<script>
   const canvas = document.getElementById("gameCanvas");
   const startBtn = document.getElementById("startGameBtn");
   const timerDisplay = document.getElementById("timer");
@@ -177,6 +232,7 @@
   const goalText = document.getElementById("goalText");
   const powerBar = document.getElementById("powerBar");
   const surgeLevelDisplay = document.getElementById("surgeLevel");
+  const gameOverScreen = document.getElementById("gameOverScreen");
 
   const rows = 20, cols = 20;
   let controllerPos = { x: 10, y: 10 };
@@ -288,37 +344,36 @@
   }
 
   function startTimer() {
-  clearInterval(gameInterval);
-  clearInterval(moveInterval);
+    clearInterval(gameInterval);
+    clearInterval(moveInterval);
 
-  gameInterval = setInterval(() => {
-    if (!isTimerExpired && !surgeActive) {
-      timer--;
-      timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
-      if (timer <= 0) {
-        isTimerExpired = true;
-        loseLife();
+    gameInterval = setInterval(() => {
+      if (!isTimerExpired && !surgeActive) {
+        timer--;
+        timerDisplay.textContent = `⏱️ Time Left: ${timer}`;
+        if (timer <= 0) {
+          isTimerExpired = true;
+          loseLife();
+        }
       }
-    }
-  }, 1000);
+    }, 1000);
 
-  moveInterval = setInterval(() => {
-    batteryPositions = moveItemsRandomly(batteryPositions);
-    reverseSurgeTiles = moveItemsRandomly(reverseSurgeTiles);
-    if (!surgeActive) {
-      firePositions = moveItemsRandomly(firePositions);
-    }
-    checkCollision();
-  }, 1000);
-}
-
+    moveInterval = setInterval(() => {
+      batteryPositions = moveItemsRandomly(batteryPositions);
+      reverseSurgeTiles = moveItemsRandomly(reverseSurgeTiles);
+      if (!surgeActive) {
+        firePositions = moveItemsRandomly(firePositions);
+      }
+      checkCollision();
+    }, 1000);
+  }
 
   function loseLife() {
     lives--;
     if (lives <= 0) {
       clearInterval(gameInterval);
       clearInterval(moveInterval);
-      alert("Game Over!");
+      gameOverScreen.style.display = "flex";
     } else {
       spawnLevel();
       startTimer();
@@ -327,16 +382,13 @@
 
   function activateReverseSurge() {
     surgeActive = true;
-    // Convert fire to trapped
     trappedFires = [...firePositions];
     firePositions = [];
 
-    // Freeze timer
     let freezeCounter = 10;
     const freezeInterval = setInterval(() => {
       freezeCounter--;
       if (freezeCounter <= 0) {
-        // End surge
         surgeActive = false;
         firePositions = [...firePositions, ...trappedFires];
         trappedFires = [];
@@ -349,7 +401,6 @@
   function checkCollision() {
     let levelUpTriggered = false;
 
-    // Collect battery
     batteryPositions = batteryPositions.filter(pos => {
       if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
         collectedBatteries++;
@@ -358,7 +409,6 @@
       return true;
     });
 
-    // Activate 🔄
     reverseSurgeTiles = reverseSurgeTiles.filter(pos => {
       if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
         activateReverseSurge();
@@ -367,15 +417,10 @@
       return true;
     });
 
-    // Trap fires during surge
     trappedFires = trappedFires.filter(pos => {
-      if (pos.x === controllerPos.x && pos.y === controllerPos.y) {
-        return false; // collected into trap
-      }
-      return true;
+      return !(pos.x === controllerPos.x && pos.y === controllerPos.y);
     });
 
-    // Check if fire hit
     firePositions.forEach(pos => {
       if (pos.x === controllerPos.x && pos.y === controllerPos.y && !isTimerExpired) {
         isTimerExpired = true;
@@ -414,7 +459,10 @@
     if (moved) checkCollision();
   });
 
-  startBtn.addEventListener("click", () => {
+  startBtn.addEventListener("click", startGame);
+
+  function startGame() {
+    gameOverScreen.style.display = "none";
     lives = 3;
     level = 0;
     powerBar.textContent = `Surge power: ⚡0`;
@@ -423,7 +471,13 @@
     createGrid();
     spawnLevel();
     startTimer();
-  });
+  }
+
+  function handleMove(direction) {
+  const event = new KeyboardEvent('keydown', { key: direction });
+  document.dispatchEvent(event);
+}
+
 
   createGrid();
 </script>
