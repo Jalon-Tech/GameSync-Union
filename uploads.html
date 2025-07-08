@@ -1355,13 +1355,13 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
     showFeedback("Friend request cancelled.");
 
     if (buttonElement) {
-  const container = buttonElement.closest("div");
-  container.innerHTML = `<span style="color:#aaa; font-style:italic;">Request Cancelled</span>`;
-}
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
+    }
 
   }).catch(err => {
     console.error("Failed to cancel friend request:", err);
-    showFeedback("Could not cancel request.");
+    showFeedback("❌ Could not cancel request.");
   });
 }
 
@@ -1459,7 +1459,7 @@ function clearDMChat() {
     }, 600); // after animation
   }
 }
-window.cancelFriendRequest = cancelFriendRequest;
+
 </script>
 
 <script>
