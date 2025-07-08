@@ -866,7 +866,7 @@ nav {
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
   
-  function addFriend(targetUID) {
+  function addFriend(targetUID, buttonElement = null) {
   const user = firebase.auth().currentUser;
   if (!user || !targetUID || user.uid === targetUID) return;
 
@@ -877,8 +877,18 @@ nav {
     const currentDoc = await transaction.get(currentUserRef);
     const targetDoc = await transaction.get(targetUserRef);
 
-    const pending = currentDoc.data().pendingRequests || [];
-    const requests = targetDoc.data().friendRequests || [];
+    const currentData = currentDoc.data();
+    const targetData = targetDoc.data();
+
+    const currentFriends = currentData.friends || [];
+    const pending = currentData.pendingRequests || [];
+    const requests = targetData.friendRequests || [];
+
+    // Prevent duplicates
+    if (currentFriends.includes(targetUID)) {
+      showFeedback("You're already friends.");
+      return;
+    }
 
     if (!pending.includes(targetUID)) {
       transaction.update(currentUserRef, {
@@ -893,11 +903,18 @@ nav {
     }
   }).then(() => {
     showFeedback("✅ Friend request sent!");
+
+    if (buttonElement) {
+      buttonElement.disabled = true;
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<button onclick="cancelFriendRequest('${targetUID}', this)">🚫 Cancel Request</button>`;
+    }
   }).catch((error) => {
     console.error("Error sending friend request:", error);
     showFeedback("Failed to send friend request.");
   });
 }
+
 
 
 
@@ -979,44 +996,44 @@ function sendFriendRequest(targetId) {
 
 function acceptFriend(targetId, buttonElement = null) {
   const user = firebase.auth().currentUser;
-  if (!user) return;
+  if (!user || !targetId || user.uid === targetId) return;
 
-  const userRef = db.collection("users").doc(user.uid);
-  const targetRef = db.collection("users").doc(targetId);
+  const currentUserRef = db.collection("users").doc(user.uid);
+  const targetUserRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
-    const userDoc = await transaction.get(userRef);
-    const targetDoc = await transaction.get(targetRef);
+    const currentDoc = await transaction.get(currentUserRef);
+    const targetDoc = await transaction.get(targetUserRef);
 
-    const userData = userDoc.data();
-    const targetData = targetDoc.data();
+    const userFriends = currentDoc.data().friends || [];
+    const userRequests = currentDoc.data().friendRequests || [];
 
-    const userFriends = userData.friends || [];
-    const targetFriends = targetData.friends || [];
+    const targetFriends = targetDoc.data().friends || [];
+    const targetPending = targetDoc.data().pendingRequests || [];
 
-    const updatedUserFriends = userFriends.includes(targetId) ? userFriends : [...userFriends, targetId];
-    const updatedTargetFriends = targetFriends.includes(user.uid) ? targetFriends : [...targetFriends, user.uid];
-
-    transaction.update(userRef, {
-      friends: updatedUserFriends,
-      friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
-    });
-
-    transaction.update(targetRef, {
-      friends: updatedTargetFriends,
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-    });
-  }).then(() => {
-    showFeedback("🎉 Friend request accepted!");
-    
-    // 🧼 Remove button group from UI
-    if (buttonElement) {
-      const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:var(--gsu-red); font-weight:bold;">✅ Accepted</span>`;
+    // Only add if not already friends
+    if (!userFriends.includes(targetId)) {
+      transaction.update(currentUserRef, {
+        friends: firebase.firestore.FieldValue.arrayUnion(targetId),
+        friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
+      });
     }
 
-  }).catch(err => {
-    console.error("Transaction failed:", err);
+    if (!targetFriends.includes(user.uid)) {
+      transaction.update(targetUserRef, {
+        friends: firebase.firestore.FieldValue.arrayUnion(user.uid),
+        pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+      });
+    }
+  }).then(() => {
+    showFeedback("🎮 You are now friends!");
+
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<button onclick="removeFriend('${targetId}', '${buttonElement.dataset.username}')">🚫 Remove Friend</button>`;
+    }
+  }).catch((error) => {
+    console.error("Error accepting friend request:", error);
     showFeedback("Failed to accept friend request.");
   });
 }
@@ -1027,31 +1044,43 @@ function acceptFriend(targetId, buttonElement = null) {
 
 
 
+
 function declineFriend(targetId, buttonElement = null) {
   const user = firebase.auth().currentUser;
-  if (!user) return;
+  if (!user || !targetId || user.uid === targetId) return;
 
-  const userRef = db.collection("users").doc(user.uid);
-  const targetRef = db.collection("users").doc(targetId);
+  const currentUserRef = db.collection("users").doc(user.uid);
+  const targetUserRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
-    transaction.update(userRef, {
-      friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
-    });
+    const currentDoc = await transaction.get(currentUserRef);
+    const targetDoc = await transaction.get(targetUserRef);
 
-    transaction.update(targetRef, {
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-    });
-  }).then(() => {
-    showFeedback("Friend request declined", "#444");
-    
-    // 🧼 Remove button group from UI
-    if (buttonElement) {
-      const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:gray;">Request Declined</span>`;
+    const userRequests = currentDoc.data().friendRequests || [];
+    const targetPending = targetDoc.data().pendingRequests || [];
+
+    if (userRequests.includes(targetId)) {
+      transaction.update(currentUserRef, {
+        friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
+      });
     }
 
-  }).catch(err => console.error("Decline failed:", err));
+    if (targetPending.includes(user.uid)) {
+      transaction.update(targetUserRef, {
+        pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+      });
+    }
+  }).then(() => {
+    showFeedback("Friend request declined.");
+
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<button onclick="addFriend('${targetId}', this)">✅ Add Friend</button>`;
+    }
+  }).catch((error) => {
+    console.error("Error declining friend request:", error);
+    showFeedback("Failed to decline request.");
+  });
 }
 
 
@@ -1059,25 +1088,34 @@ function declineFriend(targetId, buttonElement = null) {
 
 
 
-function removeFriend(targetId, username) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
 
-  const userRef = db.collection("users").doc(user.uid);
-  const targetRef = db.collection("users").doc(targetId);
+function removeFriend(targetUID, username = "", buttonElement = null) {
+  const user = firebase.auth().currentUser;
+  if (!user || !targetUID || user.uid === targetUID) return;
+
+  const currentUserRef = db.collection("users").doc(user.uid);
+  const targetUserRef = db.collection("users").doc(targetUID);
 
   db.runTransaction(async (transaction) => {
-    transaction.update(userRef, {
-      friends: firebase.firestore.FieldValue.arrayRemove(targetId)
+    transaction.update(currentUserRef, {
+      friends: firebase.firestore.FieldValue.arrayRemove(targetUID)
     });
-
-    transaction.update(targetRef, {
+    transaction.update(targetUserRef, {
       friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
     });
   }).then(() => {
-    showFeedback(`👋 Removed @${username} as a friend`, "#444");
-  }).catch(err => console.error("Unfriend failed:", err));
+    showFeedback(`You removed ${username || "this user"} from your friends.`);
+
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<button onclick="addFriend('${targetUID}', this)">✅ Add Friend</button>`;
+    }
+  }).catch((error) => {
+    console.error("Error removing friend:", error);
+    showFeedback("Failed to remove friend.");
+  });
 }
+
 
 firebase.auth().onAuthStateChanged(user => {
   if (!user) {
@@ -1157,14 +1195,14 @@ firebase.auth().onAuthStateChanged(authUser => {
         if (isFriend) {
           friendActions = `
             <button onclick="openDM('${userId}', '${user.username}')">💬 DM</button>
-            <button onclick="removeFriend('${userId}', '${user.username}')">Unfriend</button>`;
+            <button onclick="removeFriend('${targetUID}', 'UsernameHere', this)">🚫 Remove Friend</button>`;
         } else if (sentRequest) {
           friendActions = `
           <button onclick="cancelFriendRequest('${userId}', this)">🚫 Cancel Request</button>`;
         } else if (receivedRequest) {
           friendActions = `
             <button onclick="acceptFriend('${userId}', this)">✅ Accept</button>
-            <button onclick="declineFriend('${userId}', this)">Decline</button>`;
+            <button onclick="declineFriend('${userId}', this)">🚫 Decline</button>`;
         } else {
           friendActions = `<button onclick="addFriend('${userId}')">✅ Add Friend</button>`;
         }
@@ -1343,25 +1381,35 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
   const currentUserRef = db.collection("users").doc(user.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
-  const removeFromCurrentUser = currentUserRef.update({
-    pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
-  }).catch(err => {
-    console.warn("⚠️ Could not remove from pendingRequests:", err);
-  });
+  db.runTransaction(async (transaction) => {
+    const currentDoc = await transaction.get(currentUserRef);
+    const targetDoc = await transaction.get(targetUserRef);
 
-  const removeFromTargetUser = targetUserRef.update({
-    friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-  }).catch(err => {
-    console.warn("⚠️ Could not remove from friendRequests:", err);
-  });
+    const currentPending = currentDoc.data().pendingRequests || [];
+    const targetRequests = targetDoc.data().friendRequests || [];
 
-  Promise.all([removeFromCurrentUser, removeFromTargetUser]).finally(() => {
-    showFeedback("✅ Friend request cancelled.");
+    if (currentPending.includes(targetUID)) {
+      transaction.update(currentUserRef, {
+        pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
+      });
+    }
+
+    if (targetRequests.includes(user.uid)) {
+      transaction.update(targetUserRef, {
+        friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+      });
+    }
+  }).then(() => {
+    showFeedback("Friend request canceled.");
 
     if (buttonElement) {
+      buttonElement.disabled = false;
       const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
+      container.innerHTML = `<button onclick="addFriend('${targetUID}', this)">✅ Add Friend</button>`;
     }
+  }).catch((error) => {
+    console.error("Error canceling friend request:", error);
+    showFeedback("Failed to cancel request.");
   });
 }
 
