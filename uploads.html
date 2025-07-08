@@ -1734,6 +1734,22 @@ firebase.auth().onAuthStateChanged(authUser => {
   });
 });
 
+firebase.auth().onAuthStateChanged(authUser => {
+  if (authUser) {
+    const userRef = db.collection("users").doc(authUser.uid);
+    userRef.get().then(doc => {
+      if (!doc.exists) {
+        userRef.set({
+          username: authUser.displayName || "GSU_User",
+          online: true,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    });
+  }
+});
+
+
 </script>
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
