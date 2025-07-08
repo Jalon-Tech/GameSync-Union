@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -867,6 +866,8 @@ nav {
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
 function addFriend(targetUID, buttonElement = null) {
+  const currentUser = firebase.auth().currentUser;
+
   if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
 
   const currentUserRef = db.collection("users").doc(currentUser.uid);
@@ -974,6 +975,8 @@ function closeDM() {
 
 
 function acceptFriend(targetId, buttonElement = null) {
+  const currentUser = firebase.auth().currentUser;
+
   if (!currentUser) return;
 
   const userRef = db.collection("users").doc(currentUser.uid);
@@ -1012,6 +1015,8 @@ function acceptFriend(targetId, buttonElement = null) {
 
 
 function declineFriend(targetId, buttonElement = null) {
+  const currentUser = firebase.auth().currentUser;
+
   if (!currentUser) return;
 
   const userRef = db.collection("users").doc(currentUser.uid);
@@ -1038,6 +1043,8 @@ function declineFriend(targetId, buttonElement = null) {
 
 
 function removeFriend(targetId, username, buttonElement = null) {
+  const currentUser = firebase.auth().currentUser;
+
   if (!currentUser) return;
 
   const userRef = db.collection("users").doc(currentUser.uid);
@@ -1064,7 +1071,6 @@ function removeFriend(targetId, username, buttonElement = null) {
 
 
 window.addFriend = addFriend;
-window.cancelFriendRequest = cancelFriendRequest;
 window.acceptFriend = acceptFriend;
 window.declineFriend = declineFriend;
 window.removeFriend = removeFriend;
@@ -1328,6 +1334,7 @@ container.appendChild(div);
 ;
 
 function cancelFriendRequest(targetUID, buttonElement = null) {
+  const currentUser = firebase.auth().currentUser;
   if (!currentUser || !targetUID) return;
 
   const currentUserRef = db.collection("users").doc(currentUser.uid);
@@ -1353,9 +1360,6 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
       showFeedback("Failed to cancel request.");
     });
 }
-
-
-window.cancelFriendRequest = cancelFriendRequest;
 
 window.cancelFriendRequest = cancelFriendRequest;
 
@@ -1537,7 +1541,6 @@ firebase.auth().onAuthStateChanged(user => {
 
 
         let deleteBtnHTML = "";
-        let autoRemove = false;
 
         if (isCreator) {
           db.collection("pollVotes").where(firebase.firestore.FieldPath.documentId(), ">=", `${pollId}_`)
@@ -1624,7 +1627,8 @@ function deletePoll(pollId) {
       })
       .catch(err => {
         console.error("Error deleting poll:", err);
-        showFeedback("Failed to your GSU delete poll.");
+        showFeedback("Failed to delete your GSU poll.");
+
       });
   }
 }
