@@ -1160,7 +1160,7 @@ firebase.auth().onAuthStateChanged(authUser => {
             <button onclick="removeFriend('${userId}', '${user.username}')">Unfriend</button>`;
         } else if (sentRequest) {
           friendActions = `
-          <button onclick="cancelFriendRequest('${userId}', this)">Cancel Request</button>`;
+          <button onclick="cancelFriendRequest('${userId}', this)">🚫 Cancel Request</button>`;
         } else if (receivedRequest) {
           friendActions = `
             <button onclick="acceptFriend('${userId}', this)">✅ Accept</button>
@@ -1343,24 +1343,29 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
   const currentUserRef = db.collection("users").doc(user.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
-  Promise.all([
-    currentUserRef.update({
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
-    }),
-    targetUserRef.update({
-      friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-    })
-  ]).then(() => {
+  const removeFromCurrentUser = currentUserRef.update({
+    pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
+  }).catch(err => {
+    console.warn("⚠️ Could not remove from pendingRequests:", err);
+  });
+
+  const removeFromTargetUser = targetUserRef.update({
+    friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+  }).catch(err => {
+    console.warn("⚠️ Could not remove from friendRequests:", err);
+  });
+
+  Promise.all([removeFromCurrentUser, removeFromTargetUser]).finally(() => {
     showFeedback("✅ Friend request cancelled.");
+
     if (buttonElement) {
       const container = buttonElement.closest("div");
       container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
     }
-  }).catch(err => {
-    console.error("Failed to cancel friend request:", err);
-    showFeedback("Could not cancel request.");
   });
 }
+
+window.cancelFriendRequest = cancelFriendRequest;
 
 window.cancelFriendRequest = cancelFriendRequest;
 
