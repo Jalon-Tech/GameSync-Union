@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+it only works sometimes with the friends stuff, but not always. Fix my issue: <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -865,12 +865,10 @@ nav {
 
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
-  
-  function addFriend(targetUID) {
-  const user = firebase.auth().currentUser;
-  if (!user || !targetUID || user.uid === targetUID) return;
+function addFriend(targetUID, buttonElement = null) {
+  if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
 
-  const currentUserRef = db.collection("users").doc(user.uid);
+  const currentUserRef = db.collection("users").doc(currentUser.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
   db.runTransaction(async (transaction) => {
@@ -886,18 +884,25 @@ nav {
       });
     }
 
-    if (!requests.includes(user.uid)) {
+    if (!requests.includes(currentUser.uid)) {
       transaction.update(targetUserRef, {
-        friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+        friendRequests: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
       });
     }
   }).then(() => {
     showFeedback("✅ Friend request sent!");
+    
+    // 👇 Update the UI immediately
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<span style="color:gray;">Request Sent</span>`;
+    }
   }).catch((error) => {
     console.error("Error sending friend request:", error);
     showFeedback("Failed to send friend request.");
   });
 }
+
 
 
 
@@ -964,24 +969,13 @@ function closeDM() {
   document.getElementById("dmModal").style.display = "none";
 }
 
-function sendFriendRequest(targetId) {
-  const user = firebase.auth().currentUser;
-  if (!user || user.uid === targetId) return;
-
-  db.collection("users").doc(targetId).update({
-    friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
-  }).then(() => {
-    showFeedback("✅ Friend request sent!");
-  });
-}
 
 
 
 function acceptFriend(targetId, buttonElement = null) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
+  if (!currentUser) return;
 
-  const userRef = db.collection("users").doc(user.uid);
+  const userRef = db.collection("users").doc(currentUser.uid);
   const targetRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
@@ -994,27 +988,21 @@ function acceptFriend(targetId, buttonElement = null) {
     const userFriends = userData.friends || [];
     const targetFriends = targetData.friends || [];
 
-    const updatedUserFriends = userFriends.includes(targetId) ? userFriends : [...userFriends, targetId];
-    const updatedTargetFriends = targetFriends.includes(user.uid) ? targetFriends : [...targetFriends, user.uid];
-
     transaction.update(userRef, {
-      friends: updatedUserFriends,
+      friends: userFriends.includes(targetId) ? userFriends : [...userFriends, targetId],
       friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
     });
 
     transaction.update(targetRef, {
-      friends: updatedTargetFriends,
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+      friends: targetFriends.includes(currentUser.uid) ? targetFriends : [...targetFriends, currentUser.uid],
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
     });
   }).then(() => {
     showFeedback("🎉 Friend request accepted!");
-    
-    // 🧼 Remove button group from UI
     if (buttonElement) {
       const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:var(--gsu-red); font-weight:bold;">✅ Accepted</span>`;
+      container.innerHTML = `<span style="color:green; font-weight:bold;">✅ Accepted</span>`;
     }
-
   }).catch(err => {
     console.error("Transaction failed:", err);
     showFeedback("Failed to accept friend request.");
@@ -1022,62 +1010,64 @@ function acceptFriend(targetId, buttonElement = null) {
 }
 
 
-
-
-
-
-
 function declineFriend(targetId, buttonElement = null) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
+  if (!currentUser) return;
 
-  const userRef = db.collection("users").doc(user.uid);
+  const userRef = db.collection("users").doc(currentUser.uid);
   const targetRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
     transaction.update(userRef, {
       friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
     });
-
     transaction.update(targetRef, {
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
     });
   }).then(() => {
-    showFeedback("Friend request declined", "#444");
-    
-    // 🧼 Remove button group from UI
+    showFeedback("Request declined", "#444");
     if (buttonElement) {
       const container = buttonElement.closest("div");
       container.innerHTML = `<span style="color:gray;">Request Declined</span>`;
     }
-
-  }).catch(err => console.error("Decline failed:", err));
+  }).catch(err => {
+    console.error("Decline failed:", err);
+    showFeedback("Failed to decline request.");
+  });
 }
 
 
+function removeFriend(targetId, username, buttonElement = null) {
+  if (!currentUser) return;
 
-
-
-
-function removeFriend(targetId, username) {
-  const user = firebase.auth().currentUser;
-  if (!user) return;
-
-  const userRef = db.collection("users").doc(user.uid);
+  const userRef = db.collection("users").doc(currentUser.uid);
   const targetRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
     transaction.update(userRef, {
       friends: firebase.firestore.FieldValue.arrayRemove(targetId)
     });
-
     transaction.update(targetRef, {
-      friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
+      friends: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
     });
   }).then(() => {
     showFeedback(`👋 Removed @${username} as a friend`, "#444");
-  }).catch(err => console.error("Unfriend failed:", err));
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<span style="color:gray;">Friend Removed</span>`;
+    }
+  }).catch(err => {
+    console.error("Unfriend failed:", err);
+    showFeedback("Failed to remove friend.");
+  });
 }
+
+
+window.addFriend = addFriend;
+window.cancelFriendRequest = cancelFriendRequest;
+window.acceptFriend = acceptFriend;
+window.declineFriend = declineFriend;
+window.removeFriend = removeFriend;
+
 
 firebase.auth().onAuthStateChanged(user => {
   if (!user) {
@@ -1337,33 +1327,32 @@ container.appendChild(div);
 ;
 
 function cancelFriendRequest(targetUID, buttonElement = null) {
-  const user = firebase.auth().currentUser;
-  if (!user || !targetUID) return;
+  if (!currentUser || !targetUID) return;
 
-  const currentUserRef = db.collection("users").doc(user.uid);
+  const currentUserRef = db.collection("users").doc(currentUser.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
-  const removeFromCurrentUser = currentUserRef.update({
-    pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
-  }).catch(err => {
-    console.warn("⚠️ Could not remove from pendingRequests:", err);
-  });
-
-  const removeFromTargetUser = targetUserRef.update({
-    friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-  }).catch(err => {
-    console.warn("⚠️ Could not remove from friendRequests:", err);
-  });
-
-  Promise.all([removeFromCurrentUser, removeFromTargetUser]).finally(() => {
-    showFeedback("✅ Friend request cancelled.");
-
-    if (buttonElement) {
-      const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
-    }
-  });
+  Promise.all([
+    currentUserRef.update({
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
+    }),
+    targetUserRef.update({
+      friendRequests: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+    })
+  ])
+    .then(() => {
+      showFeedback("✅ Friend request cancelled.");
+      if (buttonElement) {
+        const container = buttonElement.closest("div");
+        container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
+      }
+    })
+    .catch(err => {
+      console.warn("⚠️ Cancel request failed:", err);
+      showFeedback("Failed to cancel request.");
+    });
 }
+
 
 window.cancelFriendRequest = cancelFriendRequest;
 
