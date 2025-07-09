@@ -866,6 +866,8 @@ nav {
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
 function addFriend(targetUID, buttonElement = null) {
+  console.log("🔥 addFriend triggered", targetUID);
+
   try {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
@@ -889,20 +891,14 @@ function addFriend(targetUID, buttonElement = null) {
       transaction.update(currentUserRef, { pendingRequests: updatedPending });
       transaction.update(targetUserRef, { friendRequests: updatedRequests });
     }).then(() => {
-      try {
-        showFeedback?.("✅ Friend request sent!");
-        if (buttonElement?.closest("div")) {
+      alert("✅ Friend request sent!"); // Use alert for now
+      if (buttonElement?.closest("div")) {
         buttonElement.closest("div").innerHTML = `<span style="color:gray;">Request Sent</span>`;
       }
-
-      } catch (_) {}
-    }).catch(() => {
-      // Complete silent fail — nothing shows, no console logs
-    });
-  } catch (_) {
-    // Complete silent fail — absolutely no console or user feedback
-  }
+    }).catch(() => {});
+  } catch (_) {}
 }
+
 
 
 window.addFriend = addFriend;
