@@ -892,8 +892,9 @@ function addFriend(targetUID, buttonElement = null) {
       try {
         showFeedback?.("✅ Friend request sent!");
         if (buttonElement?.closest("div")) {
-          buttonElement.closest("div").innerHTML = `<span style="color:gray;">Request Sent</span>`;
-        }
+        buttonElement.closest("div").innerHTML = `<span style="color:gray;">Request Sent</span>`;
+      }
+
       } catch (_) {}
     }).catch(() => {
       // Complete silent fail — nothing shows, no console logs
@@ -1159,7 +1160,7 @@ firebase.auth().onAuthStateChanged(authUser => {
             <button onclick="acceptFriend('${userId}', this)">✅ Accept</button>
             <button onclick="declineFriend('${userId}', this)">Decline</button>`;
         } else {
-          friendActions = `<button onclick="addFriend('${userId}')">✅ Add Friend</button>`;
+         friendActions = `<button onclick="addFriend('${userId}', this)">✅ Add Friend</button>`;
         }
       }
 
