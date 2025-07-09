@@ -895,10 +895,6 @@ function addFriend(targetUID, buttonElement = null) {
       container.innerHTML = `<span style="color:gray;">Request Sent</span>`;
     }
   })
-  .catch((error) => {
-    console.error("TRANSACTION ERROR:", error);
-    showFeedback("Failed to send friend request.");
-  });
 }
 
 
