@@ -876,18 +876,14 @@ function addFriend(targetUID, buttonElement = null) {
     const currentSnap = await transaction.get(currentUserRef);
     const targetSnap = await transaction.get(targetUserRef);
 
-    const currentData = currentSnap.data() || {};
-    const targetData = targetSnap.data() || {};
+    const currentData = currentSnap.exists ? currentSnap.data() : {};
+    const targetData = targetSnap.exists ? targetSnap.data() : {};
 
-    const pending = currentData.pendingRequests || [];
-    const requests = targetData.friendRequests || [];
+    const pending = Array.isArray(currentData.pendingRequests) ? currentData.pendingRequests : [];
+    const requests = Array.isArray(targetData.friendRequests) ? targetData.friendRequests : [];
 
-    const updatedPending = pending.includes(targetUID)
-      ? pending
-      : [...pending, targetUID];
-    const updatedRequests = requests.includes(currentUser.uid)
-      ? requests
-      : [...requests, currentUser.uid];
+    const updatedPending = [...new Set([...pending, targetUID])];
+    const updatedRequests = [...new Set([...requests, currentUser.uid])];
 
     transaction.update(currentUserRef, { pendingRequests: updatedPending });
     transaction.update(targetUserRef, { friendRequests: updatedRequests });
@@ -900,10 +896,11 @@ function addFriend(targetUID, buttonElement = null) {
     }
   })
   .catch((error) => {
-    console.error("Error sending friend request:", error);
+    console.error("TRANSACTION ERROR:", error);
     showFeedback("Failed to send friend request.");
   });
 }
+
 
 
 
