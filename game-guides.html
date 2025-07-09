@@ -6,6 +6,20 @@
   <title>Gameplay Center | GameSync Union</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet"/>
   <style>
+    
+    .arrow.rotated {
+  transform: rotate(180deg);
+}
+
+    .arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    
+    .dropdown-container:hover .arrow {
+      transform: rotate(180deg);
+    }
+
     :root {
       --gsu-red: #e60023;
       --black-main: #191818;
@@ -304,19 +318,32 @@
   font-family: 'Montserrat', sans-serif;
   border: none;
   border-radius: 8px;
-  padding: 1rem 1.8rem;
+  padding: 1.1rem 1.4rem;
   font-size: 1rem;
   cursor: pointer;
-  width: 100%;
-  max-width: 420px;
+  max-width: 100%;
+  text-align: center;
+  line-height: 1.4;
+  white-space: normal; /* allow wrapping */
+  word-break: break-word;
 }
+@media (max-width: 480px) {
+  .dropdown-button {
+    font-size: 0.9rem;
+    padding: 1rem;
+  }
+}
+
 
 .dropdown-button:hover {
   opacity: 0.9;
 }
 
 .dropdown-content {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
   position: absolute;
   top: 100%;
   left: 0;
@@ -340,7 +367,14 @@
 
 /* Show dropdown on hover */
 .dropdown-container:hover .dropdown-content {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.dropdown-content.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 
@@ -409,10 +443,11 @@
       </div>
 
       <div class="button-wrapper">
-      <div class="dropdown-container">
+      <div class="dropdown-container" onclick="toggleDropdown(this)">
         <button class="dropdown-button">
-          🎮 Show Off or Shout Out —  Boss Fight Strategies, Community Gameplay Videos, Combo Guides & More 🔽
+          🎮 Show Off or Shout Out — Upload Boss Fight Strategies, Community Gameplay Videos, Combo Guides & More <span class="arrow">🔽</span>
         </button>
+    
         <div class="dropdown-content">
           <a href="submit.html?type=boss">🗡️ Boss Fight Strategies</a>
           <a href="submit.html?type=tutorial">🎮 Gameplay Tutorials</a>
@@ -422,6 +457,7 @@
         </div>
       </div>
     </div>
+
 
 
       <!-- Trending Guides Section -->
@@ -451,5 +487,26 @@
       <p>&copy; 2025 <strong>GameSync Union</strong>. Built for gamers, by gamers.</p>
     </footer>
   </div>
+  <script>
+  function toggleDropdown(container) {
+  const dropdown = container.querySelector(".dropdown-content");
+  const arrow = container.querySelector(".arrow");
+  dropdown.classList.toggle("show");
+  arrow.classList.toggle("rotated");
+}
+
+
+  // Optional: close dropdown if clicked outside
+window.addEventListener("click", function (e) {
+  document.querySelectorAll(".dropdown-container").forEach(container => {
+    if (!container.contains(e.target)) {
+      container.querySelector(".dropdown-content")?.classList.remove("show");
+      container.querySelector(".arrow")?.classList.remove("rotated");
+    }
+  });
+});
+
+</script>
+
 </body>
 </html>
