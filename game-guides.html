@@ -286,6 +286,48 @@
     font-size: 1.5rem !important;
   }
 }
+    .button-wrapper {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.dropdown-button {
+  background-color: #e60023;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #111;
+  min-width: 100%;
+  z-index: 1;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.dropdown-content a {
+  color: #eee;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.button-wrapper:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #222;
+}
+
 
   </style>
 </head>
@@ -353,15 +395,15 @@
 
       <div class="button-wrapper">
         <button class="dropdown-button">
-          🎮 Show Out or Shout Out — Bosses, Combos, Clips & More ▾
+          🎮 Show Out or Shout Out — Bosses, Combos, Clips & More 🔽
+            <div class="dropdown-content">
+              <a href="submit.html?type=boss">🗡️ Boss Fight Strategies</a>
+              <a href="submit.html?type=tutorial">🎮 Gameplay Tutorials</a>
+              <a href="submit.html?type=gameplay">📹 Community Gameplay Videos</a>
+              <a href="submit.html?type=combo">🥊 Combo Guides for Fighting Games</a>
+              <a href="submit.html?type=trophy">🏆 Trophy & Achievement Tips</a>
+            </div>
         </button>
-        <div class="dropdown-content">
-          <a href="submit.html?type=boss">🗡️ Boss Fight Strategies</a>
-          <a href="submit.html?type=tutorial">🎮 Gameplay Tutorials</a>
-          <a href="submit.html?type=gameplay">📹 Community Gameplay Videos</a>
-          <a href="submit.html?type=combo">🥊 Combo Guides for Fighting Games</a>
-          <a href="submit.html?type=trophy">🏆 Trophy & Achievement Tips</a>
-        </div>
 
       </div>
 
