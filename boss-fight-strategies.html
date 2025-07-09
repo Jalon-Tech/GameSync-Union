@@ -363,7 +363,7 @@
   import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyABC123...", // Use your actual config values
+    apiKey: "AIzaSyABC123...", // ✅ Replace with your actual values
     authDomain: "gamesync-union.firebaseapp.com",
     projectId: "gamesync-union",
     storageBucket: "gamesync-union.appspot.com",
@@ -374,34 +374,38 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Target the section to inject into
   const communitySection = document.querySelector("section:last-of-type");
 
-  // Create a container for video cards
   const videoContainer = document.createElement("div");
   videoContainer.style.marginTop = "2rem";
   videoContainer.style.display = "grid";
   videoContainer.style.gridTemplateColumns = "repeat(auto-fit, minmax(280px, 1fr))";
   videoContainer.style.gap = "1.5rem";
 
-  // Listen for boss videos
   const q = query(collection(db, "submissions"), where("type", "==", "boss"));
 
   onSnapshot(q, (snapshot) => {
-    videoContainer.innerHTML = ""; // Clear previous
+    videoContainer.innerHTML = "";
 
     snapshot.forEach((doc) => {
       const { videoUrl, caption } = doc.data();
-
       if (!videoUrl) return;
 
-      // Transform URL to embed format
       const embedUrl = videoUrl.includes("watch?v=")
         ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
         : videoUrl;
 
       const card = document.createElement("div");
-      card.classList.add("box");
+      card.style.backgroundColor = "#2a2a2a";
+      card.style.borderRadius = "10px";
+      card.style.padding = "1rem";
+      card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+      card.style.display = "flex";
+      card.style.flexDirection = "column";
+      card.style.justifyContent = "center";
+      card.style.alignItems = "center";
+      card.style.transition = "transform 0.3s ease";
+      card.style.textAlign = "center";
 
       const iframe = document.createElement("iframe");
       iframe.src = embedUrl;
@@ -409,16 +413,24 @@
       iframe.height = "200";
       iframe.allowFullscreen = true;
       iframe.style.border = "none";
-      iframe.style.borderRadius = "6px";
+      iframe.style.borderRadius = "8px";
 
-      const p = document.createElement("p");
-      p.textContent = caption || "No caption provided.";
-      p.style.marginTop = "0.8rem";
-      p.style.color = "#ccc";
-      p.style.fontSize = "0.95rem";
+      const title = document.createElement("p");
+      title.textContent = caption || "No caption provided.";
+      title.style.color = "#fff";
+      title.style.fontWeight = "600";
+      title.style.fontFamily = "Montserrat, sans-serif";
+      title.style.margin = "1rem 0 0.5rem";
+      title.style.fontSize = "1rem";
+
+      const note = document.createElement("p");
+      note.textContent = "🎮 Community drop powered by YouTube";
+      note.style.color = "#ccc";
+      note.style.fontSize = "0.9rem";
 
       card.appendChild(iframe);
-      card.appendChild(p);
+      card.appendChild(title);
+      card.appendChild(note);
       videoContainer.appendChild(card);
     });
 
