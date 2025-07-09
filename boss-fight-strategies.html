@@ -356,5 +356,51 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+  <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "488911705365",
+    appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+    measurementId: "G-CP48EXW1EV"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Fetch videos where type is 'boss'
+  db.collection("submissions")
+    .where("type", "==", "boss")
+    .orderBy("timestamp", "desc")
+    .get()
+    .then((querySnapshot) => {
+      const section = document.createElement("section");
+      section.innerHTML = `<h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem; margin-bottom: 1rem;">Community Boss Fight Videos</h2>`;
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const videoBox = document.createElement("div");
+        videoBox.classList.add("box");
+        videoBox.style.marginBottom = "1rem";
+
+        const embedUrl = data.videoUrl.replace("watch?v=", "embed/");
+        videoBox.innerHTML = `
+          <iframe width="100%" height="315" src="${embedUrl}" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
+          <p style="margin-top: 0.8rem; color: #ccc;">${data.caption || "No caption provided."}</p>
+        `;
+        section.appendChild(videoBox);
+      });
+      document.querySelector("main").appendChild(section);
+    })
+    .catch((error) => {
+      console.error("Error fetching boss videos:", error);
+    });
+</script>
+
 </body>
 </html>
