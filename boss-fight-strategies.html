@@ -357,66 +357,72 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
   <!-- Firebase App -->
+<!-- ✨ Your updated <script type="module"> section -->
 <script type="module">
-  // Import Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // Your Firebase config
   const firebaseConfig = {
-  apiKey: "AIzaSyABC123...",
-  authDomain: "gamesync-union.firebaseapp.com",
-  projectId: "gamesync-union",
-  storageBucket: "gamesync-union.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef123456"
-};
+    apiKey: "AIzaSyABC123...", // Use your actual config values
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef123456"
+  };
 
-
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Load videos into the page
+  // Target the section to inject into
   const communitySection = document.querySelector("section:last-of-type");
-  const listContainer = document.createElement("div");
-  listContainer.style.marginTop = "2rem";
-  listContainer.style.display = "grid";
-  listContainer.style.gridTemplateColumns = "repeat(auto-fit, minmax(300px, 1fr))";
-  listContainer.style.gap = "1.5rem";
 
-  // Get only 'boss' submissions
+  // Create a container for video cards
+  const videoContainer = document.createElement("div");
+  videoContainer.style.marginTop = "2rem";
+  videoContainer.style.display = "grid";
+  videoContainer.style.gridTemplateColumns = "repeat(auto-fit, minmax(280px, 1fr))";
+  videoContainer.style.gap = "1.5rem";
+
+  // Listen for boss videos
   const q = query(collection(db, "submissions"), where("type", "==", "boss"));
+
   onSnapshot(q, (snapshot) => {
-    listContainer.innerHTML = ""; // Clear previous videos
+    videoContainer.innerHTML = ""; // Clear previous
+
     snapshot.forEach((doc) => {
       const { videoUrl, caption } = doc.data();
 
+      if (!videoUrl) return;
+
+      // Transform URL to embed format
+      const embedUrl = videoUrl.includes("watch?v=")
+        ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
+        : videoUrl;
+
       const card = document.createElement("div");
-      card.style.backgroundColor = "#2a2a2a";
-      card.style.padding = "1rem";
-      card.style.borderRadius = "10px";
+      card.classList.add("box");
 
       const iframe = document.createElement("iframe");
-      iframe.src = videoUrl.replace("watch?v=", "embed/");
+      iframe.src = embedUrl;
       iframe.width = "100%";
       iframe.height = "200";
       iframe.allowFullscreen = true;
-      iframe.style.borderRadius = "6px";
       iframe.style.border = "none";
+      iframe.style.borderRadius = "6px";
 
       const p = document.createElement("p");
-      p.textContent = caption;
+      p.textContent = caption || "No caption provided.";
       p.style.marginTop = "0.8rem";
       p.style.color = "#ccc";
       p.style.fontSize = "0.95rem";
 
       card.appendChild(iframe);
       card.appendChild(p);
-      listContainer.appendChild(card);
+      videoContainer.appendChild(card);
     });
 
-    communitySection.appendChild(listContainer);
+    communitySection.appendChild(videoContainer);
   });
 </script>
 
