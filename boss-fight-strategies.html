@@ -340,10 +340,12 @@
       </div>
     </section>
 
-    <!-- Community Section -->
+   <!-- Community Section -->
+<!-- Community Section -->
     <section style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
-      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Community Contributions (Coming Soon)</h2>
-      <p style="color: #aaa; margin-top: 0.8rem;">Once users begin sharing tips, videos, and commentary, they’ll appear here automatically. Until then, enjoy hand-picked strategy previews and expert insights across genres.</p>
+      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Community Contributions (Live)</h2>
+      <p style="color: #aaa; margin-top: 0.8rem;">Boss fight clips submitted by players like you. Check out what the GSU community is cooking up.</p>
+      <div id="boss-video-container" style="margin-top: 2rem;"></div>
     </section>
   </main>
 
@@ -363,7 +365,7 @@
   import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyABC123...", // ✅ Replace with your actual values
+    apiKey: "AIzaSyABC123...", // Replace with your real config
     authDomain: "gamesync-union.firebaseapp.com",
     projectId: "gamesync-union",
     storageBucket: "gamesync-union.appspot.com",
@@ -374,13 +376,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const communitySection = document.querySelector("section:last-of-type");
-
-  const videoContainer = document.createElement("div");
-  videoContainer.style.marginTop = "2rem";
-  videoContainer.style.display = "grid";
-  videoContainer.style.gridTemplateColumns = "repeat(auto-fit, minmax(280px, 1fr))";
-  videoContainer.style.gap = "1.5rem";
+  const videoContainer = document.getElementById("boss-video-container");
 
   const q = query(collection(db, "submissions"), where("type", "==", "boss"));
 
@@ -393,7 +389,9 @@
 
       const embedUrl = videoUrl.includes("watch?v=")
         ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
-        : videoUrl;
+        : videoUrl.includes("youtu.be/")
+          ? `https://www.youtube.com/embed/${videoUrl.split("youtu.be/")[1]}`
+          : videoUrl;
 
       const card = document.createElement("div");
       card.style.backgroundColor = "#2a2a2a";
@@ -433,10 +431,9 @@
       card.appendChild(note);
       videoContainer.appendChild(card);
     });
-
-    communitySection.appendChild(videoContainer);
   });
 </script>
+  <!-- End of Firebase App -->
 
 </body>
 </html>
