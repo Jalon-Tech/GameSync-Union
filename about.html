@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/styles/global.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
   <style>
-        :root {
+    :root {
       --gsu-red: #e60023;
       --white-text: #ffffff;
     }
@@ -19,15 +19,7 @@
       margin: 0;
       padding: 0;
     }
-    .hidden {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-    .reveal {
-      opacity: 1;
-      transform: translateY(0);
-    }
+
     header {
       background-color: #1f1f1f;
       display: flex;
@@ -36,85 +28,62 @@
       padding: 1rem 2rem;
       flex-wrap: wrap;
     }
+
     .logo {
       display: flex;
       align-items: center;
     }
+
     .logo img {
       height: 60px;
       margin-right: 1rem;
     }
+
     .logo-text {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
       font-size: 1.6rem;
       color: #fff;
-      letter-spacing: 1px;
     }
+
     nav {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.8rem;
     }
-   nav a {
-    text-decoration: none;
-    color: var(--white-text);
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    background: transparent;
-  }
-  
-  nav a:hover {
-    color: var(--gsu-red);
- 
-  }
 
-
-    .btn {
-      background-color: #777;
-      border: none;
-      color: #fff;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
+    nav a {
+      text-decoration: none;
+      color: var(--white-text);
       font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
     }
+
+    nav a:hover {
+      color: var(--gsu-red);
+    }
+
     .container {
       padding: 3rem 1.5rem;
       max-width: 1200px;
       margin: auto;
     }
+
     h1, h2 {
       font-family: 'Roboto', sans-serif;
       color: #e60023;
       margin-bottom: 1rem;
     }
+
     h1 {
       font-size: 2.8rem;
       text-align: center;
     }
-    .section {
-      margin-bottom: 4rem;
-    }
-    .highlight-box {
-      background: #1e1e1e;
-      border-left: 5px solid #e60023;
-      padding: 1.5rem;
-      margin-top: 1rem;
-      border-radius: 12px;
-    }
-    .feature-list {
-      list-style: none;
-      padding-left: 0;
-    }
-    .feature-list li::before {
-      content: "\1F3AE";
-      margin-right: 0.5rem;
-    }
+
     .info-card {
       background-color: #1b1b1b;
       border: 1px solid #333;
@@ -122,30 +91,46 @@
       padding: 1.5rem;
       margin-bottom: 2rem;
     }
+
     .info-card h3 {
       color: #e60023;
       margin-bottom: 0.5rem;
     }
+
     .info-card p {
       color: #ccc;
       line-height: 1.6;
     }
+
+    .feature-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .feature-list li::before {
+      content: "\1F3AE";
+      margin-right: 0.5rem;
+    }
+
     .gsu-logo-center {
       display: flex;
       justify-content: center;
       margin: 2rem 0 3rem;
     }
+
     .gsu-logo-center img {
       width: 220px;
       border: 6px solid #e60023;
       border-radius: 12px;
     }
+
     footer {
       background-color: #1f1f1f;
       text-align: center;
       padding: 1.5rem 1rem;
       margin-top: 4rem;
     }
+
     .platform-icons {
       display: flex;
       justify-content: center;
@@ -153,16 +138,19 @@
       gap: 1.5rem;
       margin-bottom: 0.6rem;
     }
+
     .platform-icons img {
       height: 32px;
       width: auto;
       opacity: 0.9;
       transition: transform 0.3s ease, filter 0.3s ease;
     }
+
     .platform-icons img:hover {
       transform: scale(1.2);
       filter: brightness(1.3) drop-shadow(0 0 6px #e60023);
     }
+
     footer p {
       color: #ccc;
       font-size: 1rem;
@@ -173,74 +161,67 @@
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GAMESYNC UNION</div>
     </div>
-   <nav>
-    <a href="index.html">Home</a>
-    <a href="games.html">Games</a>
-    <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
-    <a href="art.html">Art</a>
-    <a href="game-guides.html">GSU Gameplay Center</a>
-    <a href="uploads.html">GSU Player Lounge</a>
-  </nav>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">GSU Gameplay Center</a>
+      <a href="uploads.html">GSU Player Lounge</a>
+    </nav>
   </header>
-
 
   <div class="container">
     <section class="section reveal">
       <h1>🎮 What Is GameSync Union?</h1>
       <div class="gsu-logo-center">
-        <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+        <img src="GSU_LOGO.png" alt="GSU Logo" />
       </div>
+
       <div class="info-card">
-        <h3>Core Identity</h3>
-        <p><strong>GameSync Union (GSU)</strong> is your all-in-one gaming universe — a platform where players don’t just play — they post, flex, guide, grind, and connect. GSU is powered by the gamers who breathe life into it, syncing trophy stats, uploads, clips, and guides in real-time.</p>
+        <h3>🏁 The Mission</h3>
+        <p><strong>GameSync Union (GSU)</strong> is your digital arena — where your clips hit faster, your trophies shine louder, and your grind never gets buried. Whether you're combo-building, speedrunning, or just vibing, GSU keeps your gaming story in motion, loud and proud.</p>
       </div>
+
       <div class="info-card">
-        <h3>💡 GSU Motto</h3>
+        <h3>💬 The Motto</h3>
         <p style="font-style: italic; color: #ccc; font-size: 1.1rem;">“No pause. No kink. Just raw sync — GameSync Union is where gamers link.”</p>
+        <p style="font-style: italic; color: #ccc; font-size: 1.1rem;">“This ain’t just a platform — it’s your highlight reel, leveling up in real time.”</p>
       </div>
+
       <div class="info-card">
-        <h3>🔥 Key Features Across the Platform</h3>
+        <h3>🧩 What GSU Delivers</h3>
         <ul class="feature-list">
-          <li>🕹️ <strong>Mini-Games & Challenges</strong> — Dive into GSU-themed arcade-style games built to test your reflexes, rack up scores, and earn your bragging rights</li>
-          <li>🗡️ <strong>Boss Fight Breakdowns</strong> — Analyze legendary boss battles with step-by-step tactics, timing breakdowns, and pro strategies</li>
-          <li>🎮 <strong>Gameplay Tutorials</strong> — Cut the fluff and learn how to level up fast with power tips for the games you’re grinding</li>
-          <li>📹 <strong>Community Gameplay Videos</strong> — Share highlight reels, clutch plays, or your funniest fails — and scroll through fire content from others</li>
-          <li>🥊 <strong>Fighting Game Combo Guides</strong> — Break down insane chains, cancels, and setups across your favorite fighters — from casual to sweaty</li>
-          <li>🏆 <strong>Trophy & Achievement Help</strong> — Unlock the rare stuff with straight-up guides made to get you that platinum flex</li>
-          <li>💬 <strong>Squad Chat</strong> — Talk strats, roast clips, or just vibe out — it's your social feed for gaming talk that actually hits</li>
-          <li>🎨 <strong>Fan Art Zone</strong> — Showcase your style, support other creators, and scroll a feed full of gamer-made visuals</li>
-          <li>🎯 <strong>GSU Spotlight</strong> — The hottest clips, comments, or content — all in one spot, always moving</li>
-          <li>🎲 <strong>Game Flow Zone</strong> — A hub to keep tabs on the titles that shape GSU — every highlight, guide, and grind starts here</li>
+          <li><strong>🎯 Real-Time Sync</strong> — Post a play, earn a badge, drop a comment. It hits instantly — no refresh needed.</li>
+          <li><strong>🏆 Trophy Guides</strong> — No filler walkthroughs. Just real tips from real grinders unlocking platinum status.</li>
+          <li><strong>🎮 Mini-Games</strong> — GSU exclusives to test your skills, chase top scores, and flex your reflexes.</li>
+          <li><strong>💡 Game Guides & Boss Strats</strong> — Breakdowns with frame precision. No fluff, just facts.</li>
+          <li><strong>🔥 GSU Spotlight</strong> — Your best moments? We put them center stage with zero delay.</li>
+          <li><strong>🎨 Art & Style</strong> — Drop your fan art, build your vibe, and browse a feed that respects creativity.</li>
+          <li><strong>💬 Squad Chat</strong> — Your circle, your convos, your zone — built around gaming energy, not spam.</li>
+          <li><strong>🥇 Badges That Hit</strong> — Designed to mean something. Flex-worthy, grind-tested, and full of energy.</li>
+          <li><strong>📈 Your GSU Track Record</strong> — From daily drops to streaks — it's your digital statline, always updating.</li>
         </ul>
       </div>
-      
+
       <div class="info-card">
-        <h3>📈 Real-Time Sync</h3>
-        <p>Every action on GSU is live. Post a clip, react to something, or earn a badge — it’s instantly visible. No reloads, no delays — just smooth, real-time feedback like you're in the game.</p>
-      </div>
-      <div class="info-card">
-        <h3>🧬 Built to Show Off Your Game</h3>
-        <p>Every GSU profile evolves as you do. It’s not just your name — it's your flex zone: favorite titles, creative uploads, trophy wins, badges, and even mini-game scores. Show what you play and how you play it.</p>
-      </div>
-      <div class="info-card">
-        <h3>🏅 Badge System & Achievements</h3>
-        <p>From daily logins to major community drops, earn badges that actually mean something. Show your grind, rep your streaks, and collect exclusive icons that tell your GSU story.</p>
-      </div>
-      <div class="info-card">
-        <h3>📊 Your Progress, Synced</h3>
-        <p>Track your growth across GSU in real-time. Whether you're earning trophies, posting art, or hitting new high scores in mini-games — it's all recorded and ready to be shown off.</p>
-      </div>
-      <div class="info-card">
-        <h3>🚀 Synced to Be Seen</h3>
-        <p>On GSU, your grind never goes unnoticed. Every trophy, clip, badge, or post updates in real time — no waiting, no filters. It’s all about giving your game the spotlight it deserves, the moment you drop it. You show up, GSU shows out.</p>
+        <h3>🔁 Always On. Always Live.</h3>
+        <p>GSU doesn’t wait around. You unlock it — we show it. You upload it — it’s there. No delay. No refresh. Just real-time sync that mirrors your moves the second you make them.</p>
       </div>
 
+      <div class="info-card">
+        <h3>🎭 Profiles with Personality</h3>
+        <p>Your GSU profile evolves with your every move. Favorite games, unlocked badges, insane uploads, clutch art — it’s more than data. It’s your gamer fingerprint.</p>
+      </div>
+
+      <div class="info-card">
+        <h3>📡 GSU Rhythm</h3>
+        <p>Everything you do on GSU beats to one pulse — live, raw, and fluid. No lag. No guessing. Just your gameplay, reactions, and records hitting as they happen.</p>
+      </div>
     </section>
-  </div>
-
   </div>
 
   <footer>
