@@ -13,52 +13,6 @@
   
 <style>
 
-  .origin-popup {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  max-width: 350px;
-  max-height: 80vh;
-  background: #1a1a1a;
-  color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  z-index: 9999;
-  overflow-y: auto;
-  animation: slideUp 0.6s ease;
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.origin-popup h3 {
-  margin-top: 0;
-  color: #e60023;
-}
-
-.close-popup {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  background: transparent;
-  color: #fff;
-  font-size: 18px;
-  border: none;
-  cursor: pointer;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(60px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0px);
-    opacity: 1;
-  }
-}
-
   .sync-desc {
   font-size: 0.9rem;
   color: #ccc;
@@ -899,26 +853,6 @@ nav {
 
 <!-- 🔧 Scripts -->
 <script>
-  function showOriginPopup() {
-  document.getElementById('originPopup').style.display = 'block';
-}
-
-function closeOriginPopup() {
-  document.getElementById('originPopup').style.display = 'none';
-}
-
-// Auto-show for first login (Firestore-based version)
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    const userRef = firebase.firestore().collection('users').doc(user.uid);
-    userRef.get().then((doc) => {
-      if (doc.exists && !doc.data().originPopupShown) {
-        showOriginPopup();
-        userRef.update({ originPopupShown: true });
-      }
-    });
-  }
-});
   const RetroFacts = [
     "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
     "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
@@ -1255,7 +1189,6 @@ When the Union highlights you — it means something. If your name’s echoing i
       <img src="Switch.png" alt="Nintendo Switch" />
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
-    <button onclick="showOriginPopup()">📖 Why GSU Exists</button>
   </footer>
   <!-- Edit Modal -->
 <div id="editModal" class="modal">
@@ -1988,19 +1921,7 @@ function hideAuthNotice() {
   import './firebase-init.js';
   import './profile-loader.js';
 </script>
-<div id="originPopup" class="origin-popup" style="display: none;">
-  <button class="close-popup" onclick="closeOriginPopup()">×</button>
-  <h3>How I Got to This Level</h3>
-  <p>
-    When I first saw code as a kid in the early 2010s, I didn’t even know what it was — I just liked how it looked. The colors, the layout, it pulled me in.
-    <br><br>
-    By middle school, I realized code is the mind behind all technology — powering systems, apps, and every game we play. That’s when I started building.
-    <br><br>
-    As I leveled up, I saw the problem: most gaming platforms didn’t care about real connection.
-    <br><br>
-    So I built <strong>GameSync Union</strong> — not just a platform, but a space for gamers to squad up, sync up, and build something real.
-  </p>
-</div>
+
 </body>
 
 </html>
