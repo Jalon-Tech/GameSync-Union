@@ -249,53 +249,74 @@
     <div class="submitted-msg" id="successMessage">✅ Video submitted! Thanks for keeping the GSU community strong.</div>
   </div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const type = params.get("type");
-    const label = document.getElementById("categoryLabel");
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-    const map = {
-      boss: "🗡️ Boss Fight Strategy",
-      tutorial: "🎮 Gameplay Tutorial",
-      gameplay: "📹 Gamers’ Gameplay Video",
-      combo: "🥊 Fighting Game Combo Guide",
-      trophy: "🏆 Trophy & Achievement Tip"
-    };
+<script>
+  // 🔌 Use your actual Firebase config from your GSU project here
+  const firebaseConfig = {
+  apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+  authDomain: "gamesync-union.firebaseapp.com",
+  projectId: "gamesync-union",
+  storageBucket: "gamesync-union.firebasestorage.app",
+  messagingSenderId: "488911705365",
+  appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+  measurementId: "G-CP48EXW1EV"
+};
 
-    label.textContent = type && map[type] ? map[type] : "🎮 Gameplay Video Submission";
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
 
-    document.getElementById("videoForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const videoUrl = document.getElementById("videoUrl").value;
-      const caption = document.getElementById("caption").value;
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get("type");
+  const label = document.getElementById("categoryLabel");
 
-      console.log("Submitted:", { type, videoUrl, caption });
+  const map = {
+    boss: "🗡️ Boss Fight Strategy",
+    tutorial: "🎮 Gameplay Tutorial",
+    gameplay: "📹 Gamers’ Gameplay Video",
+    combo: "🥊 Fighting Game Combo Guide",
+    trophy: "🏆 Trophy & Achievement Tip"
+  };
 
+  label.textContent = type && map[type] ? map[type] : "🎮 Gameplay Video Submission";
+
+  document.getElementById("videoForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const videoUrl = document.getElementById("videoUrl").value.trim();
+    const caption = document.getElementById("caption").value.trim();
+
+    if (!videoUrl) return;
+
+    db.collection("submissions").add({
+      type: type || "gameplay",
+      videoUrl,
+      caption,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
       document.getElementById("successMessage").style.display = "block";
       document.getElementById("videoForm").reset();
 
-     for (let i = 0; i < 15; i++) {
-  const logo = document.createElement("img");
-  logo.src = "GSU_LOGO.png";
-  logo.classList.add("logo-float");
-
-  // random position and rotation
-  logo.style.left = Math.random() * 100 + "vw";
-  logo.style.top = "100%";
-  logo.style.transform = `rotate(${Math.random() * 360}deg)`;
-
-  // different float duration
-  logo.style.animationDuration = 1 + Math.random() * 1.5 + "s";
-
-  document.body.appendChild(logo);
-
-  setTimeout(() => {
-    logo.remove();
-  }, 3000);
-}
-
-
+      for (let i = 0; i < 15; i++) {
+        const logo = document.createElement("img");
+        logo.src = "GSU_LOGO.png";
+        logo.classList.add("logo-float");
+        logo.style.left = Math.random() * 100 + "vw";
+        logo.style.top = "100%";
+        logo.style.transform = `rotate(${Math.random() * 360}deg)`;
+        logo.style.animationDuration = 1 + Math.random() * 1.5 + "s";
+        document.body.appendChild(logo);
+        setTimeout(() => logo.remove(), 3000);
+      }
+    }).catch((error) => {
+      console.error("Error submitting video:", error);
+      alert("⚠️ Could not submit video. Please try again.");
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
