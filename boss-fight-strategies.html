@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,24 +129,77 @@
       font-family: 'Roboto', sans-serif;
     }
 
-    .box {
-      background-color: var(--black-faded);
-      border-radius: 8px;
-      padding: 1rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-      color: var(--white-text);
-    }
-
-    .box:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--gsu-red);
-      background-color: var(--black-faded);
-    }
-
     @media (max-width: 768px) {
-      nav a { font-size: 0.9rem; }
+      .logo-text {
+        font-size: 1.3rem;
+      }
+
+      .section-header h1 {
+        font-size: 2rem;
+      }
+
+      .section-header p {
+        font-size: 1rem;
+      }
+
+      main {
+        padding: 0 1rem;
+      }
+
+      nav a {
+        font-size: 0.9rem;
+      }
     }
+
+    @media (max-width: 480px) {
+      .logo img {
+        height: 40px;
+      }
+
+      .logo-text {
+        font-size: 1.1rem;
+      }
+
+      .section-header h1 {
+        font-size: 1.7rem;
+      }
+
+      .section-header p {
+        font-size: 0.95rem;
+      }
+
+      .platform-icons img {
+        height: 28px;
+      }
+
+      footer p {
+        font-size: 0.85rem;
+      }
+    }
+
+     .box {
+  background-color: var(--black-faded);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  color: var(--white-text);
+}
+
+  .box:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--gsu-red);
+  background-color: var(--black-faded); /* stays consistent */
+  color: var(--white-text); /* ensures text remains white */
+}
+
+  .box li {
+  transition: transform 0.3s ease;
+}
+
+.box:hover li {
+  transform: translateX(6px);
+}
   </style>
 </head>
 <body>
@@ -155,24 +209,141 @@
       <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
-      <a href="art.html">Art</a>
-      <a href="game-guides.html">GSU Gameplay Center</a>
-      <a href="uploads.html">GSU Player Lounge</a>
-    </nav>
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+    <a href="art.html">Art</a>
+    <a href="game-guides.html">GSU Gameplay Center</a>
+    <a href="uploads.html">GSU Player Lounge</a>
+  </nav>
   </header>
 
   <main>
     <div class="section-header">
       <h1>Boss Fight Strategies</h1>
-      <p>Master boss encounters across PlayStation, Xbox, Switch, and PC — crafted to help you survive, adapt, and dominate.</p>
+      <p>Master boss encounters across PlayStation, Xbox, Switch, and PC—crafted to help you survive, adapt, and dominate.</p>
     </div>
 
-    <section id="community-videos" style="margin-bottom: 3rem;">
-      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem; margin-bottom: 1rem;">Community Boss Fight Videos</h2>
-      <p style="color: #ccc; margin-bottom: 1rem;">Boss tips submitted by players — real footage, real tactics.</p>
+    <!-- Search and Filter Section -->
+<section style="margin-bottom: 2rem;">
+  <div style="
+    background-color: var(--black-faded);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+  ">
+    <!-- Search Bar -->
+    <input 
+      type="text" 
+      placeholder="Search by game name..."
+      style="
+        flex: 1 1 240px;
+        max-width: 280px;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        border: none;
+        font-size: 1rem;
+        font-family: 'Roboto';
+        background-color: #2a2a2a;
+        color: white;"
+    />
+
+    <!-- Genre Dropdown -->
+    <select 
+      style="
+        flex: 1 1 160px;
+        max-width: 200px;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        background-color: #2a2a2a;
+        color: white;
+        border: none;
+        font-family: 'Montserrat';
+        font-size: 1rem;">
+      <option value="">Genre</option>
+      <option>Action</option>
+      <option>RPG</option>
+      <option>Fighting</option>
+      <option>Adventure</option>
+      <option>Sports</option>
+      <option>Racing</option>
+      <option>Platformer</option>
+      <option>Shooter</option>
+    </select>
+
+    <!-- Platform Dropdown -->
+    <select 
+      style="
+        flex: 1 1 160px;
+        max-width: 200px;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        background-color: #2a2a2a;
+        color: white;
+        border: none;
+        font-family: 'Montserrat';
+        font-size: 1rem;">
+      <option value="">Platform</option>
+      <option>PlayStation</option>
+      <option>Xbox</option>
+      <option>Nintendo Switch</option>
+      <option>PC</option>
+    </select>
+  </div>
+</section>
+
+
+    <!-- Intro Section -->
+    <section style="margin-bottom: 2rem;">
+      <div style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
+        <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem;">What You'll Find Here:</h2>
+        <p style="color: #ccc; font-size: 1rem; line-height: 1.7;">
+          This hub breaks down boss mechanics, player-tested tactics, and counter strategies. Whether you're in a fast-paced fighter, a story-driven RPG, or an open-world epic, this is where gamers unite to prepare for battle.
+        </p>
+        <ul style="color: #aaa; margin-top: 1rem; padding-left: 1.2rem; line-height: 1.8;">
+          <li>🧠 Phase-by-phase boss breakdowns</li>
+          <li>⚔️ Weapon, ability, and elemental recommendations</li>
+          <li>⏱️ Reaction timing and parry/dodge windows</li>
+          <li>🎮 Platform-specific mechanics (PS5, Xbox Series X|S, Switch, PC)</li>
+          <li>🗂️ Genres covered: Action-RPGs, Platformers, Fighters, Soulslikes, Hack-and-Slash</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Boss Previews -->
+    <section style="margin-bottom: 2rem;">
+      <h2 style="font-family: 'Montserrat', sans-serif; color: var(--gsu-red); font-size: 1.5rem; margin-bottom: 1rem;">Featured Boss Highlights</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+          <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">🗡️ General Radahn – Elden Ring</h3>
+          <p style="color: #ccc; margin-top: 0.6rem;">Utilize Torrent, bait magic attacks, and stagger him with bleed. Beware his gravity dive mid-fight. Phase 2 is a chaos zone—stay mobile and alert.</p>
+        </div>
+
+        <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+          <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">🕷️ Venom – Marvel’s Spider-Man 2</h3>
+          <p style="color: #ccc; margin-top: 0.6rem;">Parry when possible, dodge heavy swings, and time your symbiote powers. Once enraged, he becomes unpredictable—precision is key.</p>
+        </div>
+
+        <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+          <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">🔥 Ganondorf – Tears of the Kingdom</h3>
+          <p style="color: #ccc; margin-top: 0.6rem;">Watch for gloom-based corruption. Fuse weapons wisely and use Recall creatively. His final form demands perfect dodge timing for flurry attacks.</p>
+        </div>
+
+        <div style="background-color: #2a2a2a; padding: 1.5rem; border-radius: 10px;">
+          <h3 style="color: var(--white-text); font-family: 'Montserrat'; font-size: 1.2rem;">👊 Shao Kahn – Mortal Kombat 1</h3>
+          <p style="color: #ccc; margin-top: 0.6rem;">Zoning and counter-play are essential. His armor will soak normal attacks—use meter burns and punish his unsafe hammer swings.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community Section -->
+    <section style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
+      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Community Contributions (Coming Soon)</h2>
+      <p style="color: #aaa; margin-top: 0.8rem;">Once users begin sharing tips, videos, and commentary, they’ll appear here automatically. Until then, enjoy hand-picked strategy previews and expert insights across genres.</p>
     </section>
   </main>
 
@@ -185,62 +356,5 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-      measurementId: "G-CP48EXW1EV"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    db.collection("submissions")
-      .where("type", "==", "boss")
-      .orderBy("timestamp", "desc")
-      .get()
-      .then((querySnapshot) => {
-        const section = document.getElementById("community-videos");
-
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          let embedUrl = data.videoUrl;
-
-          // Convert video URL to embed format
-          if (embedUrl.includes("watch?v=")) {
-            embedUrl = embedUrl.replace("watch?v=", "embed/");
-          } else if (embedUrl.includes("youtu.be/")) {
-            const videoId = embedUrl.split("youtu.be/")[1].split(/[?&]/)[0];
-            embedUrl = `https://www.youtube.com/embed/${videoId}`;
-          }
-
-          const videoBox = document.createElement("div");
-          videoBox.classList.add("box");
-          videoBox.style.marginBottom = "2rem";
-
-          videoBox.innerHTML = `
-            <iframe width="100%" height="315" src="${embedUrl}" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
-            <p style="margin-top: 0.8rem; color: #ccc;">${data.caption || "No caption provided."}</p>
-          `;
-
-          section.appendChild(videoBox);
-        });
-
-        if (section.childElementCount === 2) {
-          section.innerHTML += `<p style="color: #888;">No videos found yet. Be the first to submit!</p>`;
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching boss videos:", error);
-      });
-  </script>
 </body>
 </html>
