@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit to GSU</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gsu-red: #e60023;
+      --black-main: #191818;
+      --black-faded: #1F1F1F;
+      --white-text: #FFFFFF;
+      --gray-text: #ccc;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--black-main);
+      color: var(--white-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      background-image: url('gsu_background.png'); /* Optional */
+      background-size: cover;
+      background-position: center;
+    }
+
+    .submit-container {
+      background-color: var(--black-faded);
+      border: 2px solid var(--gsu-red);
+      border-radius: 14px;
+      padding: 2.5rem 2rem;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(230, 0, 35, 0.4);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+      color: var(--gsu-red);
+    }
+
+    .category-display {
+      text-align: center;
+      color: var(--gray-text);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--gray-text);
+    }
+
+    input, textarea {
+      width: 100%;
+      background-color: #222;
+      border: 1px solid #333;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--gsu-red);
+      color: white;
+      border: none;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #cc001f;
+      transform: translateY(-2px);
+    }
+
+    .submitted-msg {
+      margin-top: 1.5rem;
+      background-color: #222;
+      border: 1px solid var(--gsu-red);
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--gray-text);
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="submit-container">
+    <h1>Upload to GSU</h1>
+    <div class="category-display" id="categoryLabel">Loading category...</div>
+
+    <form id="videoForm">
+      <label for="videoUrl">Video Link (YouTube, Twitch, etc.):</label>
+      <input type="url" id="videoUrl" required placeholder="https://..." />
+
+      <label for="caption">Caption or Comment (Optional):</label>
+      <textarea id="caption" placeholder="Say something about this video..."></textarea>
+
+      <button type="submit">🚀 Submit</button>
+    </form>
+
+    <div class="submitted-msg" id="successMessage">✅ Video submitted! Thanks for keeping the GSU community strong.</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    const label = document.getElementById("categoryLabel");
+
+    const map = {
+      boss: "🗡️ Boss Fight Strategy",
+      tutorial: "🎮 Gameplay Tutorial",
+      gameplay: "📹 Gamers’ Gameplay Video",
+      combo: "🥊 Fighting Game Combo Guide",
+      trophy: "🏆 Trophy & Achievement Tip"
+    };
+
+    label.textContent = type && map[type] ? map[type] : "🎮 Gameplay Video Submission";
+
+    document.getElementById("videoForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const videoUrl = document.getElementById("videoUrl").value;
+      const caption = document.getElementById("caption").value;
+      console.log("Submitted:", { type, videoUrl, caption });
+
+      document.getElementById("successMessage").style.display = "block";
+      document.getElementById("videoForm").reset();
+    });
+  </script>
+</body>
+</html>
