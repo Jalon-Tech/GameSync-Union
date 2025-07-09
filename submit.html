@@ -24,7 +24,7 @@
       justify-content: center;
       min-height: 100vh;
       padding: 2rem;
-      background-image: url('gsu_background.png'); /* Optional */
+      background-image: url('gsu_background.png'); /* Optional background */
       background-size: cover;
       background-position: center;
     }
@@ -62,27 +62,36 @@
 
     label {
       display: block;
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.95rem;
-      font-weight: bold;
+      margin-top: 1.2rem;
+      margin-bottom: 0.4rem;
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--gray-text);
+      letter-spacing: 0.3px;
     }
 
     input, textarea {
       width: 100%;
       background-color: #222;
-      border: 1px solid #333;
-      padding: 14px;
-      border-radius: 8px;
+      border: 1px solid #444;
+      padding: 14px 16px;
+      border-radius: 10px;
       font-size: 1rem;
       color: white;
       font-family: 'Roboto', sans-serif;
+      transition: border 0.3s ease, background 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      border: 1px solid var(--gsu-red);
+      background-color: #1c1c1c;
+      outline: none;
     }
 
     textarea {
       resize: vertical;
       min-height: 120px;
+      line-height: 1.4;
     }
 
     button {
@@ -92,16 +101,19 @@
       background-color: var(--gsu-red);
       color: white;
       border: none;
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-family: 'Montserrat', sans-serif;
-      border-radius: 8px;
+      font-weight: 600;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 0 12px rgba(230, 0, 35, 0.4);
+      transition: all 0.25s ease;
     }
 
     button:hover {
       background-color: #cc001f;
       transform: translateY(-2px);
+      box-shadow: 0 0 16px rgba(230, 0, 35, 0.55);
     }
 
     .submitted-msg {
@@ -158,8 +170,10 @@
       e.preventDefault();
       const videoUrl = document.getElementById("videoUrl").value;
       const caption = document.getElementById("caption").value;
+
       console.log("Submitted:", { type, videoUrl, caption });
 
+      // Simulate success
       document.getElementById("successMessage").style.display = "block";
       document.getElementById("videoForm").reset();
     });
