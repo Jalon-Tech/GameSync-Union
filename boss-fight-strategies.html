@@ -345,7 +345,8 @@
     <section style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
       <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Community Contributions (Live)</h2>
       <p style="color: #aaa; margin-top: 0.8rem;">Boss fight clips submitted by players like you. Check out what the GSU community is cooking up.</p>
-      <div id="boss-video-container" style="margin-top: 2rem;"></div>
+      <div id="boss-video-container" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;"></div>
+
     </section>
   </main>
 
@@ -398,20 +399,38 @@
       card.style.borderRadius = "10px";
       card.style.padding = "1rem";
       card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
-      card.style.display = "flex";
-      card.style.flexDirection = "column";
-      card.style.justifyContent = "center";
-      card.style.alignItems = "center";
+      card.style.display = "block";
+      card.style.width = "100%";
+      card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+      card.onmouseenter = () => {
+        card.style.transform = "translateY(-6px) scale(1.01)";
+        card.style.boxShadow = "0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05)";
+      };
+      card.onmouseleave = () => {
+        card.style.transform = "none";
+        card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+      };
+
       card.style.transition = "transform 0.3s ease";
       card.style.textAlign = "center";
 
       const iframe = document.createElement("iframe");
       iframe.src = embedUrl;
-      iframe.width = "100%";
-      iframe.height = "200";
+      iframe.style.width = "100%";
+      iframe.style.maxWidth = "560px";  // Match Spotlight 3 width
+      iframe.style.height = "315px";    // Maintain 16:9 ratio
       iframe.allowFullscreen = true;
       iframe.style.border = "none";
       iframe.style.borderRadius = "8px";
+      iframe.style.margin = "0 auto";
+
+      const iframeWrapper = document.createElement("div");
+      iframeWrapper.style.display = "flex";
+      iframeWrapper.style.justifyContent = "center";
+      iframeWrapper.appendChild(iframe);
+
+
+
 
       const title = document.createElement("p");
       title.textContent = caption || "No caption provided.";
