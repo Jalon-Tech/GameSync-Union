@@ -867,44 +867,43 @@ nav {
 
 function addFriend(targetUID, buttonElement = null) {
   const currentUser = firebase.auth().currentUser;
-
   if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
 
   const currentUserRef = db.collection("users").doc(currentUser.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
   db.runTransaction(async (transaction) => {
-    const currentDoc = await transaction.get(currentUserRef);
-    const targetDoc = await transaction.get(targetUserRef);
+    const currentSnap = await transaction.get(currentUserRef);
+    const targetSnap = await transaction.get(targetUserRef);
 
-    const pending = currentDoc.data().pendingRequests || [];
-    const requests = targetDoc.data().friendRequests || [];
+    const currentData = currentSnap.data() || {};
+    const targetData = targetSnap.data() || {};
 
-    if (!pending.includes(targetUID)) {
-      transaction.update(currentUserRef, {
-        pendingRequests: firebase.firestore.FieldValue.arrayUnion(targetUID)
-      });
-    }
+    const pending = currentData.pendingRequests || [];
+    const requests = targetData.friendRequests || [];
 
-    if (!requests.includes(currentUser.uid)) {
-      transaction.update(targetUserRef, {
-        friendRequests: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-      });
-    }
-  }).then(() => {
+    const updatedPending = pending.includes(targetUID)
+      ? pending
+      : [...pending, targetUID];
+    const updatedRequests = requests.includes(currentUser.uid)
+      ? requests
+      : [...requests, currentUser.uid];
+
+    transaction.update(currentUserRef, { pendingRequests: updatedPending });
+    transaction.update(targetUserRef, { friendRequests: updatedRequests });
+  })
+  .then(() => {
     showFeedback("✅ Friend request sent!");
-    
-    // 👇 Update the UI immediately
     if (buttonElement) {
       const container = buttonElement.closest("div");
       container.innerHTML = `<span style="color:gray;">Request Sent</span>`;
     }
-  }).catch((error) => {
+  })
+  .catch((error) => {
     console.error("Error sending friend request:", error);
     showFeedback("Failed to send friend request.");
   });
 }
-
 
 
 
@@ -1340,26 +1339,31 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
   const currentUserRef = db.collection("users").doc(currentUser.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
-  Promise.all([
-    currentUserRef.update({
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
-    }),
-    targetUserRef.update({
-      friendRequests: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-    })
-  ])
-    .then(() => {
-      showFeedback("✅ Friend request cancelled.");
-      if (buttonElement) {
-        const container = buttonElement.closest("div");
-        container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
-      }
-    })
-    .catch(err => {
-      console.warn("⚠️ Cancel request failed:", err);
-      showFeedback("Failed to cancel request.");
-    });
+  db.runTransaction(async (transaction) => {
+    const currentSnap = await transaction.get(currentUserRef);
+    const targetSnap = await transaction.get(targetUserRef);
+
+    const currentData = currentSnap.data();
+    const targetData = targetSnap.data();
+
+    const updatedPending = (currentData.pendingRequests || []).filter(id => id !== targetUID);
+    const updatedRequests = (targetData.friendRequests || []).filter(id => id !== currentUser.uid);
+
+    transaction.update(currentUserRef, { pendingRequests: updatedPending });
+    transaction.update(targetUserRef, { friendRequests: updatedRequests });
+
+  }).then(() => {
+    showFeedback("✅ Friend request cancelled.");
+    if (buttonElement) {
+      const container = buttonElement.closest("div");
+      container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
+    }
+  }).catch(err => {
+    console.warn("Cancel request failed:", err);
+    showFeedback("Failed to cancel request.");
+  });
 }
+
 
 window.cancelFriendRequest = cancelFriendRequest;
 
