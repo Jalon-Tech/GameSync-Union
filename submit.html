@@ -169,33 +169,30 @@
       display: none;
     }
 
-      .logo-float {
-        position: fixed;
-        width: 40px;
-        opacity: 0;
-        animation-name: floatUp;
-        animation-timing-function: ease-out;
-        animation-fill-mode: forwards;
-        pointer-events: none;
-        z-index: 0;
-      }
-
+    .logo-float {
+      position: fixed;
+      width: 40px;
+      opacity: 0;
+      animation-name: floatUp;
+      animation-timing-function: ease-out;
+      animation-fill-mode: forwards;
+      pointer-events: none;
+      z-index: 0;
+    }
 
     @keyframes floatUp {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-130vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-130vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
 
     @media (max-width: 768px) {
       header {
@@ -249,74 +246,85 @@
     <div class="submitted-msg" id="successMessage">✅ Video submitted! Thanks for keeping the GSU community strong.</div>
   </div>
 
-  <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script>
-  // 🔌 Use your actual Firebase config from your GSU project here
-  const firebaseConfig = {
-  apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-  authDomain: "gamesync-union.firebaseapp.com",
-  projectId: "gamesync-union",
-  storageBucket: "gamesync-union.firebasestorage.app",
-  messagingSenderId: "488911705365",
-  appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-  measurementId: "G-CP48EXW1EV"
-};
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+      measurementId: "G-CP48EXW1EV"
+    };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const type = params.get("type");
-  const label = document.getElementById("categoryLabel");
-
-  const map = {
-    boss: "🗡️ Boss Fight Strategy",
-    tutorial: "🎮 Gameplay Tutorial",
-    gameplay: "📹 Gamers’ Gameplay Video",
-    combo: "🥊 Fighting Game Combo Guide",
-    trophy: "🏆 Trophy & Achievement Tip"
-  };
-
-  label.textContent = type && map[type] ? map[type] : "🎮 Gameplay Video Submission";
-
-  document.getElementById("videoForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const videoUrl = document.getElementById("videoUrl").value.trim();
-    const caption = document.getElementById("caption").value.trim();
-
-    if (!videoUrl) return;
-
-    db.collection("submissions").add({
-      type: type || "gameplay",
-      videoUrl,
-      caption,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-      document.getElementById("successMessage").style.display = "block";
-      document.getElementById("videoForm").reset();
-
-      for (let i = 0; i < 15; i++) {
-        const logo = document.createElement("img");
-        logo.src = "GSU_LOGO.png";
-        logo.classList.add("logo-float");
-        logo.style.left = Math.random() * 100 + "vw";
-        logo.style.top = "100%";
-        logo.style.transform = `rotate(${Math.random() * 360}deg)`;
-        logo.style.animationDuration = 1 + Math.random() * 1.5 + "s";
-        document.body.appendChild(logo);
-        setTimeout(() => logo.remove(), 3000);
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("✅ Logged in:", user.uid);
+      } else {
+        auth.signInAnonymously()
+          .then(() => console.log("✅ Signed in anonymously"))
+          .catch((error) => {
+            console.error("❌ Auth error:", error.message);
+            alert("Login failed. Please refresh the page.");
+          });
       }
-    }).catch((error) => {
-      console.error("Error submitting video:", error);
-      alert("⚠️ Could not submit video. Please try again.");
     });
-  });
-</script>
 
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    const label = document.getElementById("categoryLabel");
+
+    const map = {
+      boss: "🗡️ Boss Fight Strategy",
+      tutorial: "🎮 Gameplay Tutorial",
+      gameplay: "📹 Gamers’ Gameplay Video",
+      combo: "🥊 Fighting Game Combo Guide",
+      trophy: "🏆 Trophy & Achievement Tip"
+    };
+
+    label.textContent = type && map[type] ? map[type] : "🎮 Gameplay Video Submission";
+
+    document.getElementById("videoForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const videoUrl = document.getElementById("videoUrl").value.trim();
+      const caption = document.getElementById("caption").value.trim();
+
+      if (!videoUrl) return;
+
+      db.collection("submissions").add({
+        type: type || "gameplay",
+        videoUrl,
+        caption,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        document.getElementById("successMessage").style.display = "block";
+        document.getElementById("videoForm").reset();
+
+        for (let i = 0; i < 15; i++) {
+          const logo = document.createElement("img");
+          logo.src = "GSU_LOGO.png";
+          logo.classList.add("logo-float");
+          logo.style.left = Math.random() * 100 + "vw";
+          logo.style.top = "100%";
+          logo.style.transform = `rotate(${Math.random() * 360}deg)`;
+          logo.style.animationDuration = 1 + Math.random() * 1.5 + "s";
+          document.body.appendChild(logo);
+          setTimeout(() => logo.remove(), 3000);
+        }
+      }).catch((error) => {
+        console.error("Error submitting video:", error);
+        alert("⚠️ Could not submit video. Please try again.");
+      });
+    });
+  </script>
 </body>
 </html>
