@@ -286,31 +286,45 @@
     font-size: 1.5rem !important;
   }
 }
-    .button-wrapper {
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.dropdown-container {
   position: relative;
   display: inline-block;
   text-align: center;
-  margin-top: 20px;
 }
 
 .dropdown-button {
-  background-color: #e60023;
-  color: #fff;
-  font-size: 1.1rem;
-  padding: 14px 20px;
+  background-color: var(--gsu-red);
+  color: var(--white-text);
+  font-family: 'Montserrat', sans-serif;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
+  padding: 1rem 1.8rem;
+  font-size: 1rem;
   cursor: pointer;
+  width: 100%;
+  max-width: 420px;
+}
+
+.dropdown-button:hover {
+  opacity: 0.9;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
   background-color: #111;
-  min-width: 100%;
-  z-index: 1;
   border-radius: 0 0 10px 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  z-index: 1;
 }
 
 .dropdown-content a {
@@ -320,12 +334,13 @@
   display: block;
 }
 
-.button-wrapper:hover .dropdown-content {
-  display: block;
-}
-
 .dropdown-content a:hover {
   background-color: #222;
+}
+
+/* Show dropdown on hover */
+.dropdown-container:hover .dropdown-content {
+  display: block;
 }
 
 
@@ -394,18 +409,20 @@
       </div>
 
       <div class="button-wrapper">
+      <div class="dropdown-container">
         <button class="dropdown-button">
           🎮 Show Out or Shout Out — Bosses, Combos, Clips & More 🔽
-            <div class="dropdown-content">
-              <a href="submit.html?type=boss">🗡️ Boss Fight Strategies</a>
-              <a href="submit.html?type=tutorial">🎮 Gameplay Tutorials</a>
-              <a href="submit.html?type=gameplay">📹 Community Gameplay Videos</a>
-              <a href="submit.html?type=combo">🥊 Combo Guides for Fighting Games</a>
-              <a href="submit.html?type=trophy">🏆 Trophy & Achievement Tips</a>
-            </div>
         </button>
-
+        <div class="dropdown-content">
+          <a href="submit.html?type=boss">🗡️ Boss Fight Strategies</a>
+          <a href="submit.html?type=tutorial">🎮 Gameplay Tutorials</a>
+          <a href="submit.html?type=gameplay">📹 Community Gameplay Videos</a>
+          <a href="submit.html?type=combo">🥊 Combo Guides for Fighting Games</a>
+          <a href="submit.html?type=trophy">🏆 Trophy & Achievement Tips</a>
+        </div>
       </div>
+    </div>
+
 
       <!-- Trending Guides Section -->
       <section style="margin-top: 4rem;">
