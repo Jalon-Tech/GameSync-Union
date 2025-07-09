@@ -895,7 +895,7 @@ nav {
     showFeedback("✅ Friend request sent!");
   }).catch((error) => {
     console.error("Error sending friend request:", error);
-    showFeedback("❌ Failed to send friend request.");
+    showFeedback("Failed to send friend request.");
   });
 }
 
@@ -1016,8 +1016,8 @@ function acceptFriend(targetId, buttonElement = null) {
     }
 
   }).catch(err => {
-    console.error("❌ Transaction failed:", err);
-    showFeedback("❌ Failed to accept friend request.");
+    console.error("Transaction failed:", err);
+    showFeedback("Failed to accept friend request.");
   });
 }
 
@@ -1361,7 +1361,7 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
 
   }).catch(err => {
     console.error("Failed to cancel friend request:", err);
-    showFeedback("❌ Could not cancel request.");
+    showFeedback("Could not cancel request.");
   });
 }
 
@@ -1495,7 +1495,7 @@ function submitVote(pollId, choiceText) {
     });
   }).catch(error => {
     console.error("Vote failed:", error);
-    showFeedback("❌ Failed to record your vote.");
+    showFeedback("Failed to record your vote.");
   });
 }
 
