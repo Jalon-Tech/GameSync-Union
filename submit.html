@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+just update  this: <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -169,22 +169,33 @@
       display: none;
     }
 
-    .logo-float {
-      position: absolute;
-      width: 40px;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      animation: floatUp 1.4s ease-out forwards;
-      z-index: 0;
-      pointer-events: none;
-    }
+      .logo-float {
+        position: fixed;
+        width: 40px;
+        opacity: 0;
+        animation-name: floatUp;
+        animation-timing-function: ease-out;
+        animation-fill-mode: forwards;
+        pointer-events: none;
+        z-index: 0;
+      }
+
 
     @keyframes floatUp {
-      0% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateX(-50%) translateY(-180px) scale(1.1); opacity: 0; }
-    }
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-130vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+
 
     @media (max-width: 768px) {
       header {
@@ -263,14 +274,27 @@
       document.getElementById("successMessage").style.display = "block";
       document.getElementById("videoForm").reset();
 
-      const logo = document.createElement("img");
-      logo.src = "GSU_LOGO.png";
-      logo.classList.add("logo-float");
-      document.body.appendChild(logo);
+     for (let i = 0; i < 15; i++) {
+  const logo = document.createElement("img");
+  logo.src = "GSU_LOGO.png";
+  logo.classList.add("logo-float");
 
-      setTimeout(() => {
-        logo.remove();
-      }, 1600);
+  // random position and rotation
+  logo.style.left = Math.random() * 100 + "vw";
+  logo.style.top = "100%";
+  logo.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+  // different float duration
+  logo.style.animationDuration = 1 + Math.random() * 1.5 + "s";
+
+  document.body.appendChild(logo);
+
+  setTimeout(() => {
+    logo.remove();
+  }, 3000);
+}
+
+
     });
   </script>
 </body>
