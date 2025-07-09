@@ -134,30 +134,17 @@
       padding: 1rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
       color: var(--white-text);
-      margin-bottom: 1.5rem;
     }
 
     .box:hover {
       transform: translateY(-6px) scale(1.01);
       box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
       border: 1px solid var(--gsu-red);
+      background-color: var(--black-faded);
     }
 
     @media (max-width: 768px) {
-      .logo-text { font-size: 1.3rem; }
-      .section-header h1 { font-size: 2rem; }
-      .section-header p { font-size: 1rem; }
-      main { padding: 0 1rem; }
       nav a { font-size: 0.9rem; }
-    }
-
-    @media (max-width: 480px) {
-      .logo img { height: 40px; }
-      .logo-text { font-size: 1.1rem; }
-      .section-header h1 { font-size: 1.7rem; }
-      .section-header p { font-size: 0.95rem; }
-      .platform-icons img { height: 28px; }
-      footer p { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -170,7 +157,7 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="games.html">Games</a>
-      <a href="trophies.html">GSU Hall of Trophies</a>
+      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
       <a href="art.html">Art</a>
       <a href="game-guides.html">GSU Gameplay Center</a>
       <a href="uploads.html">GSU Player Lounge</a>
@@ -183,11 +170,9 @@
       <p>Master boss encounters across PlayStation, Xbox, Switch, and PC — crafted to help you survive, adapt, and dominate.</p>
     </div>
 
-    <!-- Community Boss Videos Section (loaded from Firestore) -->
-    <section id="boss-videos">
-      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem; margin-bottom: 1rem;">
-        Community Boss Fight Videos
-      </h2>
+    <section id="community-videos" style="margin-bottom: 3rem;">
+      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem; margin-bottom: 1rem;">Community Boss Fight Videos</h2>
+      <p style="color: #ccc; margin-bottom: 1rem;">Boss tips submitted by players — real footage, real tactics.</p>
     </section>
   </main>
 
@@ -201,10 +186,9 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
@@ -224,25 +208,35 @@
       .orderBy("timestamp", "desc")
       .get()
       .then((querySnapshot) => {
-        const container = document.getElementById("boss-videos");
+        const section = document.getElementById("community-videos");
+
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           let embedUrl = data.videoUrl;
+
+          // Convert video URL to embed format
           if (embedUrl.includes("watch?v=")) {
             embedUrl = embedUrl.replace("watch?v=", "embed/");
           } else if (embedUrl.includes("youtu.be/")) {
-            const videoId = embedUrl.split("youtu.be/")[1].split("?")[0];
+            const videoId = embedUrl.split("youtu.be/")[1].split(/[?&]/)[0];
             embedUrl = `https://www.youtube.com/embed/${videoId}`;
           }
 
           const videoBox = document.createElement("div");
           videoBox.classList.add("box");
+          videoBox.style.marginBottom = "2rem";
+
           videoBox.innerHTML = `
             <iframe width="100%" height="315" src="${embedUrl}" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
             <p style="margin-top: 0.8rem; color: #ccc;">${data.caption || "No caption provided."}</p>
           `;
-          container.appendChild(videoBox);
+
+          section.appendChild(videoBox);
         });
+
+        if (section.childElementCount === 2) {
+          section.innerHTML += `<p style="color: #888;">No videos found yet. Be the first to submit!</p>`;
+        }
       })
       .catch((error) => {
         console.error("Error fetching boss videos:", error);
