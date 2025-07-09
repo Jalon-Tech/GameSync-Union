@@ -866,38 +866,42 @@ nav {
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
 function addFriend(targetUID, buttonElement = null) {
-  const currentUser = firebase.auth().currentUser;
-  if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
+  try {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
 
-  const currentUserRef = db.collection("users").doc(currentUser.uid);
-  const targetUserRef = db.collection("users").doc(targetUID);
+    const currentUserRef = db.collection("users").doc(currentUser.uid);
+    const targetUserRef = db.collection("users").doc(targetUID);
 
-  db.runTransaction(async (transaction) => {
-    const currentSnap = await transaction.get(currentUserRef);
-    const targetSnap = await transaction.get(targetUserRef);
+    db.runTransaction(async (transaction) => {
+      const currentSnap = await transaction.get(currentUserRef);
+      const targetSnap = await transaction.get(targetUserRef);
 
-    const currentData = currentSnap.exists ? currentSnap.data() : {};
-    const targetData = targetSnap.exists ? targetSnap.data() : {};
+      const currentData = currentSnap.exists ? currentSnap.data() : {};
+      const targetData = targetSnap.exists ? targetSnap.data() : {};
 
-    const pending = Array.isArray(currentData.pendingRequests) ? currentData.pendingRequests : [];
-    const requests = Array.isArray(targetData.friendRequests) ? targetData.friendRequests : [];
+      const pending = Array.isArray(currentData.pendingRequests) ? currentData.pendingRequests : [];
+      const requests = Array.isArray(targetData.friendRequests) ? targetData.friendRequests : [];
 
-    const updatedPending = [...new Set([...pending, targetUID])];
-    const updatedRequests = [...new Set([...requests, currentUser.uid])];
+      const updatedPending = pending.includes(targetUID) ? pending : [...pending, targetUID];
+      const updatedRequests = requests.includes(currentUser.uid) ? requests : [...requests, currentUser.uid];
 
-    transaction.update(currentUserRef, { pendingRequests: updatedPending });
-    transaction.update(targetUserRef, { friendRequests: updatedRequests });
-  })
-  .then(() => {
-    showFeedback("✅ Friend request sent!");
-    if (buttonElement) {
-      const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:gray;">Request Sent</span>`;
-    }
-  })
+      transaction.update(currentUserRef, { pendingRequests: updatedPending });
+      transaction.update(targetUserRef, { friendRequests: updatedRequests });
+    }).then(() => {
+      try {
+        showFeedback?.("✅ Friend request sent!");
+        if (buttonElement?.closest("div")) {
+          buttonElement.closest("div").innerHTML = `<span style="color:gray;">Request Sent</span>`;
+        }
+      } catch (_) {}
+    }).catch(() => {
+      // Complete silent fail — nothing shows, no console logs
+    });
+  } catch (_) {
+    // Complete silent fail — absolutely no console or user feedback
+  }
 }
-
-
 
 
 window.addFriend = addFriend;
