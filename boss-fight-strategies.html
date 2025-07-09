@@ -96,25 +96,10 @@
       color: #ccc;
     }
 
-    .box {
-      background-color: var(--black-faded);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-      color: var(--white-text);
-    }
-
-    .box:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--gsu-red);
-    }
-
     footer {
       background-color: var(--black-faded);
       text-align: center;
-      padding: 1rem;
+      padding: 1rem 1rem;
     }
 
     .platform-icons {
@@ -143,66 +128,66 @@
       font-family: 'Roboto', sans-serif;
     }
 
+    .box {
+      background-color: var(--black-faded);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+      color: var(--white-text);
+      margin-bottom: 1.5rem;
+    }
+
+    .box:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gsu-red);
+    }
+
     @media (max-width: 768px) {
-      .logo-text {
-        font-size: 1.3rem;
-      }
+      .logo-text { font-size: 1.3rem; }
+      .section-header h1 { font-size: 2rem; }
+      .section-header p { font-size: 1rem; }
+      main { padding: 0 1rem; }
+      nav a { font-size: 0.9rem; }
+    }
 
-      .section-header h1 {
-        font-size: 2rem;
-      }
-
-      nav a {
-        font-size: 0.9rem;
-      }
+    @media (max-width: 480px) {
+      .logo img { height: 40px; }
+      .logo-text { font-size: 1.1rem; }
+      .section-header h1 { font-size: 1.7rem; }
+      .section-header p { font-size: 0.95rem; }
+      .platform-icons img { height: 28px; }
+      footer p { font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
       <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
       <a href="index.html">Home</a>
       <a href="games.html">Games</a>
-      <a href="trophies.html">Trophies</a>
+      <a href="trophies.html">GSU Hall of Trophies</a>
       <a href="art.html">Art</a>
-      <a href="game-guides.html">Gameplay Center</a>
-      <a href="uploads.html">Player Lounge</a>
+      <a href="game-guides.html">GSU Gameplay Center</a>
+      <a href="uploads.html">GSU Player Lounge</a>
     </nav>
   </header>
 
   <main>
     <div class="section-header">
       <h1>Boss Fight Strategies</h1>
-      <p>Master boss encounters across PlayStation, Xbox, Switch, and PC—crafted to help you survive, adapt, and dominate.</p>
+      <p>Master boss encounters across PlayStation, Xbox, Switch, and PC — crafted to help you survive, adapt, and dominate.</p>
     </div>
 
-    <section>
-      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.5rem; margin-bottom: 1rem;">Featured Boss Highlights</h2>
-      <div class="box">
-        <h3>🗡️ General Radahn – Elden Ring</h3>
-        <p>Utilize Torrent, bait magic attacks, and stagger him with bleed. Beware his gravity dive mid-fight. Phase 2 is chaos—stay mobile and alert.</p>
-      </div>
-      <div class="box">
-        <h3>🕷️ Venom – Marvel’s Spider-Man 2</h3>
-        <p>Parry when possible, dodge heavy swings, and time your symbiote powers. Once enraged, he becomes unpredictable—precision is key.</p>
-      </div>
-      <div class="box">
-        <h3>🔥 Ganondorf – Tears of the Kingdom</h3>
-        <p>Watch for gloom-based corruption. Fuse weapons wisely and use Recall creatively. His final form demands perfect dodge timing for flurry attacks.</p>
-      </div>
-      <div class="box">
-        <h3>👊 Shao Kahn – Mortal Kombat 1</h3>
-        <p>Zoning and counter-play are essential. His armor soaks normal attacks—use meter burns and punish his unsafe hammer swings.</p>
-      </div>
-    </section>
-
-    <!-- ✅ Firebase Videos Will Be Inserted Here -->
-    <section id="community-boss-videos">
-      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.5rem; margin: 2rem 0 1rem;">Community Boss Fight Videos</h2>
+    <!-- Community Boss Videos Section (loaded from Firestore) -->
+    <section id="boss-videos">
+      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem; margin-bottom: 1rem;">
+        Community Boss Fight Videos
+      </h2>
     </section>
   </main>
 
@@ -216,7 +201,7 @@
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
-  <!-- Firebase -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
@@ -234,36 +219,33 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ⬇️ Fetch boss fight videos from Firestore
     db.collection("submissions")
       .where("type", "==", "boss")
       .orderBy("timestamp", "desc")
       .get()
       .then((querySnapshot) => {
-        const container = document.getElementById("community-boss-videos");
-
-        if (querySnapshot.empty) {
-          container.innerHTML += `<p style="color: #aaa;">No boss fight videos submitted yet. Be the first to contribute!</p>`;
-          return;
-        }
-
+        const container = document.getElementById("boss-videos");
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          if (!data.videoUrl) return;
+          let embedUrl = data.videoUrl;
+          if (embedUrl.includes("watch?v=")) {
+            embedUrl = embedUrl.replace("watch?v=", "embed/");
+          } else if (embedUrl.includes("youtu.be/")) {
+            const videoId = embedUrl.split("youtu.be/")[1].split("?")[0];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+          }
 
-          const embedUrl = data.videoUrl.replace("watch?v=", "embed/");
-
-          const box = document.createElement("div");
-          box.className = "box";
-          box.innerHTML = `
+          const videoBox = document.createElement("div");
+          videoBox.classList.add("box");
+          videoBox.innerHTML = `
             <iframe width="100%" height="315" src="${embedUrl}" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
             <p style="margin-top: 0.8rem; color: #ccc;">${data.caption || "No caption provided."}</p>
           `;
-          container.appendChild(box);
+          container.appendChild(videoBox);
         });
       })
-      .catch((err) => {
-        console.error("Error loading boss videos:", err);
+      .catch((error) => {
+        console.error("Error fetching boss videos:", error);
       });
   </script>
 </body>
