@@ -895,7 +895,7 @@ nav {
     showFeedback("✅ Friend request sent!");
   }).catch((error) => {
     console.error("Error sending friend request:", error);
-    showFeedback("Failed to send friend request.");
+    showFeedback("❌ Failed to send friend request.");
   });
 }
 
@@ -964,6 +964,18 @@ function closeDM() {
   document.getElementById("dmModal").style.display = "none";
 }
 
+function sendFriendRequest(targetId) {
+  const user = firebase.auth().currentUser;
+  if (!user || user.uid === targetId) return;
+
+  db.collection("users").doc(targetId).update({
+    friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+  }).then(() => {
+    showFeedback("✅ Friend request sent!");
+  });
+}
+
+
 
 function acceptFriend(targetId, buttonElement = null) {
   const user = firebase.auth().currentUser;
@@ -1004,8 +1016,8 @@ function acceptFriend(targetId, buttonElement = null) {
     }
 
   }).catch(err => {
-    console.error("Transaction failed:", err);
-    showFeedback("Failed to accept friend request.");
+    console.error("❌ Transaction failed:", err);
+    showFeedback("❌ Failed to accept friend request.");
   });
 }
 
@@ -1332,23 +1344,13 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
   const targetUserRef = db.collection("users").doc(targetUID);
 
   db.runTransaction(async (transaction) => {
-    const currentDoc = await transaction.get(currentUserRef);
-    const targetDoc = await transaction.get(targetUserRef);
+    transaction.update(currentUserRef, {
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
+    });
 
-    const currentPending = currentDoc.data().pendingRequests || [];
-    const targetRequests = targetDoc.data().friendRequests || [];
-
-    if (currentPending.includes(targetUID)) {
-      transaction.update(currentUserRef, {
-        pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
-      });
-    }
-
-    if (targetRequests.includes(user.uid)) {
-      transaction.update(targetUserRef, {
-        friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
-      });
-    }
+    transaction.update(targetUserRef, {
+      friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+    });
   }).then(() => {
     showFeedback("Friend request cancelled.");
 
@@ -1356,12 +1358,12 @@ function cancelFriendRequest(targetUID, buttonElement = null) {
       const container = buttonElement.closest("div");
       container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
     }
+
   }).catch(err => {
     console.error("Failed to cancel friend request:", err);
-    showFeedback("Could not cancel request.");
+    showFeedback("❌ Could not cancel request.");
   });
 }
-
 
 
 function showFeedback(message, bgColor = '#e60023') {
@@ -1383,19 +1385,6 @@ function showFeedback(message, bgColor = '#e60023') {
     banner.style.opacity = "1";
   }, 3200);
 }
-
-window.cancelFriendRequest = cancelFriendRequest;
-
-// 🔍 Debug: See your own friend request data in console
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    db.collection("users").doc(user.uid).get().then(doc => {
-      console.log("Your UID:", user.uid);
-      console.log("Your pendingRequests:", doc.data().pendingRequests || []);
-      console.log("Your friendRequests:", doc.data().friendRequests || []);
-    });
-  }
-});
 
 
 </script>
@@ -1506,7 +1495,7 @@ function submitVote(pollId, choiceText) {
     });
   }).catch(error => {
     console.error("Vote failed:", error);
-    showFeedback("Failed to record your vote.");
+    showFeedback("❌ Failed to record your vote.");
   });
 }
 
