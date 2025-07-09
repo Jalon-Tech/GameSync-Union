@@ -1,3 +1,4 @@
+<!-- Community Gameplay Videos Page with Firebase Integration -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,9 +13,13 @@
       --black-faded: #1F1F1F;
       --white-text: #FFFFFF;
     }
+
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
@@ -23,6 +28,7 @@
       flex-direction: column;
       min-height: 100vh;
     }
+
     header {
       background-color: var(--black-faded);
       display: flex;
@@ -31,20 +37,30 @@
       padding: 1rem 2rem;
       flex-wrap: wrap;
     }
+
     .logo {
-      display: flex; align-items: center; margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
     }
+
     .logo img {
-      height: 50px; margin-right: 1rem;
+      height: 50px;
+      margin-right: 1rem;
     }
+
     .logo-text {
       font-size: 1.6rem;
       font-family: 'Montserrat', sans-serif;
       color: var(--white-text);
     }
+
     nav {
-      display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
     }
+
     nav a {
       text-decoration: none;
       color: var(--white-text);
@@ -52,179 +68,121 @@
       transition: color 0.3s ease;
       font-size: 1rem;
     }
+
     nav a:hover {
       color: var(--gsu-red);
     }
+
     main {
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 2rem;
       flex: 1;
     }
+
     .section-header {
       text-align: center;
       margin-bottom: 2rem;
     }
+
     .section-header h1 {
       font-family: 'Montserrat', sans-serif;
       font-size: 2.5rem;
       color: var(--gsu-red);
     }
+
     .section-header p {
       font-size: 1.1rem;
       color: #ccc;
     }
-    .placeholder {
-      background-color: var(--black-faded);
-      padding: 2rem;
-      border-radius: 8px;
-      text-align: center;
-      color: #aaa;
-    }
+
     footer {
       background-color: var(--black-faded);
       text-align: center;
-      padding: 1rem;
+      padding: 1rem 1rem;
     }
+
     .platform-icons {
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
+      align-items: center;
       gap: 1.5rem;
+      flex-wrap: wrap;
       margin-bottom: 0.6rem;
     }
+
     .platform-icons img {
       height: 32px;
+      width: auto;
       opacity: 0.9;
       transition: opacity 0.2s ease;
     }
+
     .platform-icons img:hover {
       opacity: 1;
     }
+
     footer p {
       color: #ccc;
       font-size: 1rem;
       font-family: 'Roboto', sans-serif;
     }
 
-    @media (max-width: 768px) {
-      .logo-text { font-size: 1.3rem; }
-      .section-header h1 { font-size: 2rem; }
-      .section-header p { font-size: 1rem; }
-      nav a { font-size: 0.9rem; }
-      main { padding: 0 1rem; }
-      .placeholder { padding: 1.2rem; font-size: 0.95rem; }
+    #gameplay-video-scroll-wrapper::-webkit-scrollbar {
+      height: 10px;
+      width: 10px;
     }
 
-    @media (max-width: 480px) {
-      .logo img { height: 40px; }
-      .logo-text { font-size: 1.1rem; }
-      .section-header h1 { font-size: 1.7rem; }
-      .section-header p { font-size: 0.95rem; }
-      .platform-icons img { height: 28px; }
-      footer p { font-size: 0.85rem; }
+    #gameplay-video-scroll-wrapper::-webkit-scrollbar-thumb {
+      background: var(--gsu-red);
+      border-radius: 6px;
     }
-     .box {
-  background-color: var(--black-faded);
-  border-radius: 8px;
-  padding: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-  color: var(--white-text);
-}
 
-  .box:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--gsu-red);
-  background-color: var(--black-faded); /* stays consistent */
-  color: var(--white-text); /* ensures text remains white */
-}
-
-  .box li {
-  transition: transform 0.3s ease;
-}
-
-.box:hover li {
-  transform: translateX(6px);
-}
+    #gameplay-video-scroll-wrapper::-webkit-scrollbar-track {
+      background: #333;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" style="filter: brightness(0) saturate(100%) invert(19%) sepia(100%) saturate(7475%) hue-rotate(344deg) brightness(101%) contrast(119%);" />
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="logo-text">GameSync Union</div>
     </div>
     <nav>
-    <a href="index.html">Home</a>
-    <a href="games.html">Games</a>
-    <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
-    <a href="art.html">Art</a>
-    <a href="game-guides.html">GSU Gameplay Center</a>
-    <a href="uploads.html">GSU Player Lounge</a>
-  </nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+      <a href="art.html">Art</a>
+      <a href="game-guides.html">GSU Gameplay Center</a>
+      <a href="uploads.html">GSU Player Lounge</a>
+    </nav>
   </header>
 
   <main>
-  <div class="section-header">
-    <h1 style="color: var(--gsu-red); font-size: 2.6rem; letter-spacing: 1px;">Community Gameplay Videos</h1>
-    <p style="font-size: 1.15rem; color: #ccc; max-width: 800px; margin: 0 auto;">
-      Raw, real, and replay-worthy—this is where epic boss kills, funny fails, and combo madness from PS5, Xbox, Switch & PC come alive.
-    </p>
-  </div>
-
-  <!-- Search and Filters -->
-  <section style="margin-bottom: 2.5rem;">
-    <div style="background-color: #222; padding: 1.8rem; border-radius: 12px; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(230,0,35,0.1);">
-      <input type="text" placeholder="Search for a game or moment..." style="flex: 1 1 240px; max-width: 280px; padding: 0.6rem 1rem; border-radius: 6px; border: none; background-color: #2c2c2c; color: white; font-family: 'Roboto'; font-size: 1rem;" />
-      <select style="flex: 1 1 160px; max-width: 200px; padding: 0.6rem 1rem; border-radius: 6px; background-color: #2c2c2c; color: white; border: none; font-family: 'Montserrat'; font-size: 1rem;">
-        <option value="">Platform</option>
-        <option>PlayStation</option>
-        <option>Xbox</option>
-        <option>Nintendo Switch</option>
-        <option>PC</option>
-      </select>
-      <select style="flex: 1 1 160px; max-width: 200px; padding: 0.6rem 1rem; border-radius: 6px; background-color: #2c2c2c; color: white; border: none; font-family: 'Montserrat'; font-size: 1rem;">
-        <option value="">Genre</option>
-        <option>Action</option>
-        <option>RPG</option>
-        <option>Fighting</option>
-        <option>Adventure</option>
-        <option>Sports</option>
-        <option>Racing</option>
-        <option>Platformer</option>
-        <option>Shooter</option>
-      </select>
-      <select style="flex: 1 1 240px; max-width: 280px; padding: 0.6rem 1rem; border-radius: 6px; background-color: #2c2c2c; color: white; border: none; font-family: 'Montserrat'; font-size: 1rem;">
-        <option value="">Video Type</option>
-        <option>🔥 Epic Moments</option>
-        <option>😂 Funny Clips</option>
-        <option>😵‍ Fails</option>
-        <option>👑 Boss Kills</option>
-        <option>⚡ Speedruns</option>
-      </select>
+    <div class="section-header">
+      <h1>Community Gameplay Videos</h1>
+      <p>Raw, real, and replay-worthy — this is where boss kills, fails, and combo madness from PS5, Xbox, Switch & PC come alive.</p>
     </div>
-  </section>
 
-  <!-- Feature Overview -->
-  <section style="margin-bottom: 2.5rem;">
-    <div style="background-color: #1f1f1f; padding: 2rem; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.4);">
-      <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; font-size: 1.5rem; margin-bottom: 1rem;">Why It Hits Different:</h2>
-      <ul style="color: #aaa; padding-left: 1.5rem; line-height: 1.9;">
-        <li>🎥 Real clips from real players. No scripts. No filters.</li>
-        <li>💡 Discover unexpected game mechanics, player creativity, and next-level strats.</li>
-        <li>💬 Comment and connect—see what the community is reacting to.</li>
-        <li>📱 Designed to look great on phones, tablets, laptops, and 4K displays.</li>
+    <section style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Why It Hits Different:</h2>
+      <ul style="color: #aaa; padding-left: 1.5rem; line-height: 1.9; margin-top: 0.5rem;">
+        <li>🎮 You won’t find this in trailers — these are raw uploads from real GSU players.</li>
+        <li>💡 Game-breaking moments, savage clutches, and off-meta strats that actually work.</li>
+        <li>🔥 No fluff — just fast loads, sharp layout, and mobile-first flow.</li>
+        <li>📱 Whether you're on Switch or 4K, it stays clean and clutch.</li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <!-- Placeholder Preview -->
-  <section style="background-color: #2a2a2a; padding: 2rem; border-radius: 12px; text-align: center; color: #aaa;">
-    [This is where your game clips will shine. Uploads, filters, reactions, and tagging will be live soon.]
-  </section>
-</main>
-
+    <section style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
+      <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Community Submissions (Live)</h2>
+      <p style="color: #aaa; margin-top: 0.8rem;">Gameplay clips submitted by the GSU community — raw skill, hype moments, and wild plays across all platforms.</p>
+      <div id="gameplay-video-scroll-wrapper" style="overflow: auto; max-height: 800px; max-width: 100vw;">
+        <div id="gameplay-video-container" style="display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 0.5rem; width: max-content;"></div>
+      </div>
+    </section>
+  </main>
 
   <footer>
     <div class="platform-icons">
@@ -235,5 +193,93 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyABC123...", // Replace with your real config
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abcdef123456"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const videoContainer = document.getElementById("boss-video-container");
+    const q = query(collection(db, "submissions"), where("type", "==", "tutorial"));
+
+    onSnapshot(q, (snapshot) => {
+      videoContainer.innerHTML = "";
+
+      snapshot.forEach((doc) => {
+        const { videoUrl, caption } = doc.data();
+        if (!videoUrl) return;
+
+        const embedUrl = videoUrl.includes("watch?v=")
+          ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
+          : videoUrl.includes("youtu.be/")
+            ? `https://www.youtube.com/embed/${videoUrl.split("youtu.be/")[1]}`
+            : videoUrl;
+
+        const card = document.createElement("div");
+        card.style.backgroundColor = "#2a2a2a";
+        card.style.borderRadius = "10px";
+        card.style.padding = "1rem";
+        card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+        card.style.width = "min(100%, 560px)";
+        card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+        card.onmouseenter = () => {
+          card.style.transform = "translateY(-6px) scale(1.01)";
+          card.style.boxShadow = "0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05)";
+        };
+        card.onmouseleave = () => {
+          card.style.transform = "none";
+          card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+        };
+
+        const iframeWrapper = document.createElement("div");
+        iframeWrapper.style.position = "relative";
+        iframeWrapper.style.width = "100%";
+        iframeWrapper.style.paddingTop = videoUrl.includes("shorts") ? "177.78%" : "56.25%";
+        iframeWrapper.style.borderRadius = "8px";
+        iframeWrapper.style.overflow = "hidden";
+
+        const iframe = document.createElement("iframe");
+        iframe.src = embedUrl;
+        iframe.style.position = "absolute";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.allowFullscreen = true;
+        iframe.style.border = "none";
+
+        iframeWrapper.appendChild(iframe);
+        card.appendChild(iframeWrapper);
+
+        const title = document.createElement("p");
+        title.textContent = caption || "No caption provided.";
+        title.style.color = "#fff";
+        title.style.fontWeight = "600";
+        title.style.fontFamily = "Montserrat, sans-serif";
+        title.style.margin = "1rem 0 0.5rem";
+        title.style.fontSize = "1rem";
+
+        const note = document.createElement("p");
+        note.textContent = "🎮 Community drop powered by YouTube";
+        note.style.color = "#ccc";
+        note.style.fontSize = "0.9rem";
+
+        card.appendChild(title);
+        card.appendChild(note);
+        videoContainer.appendChild(card);
+      });
+    });
+  </script>
 </body>
 </html>
