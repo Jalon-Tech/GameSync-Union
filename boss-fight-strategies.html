@@ -356,5 +356,69 @@
     </div>
     <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
+  <!-- Firebase App -->
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+  apiKey: "AIzaSyABC123...",
+  authDomain: "gamesync-union.firebaseapp.com",
+  projectId: "gamesync-union",
+  storageBucket: "gamesync-union.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcdef123456"
+};
+
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Load videos into the page
+  const communitySection = document.querySelector("section:last-of-type");
+  const listContainer = document.createElement("div");
+  listContainer.style.marginTop = "2rem";
+  listContainer.style.display = "grid";
+  listContainer.style.gridTemplateColumns = "repeat(auto-fit, minmax(300px, 1fr))";
+  listContainer.style.gap = "1.5rem";
+
+  // Get only 'boss' submissions
+  const q = query(collection(db, "submissions"), where("type", "==", "boss"));
+  onSnapshot(q, (snapshot) => {
+    listContainer.innerHTML = ""; // Clear previous videos
+    snapshot.forEach((doc) => {
+      const { videoUrl, caption } = doc.data();
+
+      const card = document.createElement("div");
+      card.style.backgroundColor = "#2a2a2a";
+      card.style.padding = "1rem";
+      card.style.borderRadius = "10px";
+
+      const iframe = document.createElement("iframe");
+      iframe.src = videoUrl.replace("watch?v=", "embed/");
+      iframe.width = "100%";
+      iframe.height = "200";
+      iframe.allowFullscreen = true;
+      iframe.style.borderRadius = "6px";
+      iframe.style.border = "none";
+
+      const p = document.createElement("p");
+      p.textContent = caption;
+      p.style.marginTop = "0.8rem";
+      p.style.color = "#ccc";
+      p.style.fontSize = "0.95rem";
+
+      card.appendChild(iframe);
+      card.appendChild(p);
+      listContainer.appendChild(card);
+    });
+
+    communitySection.appendChild(listContainer);
+  });
+</script>
+
 </body>
 </html>
