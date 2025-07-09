@@ -865,38 +865,38 @@ nav {
 
     let username = localStorage.getItem("gsuUsername") || "Anonymous";
 
-function addFriend(targetUID, buttonElement = null) {
-  console.log("🔥 addFriend triggered", targetUID);
+  
+  function addFriend(targetUID) {
+  const user = firebase.auth().currentUser;
+  if (!user || !targetUID || user.uid === targetUID) return;
 
-  try {
-    const currentUser = firebase.auth().currentUser;
-    if (!currentUser || !targetUID || currentUser.uid === targetUID) return;
+  const currentUserRef = db.collection("users").doc(user.uid);
+  const targetUserRef = db.collection("users").doc(targetUID);
 
-    const currentUserRef = db.collection("users").doc(currentUser.uid);
-    const targetUserRef = db.collection("users").doc(targetUID);
+  db.runTransaction(async (transaction) => {
+    const currentDoc = await transaction.get(currentUserRef);
+    const targetDoc = await transaction.get(targetUserRef);
 
-    db.runTransaction(async (transaction) => {
-      const currentSnap = await transaction.get(currentUserRef);
-      const targetSnap = await transaction.get(targetUserRef);
+    const pending = currentDoc.data().pendingRequests || [];
+    const requests = targetDoc.data().friendRequests || [];
 
-      const currentData = currentSnap.exists ? currentSnap.data() : {};
-      const targetData = targetSnap.exists ? targetSnap.data() : {};
+    if (!pending.includes(targetUID)) {
+      transaction.update(currentUserRef, {
+        pendingRequests: firebase.firestore.FieldValue.arrayUnion(targetUID)
+      });
+    }
 
-      const pending = Array.isArray(currentData.pendingRequests) ? currentData.pendingRequests : [];
-      const requests = Array.isArray(targetData.friendRequests) ? targetData.friendRequests : [];
-
-      const updatedPending = pending.includes(targetUID) ? pending : [...pending, targetUID];
-      const updatedRequests = requests.includes(currentUser.uid) ? requests : [...requests, currentUser.uid];
-
-      transaction.update(currentUserRef, { pendingRequests: updatedPending });
-      transaction.update(targetUserRef, { friendRequests: updatedRequests });
-    }).then(() => {
-      alert("✅ Friend request sent!"); // Use alert for now
-      if (buttonElement?.closest("div")) {
-        buttonElement.closest("div").innerHTML = `<span style="color:gray;">Request Sent</span>`;
-      }
-    }).catch(() => {});
-  } catch (_) {}
+    if (!requests.includes(user.uid)) {
+      transaction.update(targetUserRef, {
+        friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+      });
+    }
+  }).then(() => {
+    showFeedback("✅ Friend request sent!");
+  }).catch((error) => {
+    console.error("Error sending friend request:", error);
+    showFeedback("❌ Failed to send friend request.");
+  });
 }
 
 
@@ -964,15 +964,24 @@ function closeDM() {
   document.getElementById("dmModal").style.display = "none";
 }
 
+function sendFriendRequest(targetId) {
+  const user = firebase.auth().currentUser;
+  if (!user || user.uid === targetId) return;
+
+  db.collection("users").doc(targetId).update({
+    friendRequests: firebase.firestore.FieldValue.arrayUnion(user.uid)
+  }).then(() => {
+    showFeedback("✅ Friend request sent!");
+  });
+}
 
 
 
 function acceptFriend(targetId, buttonElement = null) {
-  const currentUser = firebase.auth().currentUser;
+  const user = firebase.auth().currentUser;
+  if (!user) return;
 
-  if (!currentUser) return;
-
-  const userRef = db.collection("users").doc(currentUser.uid);
+  const userRef = db.collection("users").doc(user.uid);
   const targetRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
@@ -985,93 +994,94 @@ function acceptFriend(targetId, buttonElement = null) {
     const userFriends = userData.friends || [];
     const targetFriends = targetData.friends || [];
 
+    const updatedUserFriends = userFriends.includes(targetId) ? userFriends : [...userFriends, targetId];
+    const updatedTargetFriends = targetFriends.includes(user.uid) ? targetFriends : [...targetFriends, user.uid];
+
     transaction.update(userRef, {
-      friends: userFriends.includes(targetId) ? userFriends : [...userFriends, targetId],
+      friends: updatedUserFriends,
       friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
     });
 
     transaction.update(targetRef, {
-      friends: targetFriends.includes(currentUser.uid) ? targetFriends : [...targetFriends, currentUser.uid],
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+      friends: updatedTargetFriends,
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
     });
   }).then(() => {
     showFeedback("🎉 Friend request accepted!");
+    
+    // 🧼 Remove button group from UI
     if (buttonElement) {
       const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:green; font-weight:bold;">✅ Accepted</span>`;
+      container.innerHTML = `<span style="color:var(--gsu-red); font-weight:bold;">✅ Accepted</span>`;
     }
+
   }).catch(err => {
-    console.error("Transaction failed:", err);
-    showFeedback("Failed to accept friend request.");
+    console.error("❌ Transaction failed:", err);
+    showFeedback("❌ Failed to accept friend request.");
   });
 }
 
 
+
+
+
+
+
 function declineFriend(targetId, buttonElement = null) {
-  const currentUser = firebase.auth().currentUser;
+  const user = firebase.auth().currentUser;
+  if (!user) return;
 
-  if (!currentUser) return;
-
-  const userRef = db.collection("users").doc(currentUser.uid);
+  const userRef = db.collection("users").doc(user.uid);
   const targetRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
     transaction.update(userRef, {
       friendRequests: firebase.firestore.FieldValue.arrayRemove(targetId)
     });
+
     transaction.update(targetRef, {
-      pendingRequests: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
     });
   }).then(() => {
-    showFeedback("Request declined", "#444");
+    showFeedback("❌ Friend request declined", "#444");
+    
+    // 🧼 Remove button group from UI
     if (buttonElement) {
       const container = buttonElement.closest("div");
       container.innerHTML = `<span style="color:gray;">Request Declined</span>`;
     }
-  }).catch(err => {
-    console.error("Decline failed:", err);
-    showFeedback("Failed to decline request.");
-  });
+
+  }).catch(err => console.error("Decline failed:", err));
 }
 
 
-function removeFriend(targetId, username, buttonElement = null) {
-  const currentUser = firebase.auth().currentUser;
 
-  if (!currentUser) return;
 
-  const userRef = db.collection("users").doc(currentUser.uid);
+
+
+function removeFriend(targetId, username) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const userRef = db.collection("users").doc(user.uid);
   const targetRef = db.collection("users").doc(targetId);
 
   db.runTransaction(async (transaction) => {
     transaction.update(userRef, {
       friends: firebase.firestore.FieldValue.arrayRemove(targetId)
     });
+
     transaction.update(targetRef, {
-      friends: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+      friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
     });
   }).then(() => {
     showFeedback(`👋 Removed @${username} as a friend`, "#444");
-    if (buttonElement) {
-      const container = buttonElement.closest("div");
-      container.innerHTML = `<span style="color:gray;">Friend Removed</span>`;
-    }
-  }).catch(err => {
-    console.error("Unfriend failed:", err);
-    showFeedback("Failed to remove friend.");
-  });
+  }).catch(err => console.error("Unfriend failed:", err));
 }
-
-
-window.addFriend = addFriend;
-window.acceptFriend = acceptFriend;
-window.declineFriend = declineFriend;
-window.removeFriend = removeFriend;
-
 
 firebase.auth().onAuthStateChanged(user => {
   if (!user) {
-    console.warn("Not logged in.");
+    console.warn("🚫 Not logged in.");
   } else {
     console.log("✅ Logged in as:", user.email);
   }
@@ -1081,7 +1091,7 @@ firebase.auth().onAuthStateChanged(user => {
 firebase.auth().onAuthStateChanged(authUser => {
   
   if (!authUser) {
-    console.warn("Not logged in.");
+    console.warn("🚫 Not logged in.");
     return;
   }
  
@@ -1147,16 +1157,16 @@ firebase.auth().onAuthStateChanged(authUser => {
         if (isFriend) {
           friendActions = `
             <button onclick="openDM('${userId}', '${user.username}')">💬 DM</button>
-            <button onclick="removeFriend('${userId}', '${user.username}')">Unfriend</button>`;
+            <button onclick="removeFriend('${userId}', '${user.username}')">❌ Unfriend</button>`;
         } else if (sentRequest) {
           friendActions = `
           <button onclick="cancelFriendRequest('${userId}', this)">🚫 Cancel Request</button>`;
         } else if (receivedRequest) {
           friendActions = `
             <button onclick="acceptFriend('${userId}', this)">✅ Accept</button>
-            <button onclick="declineFriend('${userId}', this)">Decline</button>`;
+            <button onclick="declineFriend('${userId}', this)">❌ Decline</button>`;
         } else {
-         friendActions = `<button onclick="addFriend('${userId}', this)">✅ Add Friend</button>`;
+          friendActions = `<button onclick="addFriend('${userId}')">✅ Add Friend</button>`;
         }
       }
 
@@ -1247,7 +1257,7 @@ container.appendChild(div);
           row.innerHTML = `
             🔔 <strong>@${username}</strong> 
             <button onclick="acceptFriend('${requesterId}')">✅ Accept</button>
-            <button onclick="declineFriend('${requesterId}')">Decline</button>`;
+            <button onclick="declineFriend('${requesterId}')">❌ Decline</button>`;
           banner.appendChild(row);
         });
       });
@@ -1311,7 +1321,7 @@ container.appendChild(div);
         row.innerHTML = `
           🔔 <strong>@${username}</strong> 
           <button onclick="acceptFriend('${requesterId}')">✅ Accept</button>
-          <button onclick="declineFriend('${requesterId}')">Decline</button>
+          <button onclick="declineFriend('${requesterId}')">❌ Decline</button>
         `;
         banner.appendChild(row);
       });
@@ -1327,39 +1337,33 @@ container.appendChild(div);
 ;
 
 function cancelFriendRequest(targetUID, buttonElement = null) {
-  const currentUser = firebase.auth().currentUser;
-  if (!currentUser || !targetUID) return;
+  const user = firebase.auth().currentUser;
+  if (!user || !targetUID) return;
 
-  const currentUserRef = db.collection("users").doc(currentUser.uid);
+  const currentUserRef = db.collection("users").doc(user.uid);
   const targetUserRef = db.collection("users").doc(targetUID);
 
   db.runTransaction(async (transaction) => {
-    const currentSnap = await transaction.get(currentUserRef);
-    const targetSnap = await transaction.get(targetUserRef);
+    transaction.update(currentUserRef, {
+      pendingRequests: firebase.firestore.FieldValue.arrayRemove(targetUID)
+    });
 
-    const currentData = currentSnap.data();
-    const targetData = targetSnap.data();
-
-    const updatedPending = (currentData.pendingRequests || []).filter(id => id !== targetUID);
-    const updatedRequests = (targetData.friendRequests || []).filter(id => id !== currentUser.uid);
-
-    transaction.update(currentUserRef, { pendingRequests: updatedPending });
-    transaction.update(targetUserRef, { friendRequests: updatedRequests });
-
+    transaction.update(targetUserRef, {
+      friendRequests: firebase.firestore.FieldValue.arrayRemove(user.uid)
+    });
   }).then(() => {
-    showFeedback("✅ Friend request cancelled.");
+    showFeedback("Friend request cancelled.");
+
     if (buttonElement) {
       const container = buttonElement.closest("div");
       container.innerHTML = `<span style="color:gray;">Request Cancelled</span>`;
     }
+
   }).catch(err => {
-    console.warn("Cancel request failed:", err);
-    showFeedback("Failed to cancel request.");
+    console.error("Failed to cancel friend request:", err);
+    showFeedback("❌ Could not cancel request.");
   });
 }
-
-
-window.cancelFriendRequest = cancelFriendRequest;
 
 
 function showFeedback(message, bgColor = '#e60023') {
@@ -1463,7 +1467,7 @@ function clearDMChat() {
 function submitVote(pollId, choiceText) {
   const user = firebase.auth().currentUser;
   if (!user) {
-    showFeedback("You must be logged in to vote.");
+    showFeedback("🚫 You must be logged in to vote.");
     return;
   }
 
@@ -1491,7 +1495,7 @@ function submitVote(pollId, choiceText) {
     });
   }).catch(error => {
     console.error("Vote failed:", error);
-    showFeedback("Failed to record your vote.");
+    showFeedback("❌ Failed to record your vote.");
   });
 }
 
@@ -1539,6 +1543,7 @@ firebase.auth().onAuthStateChanged(user => {
 
 
         let deleteBtnHTML = "";
+        let autoRemove = false;
 
         if (isCreator) {
           db.collection("pollVotes").where(firebase.firestore.FieldPath.documentId(), ">=", `${pollId}_`)
@@ -1625,8 +1630,7 @@ function deletePoll(pollId) {
       })
       .catch(err => {
         console.error("Error deleting poll:", err);
-        showFeedback("Failed to delete your GSU poll.");
-
+        showFeedback("Failed to your GSU delete poll.");
       });
   }
 }
@@ -1665,7 +1669,7 @@ firebase.auth().onAuthStateChanged(authUser => {
     }).then(() => {
       console.log("✅ lastActive updated at", new Date().toLocaleTimeString());
     }).catch(err => {
-      console.error("Error updating lastActive:", err);
+      console.error("❌ Error updating lastActive:", err);
     });
   }, 30000);
 
@@ -1731,22 +1735,6 @@ firebase.auth().onAuthStateChanged(authUser => {
     });
   });
 });
-
-firebase.auth().onAuthStateChanged(authUser => {
-  if (authUser) {
-    const userRef = db.collection("users").doc(authUser.uid);
-    userRef.get().then(doc => {
-      if (!doc.exists) {
-        userRef.set({
-          username: authUser.displayName || "GSU_User",
-          online: true,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }
-    });
-  }
-});
-
 
 </script>
 
