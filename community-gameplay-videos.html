@@ -210,8 +210,8 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const videoContainer = document.getElementById("boss-video-container");
-    const q = query(collection(db, "submissions"), where("type", "==", "tutorial"));
+    const videoContainer = document.getElementById("gameplay-video-container");
+    const q = query(collection(db, "submissions"), where("type", "==", "gameplay")); // ✅ Correct type
 
     onSnapshot(q, (snapshot) => {
       videoContainer.innerHTML = "";
