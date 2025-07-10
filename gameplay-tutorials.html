@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Gameplay Tutorials | GameSync Union</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet"/>
   <style>
@@ -14,13 +14,12 @@
       --white-text: #FFFFFF;
     }
 
-    * {
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-    }
-
-    body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--black-main);
       color: var(--white-text);
@@ -141,6 +140,11 @@
     #boss-video-scroll-wrapper::-webkit-scrollbar-track {
       background: #333;
     }
+
+    #boss-video-container p {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
   </style>
 </head>
 <body>
@@ -181,8 +185,8 @@
     <section style="background-color: var(--black-faded); padding: 2rem; border-radius: 10px;">
       <h2 style="color: var(--gsu-red); font-family: 'Montserrat'; font-size: 1.4rem;">Community Contributions (Live)</h2>
       <p style="color: #aaa; margin-top: 0.8rem;">Tutorial clips and breakdowns submitted by the GSU community — raw gameplay knowledge, fresh from the source.</p>
-      <div id="boss-video-scroll-wrapper" style="overflow: auto; max-height: 800px; max-width: 100vw;">
-        <div id="boss-video-container" style="display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 0.5rem; width: max-content;"></div>
+      <div id="boss-video-scroll-wrapper" style="overflow-x: auto; max-height: 800px; width: 100%;">
+        <div id="boss-video-container" style="display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 0.5rem; flex: 1 1 auto;"></div>
       </div>
     </section>
   </main>
