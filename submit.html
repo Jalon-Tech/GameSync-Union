@@ -284,12 +284,15 @@
     const label = document.getElementById("categoryLabel");
 
     const map = {
-      boss: "🗡️ Boss Fight Strategy",
-      tutorial: "🎮 Gameplay Tutorial",
-      gameplay: "📹 Gamers’ Gameplay Video",
-      combo: "🥊 Fighting Game Combo Guide",
-      trophy: "🏆 Trophy & Achievement Tip"
+      boss: "🗡️ Boss Fight Strategies",
+      tutorial: "🎮 Gameplay Tutorials",
+      gameplay: "📹 Community Gameplay Videos",
+      combo: "🥊 Combo Guides for Fighting Games",
+      clutch: "🧠 Clutch Moments & Finishers",
+      duel: "⚔️ 1v1 Duel Highlights",
+      breakdown: "🎙️ GSU Breakdown Lounge"
     };
+
 
     label.textContent = type && map[type] ? map[type] : "Video Submissions";
 
