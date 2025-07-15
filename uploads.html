@@ -406,6 +406,7 @@ nav {
       color: var(--gsu-red);
       font-weight: bold;
     }
+    
   #weeklyPoll {
   height: 580px;
   overflow-y: auto;
@@ -758,6 +759,17 @@ nav {
   <h2>🔥 GSU Upload Feed</h2>
   <p>See the latest clips, boss runs, fan art, and flexes — this is where GSU drops heat, nonstop.</p>
   <div class="guides-container" id="allUploads"></div>
+</div>
+<div id="noPollsMessage" style="
+  text-align: center;
+  color: var(--gsu-red);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 2rem 0;
+  display: none;
+">
+  No polls at this time. Create one and shape the GSU community!
 </div>
 
 <div class="box" id="weeklyPollBox">
@@ -1516,15 +1528,13 @@ firebase.auth().onAuthStateChanged(user => {
     .then(snapshot => {
       weeklyPoll.innerHTML = "";
 
-      if (snapshot.empty) {
-        weeklyPoll.innerHTML = `
-          <div class="poll-card">
-            <p style="color:#ccc;">No polls available yet. Be the first to 
-              <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!
-            </p>
-          </div>`;
-        return;
-      }
+   if (snapshot.empty) {
+  document.getElementById("noPollsMessage").style.display = "block";
+  weeklyPoll.innerHTML = ""; // No polls to show
+  return;
+} else {
+  document.getElementById("noPollsMessage").style.display = "none";
+}
 
       snapshot.forEach(doc => {
         const poll = doc.data();
