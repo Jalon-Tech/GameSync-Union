@@ -1516,20 +1516,20 @@ firebase.auth().onAuthStateChanged(user => {
     .then(snapshot => {
       weeklyPoll.innerHTML = "";
 
-      if (snapshot.empty) {
+if (snapshot.empty) {
   weeklyPoll.innerHTML = `
-    <div class="poll-card" style="text-align: center;">
-      <h1 style="
-        color: #e60023;
-        font-size: 2rem;
-        font-family: 'Montserrat', sans-serif;
-        margin-top: 2rem;
-      ">
-        No polls at this time — be the first to create one for the Union
-      </h1>
-    </div>`;
+    <h1 style="
+      color: #e60023;
+      font-size: 2rem;
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
+      margin-top: 4rem;
+    ">
+      No polls at this time — be the first to create one for the Union 🎮🗳️
+    </h1>`;
   return;
 }
+
 
 
       snapshot.forEach(doc => {
@@ -1585,8 +1585,8 @@ firebase.auth().onAuthStateChanged(user => {
           if (voteDoc.exists) {
             const choiceText = voteDoc.data().choice;
             db.collection("users").doc(user.uid).get().then(userDoc => {
-     .then(snapshot => {
-  weeklyPoll.innerHTML = "";
+            .then(snapshot => {
+            weeklyPoll.innerHTML = "";
 
   const validPolls = [];
 
