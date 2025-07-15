@@ -1505,86 +1505,58 @@ function submitVote(pollId, choiceText) {
 </script>
 
 <script>
-const weeklyPoll = document.getElementById("weeklyPoll");
-
 firebase.auth().onAuthStateChanged(user => {
   if (!user) return;
+
+  const weeklyPoll = document.getElementById("weeklyPoll");
 
   db.collection("polls")
     .orderBy("createdAt", "desc")
     .get()
     .then(snapshot => {
-      weeklyPoll.innerHTML = "";
-
-if (snapshot.empty) {
-  weeklyPoll.innerHTML = `
-    <div style="text-align: center; margin-top: 4rem; animation: fadeIn 0.8s ease-in-out;">
-      <h1 style="
-        color: #e60023;
-        font-size: 2rem;
-        font-family: 'Montserrat', sans-serif;
-        transition: 0.3s ease;
-      " onmouseover="this.style.textShadow='0 0 12px #e60023'" onmouseout="this.style.textShadow='none'">
-        No polls at this time — be the first to create one for the Union 🎮🗳️
-      </h1>
-      <p style="margin-top: 1rem;">
-        <a href="poll_creation.html" style="color: #e60023; font-weight: bold; text-decoration: none;">
-          ➕ Start a new poll
-        </a>
-      </p>
-    </div>
-  `;
-
-  // Add fadeIn animation style if not already in your <style>
-  const styleTag = document.createElement("style");
-  styleTag.innerHTML = `
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-  `;
-  document.head.appendChild(styleTag);
-
-  return;
-}
-
-
-
+      const now = new Date();
+      const validPolls = [];
 
       snapshot.forEach(doc => {
         const poll = doc.data();
-        const pollId = doc.id;
-        const isCreator = poll.creatorId === user.uid;
+        const createdAt = poll.createdAt?.toDate();
 
+        if (createdAt && (now - createdAt <= 24 * 60 * 60 * 1000)) {
+          validPolls.push({ id: doc.id, data: poll });
+        }
+      });
+
+      // Clear existing content
+      weeklyPoll.innerHTML = "";
+
+      if (validPolls.length === 0) {
+        // Show "No Polls" Message
+        weeklyPoll.innerHTML = `
+          <div style="text-align: center; margin-top: 4rem; animation: fadeIn 0.8s ease-in-out;">
+            <h1 style="
+              color: #e60023;
+              font-size: 2rem;
+              font-family: 'Montserrat', sans-serif;
+              transition: 0.3s ease;
+            " onmouseover="this.style.textShadow='0 0 12px #e60023'" onmouseout="this.style.textShadow='none'">
+              No polls at this time — be the first to create one for the Union 🎮🗳️
+            </h1>
+            <p style="margin-top: 1rem;">
+              <a href="poll_creation.html" style="color: #e60023; font-weight: bold; text-decoration: none;">
+                ➕ Start a new poll
+              </a>
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      // Render each valid poll
+      validPolls.forEach(({ id: pollId, data: poll }) => {
         const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
         const optionButtons = (poll.options || []).map(option => `
           <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
         `).join("");
-
-        const createdAt = poll.createdAt?.toDate();
-        const now = new Date();
-        const expired = createdAt && (now - createdAt) > 24 * 60 * 60 * 1000; // 24 hours in ms
-        if (expired) return; // skip rendering this poll
-
-
-        let deleteBtnHTML = "";
-        let autoRemove = false;
-
-        if (isCreator) {
-          db.collection("pollVotes").where(firebase.firestore.FieldPath.documentId(), ">=", `${pollId}_`)
-            .where(firebase.firestore.FieldPath.documentId(), "<=", `${pollId}_\uf8ff`)
-            .get().then(voteSnap => {
-              const voteCount = voteSnap.size;
-
-              if (voteCount === 0 && hoursSinceCreation >= 24) {
-                // Show delete button if no one voted in 24 hours
-                document.querySelector(`#poll-${pollId} .poll-options`).insertAdjacentHTML("afterend",
-                  `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">Remove your poll</button>`);
-              }
-
-            });
-}
-
 
         const pollCardHTML = `
           <div class="poll-card" id="poll-${pollId}">
@@ -1593,107 +1565,38 @@ if (snapshot.empty) {
             <div class="poll-options">${optionButtons}</div>
             <div id="poll-images">${imageHTML}</div>
             <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-            ${deleteBtnHTML}
           </div>
         `;
 
         weeklyPoll.innerHTML += pollCardHTML;
 
-        // Check if user already voted
+        // Highlight user's vote
         db.collection("pollVotes").doc(`${pollId}_${user.uid}`).get().then(voteDoc => {
           if (voteDoc.exists) {
             const choiceText = voteDoc.data().choice;
             db.collection("users").doc(user.uid).get().then(userDoc => {
-            .then(snapshot => {
-            weeklyPoll.innerHTML = "";
-
-  const validPolls = [];
-
-  snapshot.forEach(doc => {
-    const poll = doc.data();
-    const createdAt = poll.createdAt?.toDate();
-    const now = new Date();
-    const expired = createdAt && (now - createdAt) > 24 * 60 * 60 * 1000;
-
-    if (!expired) {
-      validPolls.push({ id: doc.id, data: poll });
-    }
-  });
-
-  if (validPolls.length === 0) {
-    document.getElementById("noPollsMessage").style.display = "block";
-    return;
-  } else {
-    document.getElementById("noPollsMessage").style.display = "none";
-  }
-
-  validPolls.forEach(({ id: pollId, data: poll }) => {
-    const isCreator = poll.creatorId === auth.currentUser.uid;
-
-    const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
-    const optionButtons = (poll.options || []).map(option => `
-      <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
-    `).join("");
-
-    const pollCardHTML = `
-      <div class="poll-card" id="poll-${pollId}">
-        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-        <h3>${poll.question}</h3>
-        <div class="poll-options">${optionButtons}</div>
-        <div id="poll-images">${imageHTML}</div>
-        <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-      </div>
-    `;
-
-    weeklyPoll.innerHTML += pollCardHTML;
-
-    // Check if user already voted
-    db.collection("pollVotes").doc(`${pollId}_${auth.currentUser.uid}`).get().then(voteDoc => {
-      if (voteDoc.exists) {
-        const choiceText = voteDoc.data().choice;
-
-        db.collection("users").doc(auth.currentUser.uid).get().then(userDoc => {
-          const username = userDoc.exists() ? (userDoc.data().username || "You") : "You";
-          const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-          resultBox.innerText = `@${username} chose: ${choiceText}`;
-          resultBox.style.display = "block";
-
-          const pollCard = document.getElementById(`poll-${pollId}`);
-          pollCard.querySelectorAll("button").forEach(btn => {
-            btn.disabled = true;
-            if (btn.innerText === choiceText) {
-              btn.style.borderColor = "#e60023";
-              btn.style.backgroundColor = "#fff";
-              btn.style.color = "#e60023";
-            }
-          });
-        });
-      }
-    });
-  });
-});
-         const username = userDoc.data()?.username || "You";
+              const username = userDoc.data()?.username || "You";
               const resultBox = document.getElementById(`pollResultBox-${pollId}`);
               resultBox.innerText = `@${username} chose: ${choiceText}`;
               resultBox.style.display = "block";
-            });
 
-            const pollCard = document.getElementById(`poll-${pollId}`);
-            pollCard.querySelectorAll("button").forEach(btn => {
-              btn.disabled = true;
-              if (btn.innerText === choiceText) {
-                btn.style.borderColor = "#e60023";
-                btn.style.backgroundColor = "#fff";
-                btn.style.color = "#e60023";
-              }
+              const pollCard = document.getElementById(`poll-${pollId}`);
+              pollCard.querySelectorAll("button").forEach(btn => {
+                btn.disabled = true;
+                if (btn.innerText === choiceText) {
+                  btn.style.borderColor = "#e60023";
+                  btn.style.backgroundColor = "#fff";
+                  btn.style.color = "#e60023";
+                }
+              });
             });
           }
         });
       });
     });
 });
-
 </script>
+
 
   <script>
 function deletePoll(pollId) {
@@ -1830,6 +1733,109 @@ firebase.auth().onAuthStateChanged(authUser => {
 });
 
 </script>
+
+<script>
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) return;
+
+  const weeklyPoll = document.getElementById("weeklyPoll");
+  const now = new Date();
+  console.log("🕒 Current time:", now);
+
+  db.collection("polls")
+    .orderBy("createdAt", "desc")
+    .get()
+    .then(snapshot => {
+      const validPolls = [];
+
+      snapshot.forEach(doc => {
+        const poll = doc.data();
+        const createdAt = poll.createdAt?.toDate?.();
+
+        console.log("📋 Poll:", poll.question, "| Created At:", createdAt);
+
+        if (createdAt && now - createdAt <= 24 * 60 * 60 * 1000) {
+          console.log("✅ Poll is within last 24 hours");
+          validPolls.push({ id: doc.id, data: poll });
+        } else {
+          console.log("⏳ Poll skipped — older than 24 hours");
+        }
+      });
+
+      // Clear container
+      weeklyPoll.innerHTML = "";
+
+      // Show message if no valid polls
+      if (validPolls.length === 0) {
+        console.log("🚨 No valid polls in the last 24 hours — showing message");
+        weeklyPoll.innerHTML = `
+          <div style="text-align: center; margin-top: 4rem; animation: fadeIn 0.8s ease-in-out;">
+            <h1 style="color: #e60023; font-size: 2rem; font-family: 'Montserrat', sans-serif;">
+              No polls at this time — be the first to create one for the Union 🎮🗳️
+            </h1>
+            <p style="margin-top: 1rem;">
+              <a href="poll_creation.html" style="color: #e60023; font-weight: bold; text-decoration: none;">
+                ➕ Start a new poll
+              </a>
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      console.log(`🎯 Found ${validPolls.length} valid poll(s)`);
+
+      validPolls.forEach(({ id: pollId, data: poll }) => {
+        const optionButtons = (poll.options || []).map(option => `
+          <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
+        `).join("");
+
+        const imageHTML = (poll.images || []).map(url => `
+          <img src="${url}" alt="poll image" style="max-width: 100%; border-radius: 8px; margin-top: 1rem;">
+        `).join("");
+
+        const pollCardHTML = `
+          <div class="poll-card" id="poll-${pollId}">
+            <div class="poll-theme">${poll.theme || "GSU Weekly Poll"}</div>
+            <h3>${poll.question}</h3>
+            <div class="poll-options">${optionButtons}</div>
+            ${imageHTML}
+            <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
+          </div>
+        `;
+
+        weeklyPoll.innerHTML += pollCardHTML;
+
+        db.collection("pollVotes").doc(`${pollId}_${user.uid}`).get().then(voteDoc => {
+          if (voteDoc.exists) {
+            const choiceText = voteDoc.data().choice;
+            db.collection("users").doc(user.uid).get().then(userDoc => {
+              const username = userDoc.data()?.username || "You";
+              const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+              resultBox.innerText = `@${username} chose: ${choiceText}`;
+              resultBox.style.display = "block";
+
+              const pollCard = document.getElementById(`poll-${pollId}`);
+              pollCard.querySelectorAll("button").forEach(btn => {
+                btn.disabled = true;
+                if (btn.innerText === choiceText) {
+                  btn.style.borderColor = "#e60023";
+                  btn.style.backgroundColor = "#fff";
+                  btn.style.color = "#e60023";
+                }
+              });
+            });
+          }
+        });
+      });
+    })
+    .catch(error => {
+      console.error("❌ Error fetching polls:", error);
+      weeklyPoll.innerHTML = `<p style="color: red; text-align: center;">Failed to load polls. Please try again later.</p>`;
+    });
+});
+</script>
+
 
   <div id="dmModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:70%; background:#1F1F1F; color:#fff; border:2px solid var(--gsu-red); border-radius:12px; padding:1rem; z-index:999;">
   <h3 id="dmTitle">💬 Chat with ...</h3>
