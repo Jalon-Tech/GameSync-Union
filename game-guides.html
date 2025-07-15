@@ -569,48 +569,98 @@
       });
     });
   </script>
-  <script>
-  function loadContent(type) {
-    const pageMap = {
-      boss: 'boss-fight-strategies.html',
-      tutorial: 'gameplay-tutorials.html',
-      gameplay: 'community-gameplay-videos.html',
-      combo: 'combo-guides.html',
-      clutch: 'clutch-moments.html',
-      duel: 'duel-highlights.html',
-      talk: 'talk-show.html',
-      handpicked: 'handpicked.html',
-      all: 'all-videos.html'
-    };
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const contentBox = document.getElementById("dynamicContent");
-    const url = pageMap[type];
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI"
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef123456"
+  };
 
-    if (!url) {
-      contentBox.innerHTML = "<p style='color: #ccc;'>No content available.</p>";
-      return;
-    }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    fetch(url)
-      .then(response => response.text())
-      .then(data => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data, 'text/html');
-        const videoSection = doc.querySelector('.guides-container');
+  const dynamicContent = document.getElementById("dynamicContent");
 
-        if (videoSection) {
-          contentBox.innerHTML = "";
-          contentBox.appendChild(videoSection);
-        } else {
-          contentBox.innerHTML = "<p style='color: #ccc;'>No video section found on this page.</p>";
-        }
-      })
-      .catch(error => {
-        console.error('Error loading content:', error);
-        contentBox.innerHTML = "<p style='color: #ccc;'>Error loading content. Please try again later.</p>";
+  window.loadContent = (type) => {
+    if (!type) return;
+
+    dynamicContent.innerHTML = `<p style="color:#ccc;">Loading videos for <strong>${type}</strong>...</p>`;
+
+    const q = query(collection(db, "submissions"), where("type", "==", type));
+
+    onSnapshot(q, (snapshot) => {
+      dynamicContent.innerHTML = "";
+
+      if (snapshot.empty) {
+        dynamicContent.innerHTML = "<p style='color:#ccc;'>No videos yet for this category.</p>";
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        const { videoUrl, caption } = doc.data();
+        if (!videoUrl) return;
+
+        const embedUrl = videoUrl.includes("watch?v=")
+          ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
+          : videoUrl.includes("youtu.be/")
+            ? `https://www.youtube.com/embed/${videoUrl.split("youtu.be/")[1]}`
+            : videoUrl;
+
+        const card = document.createElement("div");
+        card.style.backgroundColor = "#2a2a2a";
+        card.style.borderRadius = "10px";
+        card.style.padding = "1rem";
+        card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+        card.style.marginBottom = "2rem";
+        card.style.transition = "transform 0.3s ease";
+        card.style.textAlign = "center";
+
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        wrapper.style.width = "100%";
+        const isShort = videoUrl.includes("shorts");
+        wrapper.style.paddingTop = isShort ? "177.78%" : "56.25%";
+
+        const iframe = document.createElement("iframe");
+        iframe.src = embedUrl;
+        iframe.style.position = "absolute";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.allowFullscreen = true;
+        iframe.style.border = "none";
+
+        wrapper.appendChild(iframe);
+        card.appendChild(wrapper);
+
+        const title = document.createElement("p");
+        title.textContent = caption || "No caption provided.";
+        title.style.color = "#fff";
+        title.style.fontWeight = "600";
+        title.style.fontFamily = "Montserrat, sans-serif";
+        title.style.margin = "1rem 0 0.5rem";
+        title.style.fontSize = "1rem";
+
+        const note = document.createElement("p");
+        note.textContent = "🎮 Community drop powered by YouTube";
+        note.style.color = "#ccc";
+        note.style.fontSize = "0.9rem";
+
+        card.appendChild(title);
+        card.appendChild(note);
+        dynamicContent.appendChild(card);
       });
-  }
+    });
+  };
 </script>
+
 
 </body>
 </html>
