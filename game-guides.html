@@ -570,5 +570,67 @@
       });
     });
   </script>
+  <!-- Firebase + Firestore Video Loading Script -->
+<script type="module">
+  // Firebase SDK Imports (modular version)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain: "gamesync-union.firebaseapp.com",
+      projectId: "gamesync-union",
+      storageBucket: "gamesync-union.appspot.com",
+      messagingSenderId: "488911705365",
+      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
+      measurementId: "G-CP48EXW1EV"  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Helper to embed a YouTube video from any format
+  function getEmbedURL(url) {
+    const regExp = /(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/))([^?&"'>]+)/;
+    const match = url.match(regExp);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+  }
+
+  // Load content dynamically based on selected type
+  window.loadContent = async function(type) {
+    const contentBox = document.getElementById("dynamicContent");
+    contentBox.innerHTML = "<p style='color:#ccc;'>Loading...</p>";
+
+    try {
+      const q = query(collection(db, "submissions"), where("type", "==", type));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        contentBox.innerHTML = `<p style='color:#ccc;'>No videos available in this category yet.</p>`;
+        return;
+      }
+
+      let html = "";
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const embedURL = getEmbedURL(data.url);
+
+        if (embedURL) {
+          html += `
+            <div class="guide-card" style="margin-bottom: 2rem;">
+              <iframe width="100%" height="315" src="${embedURL}" frameborder="0" allowfullscreen></iframe>
+              <p style="margin-top: 0.5rem; color: #ccc;">${data.caption || "No caption provided."}</p>
+            </div>
+          `;
+        }
+      });
+
+      contentBox.innerHTML = html;
+    } catch (error) {
+      contentBox.innerHTML = `<p style="color:red;">Error loading content. Check console for details.</p>`;
+      console.error(error);
+    }
+  };
+</script>
 </body>
 </html>
