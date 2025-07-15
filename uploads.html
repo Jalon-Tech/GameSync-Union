@@ -406,7 +406,6 @@ nav {
       color: var(--gsu-red);
       font-weight: bold;
     }
-    
   #weeklyPoll {
   height: 580px;
   overflow-y: auto;
@@ -764,28 +763,28 @@ nav {
 <div class="box" id="weeklyPollBox">
   <h2>🔥 GSU Polls — You Run This</h2>
   <p>Players create polls anytime. Drop your vote, shape what’s trending, and show the community what’s really up — but act fast, polls expire 24 hours after being posted.</p>
-
-  <div id="noPollsMessage" style="
-  text-align: center;
-  color: var(--gsu-red);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 2rem 0 1rem;
-  line-height: 1.4;
-  max-width: 90%;
-">
-  GSU Polls are quiet right now. Be the one to bring the hype and get the community voting.
-</div>
-
-
   <div id="weeklyPoll"></div>
 
-  <button onclick="window.location.href='poll_creation.html'" style="margin-top: 1.2rem; background-color: var(--gsu-red); color: #fff; border: 2px solid transparent; padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: block; width: fit-content; margin-left: auto; margin-right: auto;">
+
+  <button onclick="window.location.href='poll_creation.html'" style="
+    margin-top: 1.2rem;
+    background-color: var(--gsu-red);
+    color: #fff;
+    border: 2px solid transparent;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  ">
     Create Your GSU Poll
   </button>
 </div>
-
 
 </div>
 
@@ -824,6 +823,7 @@ nav {
       } else {
         connectDesc.style.opacity = 1;
       }
+    });
 
     
     function clearChat() {
@@ -1477,7 +1477,7 @@ function submitVote(pollId, choiceText) {
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
     db.collection("users").doc(user.uid).get().then(userDoc => {
-  const username = userDoc.exists() ? (userDoc.data().username || "You") : "You";
+  const username = userDoc.data()?.username || "You";
   const resultBox = document.getElementById(`pollResultBox-${pollId}`);
   resultBox.innerText = `@${username} chose: ${choiceText}`;
   resultBox.style.display = "block";
@@ -1511,144 +1511,93 @@ firebase.auth().onAuthStateChanged(user => {
   if (!user) return;
 
   db.collection("polls")
-  .get()
+    .orderBy("createdAt", "desc")
+    .get()
+    .then(snapshot => {
+      weeklyPoll.innerHTML = "";
 
-.then(snapshot => {
-  weeklyPoll.innerHTML = "";
-
-  const validPolls = [];
-
-  snapshot.forEach(doc => {
-    const poll = doc.data();
-    const createdAt = poll.createdAt?.toDate();
-    const now = new Date();
-    const expired = createdAt && (now - createdAt) > 24 * 60 * 60 * 1000;
-
-    if (!expired) {
-      validPolls.push({ id: doc.id, data: poll });
-    }
-  });
-
-  if (validPolls.length === 0) {
-    document.getElementById("noPollsMessage").style.display = "block";
-    return;
-  } else {
-    document.getElementById("noPollsMessage").style.display = "none";
-  }
-
-  validPolls.forEach(({ id: pollId, data: poll }) => {
-    const isCreator = poll.creatorId === auth.currentUser.uid;
-
-    const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
-    const optionButtons = (poll.options || []).map(option => `
-      <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
-    `).join("");
-
-    const pollCardHTML = `
-      <div class="poll-card" id="poll-${pollId}">
-        <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-        <h3>${poll.question}</h3>
-        <div class="poll-options">${optionButtons}</div>
-        <div id="poll-images">${imageHTML}</div>
-        <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-      </div>
-    `;
-
-    weeklyPoll.innerHTML += pollCardHTML;
-
-    // Check if user already voted
-    db.collection("pollVotes").doc(`${pollId}_${auth.currentUser.uid}`).get().then(voteDoc => {
-      if (voteDoc.exists) {
-        const choiceText = voteDoc.data().choice;
-
-        db.collection("users").doc(auth.currentUser.uid).get().then(userDoc => {
-          const username = userDoc.exists() ? (userDoc.data().username || "You") : "You";
-          const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-          resultBox.innerText = `@${username} chose: ${choiceText}`;
-          resultBox.style.display = "block";
-
-          const pollCard = document.getElementById(`poll-${pollId}`);
-          pollCard.querySelectorAll("button").forEach(btn => {
-            btn.disabled = true;
-            if (btn.innerText === choiceText) {
-              btn.style.borderColor = "#e60023";
-              btn.style.backgroundColor = "#fff";
-              btn.style.color = "#e60023";
-            }
-          });
-        });
+      if (snapshot.empty) {
+        weeklyPoll.innerHTML = `
+          <div class="poll-card">
+            <p style="color:#ccc;">No polls available yet. Be the first to 
+              <a href='poll_creation.html' style="color:var(--gsu-red); font-weight:bold;">Create a GSU Poll</a>!
+            </p>
+          </div>`;
+        return;
       }
+
+      snapshot.forEach(doc => {
+        const poll = doc.data();
+        const pollId = doc.id;
+        const isCreator = poll.creatorId === user.uid;
+
+        const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
+        const optionButtons = (poll.options || []).map(option => `
+          <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
+        `).join("");
+
+        const createdAt = poll.createdAt?.toDate();
+        const now = new Date();
+        const expired = createdAt && (now - createdAt) > 24 * 60 * 60 * 1000; // 24 hours in ms
+        if (expired) return; // skip rendering this poll
+
+
+        let deleteBtnHTML = "";
+        let autoRemove = false;
+
+        if (isCreator) {
+          db.collection("pollVotes").where(firebase.firestore.FieldPath.documentId(), ">=", `${pollId}_`)
+            .where(firebase.firestore.FieldPath.documentId(), "<=", `${pollId}_\uf8ff`)
+            .get().then(voteSnap => {
+              const voteCount = voteSnap.size;
+
+              if (voteCount === 0 && hoursSinceCreation >= 24) {
+                // Show delete button if no one voted in 24 hours
+                document.querySelector(`#poll-${pollId} .poll-options`).insertAdjacentHTML("afterend",
+                  `<button onclick="deletePoll('${pollId}')" style="background:#444; margin-top: 1rem;">Remove your poll</button>`);
+              }
+
+            });
+}
+
+
+        const pollCardHTML = `
+          <div class="poll-card" id="poll-${pollId}">
+            <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
+            <h3>${poll.question}</h3>
+            <div class="poll-options">${optionButtons}</div>
+            <div id="poll-images">${imageHTML}</div>
+            <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
+            ${deleteBtnHTML}
+          </div>
+        `;
+
+        weeklyPoll.innerHTML += pollCardHTML;
+
+        // Check if user already voted
+        db.collection("pollVotes").doc(`${pollId}_${user.uid}`).get().then(voteDoc => {
+          if (voteDoc.exists) {
+            const choiceText = voteDoc.data().choice;
+            db.collection("users").doc(user.uid).get().then(userDoc => {
+              const username = userDoc.data()?.username || "You";
+              const resultBox = document.getElementById(`pollResultBox-${pollId}`);
+              resultBox.innerText = `@${username} chose: ${choiceText}`;
+              resultBox.style.display = "block";
+            });
+
+            const pollCard = document.getElementById(`poll-${pollId}`);
+            pollCard.querySelectorAll("button").forEach(btn => {
+              btn.disabled = true;
+              if (btn.innerText === choiceText) {
+                btn.style.borderColor = "#e60023";
+                btn.style.backgroundColor = "#fff";
+                btn.style.color = "#e60023";
+              }
+            });
+          }
+        });
+      });
     });
-  });
-});
-
-
-  let validPolls = [];
-
-  snapshot.forEach(doc => {
-    const poll = doc.data();
-    const createdAt = poll.createdAt?.toDate();
-    const now = new Date();
-    const expired = createdAt && (now - createdAt) > 24 * 60 * 60 * 1000;
-
-    if (!expired) {
-      validPolls.push({ id: doc.id, data: poll });
-    }
-  });
-
-  if (validPolls.length === 0) {
-    document.getElementById("noPollsMessage").style.display = "block";
-    return;
-  } else {
-    document.getElementById("noPollsMessage").style.display = "none";
-  }
-
-  validPolls.forEach(({ id: pollId, data: poll }) => {
-  const isCreator = poll.creatorId === firebase.auth().currentUser.uid;
-
-  const imageHTML = (poll.images || []).map(url => `<img src="${url}" alt="poll image">`).join("");
-  const optionButtons = (poll.options || []).map(option => `
-    <button onclick="submitVote('${pollId}', '${option}')">${option}</button>
-  `).join("");
-
-  const pollCardHTML = `
-    <div class="poll-card" id="poll-${pollId}">
-      <div class="poll-theme">${poll.theme || "🔥 GSU Weekly Poll"}</div>
-      <h3>${poll.question}</h3>
-      <div class="poll-options">${optionButtons}</div>
-      <div id="poll-images">${imageHTML}</div>
-      <div class="result-popup" id="pollResultBox-${pollId}" style="display:none;"></div>
-    </div>
-  `;
-
-  weeklyPoll.innerHTML += pollCardHTML;
-
-  // Check if user already voted
-  db.collection("pollVotes").doc(`${pollId}_${auth.currentUser.uid}`).get().then(voteDoc => {
-    if (voteDoc.exists) {
-      const choiceText = voteDoc.data().choice;
-      db.collection("users").doc(auth.currentUser.uid).get().then(userDoc => {
-        const username = userDoc.exists() ? (userDoc.data().username || "You") : "You";
-        const resultBox = document.getElementById(`pollResultBox-${pollId}`);
-        resultBox.innerText = `@${username} chose: ${choiceText}`;
-        resultBox.style.display = "block";
-      });
-
-      const pollCard = document.getElementById(`poll-${pollId}`);
-      pollCard.querySelectorAll("button").forEach(btn => {
-        btn.disabled = true;
-        if (btn.innerText === choiceText) {
-          btn.style.borderColor = "#e60023";
-          btn.style.backgroundColor = "#fff";
-          btn.style.color = "#e60023";
-        }
-      });
-    }
-  });
-});
-
-});
-
 });
 
 </script>
