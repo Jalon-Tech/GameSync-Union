@@ -501,7 +501,7 @@
       📁 Select a Content Type to View <span class="arrow">🔽</span>
     </button>
     <div class="dropdown-content">
-      <a href="boss-fight-strategies.html" onclick="loadContent('boss')">🗡️ Boss Fight Strategies</a>
+      <a href="#" onclick="loadContent('boss')">🗡️ Boss Fight Strategies</a>
       <a href="#" onclick="loadContent('tutorial')">🎮 Gameplay Tutorials</a>
       <a href="#" onclick="loadContent('gameplay')">📹 Community Gameplay Videos</a>
       <a href="#" onclick="loadContent('combo')">🥊 Combo Guides</a>
@@ -569,5 +569,48 @@
       });
     });
   </script>
+  <script>
+  function loadContent(type) {
+    const pageMap = {
+      boss: 'boss-fight-strategies.html',
+      tutorial: 'gameplay-tutorials.html',
+      gameplay: 'community-gameplay-videos.html',
+      combo: 'combo-guides.html',
+      clutch: 'clutch-moments.html',
+      duel: 'duel-highlights.html',
+      talk: 'talk-show.html',
+      handpicked: 'handpicked.html',
+      all: 'all-videos.html'
+    };
+
+    const contentBox = document.getElementById("dynamicContent");
+    const url = pageMap[type];
+
+    if (!url) {
+      contentBox.innerHTML = "<p style='color: #ccc;'>No content available.</p>";
+      return;
+    }
+
+    fetch(url)
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+        const videoSection = doc.querySelector('.guides-container');
+
+        if (videoSection) {
+          contentBox.innerHTML = "";
+          contentBox.appendChild(videoSection);
+        } else {
+          contentBox.innerHTML = "<p style='color: #ccc;'>No video section found on this page.</p>";
+        }
+      })
+      .catch(error => {
+        console.error('Error loading content:', error);
+        contentBox.innerHTML = "<p style='color: #ccc;'>Error loading content. Please try again later.</p>";
+      });
+  }
+</script>
+
 </body>
 </html>
