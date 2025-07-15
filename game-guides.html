@@ -579,12 +579,15 @@
     </p>
   </div>
 
-  <div class="dropdown-container" onclick="toggleDropdown(this)" style="margin-bottom: 2rem; display: flex; justify-content: center;">
-  <button class="dropdown-button">
-    
+<!-- 🔽 FIXED DROPDOWN SECTION -->
+<div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+  <div class="dropdown-container" style="position: relative; text-align: center;">
+    <button class="dropdown-button" onclick="toggleDropdown(this)">
       📁 Select a Content Type to View <span class="arrow">🔽</span>
     </button>
+
     <div class="dropdown-content">
+      <a href="#" onclick="clearContent(); return false;">📁 Select a Content Type to View</a>
       <a href="#" onclick="loadContent('boss'); return false;">🗡️ Boss Fight Strategies</a>
       <a href="#" onclick="loadContent('tutorial'); return false;">🎮 Gameplay Tutorials</a>
       <a href="#" onclick="loadContent('gameplay'); return false;">📹 Community Gameplay Videos</a>
@@ -596,6 +599,8 @@
       <a href="#" onclick="loadContent('all'); return false;">📺 All Videos by Category</a>
     </div>
   </div>
+</div>
+
 
 <!-- Responsive grid for videos -->
 <div id="dynamicWrapper" style="
@@ -664,12 +669,16 @@
     </footer>
   </div>
   <script>
-    function toggleDropdown(container) {
-      const dropdown = container.querySelector(".dropdown-content");
-      const arrow = container.querySelector(".arrow");
-      dropdown.classList.toggle("show");
-      arrow.classList.toggle("rotated");
-    }
+
+  function toggleDropdown(button) {
+  const container = button.closest(".dropdown-container");
+  const dropdown = container.querySelector(".dropdown-content");
+  const arrow = container.querySelector(".arrow");
+
+  dropdown.classList.toggle("show");
+  arrow.classList.toggle("rotated");
+}
+
 
 
   </script>
@@ -837,6 +846,36 @@ window.loadContent = async function(type) {
     observer.observe(slideCard);
   }
 </script>
+
+<script>
+ window.clearContent = function () {
+  const contentBox = document.getElementById("dynamicContent");
+  contentBox.innerHTML = "";
+
+  // Close dropdown and reset arrow
+  document.querySelectorAll(".dropdown-content").forEach(el => el.classList.remove("show"));
+  document.querySelectorAll(".arrow").forEach(el => el.classList.remove("rotated"));
+};
+
+</script>
+
+<script>
+  document.addEventListener("click", function (event) {
+    const dropdownContainers = document.querySelectorAll(".dropdown-container");
+
+    dropdownContainers.forEach(container => {
+      const isClickInside = container.contains(event.target);
+      const dropdown = container.querySelector(".dropdown-content");
+      const arrow = container.querySelector(".arrow");
+
+      if (!isClickInside) {
+        dropdown.classList.remove("show");
+        arrow?.classList.remove("rotated");
+      }
+    });
+  });
+</script>
+
 
 </body>
 </html>
