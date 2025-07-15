@@ -1612,7 +1612,13 @@ function displayCharacterDetails() {
       if (existingUsername) existingUsername.remove();
       if (existingPlatform) existingPlatform.remove();
 
-      // Add fresh username
+      // Clear existing info if already inserted
+      const oldUsername = profileBox.querySelector(".username-info");
+      const oldPlatform = profileBox.querySelector(".platform-info");
+      if (oldUsername) oldUsername.remove();
+      if (oldPlatform) oldPlatform.remove();
+
+      // Create new username element
       const usernameEl = document.createElement("p");
       usernameEl.className = "username-info";
       usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
@@ -1621,13 +1627,14 @@ function displayCharacterDetails() {
       usernameEl.style.marginBottom = "0.5rem";
       profileBox.prepend(usernameEl);
 
-      // Add platform after username
+      // Create new platform element
       const platformEl = document.createElement("p");
       platformEl.className = "platform-info";
       platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
       platformEl.style.fontSize = "0.95rem";
       platformEl.style.marginBottom = "0.5rem";
       profileBox.insertBefore(platformEl, usernameEl.nextSibling);
+
 
 
       const favGamesEl = document.getElementById("fav-games");
