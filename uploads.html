@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1519,17 +1518,36 @@ firebase.auth().onAuthStateChanged(user => {
 
 if (snapshot.empty) {
   weeklyPoll.innerHTML = `
-    <h1 style="
-      color: #e60023;
-      font-size: 2rem;
-      font-family: 'Montserrat', sans-serif;
-      text-align: center;
-      margin-top: 4rem;
-    ">
-      No polls at this time — be the first to create one for the Union 🎮🗳️
-    </h1>`;
+    <div style="text-align: center; margin-top: 4rem; animation: fadeIn 0.8s ease-in-out;">
+      <h1 style="
+        color: #e60023;
+        font-size: 2rem;
+        font-family: 'Montserrat', sans-serif;
+        transition: 0.3s ease;
+      " onmouseover="this.style.textShadow='0 0 12px #e60023'" onmouseout="this.style.textShadow='none'">
+        No polls at this time — be the first to create one for the Union 🎮🗳️
+      </h1>
+      <p style="margin-top: 1rem;">
+        <a href="poll_creation.html" style="color: #e60023; font-weight: bold; text-decoration: none;">
+          ➕ Start a new poll
+        </a>
+      </p>
+    </div>
+  `;
+
+  // Add fadeIn animation style if not already in your <style>
+  const styleTag = document.createElement("style");
+  styleTag.innerHTML = `
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  `;
+  document.head.appendChild(styleTag);
+
   return;
 }
+
 
 
 
