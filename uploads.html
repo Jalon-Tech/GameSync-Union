@@ -1512,8 +1512,8 @@ firebase.auth().onAuthStateChanged(user => {
   if (!user) return;
 
   db.collection("polls")
-    .orderBy("createdAt", "desc")
-    .get()
+  .get()
+
     .then(snapshot => {
       weeklyPoll.innerHTML = "";
 
