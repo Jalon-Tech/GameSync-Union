@@ -613,7 +613,8 @@
       let html = "";
       querySnapshot.forEach(doc => {
         const data = doc.data();
-        const embedURL = getEmbedURL(data.url);
+        const embedURL = getEmbedURL(data.videoUrl);
+
 
         if (embedURL) {
           html += `
