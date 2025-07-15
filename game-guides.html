@@ -6,6 +6,59 @@
   <title>Gameplay Center | GameSync Union</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet"/>
   <style>
+
+    .gsu-slide-card {
+  margin: 4rem auto 0;
+  padding: 2rem;
+  background-color: #2a2a2a;
+  border: 2px solid var(--gsu-red);
+  border-radius: 12px;
+  text-align: center;
+  max-width: 720px;
+  box-shadow: 0 0 20px rgba(230, 0, 35, 0.4);
+  transform: translateY(50px);
+  opacity: 0;
+  transition: all 0.8s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gsu-slide-card h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  color: var(--gsu-red);
+  margin-bottom: 1rem;
+}
+
+.gsu-slide-card p {
+  font-size: 1.05rem;
+  color: #eee;
+  line-height: 1.6;
+}
+
+.gsu-slide-card.show {
+  opacity: 1;
+  transform: translateY(0);
+  animation: gsuPulse 1.5s ease;
+}
+
+@keyframes gsuPulse {
+  0% { box-shadow: 0 0 0 2px var(--gsu-red); }
+  50% { box-shadow: 0 0 12px 4px rgba(230, 0, 35, 0.7); }
+  100% { box-shadow: 0 0 0 2px var(--gsu-red); }
+}
+
+.gsu-overlay {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  font-size: 3rem;
+  opacity: 0.2;
+  transform: rotate(-20deg);
+  pointer-events: none;
+}
+
+    
     .guide-card p {
   font-size: 0.85rem;
   line-height: 1.4;
@@ -203,6 +256,7 @@
       padding: 2rem 1rem;
       text-align: center;
       border-top: 1px solid #333;
+      margin-top: auto;
     }
 
     .platform-icons {
@@ -519,32 +573,37 @@
       📁 Select a Content Type to View <span class="arrow">🔽</span>
     </button>
     <div class="dropdown-content">
-      <a href="#" onclick="loadContent('boss')">🗡️ Boss Fight Strategies</a>
-      <a href="#" onclick="loadContent('tutorial')">🎮 Gameplay Tutorials</a>
-      <a href="#" onclick="loadContent('gameplay')">📹 Community Gameplay Videos</a>
-      <a href="#" onclick="loadContent('combo')">🥊 Combo Guides</a>
-      <a href="#" onclick="loadContent('clutch')">🎥 Clutch Moments</a>
-      <a href="#" onclick="loadContent('duel')">⚔️ 1v1 Duels</a>
-      <a href="#" onclick="loadContent('talk')">🎙️ GSU Breakdown Lounge</a>
-      <a href="#" onclick="loadContent('handpicked')">🌟 Handpicked Favorites</a>
-      <a href="#" onclick="loadContent('all')">📺 All Videos by Category</a>
+      <a href="#" onclick="loadContent('boss'); return false;">🗡️ Boss Fight Strategies</a>
+      <a href="#" onclick="loadContent('tutorial'); return false;">🎮 Gameplay Tutorials</a>
+      <a href="#" onclick="loadContent('gameplay'); return false;">📹 Community Gameplay Videos</a>
+      <a href="#" onclick="loadContent('combo'); return false;">🥊 Combo Guides</a>
+      <a href="#" onclick="loadContent('clutch'); return false;">🎥 Clutch Moments</a>
+      <a href="#" onclick="loadContent('duel'); return false;">⚔️ 1v1 Duels</a>
+      <a href="#" onclick="loadContent('talk'); return false;">🎙️ GSU Breakdown Lounge</a>
+      <a href="#" onclick="loadContent('handpicked'); return false;">🌟 Handpicked Favorites</a>
+      <a href="#" onclick="loadContent('all'); return false;">📺 All Videos by Category</a>
     </div>
   </div>
 
-  <div id="dynamicContent" class="guides-container" style="margin-top: 2rem;">
-    <p style="color: #ccc;">Select a category above to view videos and content here.</p>
-  </div>
+  <div id="dynamicContent" class="guides-container" style="margin-top: 2rem;"></div>
 </section>
 
 
 
 
 
-      <div class="button-wrapper">
-        <div class="dropdown-container" onclick="toggleDropdown(this)">
-          <button class="dropdown-button">
-            🎮 Show Off or Shout Out — Upload Boss Fight Strategies, Community Gameplay Videos, Combo Guides & More <span class="arrow">🔽</span>
-          </button>
+<div class="guide-card" style="margin-top: 3rem; margin-bottom: 1.5rem;">
+  <h3>🚨 Got Something Worth Sharing?</h3>
+  <p>
+    Drop your best boss kills, clutch moments, combos, or any raw gameplay that deserves a spotlight. GSU is watching.
+  </p>
+</div>
+
+<div class="button-wrapper">
+  <div class="dropdown-container" onclick="toggleDropdown(this)">
+    <button class="dropdown-button">
+      🎮 Show Off or Shout Out — Upload Boss Fight Strategies, Community Gameplay Videos, Combo Guides & More <span class="arrow">🔽</span>
+    </button>
 
           <div class="dropdown-content">
             <a href="submit.html?type=boss">🗡️ Boss Fight Strategies</a>
@@ -557,6 +616,14 @@
           </div>
         </div>
       </div>
+
+      <div class="guide-card gsu-slide-card">
+  <h3>🚀 Keep the Momentum Going</h3>
+  <p>
+    GSU is leveling up fast — and it's because of gamers like you. 🎮 Whether it's clutch clips, boss takedowns, or godlike combos,
+    every upload brings the heat. Stay locked in, keep dropping content, and let’s build something legendary. 🔥🔥
+  </p>
+</div>
 
     </main>
 
@@ -608,60 +675,121 @@
 
 window.loadContent = async function(type) {
   const contentBox = document.getElementById("dynamicContent");
-  contentBox.innerHTML = "<p style='color:#ccc;'>Loading...</p>";
+  contentBox.innerHTML = ""; // Clear content
+  const loadingMsg = document.createElement("p");
+  loadingMsg.style.color = "#ccc";
+  loadingMsg.textContent = "Loading...";
+  contentBox.appendChild(loadingMsg);
 
   try {
     const q = query(collection(db, "submissions"), where("type", "==", type));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      contentBox.innerHTML = `<p style='color:#ccc;'>No videos available in this category yet.</p>`;
+      contentBox.innerHTML = "<p style='color:#ccc;'>No videos available in this category yet.</p>";
       return;
     }
 
-    let html = "";
+    contentBox.innerHTML = ""; // Clear loading
+
     let index = 0;
+    querySnapshot.forEach((doc) => {
+      const { videoUrl, caption } = doc.data();
+      if (!videoUrl) return;
 
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      const embedURL = getEmbedURL(data.videoUrl);
+      const embedUrl = videoUrl.includes("watch?v=")
+        ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
+        : videoUrl.includes("youtu.be/")
+          ? `https://www.youtube.com/embed/${videoUrl.split("youtu.be/")[1]}`
+          : videoUrl;
 
-      if (embedURL) {
-        const delay = index * 100;
-        html += `
-          <div class="guide-card fade-in-stagger" style="animation-delay: ${delay}ms;">
-            <div style="margin-bottom: 1rem;">
-              <iframe width="100%" height="315" src="${embedURL}" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
-            </div>
-            <p style="margin-bottom: 0.4rem;">${data.caption || "No caption provided."}</p>
-            <p style="font-size: 0.75rem; color: #888;">🎮 Community drop powered by YouTube</p>
-          </div>
-        `;
-        index++;
-      } else {
-        console.warn(`Invalid YouTube URL: ${data.videoUrl}`);
-      }
+      const card = document.createElement("div");
+      card.classList.add("guide-card", "fade-in-stagger");
+      card.style.animationDelay = `${index * 100}ms`;
+      card.style.backgroundColor = "#2a2a2a";
+      card.style.borderRadius = "10px";
+      card.style.padding = "1rem";
+      card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+      card.style.width = "100%";
+      card.style.maxWidth = "560px";
+      card.style.margin = "0 auto";
+      card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+
+      card.onmouseenter = () => {
+        card.style.transform = "translateY(-6px) scale(1.01)";
+        card.style.boxShadow = "0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05)";
+      };
+      card.onmouseleave = () => {
+        card.style.transform = "none";
+        card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+      };
+
+      const iframeWrapper = document.createElement("div");
+      iframeWrapper.style.position = "relative";
+      iframeWrapper.style.width = "100%";
+      iframeWrapper.style.paddingTop = "56.25%";
+      iframeWrapper.style.borderRadius = "8px";
+      iframeWrapper.style.overflow = "hidden";
+      iframeWrapper.style.marginBottom = "1rem";
+
+      const iframe = document.createElement("iframe");
+      iframe.src = embedUrl;
+      iframe.style.position = "absolute";
+      iframe.style.top = "0";
+      iframe.style.left = "0";
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.allowFullscreen = true;
+      iframe.style.border = "none";
+
+      iframeWrapper.appendChild(iframe);
+      card.appendChild(iframeWrapper);
+
+      const captionText = document.createElement("p");
+      captionText.textContent = caption || "No caption provided.";
+      captionText.style.color = "#fff";
+      captionText.style.fontFamily = "Montserrat, sans-serif";
+      captionText.style.fontWeight = "600";
+      captionText.style.marginBottom = "0.4rem";
+
+      const credit = document.createElement("p");
+      credit.textContent = "🎮 Community drop powered by YouTube";
+      credit.style.color = "#ccc";
+      credit.style.fontSize = "0.9rem";
+
+      card.appendChild(captionText);
+      card.appendChild(credit);
+      contentBox.appendChild(card);
+
+      index++;
     });
 
     // Close dropdown after selection
     document.querySelectorAll(".dropdown-content").forEach(el => el.classList.remove("show"));
     document.querySelectorAll(".arrow").forEach(el => el.classList.remove("rotated"));
-
-    contentBox.innerHTML = html;
-    // Force reflow to retrigger animation
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.fade-in-stagger').forEach(el => {
-        el.style.opacity = '1'; // Ensure opacity transitions
-      });
-    });
-
-
   } catch (error) {
     contentBox.innerHTML = `<p style="color: var(--gsu-red);">Error loading content. Check console for details.</p>`;
     console.error(error);
   }
 };
-
 </script>
+
+<script>
+  const slideCard = document.querySelector('.gsu-slide-card');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        slideCard.classList.add('show');
+        observer.unobserve(slideCard); // only animate once
+      }
+    });
+  }, { threshold: 0.3 });
+
+  if (slideCard) {
+    observer.observe(slideCard);
+  }
+</script>
+
 </body>
 </html>
