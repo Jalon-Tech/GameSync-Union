@@ -7,6 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet"/>
   <style>
 
+    html {
+  scroll-behavior: smooth;
+}
+
     @keyframes slideUp {
   0% {
     opacity: 0;
@@ -437,6 +441,8 @@
   border-radius: 0 0 10px 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   z-index: 1;
+  max-height: 320px;
+  overflow-y: auto;
 }
 
 .dropdown-content a {
@@ -456,6 +462,13 @@
   visibility: visible;
   transform: translateY(0);
 }
+#dynamicWrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
 
 .fade-in {
   animation: fadeInScale 1.5s ease forwards;
@@ -474,8 +487,11 @@
 }
 
 .fade-in-stagger {
-  opacity: 0;
   animation: fadeInScale 1.5s ease forwards;
+  opacity: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 
@@ -611,7 +627,7 @@
   margin-top: 2rem;
   padding: 0 1rem;
 ">
-  <div id="dynamicContent" style="display: contents;"></div>
+  <div id="dynamicContent" style="width: 100%;"></div>
 </div>
 
 
@@ -624,13 +640,15 @@
 
 
 <div class="guide-card" style="margin-top: 3rem; margin-bottom: 1.5rem;">
-  <h3>🚨 Got Something Worth Sharing?</h3>
+  <h3>🚨 Have Something Worth Sharing?</h3>
   <p>
-    Drop your best boss kills, clutch moments, combos, or any raw gameplay that deserves a spotlight. GSU is watching.
+   Bring the heat with your own clips or give props to someone else’s. If it’s fire, GSU wants it.
+Whether it's your win or someone else's — if it's hype, submit it. GSU is always watching.
+Share your moments or shout out someone else's — anything worthy of the spotlight belongs on GSU.
   </p>
 </div>
 
-<div class="button-wrapper">
+<div class="button-wrapper" style="position: relative;">
   <div class="dropdown-container">
   <button class="dropdown-button" onclick="toggleDropdown(this)">
       🎮 Show Off or Shout Out — Upload Boss Fight Strategies, Community Gameplay Videos, Combo Guides & More <span class="arrow">🔽</span>
@@ -644,6 +662,8 @@
             <a href="submit.html?type=clutch">🎥 Clutch Moments & Finishers</a>
             <a href="submit.html?type=duel">⚔️ 1v1 Duel Highlights</a>
             <a href="submit.html?type=talk">🎙️ GSU Breakdown Lounge</a>
+            <a href="submit.html?type=favorites">🌟 Handpicked Favorites</a>
+            <a href="submit.html?type=browse">🎮 Browse All Videos by Category</a>
           </div>
         </div>
       </div>
