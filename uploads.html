@@ -760,17 +760,30 @@ nav {
   <p>See the latest clips, boss runs, fan art, and flexes — this is where GSU drops heat, nonstop.</p>
   <div class="guides-container" id="allUploads"></div>
 </div>
-<div id="noPollsMessage" style="
-  text-align: center;
-  color: var(--gsu-red);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin: 2rem 0;
-  display: none;
-">
-  No polls at this time. Create one and shape the GSU community!
+<div class="box" id="weeklyPollBox">
+  <h2>🔥 GSU Polls — You Run This</h2>
+  <p>Players create polls anytime. Drop your vote, shape what’s trending, and show the community what’s really up — but act fast, polls expire 24 hours after being posted.</p>
+
+  <div id="noPollsMessage" style="
+    text-align: center;
+    color: var(--gsu-red);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin: 2rem auto;
+    display: none;
+    max-width: 90%;
+  ">
+    No polls at this time.<br/>Create one and shape the GSU community!
+  </div>
+
+  <div id="weeklyPoll"></div>
+
+  <button onclick="window.location.href='poll_creation.html'" style="margin-top: 1.2rem; background-color: var(--gsu-red); color: #fff; border: 2px solid transparent; padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: block; width: fit-content; margin-left: auto; margin-right: auto;">
+    Create Your GSU Poll
+  </button>
 </div>
+
 
 <div class="box" id="weeklyPollBox">
   <h2>🔥 GSU Polls — You Run This</h2>
