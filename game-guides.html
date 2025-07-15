@@ -115,9 +115,19 @@
 
     .guides-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
+      align-items: stretch;
     }
+
+    @media (max-width: 768px) {
+    .guides-container {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+
 
     .guide-card {
       background-color: var(--black-faded);
@@ -125,6 +135,10 @@
       padding: 1rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
       color: var(--white-text);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .guide-card:hover {
@@ -472,6 +486,38 @@
     </div>
   </a>
 </div>
+
+<!-- 🔽 NEW SECTION: View All GSU Video Content by Category -->
+<section style="margin-top: 4rem;">
+  <div class="guide-card" style="margin-bottom: 2rem;">
+    <h3>📂 Browse All GSU Video Content by Category</h3>
+    <p>
+      Use the dropdown below to instantly view content from any of the 9 categories in the GSU Gameplay Center — all in one place.
+    </p>
+  </div>
+
+  <div class="dropdown-container" style="margin-bottom: 2rem; display: flex; justify-content: center;">
+    <button class="dropdown-button" onclick="toggleDropdown(this)">
+      📁 Select a Content Type to View <span class="arrow">🔽</span>
+    </button>
+    <div class="dropdown-content">
+      <a href="#" onclick="loadContent('boss')">🗡️ Boss Fight Strategies</a>
+      <a href="#" onclick="loadContent('tutorial')">🎮 Gameplay Tutorials</a>
+      <a href="#" onclick="loadContent('gameplay')">📹 Community Gameplay Videos</a>
+      <a href="#" onclick="loadContent('combo')">🥊 Combo Guides</a>
+      <a href="#" onclick="loadContent('clutch')">🎥 Clutch Moments</a>
+      <a href="#" onclick="loadContent('duel')">⚔️ 1v1 Duels</a>
+      <a href="#" onclick="loadContent('talk')">🎙️ GSU Breakdown Lounge</a>
+      <a href="#" onclick="loadContent('handpicked')">🌟 Handpicked Favorites</a>
+      <a href="#" onclick="loadContent('all')">📺 All Videos by Category</a>
+    </div>
+  </div>
+
+  <div id="dynamicContent" class="guide-card" style="background-color: var(--black-faded);">
+    <p style="color: #ccc;">Select a category above to view videos and content here.</p>
+  </div>
+</section>
+
 
 
 
