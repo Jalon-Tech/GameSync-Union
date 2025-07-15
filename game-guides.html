@@ -458,7 +458,7 @@
 }
 
 .fade-in {
-  animation: fadeInScale 0.5s ease forwards;
+  animation: fadeInScale 1.5s ease forwards;
   opacity: 0;
 }
 
@@ -475,7 +475,7 @@
 
 .fade-in-stagger {
   opacity: 0;
-  animation: fadeInScale 0.5s ease forwards;
+  animation: fadeInScale 1.5s ease forwards;
 }
 
 
@@ -597,10 +597,20 @@
     </div>
   </div>
 
-  <!-- Centered container for dynamic video content -->
-<div style="display: flex; justify-content: center; margin-top: 2rem;">
-  <div id="dynamicContent" style="width: 100%; max-width: 720px;"></div>
+<!-- Responsive grid for videos -->
+<div id="dynamicWrapper" style="
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  margin-top: 2rem;
+  padding: 0 1rem;
+">
+  <div id="dynamicContent" style="display: contents;"></div>
 </div>
+
+
+
 
 </section>
 
@@ -714,7 +724,7 @@ window.loadContent = async function(type) {
       padding: 2rem;
       text-align: center;
       box-shadow: 0 0 25px rgba(230, 0, 35, 0.4);
-      animation: slideUp 0.5s ease-out;
+      animation: slideUp 1.5s ease-out;
     ">
       No videos in this category yet.<br/>
       Be the first to rep GSU with your or supporting others gameplay!
@@ -746,8 +756,10 @@ window.loadContent = async function(type) {
       card.style.padding = "1rem";
       card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
       card.style.width = "100%";
-      card.style.maxWidth = "560px";
+      card.style.maxWidth = "480px";
       card.style.margin = "0 auto";
+
+      card.style.margin = "0"; // Let grid handle spacing
       card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
 
       card.onmouseenter = () => {
