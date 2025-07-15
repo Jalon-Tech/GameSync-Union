@@ -7,6 +7,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap" rel="stylesheet"/>
   <style>
 
+    @keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
     .gsu-slide-card {
   margin: 4rem auto 0;
   padding: 2rem;
@@ -585,7 +597,11 @@
     </div>
   </div>
 
-  <div id="dynamicContent" class="guides-container" style="margin-top: 2rem;"></div>
+  <!-- Centered container for dynamic video content -->
+<div style="display: flex; justify-content: center; margin-top: 2rem;">
+  <div id="dynamicContent" style="width: 100%; max-width: 720px;"></div>
+</div>
+
 </section>
 
 
@@ -686,9 +702,28 @@ window.loadContent = async function(type) {
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      contentBox.innerHTML = "<p style='color:#ccc;'>No videos available in this category yet.</p>";
-      return;
-    }
+  contentBox.innerHTML = `
+    <div style="
+      background-color: white;
+      color: #e60023;
+      border: 5px solid #e60023;
+      border-radius: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(230, 0, 35, 0.4);
+      animation: slideUp 0.5s ease-out;
+    ">
+      No videos in this category yet.<br/>
+      Be the first to rep GSU with your or supporting others gameplay!
+    </div>
+  `;
+  return;
+}
+
+
 
     contentBox.innerHTML = ""; // Clear loading
 
