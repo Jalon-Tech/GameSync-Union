@@ -384,17 +384,34 @@
   background-color: #222;
 }
 
-/* Show dropdown on hover */
-.dropdown-container:hover .dropdown-content {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
+
 .dropdown-content.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
+
+.fade-in {
+  animation: fadeInScale 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fade-in-stagger {
+  opacity: 0;
+  animation: fadeInScale 0.5s ease forwards;
+}
+
 
   </style>
 </head>
@@ -514,7 +531,7 @@
     </div>
   </div>
 
-  <div id="dynamicContent" class="guide-card" style="background-color: var(--black-faded);">
+  <div id="dynamicContent" class="guides-container" style="margin-top: 2rem;">
     <p style="color: #ccc;">Select a category above to view videos and content here.</p>
   </div>
 </section>
@@ -561,14 +578,7 @@
       arrow.classList.toggle("rotated");
     }
 
-    window.addEventListener("click", function (e) {
-      document.querySelectorAll(".dropdown-container").forEach(container => {
-        if (!container.contains(e.target)) {
-          container.querySelector(".dropdown-content")?.classList.remove("show");
-          container.querySelector(".arrow")?.classList.remove("rotated");
-        }
-      });
-    });
+
   </script>
   <!-- Firebase + Firestore Video Loading Script -->
 <script type="module">
@@ -596,42 +606,62 @@
     return match ? `https://www.youtube.com/embed/${match[1]}` : null;
   }
 
-  // Load content dynamically based on selected type
-  window.loadContent = async function(type) {
-    const contentBox = document.getElementById("dynamicContent");
-    contentBox.innerHTML = "<p style='color:#ccc;'>Loading...</p>";
+window.loadContent = async function(type) {
+  const contentBox = document.getElementById("dynamicContent");
+  contentBox.innerHTML = "<p style='color:#ccc;'>Loading...</p>";
 
-    try {
-      const q = query(collection(db, "submissions"), where("type", "==", type));
-      const querySnapshot = await getDocs(q);
+  try {
+    const q = query(collection(db, "submissions"), where("type", "==", type));
+    const querySnapshot = await getDocs(q);
 
-      if (querySnapshot.empty) {
-        contentBox.innerHTML = `<p style='color:#ccc;'>No videos available in this category yet.</p>`;
-        return;
-      }
-
-      let html = "";
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        const embedURL = getEmbedURL(data.videoUrl);
-
-
-        if (embedURL) {
-          html += `
-            <div class="guide-card" style="margin-bottom: 2rem;">
-              <iframe width="100%" height="315" src="${embedURL}" frameborder="0" allowfullscreen></iframe>
-              <p style="margin-top: 0.5rem; color: #ccc;">${data.caption || "No caption provided."}</p>
-            </div>
-          `;
-        }
-      });
-
-      contentBox.innerHTML = html;
-    } catch (error) {
-      contentBox.innerHTML = `<p style="color:red;">Error loading content. Check console for details.</p>`;
-      console.error(error);
+    if (querySnapshot.empty) {
+      contentBox.innerHTML = `<p style='color:#ccc;'>No videos available in this category yet.</p>`;
+      return;
     }
-  };
+
+    let html = "";
+    let index = 0;
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const embedURL = getEmbedURL(data.videoUrl);
+
+      if (embedURL) {
+        const delay = index * 100;
+        html += `
+          <div class="guide-card fade-in-stagger" style="animation-delay: ${delay}ms;">
+            <div style="margin-bottom: 1rem;">
+              <iframe width="100%" height="315" src="${embedURL}" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
+            </div>
+            <p style="margin-bottom: 0.4rem;">${data.caption || "No caption provided."}</p>
+            <p style="font-size: 0.75rem; color: #888;">🎮 Community drop powered by YouTube</p>
+          </div>
+        `;
+        index++;
+      } else {
+        console.warn(`Invalid YouTube URL: ${data.videoUrl}`);
+      }
+    });
+
+    // Close dropdown after selection
+    document.querySelectorAll(".dropdown-content").forEach(el => el.classList.remove("show"));
+    document.querySelectorAll(".arrow").forEach(el => el.classList.remove("rotated"));
+
+    contentBox.innerHTML = html;
+    // Force reflow to retrigger animation
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.fade-in-stagger').forEach(el => {
+        el.style.opacity = '1'; // Ensure opacity transitions
+      });
+    });
+
+
+  } catch (error) {
+    contentBox.innerHTML = `<p style="color: var(--gsu-red);">Error loading content. Check console for details.</p>`;
+    console.error(error);
+  }
+};
+
 </script>
 </body>
 </html>
