@@ -20,16 +20,20 @@
   0% {
     background-color: #e60023;
     box-shadow: 0 0 18px 6px #e60023;
+    color: white;
   }
   50% {
     background-color: white;
     box-shadow: 0 0 28px 10px white;
+    color: #e60023; /* Text turns red mid-flash */
   }
   100% {
     background-color: transparent;
     box-shadow: none;
+    color: white;
   }
 }
+
 
 .update-flash {
   animation: flashGlow 1.2s ease-in-out;
