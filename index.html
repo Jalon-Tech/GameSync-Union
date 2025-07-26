@@ -1257,14 +1257,16 @@ When the Union highlights you — it means something. If your name’s echoing i
     <label>Username:</label>
     <input type="text" id="editUsername" placeholder="Change your Username">
 
-    <label>Platform:</label>
-    <select id="editPlatform" placeholder="Select your new Platform">
-      <option value="">-- Select Platform --</option>
-      <option value="Playstation">PlayStation</option>
-      <option value="PC">PC</option>
-      <option value="Xbox">Xbox</option>
-      <option value="Nintendo">Nintendo</option>
-    </select>
+   <label>Platform:</label>
+  <select id="editPlatform">
+    <option value="">-- Select your new Platform --</option> <!-- ✅ Placeholder option -->
+    <option value="Playstation">PlayStation</option>
+    <option value="PC">PC</option>
+    <option value="Xbox">Xbox</option>
+    <option value="Nintendo">Nintendo</option>
+    <option value="Multiple">Multiple Platforms</option>
+  </select>
+
 
 
     <label>Favorite Games (comma-separated):</label>
