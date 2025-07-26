@@ -65,7 +65,7 @@
 
 
 .update-flash {
-  animation: flashGlow 2s ease-in-out;
+  animation: flashGlow 1.8s ease-in-out;
 }
 
 
@@ -1254,6 +1254,19 @@ When the Union highlights you — it means something. If your name’s echoing i
     <span class="close" onclick="closeEditModal()">&times;</span>
     <h2>Update Profile</h2>
 
+    <label>Username:</label>
+    <input type="text" id="editUsername" placeholder="Change your Username">
+
+    <label>Platform:</label>
+    <select id="editPlatform" placeholder="Select your new Platform">
+      <option value="">-- Select Platform --</option>
+      <option value="Playstation">PlayStation</option>
+      <option value="PC">PC</option>
+      <option value="Xbox">Xbox</option>
+      <option value="Nintendo">Nintendo</option>
+    </select>
+
+
     <label>Favorite Games (comma-separated):</label>
     <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank...">
 
@@ -1467,6 +1480,8 @@ When the Union highlights you — it means something. If your name’s echoing i
   document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
   document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('🎮 Number Of Games Played: ', '');
   document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('🏆 Trophy Stats (Total Trophies): ', '');
+  document.getElementById('editUsername').value = document.querySelector(".username-info")?.textContent.replace("👤 Username: ", "") || '';
+  document.getElementById('editPlatform').value = document.querySelector(".platform-info")?.textContent.replace("🔹 Platform: ", "") || '';
 }
 
 
@@ -1760,17 +1775,23 @@ onAuthStateChanged(auth, (user) => {
   const gamesPlayed = document.getElementById('editGamesPlayed').value;
   const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
   const trophies = document.getElementById('editTrophies').value;
+  const username = document.getElementById('editUsername').value.trim();
+  const platform = document.getElementById('editPlatform').value;
+
 
   const uid = user.uid;
   const docRef = doc(db, "users", uid);
 
   try {
     await setDoc(docRef, {
-    favoriteGames: games.split(',').map(s => s.trim()),
-    gamesPlayed: parseInt(gamesPlayed),
-    favoriteImages: imageUrls,
-    trophyCount: parseInt(trophies)
-  }, { merge: true });
+  username,
+  platform,
+  favoriteGames: games.split(',').map(s => s.trim()),
+  gamesPlayed: parseInt(gamesPlayed),
+  favoriteImages: imageUrls,
+  trophyCount: parseInt(trophies)
+}, { merge: true });
+
 
   // ✅ Animation trigger — perfect timing
   const profileCard = document.getElementById("profile-box");
