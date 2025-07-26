@@ -11,57 +11,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   
 <style>
-  .dropdown-wrapper {
+ .dropdown-wrapper {
   position: relative;
   display: inline-block;
   width: 100%;
 }
 
+/* 🔽 emoji arrow */
 .dropdown-wrapper::after {
   content: "🔽";
   position: absolute;
   top: 50%;
   right: 16px;
   transform: translateY(-50%);
-  font-size: 1.1rem;
-  line-height: 1;
+  font-size: 1.2rem;
   pointer-events: none;
   transition: transform 0.3s ease;
 }
 
-
-/* Flip the arrow on hover */
+/* Flip on hover or focus */
 .dropdown-wrapper:hover::after,
 .dropdown-wrapper:focus-within::after {
   transform: translateY(-50%) rotate(180deg);
 }
 
- #editPlatform {
-  position: relative; /* Needed for ::after positioning */
+#editPlatform {
+  width: 100%;
   background-color: rgba(255, 255, 255, 0.05);
   color: white;
   border: 2px solid #e60023;
   border-radius: 10px;
-  padding: 10px 40px 10px 15px;
+  padding: 10px 40px 10px 15px; /* Room for emoji */
   font-family: 'Orbitron', sans-serif;
   font-size: 1rem;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
 }
 
-/* Arrow emoji */
-#editPlatform::after {
-  content: "🔽"; /* Use an arrow emoji */
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.2rem;
-  transition: transform 0.3s ease;
-  pointer-events: none;
-}
+
 
 /* Flip arrow on hover or focus */
 #editPlatform:hover::after,
@@ -897,6 +888,12 @@ nav {
 
 }
 
+.gsu-dropdown {
+  height: 42px; /* Or match the actual visual height */
+  line-height: 1.2;
+}
+
+
 .gsu-dropdown:hover,
 .gsu-dropdown:focus {
   box-shadow: 0 0 10px 2px #e60023;
@@ -1347,15 +1344,16 @@ When the Union highlights you — it means something. If your name’s echoing i
 
    <label>Platform:</label>
   <div class="dropdown-wrapper">
-  <select id="editPlatform" class="gsu-dropdown"></select>
-  </div>
-    <option value="">-- Select your new Platform --</option> <!-- ✅ Placeholder option -->
+  <select id="editPlatform">
+    <option value="">-- Select your new Platform --</option>
     <option value="Playstation">PlayStation</option>
     <option value="PC">PC</option>
     <option value="Xbox">Xbox</option>
     <option value="Nintendo">Nintendo</option>
     <option value="Multiple">Multiple Platforms</option>
   </select>
+</div>
+
 
 
 
