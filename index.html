@@ -18,21 +18,25 @@
 
 @keyframes flashGlow {
   0% {
-    background-color: #e60023;
-    box-shadow: 0 0 18px 6px #e60023;
+    background-color: #e60023; /* GSU red */
     color: white;
+    border: 2px solid white;
+    box-shadow: 0 0 18px 6px #e60023;
   }
   50% {
     background-color: white;
+    color: #e60023;
+    border: 2px solid #e60023;
     box-shadow: 0 0 28px 10px white;
-    color: #e60023; /* Text turns red mid-flash */
   }
   100% {
     background-color: transparent;
-    box-shadow: none;
     color: white;
+    border: 2px solid var(--gsu-red); /* return to original GSU red border */
+    box-shadow: none;
   }
 }
+
 
 
 .update-flash {
