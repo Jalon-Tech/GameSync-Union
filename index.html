@@ -1417,58 +1417,6 @@ When the Union highlights you — it means something. If your name’s echoing i
     document.getElementById('editModal').style.display = 'none';
   }
 
-  async function saveProfileChanges() {
-  const games = document.getElementById('editGames').value;
-  const gamesPlayed = document.getElementById('editGamesPlayed').value;
-  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
-  const trophies = document.getElementById('editTrophies').value;
-  const user = getAuth().currentUser;
-if (user) {
-  const uid = user.uid;
-  const docRef = doc(db, "users", uid);
-  try {
-    await setDoc(docRef, {
-      favoriteGames: games.split(',').map(s => s.trim()),
-      gamesPlayed: parseInt(gamesPlayed),
-      favoriteImages: imageUrls,
-      trophyCount: parseInt(trophies)
-    }, { merge: true });
-
-    alert("Profile updated successfully.");
-  } catch (err) {
-    console.error("Error saving profile:", err);
-    alert("Error saving changes.");
-  }
-}
-
-
-
-  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
-  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
-  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
-
-  const imageRow = document.getElementById("fav-images");
-  imageRow.innerHTML = "";
- imageUrls.forEach(url => {
-  const img = document.createElement("img");
-  img.src = url;
-  img.alt = "Game cover";
-  img.classList.add("profile-fav-img"); // So CSS controls layout
-  img.style.objectFit = "contain";
-  img.style.backgroundColor = "transparent";
-  img.style.boxShadow = "none";
-  img.style.borderRadius = "0";
-  img.style.transition = "transform 0.3s ease";
-  img.style.scrollSnapAlign = "center";
-  img.onmouseover = () => img.style.transform = "scale(1.05)";
-  img.onmouseout = () => img.style.transform = "scale(1)";
-  imageRow.appendChild(img); // ✅ This was missing
-});
-
-
-
-  closeEditModal();
-}
 
 function updateCharacterOptions() {
   const platform = document.getElementById("platform-select").value;
@@ -1741,6 +1689,58 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+  async function saveProfileChanges() {
+  const games = document.getElementById('editGames').value;
+  const gamesPlayed = document.getElementById('editGamesPlayed').value;
+  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
+  const trophies = document.getElementById('editTrophies').value;
+  const user = getAuth().currentUser;
+if (user) {
+  const uid = user.uid;
+  const docRef = doc(db, "users", uid);
+  try {
+    await setDoc(docRef, {
+      favoriteGames: games.split(',').map(s => s.trim()),
+      gamesPlayed: parseInt(gamesPlayed),
+      favoriteImages: imageUrls,
+      trophyCount: parseInt(trophies)
+    }, { merge: true });
+
+    alert("Profile updated successfully.");
+  } catch (err) {
+    console.error("Error saving profile:", err);
+    alert("Error saving changes.");
+  }
+}
+
+
+
+  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
+  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
+  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
+
+  const imageRow = document.getElementById("fav-images");
+  imageRow.innerHTML = "";
+ imageUrls.forEach(url => {
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "Game cover";
+  img.classList.add("profile-fav-img"); // So CSS controls layout
+  img.style.objectFit = "contain";
+  img.style.backgroundColor = "transparent";
+  img.style.boxShadow = "none";
+  img.style.borderRadius = "0";
+  img.style.transition = "transform 0.3s ease";
+  img.style.scrollSnapAlign = "center";
+  img.onmouseover = () => img.style.transform = "scale(1.05)";
+  img.onmouseout = () => img.style.transform = "scale(1)";
+  imageRow.appendChild(img);
+});
+
+
+
+  closeEditModal();
+}
 </script>
 
 <script type="module">
