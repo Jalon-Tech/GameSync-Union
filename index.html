@@ -13,6 +13,23 @@
   
 <style>
 
+  .update-flash {
+  animation: flashGlow 1.2s ease-in-out;
+}
+
+@keyframes flashGlow {
+  0% {
+    background-color: rgba(230, 0, 0, 0.3);
+  }
+  50% {
+    background-color: rgba(230, 0, 0, 0.6);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+
   .sync-desc {
   font-size: 0.9rem;
   color: #ccc;
@@ -1737,6 +1754,19 @@ if (user) {
   imageRow.appendChild(img);
 });
 
+// Highlight updated sections
+const updatedElements = [
+  document.getElementById('fav-games'),
+  document.getElementById('games-played'),
+  document.getElementById('trophy-stats'),
+  document.getElementById('fav-images')
+];
+
+updatedElements.forEach(el => {
+  el.classList.remove('update-flash'); // reset if already applied
+  void el.offsetWidth; // trigger reflow
+  el.classList.add('update-flash');
+});
 
 
   closeEditModal();
