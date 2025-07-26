@@ -1740,7 +1740,17 @@ onAuthStateChanged(auth, (user) => {
   }, { merge: true });
 
   // ✅ Animation trigger — perfect timing
-  const profileCard = document.querySelector(".profile-card");
+  const profileCard = document.getElementById("profile-box");
+  if (profileCard) {
+  profileCard.classList.remove("update-flash");
+  void profileCard.offsetWidth;
+  profileCard.classList.add("update-flash");
+
+  setTimeout(() => {
+    profileCard.classList.remove("update-flash");
+  }, 1300);
+}
+
   profileCard.classList.remove("update-flash");
   void profileCard.offsetWidth;
   profileCard.classList.add("update-flash");
