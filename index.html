@@ -12,18 +12,10 @@
   
 <style>
 
- .update-flash {
+  .update-flash {
   animation: flashGlow 1.2s ease-in-out;
 }
 
-/* This makes sure all text inside .update-flash also animates */
-.update-flash,
-.update-flash * {
-  animation: textColorFlash 1.2s ease-in-out;
-  transition: color 0.3s ease;
-}
-
-/* Background & box-shadow animation */
 @keyframes flashGlow {
   0% {
     background-color: #e60023;
@@ -36,60 +28,12 @@
   100% {
     background-color: transparent;
     box-shadow: none;
-  }
-}
-
-/* Text color animation */
-@keyframes textColorFlash {
-  0% {
-    color: inherit;
-  }
-  50% {
-    color: #e60023;
-  }
-  100% {
-    color: inherit;
-  }
-}
-
-@keyframes flashGlow {
-  0% {
-    background-color: #e60023;
-    box-shadow: 0 0 18px 6px #e60023;
-  }
-  50% {
-    background-color: white;
-    box-shadow: 0 0 28px 10px white;
-  }
-  100% {
-    background-color: transparent;
-    box-shadow: none;
-  }
-}
-
-@keyframes textColorFlash {
-  0% {
-    color: inherit;
-  }
-  50% {
-    color: #e60023;
-  }
-  100% {
-    color: inherit;
   }
 }
 
 .update-flash {
   animation: flashGlow 1.2s ease-in-out;
 }
-
-.update-flash,
-.update-flash * {
-  animation: textColorFlash 1.2s ease-in-out;
-  transition: color 0.3s ease;
-}
-
-
 
 
 
@@ -1806,6 +1750,14 @@ onAuthStateChanged(auth, (user) => {
     profileCard.classList.remove("update-flash");
   }, 1300);
 }
+
+  profileCard.classList.remove("update-flash");
+  void profileCard.offsetWidth;
+  profileCard.classList.add("update-flash");
+  setTimeout(() => {
+    profileCard.classList.remove("update-flash");
+  }, 1300);
+
 
 
     // ✅ Update DOM
