@@ -18,15 +18,24 @@
 
 @keyframes flashGlow {
   0% {
-    background-color: rgba(230, 0, 0, 0.3);
+    background-color: #e60023;
+    box-shadow: 0 0 18px 6px #e60023;
   }
   50% {
-    background-color: rgba(230, 0, 0, 0.6);
+    background-color: white;
+    box-shadow: 0 0 28px 10px white;
   }
   100% {
     background-color: transparent;
+    box-shadow: none;
   }
 }
+
+.update-flash {
+  animation: flashGlow 1.2s ease-in-out;
+}
+
+
 
 
   .sync-desc {
@@ -1724,11 +1733,22 @@ onAuthStateChanged(auth, (user) => {
 
   try {
     await setDoc(docRef, {
-      favoriteGames: games.split(',').map(s => s.trim()),
-      gamesPlayed: parseInt(gamesPlayed),
-      favoriteImages: imageUrls,
-      trophyCount: parseInt(trophies)
-    }, { merge: true });
+    favoriteGames: games.split(',').map(s => s.trim()),
+    gamesPlayed: parseInt(gamesPlayed),
+    favoriteImages: imageUrls,
+    trophyCount: parseInt(trophies)
+  }, { merge: true });
+
+  // ✅ Animation trigger — perfect timing
+  const profileCard = document.querySelector(".profile-card");
+  profileCard.classList.remove("update-flash");
+  void profileCard.offsetWidth;
+  profileCard.classList.add("update-flash");
+  setTimeout(() => {
+    profileCard.classList.remove("update-flash");
+  }, 1300);
+
+
 
     // ✅ Update DOM
     document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
