@@ -11,11 +11,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   
 <style>
+  .stat-box {
+  margin-bottom: 12px;
+  padding: 10px 15px;
+  border: 2px solid #e60023;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: margin 0.3s ease;
+}
+
+
+  #profile-box.update-flash p,
+#profile-box.mid-flash p,
+#profile-box.update-flash div p,
+#profile-box.mid-flash div p,
+#profile-box.update-flash > p,
+#profile-box.mid-flash > p {
+  margin-bottom: 14px !important;
+  line-height: 1.6 !important;
+}
+
 
   #profile-box.update-flash {
   animation: flashGlow 1.2s ease-in-out;
 }
 
+#profile-box.update-flash .stat-box,
+#profile-box.mid-flash .stat-box {
+  margin-bottom: 24px !important; /* More space between boxes during flash */
+}
 
 @keyframes flashGlow {
   0% {
@@ -41,7 +65,7 @@
 
 
 .update-flash {
-  animation: flashGlow 1.2s ease-in-out;
+  animation: flashGlow 1.5s ease-in-out;
 }
 
 
