@@ -11,6 +11,31 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   
 <style>
+  .dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-wrapper::after {
+  content: "🔽";
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  line-height: 1;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+
+/* Flip the arrow on hover */
+.dropdown-wrapper:hover::after,
+.dropdown-wrapper:focus-within::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
  #editPlatform {
   position: relative; /* Needed for ::after positioning */
   background-color: rgba(255, 255, 255, 0.05);
@@ -1321,7 +1346,9 @@ When the Union highlights you — it means something. If your name’s echoing i
     <input type="text" id="editUsername" placeholder="Change your Username">
 
    <label>Platform:</label>
-  <select id="editPlatform" class="gsu-dropdown">
+  <div class="dropdown-wrapper">
+  <select id="editPlatform" class="gsu-dropdown"></select>
+  </div>
     <option value="">-- Select your new Platform --</option> <!-- ✅ Placeholder option -->
     <option value="Playstation">PlayStation</option>
     <option value="PC">PC</option>
