@@ -11,8 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   
 <style>
-
-  .update-flash {
+.update-flash {
   animation: flashGlow 1.2s ease-in-out;
 }
 
@@ -31,9 +30,37 @@
   }
 }
 
-.update-flash {
-  animation: flashGlow 1.2s ease-in-out;
+@keyframes textColorFlash {
+  0% {
+    color: inherit;
+  }
+  50% {
+    color: #e60023; /* GSU red */
+  }
+  100% {
+    color: inherit;
+  }
 }
+
+/* Make text color change during the flash */
+.update-flash,
+.update-flash * {
+  animation: textColorFlash 1.2s ease-in-out;
+  transition: color 0.3s ease;
+}
+
+@keyframes textColorFlash {
+  0% {
+    color: inherit;
+  }
+  50% {
+    color: #e60023; /* GSU Red during white flash */
+  }
+  100% {
+    color: inherit;
+  }
+}
+
 
 
 
