@@ -843,6 +843,37 @@ nav {
   border: 2px solid var(--gsu-red);
 }
 
+.gsu-dropdown {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0 18px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 2px solid #e60023;
+  border-radius: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23e60023' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px;
+  padding-right: 42px;
+}
+
+.gsu-dropdown:hover,
+.gsu-dropdown:focus {
+  box-shadow: 0 0 10px 2px #e60023;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+
 
   </style>
 </head>
@@ -1284,7 +1315,7 @@ When the Union highlights you — it means something. If your name’s echoing i
     <input type="text" id="editUsername" placeholder="Change your Username">
 
    <label>Platform:</label>
-  <select id="editPlatform">
+  <select id="editPlatform" class="gsu-dropdown">
     <option value="">-- Select your new Platform --</option> <!-- ✅ Placeholder option -->
     <option value="Playstation">PlayStation</option>
     <option value="PC">PC</option>
