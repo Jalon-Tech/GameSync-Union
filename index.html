@@ -11,6 +11,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   
 <style>
+  .update-flash-img {
+  animation: flashGlow 1.3s ease-in-out;
+}
+
+@keyframes flashGlow {
+  0% {
+    box-shadow: 0 0 10px 3px #e60023;
+  }
+  50% {
+    box-shadow: 0 0 18px 6px white;
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+
  .dropdown-wrapper {
   position: relative;
   display: inline-block;
@@ -1852,7 +1868,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
- async function saveProfileChanges() {
+async function saveProfileChanges() {
   const auth = getAuth();
   const user = auth.currentUser;
 
@@ -1861,54 +1877,59 @@ onAuthStateChanged(auth, (user) => {
     return;
   }
 
-  const games = document.getElementById('editGames').value;
-  const gamesPlayed = document.getElementById('editGamesPlayed').value;
-  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
-  const trophies = document.getElementById('editTrophies').value;
+  const games = document.getElementById('editGames').value.trim();
+  const gamesPlayed = document.getElementById('editGamesPlayed').value.trim();
+  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim()).filter(Boolean);
+  const trophies = document.getElementById('editTrophies').value.trim();
   const username = document.getElementById('editUsername').value.trim();
   const platform = document.getElementById('editPlatform').value;
-
 
   const uid = user.uid;
   const docRef = doc(db, "users", uid);
 
   try {
     await setDoc(docRef, {
-  username,
-  platform,
-  favoriteGames: games.split(',').map(s => s.trim()),
-  gamesPlayed: parseInt(gamesPlayed),
-  favoriteImages: imageUrls,
-  trophyCount: parseInt(trophies)
-}, { merge: true });
+      username,
+      platform,
+      favoriteGames: games ? games.split(',').map(s => s.trim()) : [],
+      gamesPlayed: gamesPlayed ? parseInt(gamesPlayed) : 0,
+      favoriteImages: imageUrls,
+      trophyCount: trophies ? parseInt(trophies) : 0
+    }, { merge: true });
 
+    // Update DOM immediately
 
-  // ✅ Animation trigger — perfect timing
-  const profileCard = document.getElementById("profile-box");
-  if (profileCard) {
-  profileCard.classList.remove("update-flash");
-  void profileCard.offsetWidth;
-  profileCard.classList.add("update-flash");
+    const profileBox = document.getElementById("profile-box");
 
-  setTimeout(() => {
-    profileCard.classList.remove("update-flash");
-  }, 1300);
-}
+    // Update username display (create if missing)
+    let usernameEl = profileBox.querySelector(".username-info");
+    if (!usernameEl) {
+      usernameEl = document.createElement("p");
+      usernameEl.className = "username-info";
+      usernameEl.style.fontWeight = "bold";
+      usernameEl.style.fontSize = "1rem";
+      usernameEl.style.marginBottom = "0.5rem";
+      profileBox.prepend(usernameEl);
+    }
+    usernameEl.textContent = `👤 Username: ${username || "N/A"}`;
 
-  profileCard.classList.remove("update-flash");
-  void profileCard.offsetWidth;
-  profileCard.classList.add("update-flash");
-  setTimeout(() => {
-    profileCard.classList.remove("update-flash");
-  }, 1300);
+    // Update platform display (create if missing)
+    let platformEl = profileBox.querySelector(".platform-info");
+    if (!platformEl) {
+      platformEl = document.createElement("p");
+      platformEl.className = "platform-info";
+      platformEl.style.fontSize = "0.95rem";
+      platformEl.style.marginBottom = "0.5rem";
+      usernameEl.insertAdjacentElement("afterend", platformEl);
+    }
+    platformEl.textContent = `🔹 Platform: ${platform || "N/A"}`;
 
+    // Update favorite games, games played, trophies
+    document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games || "N/A"}`;
+    document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed || "N/A"}`;
+    document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies || "N/A"}`;
 
-
-    // ✅ Update DOM
-    document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
-    document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
-    document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
-
+    // Update favorite images
     const imageRow = document.getElementById("fav-images");
     imageRow.innerHTML = "";
     imageUrls.forEach(url => {
@@ -1922,31 +1943,35 @@ onAuthStateChanged(auth, (user) => {
       img.onmouseout = () => img.style.transform = "scale(1)";
       imageRow.appendChild(img);
 
-      // 🔴 Flash each image
+      // Optional flash effect on image update
       img.classList.add("update-flash-img");
       setTimeout(() => img.classList.remove("update-flash-img"), 1300);
     });
 
-    // 🔴 Flash updated text
+    // Flash animation on updated text elements
     const updatedElements = [
+      usernameEl,
+      platformEl,
       document.getElementById('fav-games'),
       document.getElementById('games-played'),
       document.getElementById('trophy-stats'),
-      document.getElementById('fav-images')
+      imageRow
     ];
     updatedElements.forEach(el => {
       el.classList.remove('update-flash');
-      void el.offsetWidth;
+      void el.offsetWidth; // trigger reflow for restart animation
       el.classList.add('update-flash');
     });
 
-  
+    // Close modal smoothly
     closeEditModal();
+
   } catch (err) {
     console.error("Error saving profile:", err);
     alert("Error saving changes.");
   }
 }
+
   window.saveProfileChanges = saveProfileChanges; // Expose to global scope
 
 
