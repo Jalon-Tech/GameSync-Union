@@ -16,22 +16,15 @@
   }
   *{box-sizing:border-box}
 
-  html, body{height:100%}
-  html, body{margin:0; overflow-x:hidden;}
+  /* Like your other pages: simple, scrollable layout (no transform scaling) */
+  html, body { height:100%; }
+  html, body { margin:0; overflow-x:hidden; }
   body{
     font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100svh; display:flex; flex-direction:column; align-items:center;
+    min-height:100svh; display:flex; flex-direction:column; align-items:center; gap:14px;
     padding:calc(12px + var(--safe-top)) calc(16px + var(--safe-right))
             calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
     -webkit-text-size-adjust: 100%;
-    gap:14px;
-  }
-
-  /* Scaled wrapper: header + board only (NOT the input!) */
-  #game-wrapper{
-    transform-origin: top center;
-    width:100%;
-    display:flex; flex-direction:column; align-items:center; gap:14px;
   }
 
   header{display:flex; flex-direction:column; align-items:center; gap:8px}
@@ -49,13 +42,16 @@
   }
 
   .hud{
-    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem);
+    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px;
+    font-size:clamp(.8rem,2vw,1rem);
   }
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
 
   #board{
-    position:relative; height:min(520px,62vh); overflow:hidden; border:1px solid #222; border-radius:12px;
+    position:relative;
+    height:min(520px,62svh); /* use svh like the other game for iOS stability */
+    overflow:hidden; border:1px solid #222; border-radius:12px;
     background-image:
       linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
       linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
@@ -75,135 +71,85 @@
   .ok{outline:2px solid #21d07a}
   .bad{outline:2px solid #d02121}
 
-  /* Controls LIVE OUTSIDE the scaled wrapper so iOS keyboard doesn't glitch */
   .controls{
-    margin-top:2px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
-    width:100%;
+    margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
   }
   #typed{
     width:min(520px,90%); font-family:inherit;
-    /* Prevent iOS zoom-on-focus: ensure >= 16px */
-    font-size: max(16px, 1.05rem);
+    font-size:max(16px, 1.05rem); /* prevent iOS auto-zoom */
     color:#fff; background:#0a0a0a;
     border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
-    /* Keep it visible when keyboard opens */
-    scroll-margin: 15vh;
+    scroll-margin: 18vh; /* keep visible when keyboard pops */
   }
   #startBtn, .btn{
     border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
-    box-shadow:0 0 10px #e60023aa; font-weight:700;
-    font-size:max(16px, 1rem); /* no zoom on these either */
+    box-shadow:0 0 10px #e60023aa; font-weight:700; font-size:max(16px,1rem);
   }
   #startBtn:hover,.btn:hover{filter:brightness(1.1)}
   .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
-  .hintline{color:var(--muted); text-align:center}
 
   footer{opacity:.7; font-size:.85rem}
-
   @media (max-width:640px){ .hud{grid-template-columns:repeat(2,1fr)} }
-
-  /* While typing, we suppress re-scaling to avoid jumps */
-  body.typing #game-wrapper{ will-change: auto; }
 </style>
 </head>
 <body>
-  <!-- Scaled stuff -->
-  <div id="game-wrapper">
-    <header>
-      <div class="logo">
-        <img src="GSU_LOGO.png" alt="GSU Logo">
-        <div class="text">GAMESYNC UNION</div>
-      </div>
-      <nav><a href="index.html">Home</a></nav>
-    </header>
+  <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo">
+      <div class="text">GAMESYNC UNION</div>
+    </div>
+    <nav><a href="index.html">Home</a></nav>
+  </header>
 
-    <section class="frame">
-      <h1 style="margin:6px 0 10px 6px;">GSU CIPHERSTORM</h1>
-      <div class="hud">
-        <div class="pill">⏱ <strong id="time">60</strong>s</div>
-        <div class="pill">🔢 Wave <strong id="wave">1</strong></div>
-        <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
-        <div class="pill">⭐ Score <strong id="score">0</strong></div>
-        <div class="pill">❤️ <strong id="lives">3</strong></div>
-      </div>
+  <section class="frame">
+    <h1 style="margin:6px 0 10px 6px;">GSU CIPHERSTORM</h1>
+    <div class="hud">
+      <div class="pill">⏱ <strong id="time">60</strong>s</div>
+      <div class="pill">🔢 Wave <strong id="wave">1</strong></div>
+      <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
+      <div class="pill">⭐ Score <strong id="score">0</strong></div>
+      <div class="pill">❤️ <strong id="lives">3</strong></div>
+    </div>
 
-      <div id="board" aria-live="polite"></div>
-    </section>
-  </div>
+    <div id="board" aria-live="polite"></div>
 
-  <!-- NOT scaled: input & buttons (fixes iOS keyboard issues) -->
-  <div class="controls">
-    <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
-    <button id="startBtn">▶ Start Run</button>
-    <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
-  </div>
-  <div class="row hintline" style="margin-top:6px;">
-    <span>Tip: your tile glows green while your typed prefix is correct.</span>
-  </div>
+    <div class="controls">
+      <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
+      <button id="startBtn">▶ Start Run</button>
+      <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
+    </div>
+
+    <div class="row" style="color:var(--muted);margin-top:6px;">
+      <span>Tip: your tile glows green while your typed prefix is correct.</span>
+    </div>
+  </section>
 
   <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
 
 <script>
-/* ===== Global auto-scale (don’t scale the input area) ===== */
-(function(){
-  const vvp = () => window.visualViewport || { width: innerWidth, height: innerHeight };
-  const wrapper = document.getElementById('game-wrapper');
-
-  function scalePage(){
-    if(!wrapper) return;
-    if (document.body.classList.contains('typing')) return; // skip while keyboard is up/typing
-    wrapper.style.transform = 'scale(1)'; // reset
-    const contentH = wrapper.scrollHeight;
-    const contentW = wrapper.scrollWidth;
-    const vw = vvp().width, vh = vvp().height;
-
-    const sH = (vh - 2) / contentH;
-    const sW = (vw - 2) / contentW;
-    let scale = Math.min(sH, sW);
-    if (scale > 1) scale = 1;
-    scale = Math.max(0.6, scale);
-    wrapper.style.transform = `scale(${scale})`;
-  }
-
-  let raf=null;
-  function requestFit(){ if(raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(scalePage); }
-
-  addEventListener('load', requestFit);
-  addEventListener('resize', requestFit);
-  addEventListener('orientationchange', requestFit);
-  window.visualViewport && visualViewport.addEventListener('resize', ()=>{
-    if (!document.body.classList.contains('typing')) requestFit();
-  });
-
-  // Public refresh (call after big layout changes)
-  window.gsuFit = { refresh: requestFit };
-})();
-</script>
-
-<script>
 /* ------------------------ Easier Word Lists (3–5 letters only) ------------------------ */
 const WORD_BANK = {
-games: [
-  "rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
-  "aim","ping","lag","farm","gank","bait","poke","zone","stun","root","bind","smite","spray","carry","steal","skill",
-  "stack","stats","quest","equip","dodge","feint","super","ultra","patch","boss","raid","loot","gold","coins","armor",
-  "spawn","smurf","macro","micro","ghost","score","reset","stage","match","camp","heal","perks","runes","punch","block",
-  "slide","burst","clash","scope","tilt"
-],
-tech: [
-  "byte","data","code","build","stack","array","debug","query","cache","ping","queue","input",
-  "index","token","regex","route","param","class","scope","state","event","logic","parse","print",
-  "stdin","shell","linux","macos","proxy","redis","mongo","nexus","azure","cloud","https","http",
-  "email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh",
-  "grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"
-],
-heroes: [
-  "loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic",
-  "Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan",
-  "Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby",
-  "Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"
-]
+  games: [
+    "rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
+    "aim","ping","lag","farm","gank","bait","poke","zone","stun","root","bind","smite","spray","carry","steal","skill",
+    "stack","stats","quest","equip","dodge","feint","super","ultra","patch","boss","raid","loot","gold","coins","armor",
+    "spawn","smurf","macro","micro","ghost","score","reset","stage","match","camp","heal","perks","runes","punch","block",
+    "slide","burst","clash","scope","tilt"
+  ],
+  tech: [
+    "byte","data","code","build","stack","array","debug","query","cache","ping","queue","input",
+    "index","token","regex","route","param","class","scope","state","event","logic","parse","print",
+    "stdin","shell","linux","macos","proxy","redis","mongo","nexus","azure","cloud","https","http",
+    "email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh",
+    "grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"
+  ],
+  heroes: [
+    "loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic",
+    "Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan",
+    "Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby",
+    "Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"
+  ]
 };
 const THEMES = Object.keys(WORD_BANK);
 
@@ -222,7 +168,7 @@ const slowmoBtn = document.getElementById('slowmoBtn');
 function pickTheme(){ return THEMES[Math.floor(Math.random()*THEMES.length)] }
 function sample(list){ return list[Math.floor(Math.random()*list.length)] }
 
-/* Easier scramble: ALWAYS keep first & last letters fixed */
+/* Keep first & last letters fixed when scrambling */
 function scrambleWord(w){
   if (w.length <= 3) return w;
   const first = w[0], last = w[w.length-1];
@@ -240,11 +186,10 @@ let state = null;
 let rafId = null, timerId = null, slowId = null;
 let theme = "games";
 
-/* Slower, smoother speeds */
 const BASE_SPEED = 55;      // px/sec
-const SPEED_PER_WAVE = 8;   // add per wave
-const MAX_SPEED = 160;      // clamp
-const SLOW_FACTOR = 0.6;    // Power Surge
+const SPEED_PER_WAVE = 8;
+const MAX_SPEED = 160;
+const SLOW_FACTOR = 0.6;
 
 function initialState(){
   return {
@@ -269,7 +214,7 @@ function setHUD(){
   slowmoBtn.disabled  = !state.powerReady || state.slow || !state.running;
 }
 
-/* ------------------------ Spawning (easier selection) ------------------------ */
+/* ------------------------ Spawning ------------------------ */
 function allowedMaxLen(){
   if (state.wave <= 3) return 4;
   return 5;
@@ -350,12 +295,8 @@ function startRun(){
   state.lastT = 0;
   rafId = requestAnimationFrame(loop);
 
-  // Re-scale the non-input area after UI changes
-  window.gsuFit?.refresh();
-
-  // put caret in the input & scroll it nicely into view
-  typed.focus({ preventScroll:false });
-  typed.scrollIntoView({ block:'center', behavior:'smooth' });
+  // focus input like the other pages
+  typed.focus({preventScroll:false});
 }
 
 function endRun(){
@@ -368,7 +309,6 @@ function endRun(){
   frame.style.boxShadow="0 0 30px #e60023, inset 0 0 18px #e6002344";
   setTimeout(()=> frame.style.boxShadow=prev || "0 0 18px #e60023cc, inset 0 0 18px #e6002326", 280);
   startBtn.textContent="🔁 Run Again";
-  window.gsuFit?.refresh();
 }
 
 /* Submit + live assist */
@@ -408,15 +348,6 @@ function useSlow(){
 startBtn.addEventListener('click', startRun);
 slowmoBtn.addEventListener('click', useSlow);
 
-typed.addEventListener('focus', ()=>{
-  document.body.classList.add('typing');           // pause re-scaling
-  setTimeout(()=> typed.scrollIntoView({block:'center'}), 50);
-});
-typed.addEventListener('blur', ()=>{
-  document.body.classList.remove('typing');        // resume re-scaling
-  window.gsuFit?.refresh();
-});
-
 typed.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){ e.preventDefault(); submitWord(); return; }
   if (state?.activeTile){
@@ -429,7 +360,7 @@ typed.addEventListener('keydown', (e)=>{
   }
 });
 
-/* Keep input focused while running (handy on desktop too) */
+/* Keep input handy while running (desktop convenience) */
 window.addEventListener('keydown', ()=>{
   if(state?.running && document.activeElement !== typed){
     typed.focus({preventScroll:true});
