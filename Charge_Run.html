@@ -4,60 +4,105 @@
 <meta charset="UTF-8" />
 <title>GSU Charge Run</title>
 <link rel="icon" href="GSU_LOGO.png" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   :root{
-    /* This is auto-updated by JS to fit your screen */
+    /* JS keeps this updated to fit the screen */
     --cell: 36px;
 
-    --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
+    --gsu-red:#e60023; 
+    --bg:#000; 
+    --fg:#fff; 
+    --muted:#c7c7c7;
+
+    /* iOS safe areas */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
   }
 
-  /* Header — centered perfectly */
+  *{box-sizing:border-box}
+  html, body {height:100%}
+  body{
+    margin:0; 
+    font-family:'Orbitron',sans-serif; 
+    background:var(--bg); 
+    color:var(--fg);
+    min-height:100svh; /* stable viewport unit (iOS friendly) */
+    padding:calc(8px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left));
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    gap:12px;
+  }
+
+  /* Header */
   header{
-    width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    width:100%; 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    justify-content:center; 
+    gap:8px;
   }
   .logo{
-    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    justify-content:center; 
+    text-align:center;
   }
   .logo img{
-    width:clamp(88px, 10vw, 120px);
-    height:auto; display:block; margin:0 auto;
+    width:clamp(80px, 12vw, 120px);
+    height:auto; 
+    display:block; 
+    margin:0 auto;
   }
-  .logo .text{letter-spacing:2px; opacity:.9}
+  .logo .text{letter-spacing:2px; opacity:.9; font-size:clamp(.8rem, 2.6vw, 1rem)}
 
   nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-  nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
+  nav a{
+    color:#fff; text-decoration:none; background:var(--gsu-red); 
+    padding:.55rem .9rem; border-radius:10px; font-weight:700;
+  }
 
-  /* Game frame */
+  /* Main frame */
   .frame{
-    width:min(1040px, 96vw);
-    border:3px solid var(--gsu-red); border-radius:16px; padding:14px;
+    width:min(980px, 100%);
+    border:2px solid var(--gsu-red); border-radius:16px; padding:12px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
   }
   .frame.shake{animation:shake .25s ease}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
 
-  h1{margin:6px 0 0 6px}
-  h2.sub{margin:4px 0 10px 6px; color:var(--gsu-red); font-size:1rem; opacity:.9}
+  h1{margin:6px 0 0 6px; font-size:clamp(1.2rem, 4vw, 2rem)}
+  h2.sub{
+    margin:4px 0 10px 6px; color:var(--gsu-red); 
+    font-size:clamp(.85rem, 2.8vw, 1.05rem); opacity:.9
+  }
 
   /* HUD */
   .hud{
     display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:10px;
-    font-size:clamp(.8rem,2vw,1rem);
+    font-size:clamp(.78rem, 2.6vw, 1rem);
   }
-  .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
+  .pill{
+    background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:.55rem .6rem; text-align:center;
+    min-height:40px; display:flex; align-items:center; justify-content:center;
+  }
   .pill strong{color:var(--gsu-red)}
 
   /* Board */
-  #boardWrap{position:relative; display:flex; justify-content:center}
+  #boardWrap{
+    position:relative; 
+    display:flex; 
+    justify-content:center;
+    /* reserve some room on very short screens */
+    min-height: 0;
+  }
   #gameCanvas{
     display:grid;
     grid-template-columns: repeat(20, var(--cell));
@@ -68,7 +113,9 @@
       linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
     background-size: var(--cell) var(--cell);
     box-shadow:0 0 20px #e60023aa inset;
+    margin: 0 auto;
   }
+
   /* Glow when Surge is active */
   #gameCanvas.power{
     animation:powerGlow 1s ease-in-out infinite alternate;
@@ -85,14 +132,15 @@
     display:flex; align-items:center; justify-content:center; font-size:calc(var(--cell) * .7);
   }
 
-  /* Player controller — made BIGGER and easy to see */
+  /* Player controller */
   .controller{
-    background-image:url('GSU_LOGO.png'); z-index:3;
-    transform:scale(1.55);   /* bigger than a cell, but centered */
+    background-image:url('GSU_LOGO.png'); background-size:contain; background-repeat:no-repeat;
+    z-index:3;
+    transform:scale(1.52);
     filter:drop-shadow(0 0 8px rgba(230,0,35,.7));
     animation:idlePulse 1.4s ease-in-out infinite;
   }
-  @keyframes idlePulse{0%,100%{transform:scale(1.52)}50%{transform:scale(1.62)}}
+  @keyframes idlePulse{0%,100%{transform:scale(1.50)}50%{transform:scale(1.62)}}
 
   .battery::after{content:'🔋'}
   .hazard::after{content:'🔥'}
@@ -112,22 +160,28 @@
   }
   @keyframes floatUp{from{transform:translateY(0); opacity:1}to{transform:translateY(-16px); opacity:0}}
 
-  /* Controls & Buttons */
+  /* Buttons / Controls */
   .controls{margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:8px}
-  .dpad{display:grid; grid-template-columns:repeat(3,64px); gap:8px}
+  .dpad{
+    display:grid; 
+    grid-template-columns:repeat(3,clamp(48px, 15vw, 64px)); 
+    gap:8px
+  }
   .key{
-    width:64px; height:64px; border-radius:12px; background:#121212; border:1px solid #333; display:flex;
-    align-items:center; justify-content:center; font-size:1.4rem; cursor:pointer; user-select:none;
+    width:clamp(48px, 15vw, 64px); 
+    height:clamp(48px, 15vw, 64px); 
+    border-radius:12px; background:#121212; border:1px solid #333; display:flex;
+    align-items:center; justify-content:center; font-size:clamp(1.1rem, 6vw, 1.4rem); cursor:pointer; user-select:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
   }
   .key:active{filter:brightness(1.2)}
   .btn{
-    border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
-    box-shadow:0 0 10px #e60023aa; font-weight:700;
+    border:none; background:var(--gsu-red); color:#fff; padding:.7rem 1rem; border-radius:10px; cursor:pointer;
+    box-shadow:0 0 10px #e60023aa; font-weight:700; font-size:clamp(.9rem, 3.2vw, 1rem);
   }
   .btn:disabled{opacity:.6; cursor:not-allowed}
 
-  /* Overlay screens */
+  /* Overlays */
   .overlay{
     position:absolute; inset:0; display:none; align-items:center; justify-content:center; backdrop-filter:blur(2px);
   }
@@ -142,7 +196,10 @@
   footer{opacity:.7; font-size:.85rem; text-align:center; margin-top:10px}
 
   /* Responsive tweaks */
-  @media (max-width:720px){
+  @media (max-width:900px){
+    .hud{grid-template-columns:repeat(4,1fr)}
+  }
+  @media (max-width:640px){
     .hud{grid-template-columns:repeat(3,1fr)}
   }
 </style>
@@ -153,9 +210,7 @@
       <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="text">GAMESYNC UNION</div>
     </div>
-    <nav>
-      <a href="index.html">Home</a>
-    </nav>
+    <nav><a href="index.html">Home</a></nav>
   </header>
 
   <section class="frame" id="frame">
@@ -195,15 +250,15 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap">
       <button class="btn" id="startGameBtn">▶ Start</button>
       <button class="btn" id="pauseBtn" disabled>⏸ Pause</button>
       <button class="btn" id="fitBtn">🔍 Fit to Screen</button>
     </div>
 
     <div class="controls">
-      <div style="color:var(--muted)">Desktop: Arrow Keys • Mobile: tap the D-Pad</div>
-      <div class="dpad">
+      <div style="color:var(--muted); font-size:clamp(.78rem, 2.6vw, .95rem)">Desktop: Arrow Keys • Mobile: tap the D-Pad</div>
+      <div class="dpad" aria-label="Directional pad">
         <div></div><div class="key" data-dir="ArrowUp">⬆️</div><div></div>
         <div class="key" data-dir="ArrowLeft">⬅️</div><div class="key" data-dir="ArrowDown">⬇️</div><div class="key" data-dir="ArrowRight">➡️</div>
       </div>
@@ -248,22 +303,48 @@ let surgeActive = false;
 let paused = false;
 let totalCollected = 0;
 
-/* ===== Fit-to-screen logic (ZOOM OUT smartly) ===== */
+/* ===== Fit-to-screen logic (iPhone-safe) =====
+   Chooses the largest cell size that allows:
+   - full 20x20 grid
+   - HUD + controls + margins
+   to fit in the *visual* viewport without scrolling. */
+function getViewportHeight(){
+  // Use VisualViewport when available (iOS Safari with dynamic bars)
+  return (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+}
 function fitBoard(auto=false){
   const wrap = document.getElementById('boardWrap');
-  const usableW = wrap.clientWidth - 10;       // padding
-  const usableH = Math.max(260, window.innerHeight - wrap.getBoundingClientRect().top - 140);
+
+  // Width limit from frame padding
+  const usableW = wrap.clientWidth - 8;
+
+  // Height: visual viewport minus distance from top of board to bottom, leaving room for controls/footer
+  const boardTop = wrap.getBoundingClientRect().top;
+  const vvh = getViewportHeight();
+
+  // Reserve some space below for buttons + dpad (~180-220 on phones), but scale with viewport
+  const reserveBelow = Math.max(150, Math.min(260, vvh * 0.28));
+  const usableH = Math.max(220, vvh - boardTop - reserveBelow);
+
+  // Determine cell size that fits both width and height
   const byW = Math.floor(usableW / cols);
   const byH = Math.floor(usableH / rows);
-  const cell = Math.max(24, Math.min(42, Math.min(byW, byH)));
+
+  // Clamp so it doesn't get too tiny or too huge
+  const cell = Math.max(18, Math.min(44, Math.min(byW, byH)));
+
   document.documentElement.style.setProperty('--cell', cell + 'px');
-  if (auto) return;
-  // little nudge effect
-  canvas.style.transition = 'transform .15s ease';
-  canvas.style.transform = 'scale(0.995)';
-  setTimeout(()=>{ canvas.style.transform = 'scale(1)'; }, 160);
+
+  if (!auto){
+    canvas.style.transition = 'transform .12s ease';
+    canvas.style.transform = 'scale(0.995)';
+    setTimeout(()=>{ canvas.style.transform = 'scale(1)' }, 130);
+  }
 }
+// Listen for all viewport changes (keyboard up, bars collapsing, rotation)
 window.addEventListener('resize', ()=>fitBoard(true));
+window.visualViewport?.addEventListener('resize', ()=>fitBoard(true));
+window.addEventListener('orientationchange', ()=>fitBoard(true));
 fitBoard(true);
 
 /* ===== Grid helpers ===== */
@@ -287,28 +368,28 @@ function render(){
   // controller
   const c = document.createElement("div");
   c.classList.add("controller");
-  cells[getIndex(controllerPos.x, controllerPos.y)].appendChild(c);
+  cells[getIndex(controllerPos.x, controllerPos.y)]?.appendChild(c);
 
   // items
   batteryPositions.forEach(pos=>{
     const el = document.createElement("div");
     el.classList.add("battery");
-    cells[getIndex(pos.x, pos.y)].appendChild(el);
+    cells[getIndex(pos.x, pos.y)]?.appendChild(el);
   });
   firePositions.forEach(pos=>{
     const el = document.createElement("div");
     el.classList.add("hazard");
-    cells[getIndex(pos.x, pos.y)].appendChild(el);
+    cells[getIndex(pos.x, pos.y)]?.appendChild(el);
   });
   trappedFires.forEach(pos=>{
     const el = document.createElement("div");
     el.classList.add("trapped-fire");
-    cells[getIndex(pos.x, pos.y)].appendChild(el);
+    cells[getIndex(pos.x, pos.y)]?.appendChild(el);
   });
   reverseSurgeTiles.forEach(pos=>{
     const el = document.createElement("div");
     el.classList.add("reverse-surge");
-    cells[getIndex(pos.x, pos.y)].appendChild(el);
+    cells[getIndex(pos.x, pos.y)]?.appendChild(el);
   });
 
   goalText.textContent = `${collectedBatteries} / ${10 + level*2}`;
@@ -503,7 +584,7 @@ function startGame(){
   controllerPos = {x:10, y:10};
   timerDisplay.textContent = '30';
   startBtn.disabled = true; pauseBtn.disabled = false; paused = false;
-  fitBoard(true);           // make sure everything fits nicely at start
+  fitBoard(true);           // ensure perfect fit at start
   createGrid();
   spawnLevel();
   startTimer();
