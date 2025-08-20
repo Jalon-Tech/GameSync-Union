@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   :root{
-    /* JS updates this so the whole game fits with no scroll */
+    /* JS updates this so the whole board fits */
     --cell: 36px;
 
     --gsu-red:#e60023; 
@@ -24,17 +24,25 @@
   }
 
   *{box-sizing:border-box}
-  html, body {height:100%; overflow:hidden;} /* lock page from scrolling */
+  html, body {height:100%; overflow:hidden;} /* no page scrolling */
   body{
     margin:0; 
     font-family:'Orbitron',sans-serif; 
     background:var(--bg); 
     color:var(--fg);
-    min-height:100svh; /* stable viewport unit (iOS friendly) */
+    min-height:100svh; /* stable viewport */
     padding:calc(8px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left));
     display:flex; 
-    flex-direction:column; 
-    align-items:center; 
+    justify-content:flex-start;
+  }
+
+  /* ===== Global scale wrapper (we scale this if needed) ===== */
+  #game-wrapper{
+    transform-origin: top center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
     gap:12px;
   }
 
@@ -74,7 +82,7 @@
     border:2px solid var(--gsu-red); border-radius:16px; padding:12px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
-    max-height:calc(100svh - var(--safe-top) - var(--safe-bottom) - 32px); /* never taller than screen */
+    max-width:980px;
   }
   .frame.shake{animation:shake .25s ease}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
@@ -196,7 +204,7 @@
 
   footer{opacity:.7; font-size:.85rem; text-align:center; margin-top:10px}
 
-  /* Responsive tweaks */
+  /* Responsive HUD wrap */
   @media (max-width:900px){
     .hud{grid-template-columns:repeat(4,1fr)}
   }
@@ -206,67 +214,69 @@
 </style>
 </head>
 <body>
-  <header id="hdr">
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
-      <div class="text">GAMESYNC UNION</div>
-    </div>
-    <nav><a href="index.html">Home</a></nav>
-  </header>
+  <div id="game-wrapper">
+    <header id="hdr">
+      <div class="logo">
+        <img src="GSU_LOGO.png" alt="GSU Logo" />
+        <div class="text">GAMESYNC UNION</div>
+      </div>
+      <nav><a href="index.html">Home</a></nav>
+    </header>
 
-  <section class="frame" id="frame">
-    <h1 id="title">GSU CHARGE RUN</h1>
-    <h2 class="sub" id="subtitle">Collect batteries, dodge fires, and trigger Reverse Surge to freeze hazards.</h2>
+    <section class="frame" id="frame">
+      <h1 id="title">GSU CHARGE RUN</h1>
+      <h2 class="sub" id="subtitle">Collect batteries, dodge fires, and trigger Reverse Surge to freeze hazards.</h2>
 
-    <div class="hud" id="hud">
-      <div class="pill">🔋 Goal <strong id="goalText">0 / 10</strong></div>
-      <div class="pill">🔥 Fires <strong id="firesText">20</strong></div>
-      <div class="pill">⏱ Time <strong id="timer">30</strong>s</div>
-      <div class="pill">⚡ Surge <strong id="powerBar">0</strong></div>
-      <div class="pill">❤️ Lives <strong id="lives">3</strong></div>
-      <div class="pill">🔄 Reverse <strong id="reverseHint">2 tiles</strong></div>
-      <div class="pill">⬆ Level <strong id="surgeLevel">0</strong></div>
-    </div>
+      <div class="hud" id="hud">
+        <div class="pill">🔋 Goal <strong id="goalText">0 / 10</strong></div>
+        <div class="pill">🔥 Fires <strong id="firesText">20</strong></div>
+        <div class="pill">⏱ Time <strong id="timer">30</strong>s</div>
+        <div class="pill">⚡ Surge <strong id="powerBar">0</strong></div>
+        <div class="pill">❤️ Lives <strong id="lives">3</strong></div>
+        <div class="pill">🔄 Reverse <strong id="reverseHint">2 tiles</strong></div>
+        <div class="pill">⬆ Level <strong id="surgeLevel">0</strong></div>
+      </div>
 
-    <div id="boardWrap">
-      <div id="gameCanvas" aria-live="polite"></div>
+      <div id="boardWrap">
+        <div id="gameCanvas" aria-live="polite"></div>
 
-      <!-- Overlays -->
-      <div class="overlay" id="gameOver">
-        <div class="panel">
-          <h2>Game Over</h2>
-          <div id="finalStats" style="opacity:.85; margin-bottom:8px;"></div>
-          <div class="row">
-            <button class="btn" id="retryBtn">🔁 Play Again</button>
-            <button class="btn" onclick="location.href='index.html'">🏠 Home</button>
+        <!-- Overlays -->
+        <div class="overlay" id="gameOver">
+          <div class="panel">
+            <h2>Game Over</h2>
+            <div id="finalStats" style="opacity:.85; margin-bottom:8px;"></div>
+            <div class="row">
+              <button class="btn" id="retryBtn">🔁 Play Again</button>
+              <button class="btn" onclick="location.href='index.html'">🏠 Home</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="overlay" id="levelUp">
+          <div class="panel">
+            <h2>Level Up!</h2>
+            <div style="opacity:.85">Grid surges with power. Hazards increase.</div>
           </div>
         </div>
       </div>
 
-      <div class="overlay" id="levelUp">
-        <div class="panel">
-          <h2>Level Up!</h2>
-          <div style="opacity:.85">Grid surges with power. Hazards increase.</div>
+      <div id="btnRow" style="display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap">
+        <button class="btn" id="startGameBtn">▶ Start</button>
+        <button class="btn" id="pauseBtn" disabled>⏸ Pause</button>
+        <button class="btn" id="fitBtn">🔍 Fit to Screen</button>
+      </div>
+
+      <div class="controls" id="controls">
+        <div style="color:var(--muted); font-size:clamp(.78rem, 2.6vw, .95rem)">Desktop: Arrow Keys • Mobile: tap the D-Pad</div>
+        <div class="dpad" aria-label="Directional pad">
+          <div></div><div class="key" data-dir="ArrowUp">⬆️</div><div></div>
+          <div class="key" data-dir="ArrowLeft">⬅️</div><div class="key" data-dir="ArrowDown">⬇️</div><div class="key" data-dir="ArrowRight">➡️</div>
         </div>
       </div>
-    </div>
 
-    <div id="btnRow" style="display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap">
-      <button class="btn" id="startGameBtn">▶ Start</button>
-      <button class="btn" id="pauseBtn" disabled>⏸ Pause</button>
-      <button class="btn" id="fitBtn">🔍 Fit to Screen</button>
-    </div>
-
-    <div class="controls" id="controls">
-      <div style="color:var(--muted); font-size:clamp(.78rem, 2.6vw, .95rem)">Desktop: Arrow Keys • Mobile: tap the D-Pad</div>
-      <div class="dpad" aria-label="Directional pad">
-        <div></div><div class="key" data-dir="ArrowUp">⬆️</div><div></div>
-        <div class="key" data-dir="ArrowLeft">⬅️</div><div class="key" data-dir="ArrowDown">⬇️</div><div class="key" data-dir="ArrowRight">➡️</div>
-      </div>
-    </div>
-
-    <footer id="ftr">Built for GameSync Union — GSU Charge Run™</footer>
-  </section>
+      <footer id="ftr">Built for GameSync Union — GSU Charge Run™</footer>
+    </section>
+  </div>
 
 <script>
 /* ===== DOM & State ===== */
@@ -289,6 +299,7 @@ const firesText = document.getElementById("firesText");
 const reverseHint = document.getElementById("reverseHint");
 
 /* Elements we measure to keep everything on 1 screen */
+const wrapper = document.getElementById('game-wrapper');
 const hdr = document.getElementById('hdr');
 const titleEl = document.getElementById('title');
 const subtitleEl = document.getElementById('subtitle');
@@ -313,33 +324,29 @@ let surgeActive = false;
 let paused = false;
 let totalCollected = 0;
 
-/* ===== Fit-to-screen logic (iPhone-safe, no-scroll) ===== */
-function vh(){
-  return (window.visualViewport ? window.visualViewport.height : window.innerHeight);
-}
-function safeMeasure(el){
-  return el ? Math.ceil(el.getBoundingClientRect().height) : 0;
-}
+/* ===== Helpers ===== */
+const vvp = () => window.visualViewport || { width: window.innerWidth, height: window.innerHeight };
+function safeH(el){ return el ? Math.ceil(el.getBoundingClientRect().height) : 0; }
+function safeW(el){ return el ? Math.ceil(el.getBoundingClientRect().width)  : 0; }
+
+/* ===== Fit board (choose cell size that fits box left for board) ===== */
 function fitBoard(auto=false){
-  // total vertical space we must reserve for UI above/below the board
-  const reserved =
-    safeMeasure(hdr) +
-    safeMeasure(titleEl) +
-    safeMeasure(subtitleEl) +
-    safeMeasure(hudEl) +
-    safeMeasure(btnRow) +
-    safeMeasure(controls) +
-    safeMeasure(ftr) +
-    28; // small breathing room
+  const reservedH =
+    safeH(hdr) +
+    safeH(titleEl) +
+    safeH(subtitleEl) +
+    safeH(hudEl) +
+    safeH(btnRow) +
+    safeH(controls) +
+    safeH(ftr) +
+    28; // breathing room
 
-  const availableH = Math.max(220, vh() - reserved);
-  const availableW = Math.max(220, frame.clientWidth - 16); // inside frame
+  const availH = Math.max(220, vvp().height - reservedH);
+  const availW = Math.max(220, frame.clientWidth - 16);
 
-  const byW = Math.floor(availableW / cols);
-  const byH = Math.floor(availableH / rows);
+  const byW = Math.floor(availW / cols);
+  const byH = Math.floor(availH / rows);
 
-  // Choose the largest cell that fits both width and height.
-  // Clamp to keep it readable but still fit on tiny screens.
   const cell = Math.max(14, Math.min(44, Math.min(byW, byH)));
   document.documentElement.style.setProperty('--cell', cell + 'px');
 
@@ -350,11 +357,40 @@ function fitBoard(auto=false){
   }
 }
 
-// React to every viewport change (iOS bars, rotation, split view)
-window.addEventListener('resize', ()=>fitBoard(true));
-window.visualViewport?.addEventListener('resize', ()=>fitBoard(true));
-window.addEventListener('orientationchange', ()=>fitBoard(true));
-fitBoard(true);
+/* ===== Global scale: shrink whole game if still taller/wider than viewport ===== */
+function scaleGame(){
+  // Reset scale first to measure natural size after cell-fit
+  wrapper.style.transform = 'scale(1)';
+  // use scroll sizes to include everything
+  const contentH = wrapper.scrollHeight;
+  const contentW = wrapper.scrollWidth;
+  const vw = vvp().width;
+  const vh = vvp().height;
+
+  // Leave tiny padding for safe-area + rounding
+  const scaleH = (vh - 2) / contentH;
+  const scaleW = (vw - 2) / contentW;
+  let scale = Math.min(scaleH, scaleW);
+
+  // Don't upscale on desktop
+  if (scale > 1) scale = 1;
+  // Avoid going microscopic (still allow strong zoom-out if needed)
+  scale = Math.max(0.6, scale);
+
+  wrapper.style.transform = `scale(${scale})`;
+}
+
+/* Debounce helper */
+let rafId=null;
+function requestFit(){
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(()=>{ fitBoard(true); scaleGame(); });
+}
+
+/* React to every viewport change (iOS bars, rotation, split view) */
+window.addEventListener('resize', requestFit);
+window.visualViewport?.addEventListener('resize', requestFit);
+window.addEventListener('orientationchange', requestFit);
 
 /* ===== Grid helpers ===== */
 function createGrid(){
@@ -409,6 +445,7 @@ function render(){
   reverseHint.textContent = `${reverseSurgeTiles.length} tiles`;
 }
 
+/* Random helpers */
 function getRandomUniquePositions(count, exclude = []){
   const positions = [];
   const excludeSet = new Set(exclude.map(e=>`${e.x},${e.y}`));
@@ -593,7 +630,9 @@ function startGame(){
   controllerPos = {x:10, y:10};
   timerDisplay.textContent = '30';
   startBtn.disabled = true; pauseBtn.disabled = false; paused = false;
-  fitBoard(true);           // ensure perfect fit at start
+
+  fitBoard(true);   // pick best --cell
+  scaleGame();      // then ensure whole UI fits
   createGrid();
   spawnLevel();
   startTimer();
@@ -627,11 +666,18 @@ document.querySelectorAll('.key[data-dir]').forEach(k=>{
 startBtn.addEventListener("click", startGame);
 pauseBtn.addEventListener("click", pauseGame);
 document.getElementById('retryBtn')?.addEventListener('click', startGame);
-fitBtn.addEventListener('click', ()=>fitBoard(false));
+fitBtn.addEventListener('click', ()=>{ fitBoard(false); scaleGame(); });
 
-/* Init */
+/* ===== Init ===== */
+fitBoard(true);
+scaleGame();
 createGrid();
 render();
+
+/* Refit on viewport changes */
+window.addEventListener('resize', ()=>{ requestFit(); });
+window.visualViewport?.addEventListener('resize', ()=>{ requestFit(); });
+window.addEventListener('orientationchange', ()=>{ requestFit(); });
 </script>
 </body>
 </html>
