@@ -1,1 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>GSU Cipherstorm</title>
+<link rel="icon" href="GSU_LOGO.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
+  }
+  header{display:flex; flex-direction:column; align-items:center; gap:8px}
+  nav{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+  nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
+  .logo{display:flex; flex-direction:column; align-items:center}
+  .logo img{max-width:96px}
+  .logo .text{letter-spacing:2px; opacity:.9}
+  .frame{
+    width:min(900px,95vw);
+    border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
+    box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
+    background:linear-gradient(#0a0a0a,#000);
+  }
+  .hud{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem);
+  }
+  .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
+  .pill strong{color:var(--gsu-red)}
+  #board{
+    position:relative; height:min(520px,62vh); overflow:hidden; border:1px solid #222; border-radius:12px;
+    background-image:linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
+                     linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
+    background-size:40px 40px; isolation:isolate;
+  }
+  .tile{
+    position:absolute; left:50%; transform:translateX(-50%);
+    padding:10px 14px; background:#0b0b0b; border:1px solid #333; border-radius:12px;
+    box-shadow:0 0 14px rgba(230,0,35,.35);
+    font-size:clamp(1rem,3.4vw,1.35rem);
+  }
+  .tile .word{color:#f3f3f3}
+  .tile .hint{color:var(--muted); font-size:.8em}
+  .ok{outline:2px solid #21d07a}
+  .bad{outline:2px solid #d02121}
+  .controls{
+    margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
+  }
+  #typed{
+    width:min(520px,90%); font-family:inherit; font-size:1.05rem; color:#fff; background:#0a0a0a;
+    border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
+    box-shadow:0 0 8px rgba(255,255,255,.05);
+  }
+  #startBtn, .btn{
+    border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
+    box-shadow:0 0 10px #e60023aa; font-weight:700;
+  }
+  #startBtn:hover,.btn:hover{filter:brightness(1.1)}
+  .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+  #leader{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; font-size:.9rem;
+  }
+  .ghost{opacity:.45}
+  .subtle{color:var(--muted)}
+  footer{opacity:.7; font-size:.85rem}
+  @media (max-width:640px){
+    .hud{grid-template-columns:repeat(2,1fr)}
+    #leader{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo">
+      <div class="text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="game-guides.html">GSU Gameplay Center</a>
+    </nav>
+  </header>
+
+  <section class="frame">
+    <h1 style="margin:6px 0 10px 6px;">GSU CIPHERSTORM</h1>
+    <div class="hud">
+      <div class="pill">⏱ <strong id="time">60</strong>s</div>
+      <div class="pill">🔢 Wave <strong id="wave">1</strong></div>
+      <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
+      <div class="pill">⭐ Score <strong id="score">0</strong></div>
+      <div class="pill">❤️ <strong id="lives">3</strong></div>
+    </div>
+
+    <div id="board" aria-live="polite"></div>
+
+    <div class="controls">
+      <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
+      <button id="startBtn">▶ Start Run</button>
+      <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
+    </div>
+
+    <div class="row subtle">
+      <span>Tip: press Enter to submit. Power Surge slows tiles for 5s.</span>
+    </div>
+
+    <div style="margin-top:14px;">
+      <h3 style="margin:0 0 8px 0;">Local Leaderboard</h3>
+      <div id="leader" class="subtle"></div>
+    </div>
+  </section>
+
+  <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
+
+<script>
+/* ------------------------ Data & Utilities ------------------------ */
+const WORD_BANK = {
+  games: ["combo","parry","meter","ultra","rank","patch","nerf","buff","tech","tilt","frame","cancel","guard","mixup","grab","chip"],
+  tech:  ["array","token","bytes","stack","queue","debug","build","deploy","script","async","fetch","frame","sprite","input","solid"],
+  heroes:["spider","venom","logan","miles","storm","blade","loki","thor","rogue","cable","groot","nova","wasp","widow","hulk"]
+};
+const THEMES = Object.keys(WORD_BANK);
+
+function pickTheme(seed){ return THEMES[Math.floor(Math.random()*THEMES.length)] }
+function scrambleWord(w){
+  if (w.length < 3) return w.split("").reverse().join("");
+  let arr = w.split("");
+  do {
+    for (let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  } while (arr.join("") === w);
+  // fairness: sometimes keep first or last
+  if (Math.random() < .35){ arr[0] = w[0] }
+  if (Math.random() < .25){ arr[arr.length-1] = w[w.length-1] }
+  return arr.join("");
+}
+function sample(list){ return list[Math.floor(Math.random()*list.length)] }
+
+/* ------------------------ State ------------------------ */
+const board = document.getElementById('board');
+const timeEl = document.getElementById('time');
+const waveEl = document.getElementById('wave');
+const scoreEl = document.getElementById('score');
+const streakEl= document.getElementById('streak');
+const livesEl = document.getElementById('lives');
+const typed  = document.getElementById('typed');
+const startBtn = document.getElementById('startBtn');
+const slowmoBtn= document.getElementById('slowmoBtn');
+const leaderEl = document.getElementById('leader');
+
+let state = null;
+let tickId = null, timerId = null, slowId = null;
+let fallSpeed = 900; // ms between steps
+let theme = "games";
+
+function initialState(){
+  return {
+    time: 60, lives:3, score:0, streak:0, wave:1, running:false,
+    activeTile:null, tiles:[], powerReady:false, slow:false, seed:crypto.randomUUID()
+  }
+}
+
+/* ------------------------ Leaderboard (localStorage) ------------------------ */
+const LB_KEY = "cipherstorm_lb_v1";
+function loadLB(){ try{ return JSON.parse(localStorage.getItem(LB_KEY))||[] }catch{return []} }
+function saveLB(arr){ localStorage.setItem(LB_KEY, JSON.stringify(arr.slice(0,10))) }
+function pushLB(entry){
+  const lb = loadLB();
+  lb.push(entry);
+  lb.sort((a,b)=> b.score-a.score || b.streak-a.streak);
+  saveLB(lb);
+  renderLB();
+}
+function renderLB(){
+  const lb = loadLB();
+  leaderEl.innerHTML = lb.length? lb.map(e=>`
+    <div class="pill">⭐ ${e.score}</div>
+    <div class="pill">🔥 ${e.streak}</div>
+    <div class="pill">🔢 W${e.wave}</div>
+    <div class="pill">⏱ ${e.time}s</div>
+    <div class="pill subtle">${new Date(e.date).toLocaleDateString()}</div>
+  `).join("") : `<div class="pill ghost" style="grid-column:1/-1">No scores yet — be the first to Full Sync.</div>`;
+}
+renderLB();
+
+/* ------------------------ Game Core ------------------------ */
+function spawnTile(){
+  const lengthByWave = Math.min(3 + Math.floor(state.wave/2) + Math.floor(Math.random()*3), 8);
+  const word = sample(WORD_BANK[theme].filter(w=>w.length>=Math.min(lengthByWave,8)));
+  const scram = scrambleWord(word);
+  const tile = document.createElement('div');
+  tile.className='tile';
+  tile.style.top='-42px';
+  tile.style.left = `${10 + Math.random()*80}%`;
+  tile.innerHTML = `<div class="word">${scram}</div><div class="hint subtle">(${word.length} letters)</div>`;
+  board.appendChild(tile);
+  state.activeTile = {el:tile, y:-42, word, scram, speed:fallSpeed};
+}
+
+function clearTile(status){
+  if(!state.activeTile) return;
+  state.activeTile.el.classList.add(status? 'ok':'bad');
+  setTimeout(()=>{ state.activeTile?.el.remove(); }, 180);
+  state.activeTile = null;
+}
+
+function setHUD(){
+  timeEl.textContent = state.time;
+  livesEl.textContent = state.lives;
+  scoreEl.textContent = state.score;
+  streakEl.textContent= state.streak;
+  waveEl.textContent  = state.wave;
+  slowmoBtn.disabled  = !state.powerReady || state.slow;
+}
+
+function nextWave(){
+  state.wave++;
+  fallSpeed = Math.max(350, 900 - state.wave*40);
+  // power every 4 clears
+  if (state.wave % 4 === 0) state.powerReady = true;
+}
+
+function startRun(){
+  if (state?.running) return;
+  board.innerHTML = "";
+  typed.value = "";
+  theme = pickTheme();
+  state = initialState();
+  state.running = true;
+  fallSpeed = 900;
+  setHUD();
+  spawnTile();
+
+  timerId = setInterval(()=>{
+    if(!state.running) return;
+    state.time--;
+    if(state.time<=0){ state.lives=0; endRun(); }
+    setHUD();
+  },1000);
+
+  tickId = setInterval(()=>{
+    if(!state.running || !state.activeTile) return;
+    const step = (state.slow? 0.6:1) * 8; // px per tick
+    state.activeTile.y += step;
+    state.activeTile.el.style.top = `${state.activeTile.y}px`;
+    if (state.activeTile.y > board.clientHeight - 56){
+      // missed
+      clearTile(false);
+      state.streak = 0;
+      state.lives--;
+      if(state.lives<=0){ endRun(); return; }
+      spawnTile();
+      setHUD();
+    }
+  }, 40);
+}
+
+function endRun(){
+  state.running=false;
+  clearInterval(timerId); clearInterval(tickId); clearInterval(slowId);
+  pushLB({score:state.score, streak:state.streak, wave:state.wave, time:state.time, date:Date.now()});
+  // Flash frame
+  document.querySelector('.frame').style.boxShadow="0 0 30px #e60023, inset 0 0 18px #e6002344";
+  setTimeout(()=>document.querySelector('.frame').style.boxShadow="0 0 18px #e60023cc, inset 0 0 18px #e6002326",300);
+  startBtn.textContent="🔁 Run Again";
+}
+
+function submitWord(){
+  if(!state.running || !state.activeTile) return;
+  const guess = typed.value.trim().toLowerCase();
+  const target = state.activeTile.word.toLowerCase();
+  if (!guess) return;
+  if (guess === target){
+    // score
+    const base = 100 * target.length;
+    const speedBonus = Math.min(1.5, Math.max(1.0, (900/fallSpeed)));
+    state.streak = Math.min(999, state.streak + 1);
+    const streakBonus = 1 + Math.min(0.5, state.streak*0.1);
+    state.score += Math.floor(base * speedBonus * streakBonus);
+    clearTile(true);
+    typed.value="";
+    nextWave();
+    spawnTile();
+    setHUD();
+  } else {
+    // one penalty per wrong submit: break streak but keep life
+    state.streak = 0;
+    setHUD();
+    // brief feedback
+    state.activeTile.el.classList.add('bad');
+    setTimeout(()=>state.activeTile?.el.classList.remove('bad'),160);
+  }
+}
+
+function useSlow(){
+  if(!state.powerReady || state.slow || !state.running) return;
+  state.powerReady=false; state.slow=true; setHUD();
+  slowId = setTimeout(()=>{ state.slow=false; setHUD(); }, 5000);
+}
+
+/* ------------------------ Events ------------------------ */
+startBtn.addEventListener('click', startRun);
+typed.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); submitWord(); }
+});
+slowmoBtn.addEventListener('click', useSlow);
+
+/* Accessibility: focus input on any keydown while running */
+window.addEventListener('keydown', ()=>{
+  if(state?.running) typed.focus();
+});
+</script>
+</body>
+</html>
 
