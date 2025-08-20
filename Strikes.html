@@ -32,15 +32,19 @@
 
   .panel{border:1px solid #2a2a2a; border-radius:12px; padding:12px; background:#0b0b0b; display:flex; flex-direction:column; gap:12px;}
 
-  /* FX Stage */
-  .stage{position:relative; height:180px; border:1px solid #333; border-radius:12px; background:#0f0f0f; overflow:hidden}
+  /* ---------- FX Stage ---------- */
+  .stage{
+    position:relative; height:180px; border:1px solid #333; border-radius:12px;
+    background:#0f0f0f; overflow:hidden;
+  }
   .fx{position:absolute; inset:0; pointer-events:none}
-  .target{position:absolute; right:18px; top:24px; font-size:52px; filter:drop-shadow(0 0 8px #fff)}
+  .target{position:absolute; font-size:52px; filter:drop-shadow(0 0 8px #fff)}
   .target.hit{filter:drop-shadow(0 0 14px #e60023)}
-  .logoFly{position:absolute; width:64px; left:-90px; top:120px; animation:fly .8s ease-out forwards}
-  @keyframes fly{from{left:-90px; top:120px; transform:rotate(-15deg)} to{left:calc(100% - 120px); top:26px; transform:rotate(10deg)}}
-  .boom{position:absolute; right:12px; top:20px; font-size:64px; opacity:0; animation:pop .45s ease-out forwards}
-  @keyframes pop{from{transform:scale(.5); opacity:.2} to{transform:scale(1.2); opacity:1}}
+  .controller{
+    position:absolute; width:64px; will-change:transform;
+    filter:drop-shadow(0 0 8px rgba(230,0,35,.6));
+  }
+  .boom{position:absolute; font-size:64px; opacity:0}
 
   .big-next{text-align:center; font-size:clamp(1.2rem,4.5vw,1.8rem); background:#0f0f0f; border:1px solid #333; border-radius:12px; padding:12px;}
   .cmd{background:#0f0f0f; border:1px dashed #444; border-radius:12px; padding:12px; min-height:80px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;}
@@ -87,7 +91,7 @@
     </div>
 
     <div class="panel">
-      <!-- FX Stage -->
+      <!-- Stage for FX -->
       <div class="stage" id="stage">
         <div class="fx" id="fx"></div>
       </div>
@@ -101,7 +105,7 @@
         <button class="btn" id="restart" disabled>🔁 Restart</button>
       </div>
 
-      <div class="hint">Arrows = directions • Letters = press the same letter (A/S/D/Q/E/F/J/K/L/Z/X/C)</div>
+      <div class="hint">Arrows = directions • Letters like A/S/D/Q/E/F/J/K/L/Z/X/C/W/R/U/I (press the same letter)</div>
 
       <!-- On-screen controls -->
       <div class="controls" aria-label="D-Pad">
@@ -115,9 +119,9 @@
   <footer>Built for GameSync Union — GSU Command Strike™</footer>
 
 <script>
-/* ---------------- Tokens & Pattern Gen (variety, no immediate repeats) ---------------- */
+/* ---------------- Tokens & Pattern (variety, no immediate repeats) ---------------- */
 const DIR = ["↑","↓","←","→"];
-const LETTER_TOKENS = ["A","S","D","Q","E","F","J","K","L","Z","X","C"];
+const LETTER_TOKENS = ["A","S","D","Q","E","F","J","K","L","Z","X","C","W","R","U","I"]; // expanded variety
 
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
 function genPattern(round){
@@ -180,6 +184,140 @@ function setHUD(){
   streakEl.textContent = game.streak;
 }
 
+/* ---------------- Strike helpers & variants ---------------- */
+let currentTarget = null;
+function rand(a,b){ return Math.random()*(b-a)+a }
+function clamp(v,min,max){ return Math.max(min, Math.min(max,v)) }
+
+function spawnTarget(){
+  fx.innerHTML = ""; // clear old fx
+  const rect = stage.getBoundingClientRect();
+  const pad = 24;
+  const x = rand(pad, rect.width - pad - 52);
+  const y = rand(pad, rect.height - pad - 52);
+  const t = document.createElement('div');
+  t.className = 'target';
+  t.style.transform = `translate(${x}px, ${y}px)`;
+  t.textContent = pick(['🎮','🕹️','👾','💿','🧩']);
+  fx.appendChild(t);
+  return {x,y,el:t};
+}
+
+function flyController(keyframes, onHit){
+  const logo = document.createElement('img');
+  logo.src = 'GSU_LOGO.png';
+  logo.alt = 'GSU';
+  logo.className = 'controller';
+  fx.appendChild(logo);
+
+  if (!keyframes[0]?.transform){
+    keyframes[0] = {transform:`translate(-90px, ${rand(80,140)}px) rotate(-15deg) scale(1)`};
+  }
+  const anim = logo.animate(keyframes, {duration: 900, easing: 'cubic-bezier(.2,.7,.2,1)', fill:'forwards'});
+
+  anim.onfinish = ()=>{
+    const t = currentTarget?.el;
+    if (t){ t.classList.add('hit'); }
+    const boom = document.createElement('div');
+    boom.className = 'boom';
+    boom.textContent = pick(['💥','✨','⚡']);
+    const bx = (currentTarget?.x ?? 120) + rand(-8,8);
+    const by = (currentTarget?.y ?? 24)  + rand(-8,8);
+    boom.style.transform = `translate(${bx}px, ${by}px) scale(.6)`;
+    fx.appendChild(boom);
+    boom.animate(
+      [{opacity:.1, transform:`translate(${bx}px, ${by}px) scale(.6)`},
+       {opacity:1,  transform:`translate(${bx}px, ${by}px) scale(1.25)`}],
+      {duration: 380, easing:'ease-out', fill:'forwards'}
+    );
+    wrap.classList.add('shake');
+    setTimeout(()=>wrap.classList.remove('shake'), 380);
+    onHit && onHit();
+
+    const rect = stage.getBoundingClientRect();
+    const parkX = pick([rand(-10,10), rand(rect.width-70, rect.width-40)]);
+    const parkY = rand(8, rect.height-70);
+    logo.animate(
+      [
+        {transform: getComputedStyle(logo).transform, opacity:1},
+        {transform:`translate(${parkX}px, ${parkY}px) scale(.85)`, opacity:.0}
+      ],
+      {duration: 520, easing:'ease-out', fill:'forwards'}
+    ).onfinish = ()=> { logo.remove(); boom.remove(); t && t.remove(); };
+  };
+}
+
+function variantArc(){
+  const sx = -90, sy = rand(80,140);
+  const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
+  const midx = (sx + tx)/2 + rand(-40,40);
+  const midy = Math.min(sy, ty) - rand(30,70);
+  return [
+    {transform:`translate(${sx}px, ${sy}px) rotate(-10deg) scale(1)`},
+    {transform:`translate(${midx}px, ${midy}px) rotate(5deg) scale(1.05)`},
+    {transform:`translate(${tx}px, ${ty}px) rotate(12deg) scale(1.1)`}
+  ];
+}
+function variantZigzag(){
+  const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
+  const sx = rand(-70, 20), sy = rand(40, 150);
+  const kf = [];
+  const steps = 4;
+  for (let i=0;i<=steps;i++){
+    const u = i/steps;
+    const x = sx + (tx - sx)*u + (i%2? 18:-18);
+    const y = sy + (ty - sy)*u + (i%2? -12:12);
+    kf.push({transform:`translate(${x}px, ${y}px) rotate(${i*8-12}deg) scale(${1+u*0.15})`});
+  }
+  return kf;
+}
+function variantSpinDrop(){
+  const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
+  const sx = rand(40, stage.clientWidth-80), sy = -100;
+  return [
+    {transform:`translate(${sx}px, ${sy}px) rotate(-360deg) scale(.9)`},
+    {transform:`translate(${sx}px, ${ty-30}px) rotate(-90deg) scale(1)`},
+    {transform:`translate(${tx}px, ${ty}px) rotate(0deg) scale(1.1)`}
+  ];
+}
+function variantBoomerang(){
+  const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
+  const sx = stage.clientWidth + 50, sy = rand(40, 150);
+  const overX = clamp(tx + rand(40,90), 0, stage.clientWidth-60);
+  return [
+    {transform:`translate(${sx}px, ${sy}px) rotate(15deg) scale(1)`},
+    {transform:`translate(${overX}px, ${ty-10}px) rotate(-10deg) scale(1.05)`},
+    {transform:`translate(${tx}px, ${ty}px) rotate(0deg) scale(1.1)`}
+  ];
+}
+function variantRainAndHit(){
+  for(let i=0;i<6;i++){
+    const mini = document.createElement('img');
+    mini.src = 'GSU_LOGO.png'; mini.alt='GSU'; mini.className='controller'; mini.style.width = '40px';
+    fx.appendChild(mini);
+    const sx = rand(0, stage.clientWidth-50);
+    const sy = -rand(30,140);
+    const ey = stage.clientHeight - rand(30,80);
+    mini.animate(
+      [{transform:`translate(${sx}px, ${sy}px)`, opacity:.9},
+       {transform:`translate(${sx+rand(-20,20)}px, ${ey}px)`, opacity:.2}],
+      {duration: rand(600,900), easing:'ease-in', fill:'forwards'}
+    ).onfinish=()=> mini.remove();
+  }
+  const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
+  const sx = -80, sy = rand(40, 150);
+  return [
+    {transform:`translate(${sx}px, ${sy}px) rotate(-5deg) scale(1)`},
+    {transform:`translate(${tx}px, ${ty}px) rotate(8deg) scale(1.08)`}
+  ];
+}
+function playStrikeVariant(){
+  const variants = [variantArc, variantZigzag, variantSpinDrop, variantBoomerang, variantRainAndHit];
+  const chosen = pick(variants);
+  flyController(chosen());
+}
+
+/* ---------------- Game flow ---------------- */
 function startRound(){
   game.active = true;
   game.tokens = genPattern(game.round);
@@ -187,21 +325,14 @@ function startRound(){
   game.start = performance.now(); game.end = 0;
   renderCmd(); setHUD();
   startBtn.disabled = true; nextBtn.disabled = true; restartBtn.disabled = false;
-  // Reset stage visual
-  fx.innerHTML = '';
-  // Spawn fresh target
-  const t = document.createElement('div');
-  t.className = 'target';
-  t.textContent = '🎮';
-  fx.appendChild(t);
+  currentTarget = spawnTarget(); // randomized target each round
 }
 
 function endRound(){
   game.active = false;
   game.end = performance.now();
   setHUD();
-  // Awesome strike FX
-  playStrike();
+  playStrikeVariant(); // randomized strike animation
   if (game.round >= game.maxRounds){
     startBtn.disabled = false; startBtn.textContent="🔁 New Drill";
     nextBtn.disabled = true;
@@ -212,7 +343,7 @@ function endRound(){
 
 function nextRound(){ game.round++; startRound(); }
 
-/* ---------------- Input Handling (letters fixed) ---------------- */
+/* ---------------- Input Handling ---------------- */
 function apply(sym){
   if (!game?.active) return;
   game.presses++;
@@ -232,9 +363,8 @@ function apply(sym){
   }
 }
 
-/* Capture arrows + ANY letter reliably (works across layouts) */
+/* Capture arrows + ANY letter reliably (no focus needed) */
 function onKey(e){
-  // prevent page scroll on arrows/space
   if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) e.preventDefault();
   if (!game) return;
 
@@ -243,12 +373,9 @@ function onKey(e){
   else if (e.key === "ArrowDown") sym = "↓";
   else if (e.key === "ArrowLeft") sym = "←";
   else if (e.key === "ArrowRight") sym = "→";
-  else if (/^[a-z]$/i.test(e.key)) sym = e.key.toUpperCase(); // letters!
+  else if (/^[a-z]$/i.test(e.key)) sym = e.key.toUpperCase(); // letters
 
-  if (sym){
-    // Only accept letters we actually use
-    if (DIR.includes(sym) || LETTER_TOKENS.includes(sym)) apply(sym);
-  }
+  if (sym && (DIR.includes(sym) || LETTER_TOKENS.includes(sym))) apply(sym);
 }
 window.addEventListener('keydown', onKey);
 
@@ -258,34 +385,13 @@ document.querySelectorAll('.key[data-sym]').forEach(k=>{
 });
 
 /* Buttons */
-startBtn.addEventListener('click', ()=>{ if (!game) game = newGame(); else game.round = 1; startRound(); });
+startBtn.addEventListener('click', ()=>{
+  if (!game) game = newGame();
+  else game.round = 1;
+  startRound();
+});
 nextBtn.addEventListener('click', nextRound);
 restartBtn.addEventListener('click', ()=>{ if (game) startRound(); });
-
-/* ---------------- Strike Animation ---------------- */
-function playStrike(){
-  const logo = document.createElement('img');
-  logo.src = 'GSU_LOGO.png';
-  logo.alt = 'GSU';
-  logo.className = 'logoFly';
-
-  const target = fx.querySelector('.target') || (()=>{const t=document.createElement('div');t.className='target';t.textContent='🎮';fx.appendChild(t);return t;})();
-  fx.appendChild(logo);
-
-  logo.addEventListener('animationend', ()=>{
-    target.classList.add('hit');
-    // Boom!
-    const boom = document.createElement('div');
-    boom.className = 'boom';
-    boom.textContent = '💥';
-    fx.appendChild(boom);
-    // Screen shake
-    wrap.classList.add('shake');
-    setTimeout(()=> wrap.classList.remove('shake'), 400);
-    // Cleanup FX
-    setTimeout(()=> { logo.remove(); target.remove(); boom.remove(); }, 900);
-  }, {once:true});
-}
 </script>
 </body>
 </html>
