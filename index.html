@@ -357,7 +357,7 @@
   <!-- Firebase core + SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     // --- Firebase config (yours) ---
@@ -482,12 +482,12 @@
       window.closeEditModal();
     };
 
-    // Logout
+    // Logout (use function form for v10)
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         try {
-          await auth.signOut();
+          await signOut(auth);
           document.getElementById("profile-box").style.display = "none";
           window.location.href = "index.html";
         } catch (err) { alert("Error signing out: " + err.message); }
@@ -532,14 +532,12 @@
     }
 
     async function countSubmissions({type=null, hasVideo=false}={}){
-      // If your 'submissions' have consistent fields:
       try{
         if (type) {
           const n = await safeCount("submissions", [ where("type","==", type) ]);
           if (n) return n;
         }
       }catch{}
-      // Fallback: shallow scan of newest docs
       try{
         const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(200)));
         return qs.docs.filter(d=>{
@@ -753,10 +751,16 @@
     }
 
     // ---- Spotlight videos personalized by favoriteGames ----
-    const youtubeApiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA";
+    const youtubeApiKey = "YOUR_YOUTUBE_API_KEY";
     async function rotateYouTubeVideosForUser(uid){
       const cont = $("fav-game-updates");
       if (!cont) return;
+
+      if (!youtubeApiKey || youtubeApiKey === "YOUR_YOUTUBE_API_KEY"){
+        cont.innerHTML = `<p style="color:var(--gsu-red); text-align:center;">Add your YouTube API key to enable personalized gameplay drops.</p>`;
+        return;
+      }
+
       try{
         const snap = await getDoc(doc(db,"users",uid));
         if (!snap.exists()){ cont.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>"; return; }
@@ -829,4 +833,3 @@
   </script>
 </body>
 </html>
-```
