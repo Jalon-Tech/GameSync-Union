@@ -1991,216 +1991,104 @@ async function saveProfileChanges() {
 </script>
 
 <script type="module">
+ 
+
   import {
-    getFirestore, collection, query, where, orderBy, limit, getDocs,
-    getCountFromServer, Timestamp
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  getFirestore, doc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-  // Use the instances you already initialize earlier
-  const db   = window.db || getFirestore();
-  const auth = window.auth || getAuth();
 
-  // ---------- helpers ----------
-  async function firstExistingCollection(names) {
-    for (const name of names) {
-      try {
-        const snap = await getDocs(query(collection(db, name), limit(1)));
-        // If we can read it (even empty), consider it valid
-        return name;
-      } catch (e) { /* try next */ }
+const spotlightRef = document.getElementById("fav-game-updates");
+const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // ✅ Your API key
+
+async function rotateYouTubeVideosForUser(uid) {
+  try {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (!snap.exists()) {
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>";
+      return;
     }
-    return null;
-  }
 
-  async function safeCount({ names, filter=null }) {
-    const colName = await firstExistingCollection(names);
-    if (!colName) return 0;
+    const { favoriteGames } = snap.data();
+    console.log("Favorite games from Firebase:", favoriteGames);
+    if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
+      return;
+    }
+
+    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
+
+   const blocks = await Promise.all(
+  favoriteGames.slice(0, 3).map(async (title) => {
+    const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim(); // Remove emojis/symbols
     try {
-      const base = collection(db, colName);
-      const q = Array.isArray(filter) ? query(base, ...filter) : (filter ? query(base, filter) : base);
-      const res = await getCountFromServer(q);
-      return res.data().count || 0;
-    } catch (e) {
-      console.warn("Count error for", names, e);
-      return 0;
+      const res = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`
+      );
+      const data = await res.json();
+
+      // ✅ Handle YouTube quota errors here
+    if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
+    return `
+      <div style="color: var(--gsu-red); text-align: center; padding: 1rem;">
+        Today’s video drops are temporarily unavailable. Check back tomorrow for fresh gameplay!
+        <br/><br/>
+        <button onclick="window.location.href='uploads.html'" style="background-color: var(--gsu-red); color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600;">
+          Explore GSU Player Lounge
+        </button>
+      </div>
+    `;
+  }
+
+
+      const video = data.items?.find(item => item.id.kind === "youtube#video");
+      const videoId = video?.id?.videoId;
+
+      if (!videoId) throw new Error("No videos found");
+
+      return `
+      <div class="spotlight-video">
+        <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+        <h3>🎮 ${title}</h3>
+        <p>▶️ Daily gameplay drop powered by YouTube</p>
+      </div>
+    `;
+
+    } catch (err) {
+      console.error(`Error loading video for ${title}:`, err);
+      return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
     }
+  })
+);
+
+
+    spotlightRef.innerHTML = blocks.join("");
+  } catch (e) {
+    console.error("Error fetching YouTube videos:", e);
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
   }
+  
 
-  function setText(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = String(val);
+}
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
+    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
+  } else {
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
   }
+  if (!user) {
+  showAuthNotice(); // 🔔 shows the styled message box
+  setTimeout(hideAuthNotice, 10000);
+}
 
-  function hideBoxByHeading(textIncludes) {
-    // finds a .box that contains an <h2> whose text includes textIncludes
-    const boxes = [...document.querySelectorAll('.box')];
-    const box = boxes.find(b => (b.querySelector('h2')?.textContent || '').toLowerCase().includes(textIncludes.toLowerCase()));
-    if (box) box.style.display = 'none';
-  }
-
-  // ---------- STATLINE SUPREME ----------
-  async function populateStats() {
-    // Total members
-    const totalMembers = await safeCount({ names: ["users", "members", "gsu_users"] });
-
-    // New members this week (requires createdAt: Timestamp on user docs)
-    const sevenDaysAgo = Timestamp.fromDate(new Date(Date.now() - 7*24*3600*1000));
-    const newMembers = await safeCount({
-      names: ["users", "members", "gsu_users"],
-      filter: [ where("createdAt", ">=", sevenDaysAgo) ]
-    });
-
-    // Videos shared
-    const videoUploads = await (async () => {
-      // Prefer a type-based filter if present
-      const byType = await safeCount({ names: ["videos","uploads","community_videos"], filter: [ where("type","in", ["video","gameplay"]) ] })
-                           .catch(() => 0);
-      if (byType > 0) return byType;
-      return safeCount({ names: ["videos","uploads","community_videos"] });
-    })();
-
-    // Fan art
-    const fanArt = await safeCount({ names: ["art","fan_art","fanArt"] });
-
-    // Trophies
-    const trophies = await safeCount({ names: ["trophies","achievements","player_trophies"] });
-
-    // Combo guides
-    const combos = await (async () => {
-      const byType = await safeCount({ names: ["videos","combo_guides","combos"], filter: [ where("type","in", ["combo","guide"]) ] })
-                           .catch(() => 0);
-      if (byType > 0) return byType;
-      return safeCount({ names: ["combo_guides","combos"] });
-    })();
-
-    // Poll votes (either a flat "poll_votes" collection OR a top-level "votes")
-    let pollVotes = await safeCount({ names: ["poll_votes","votes"] });
-    if (!pollVotes) {
-      // fallback: count choices if they store votes on each poll document as fields totalVotes
-      try {
-        const colName = await firstExistingCollection(["polls","community_polls"]);
-        if (colName) {
-          const qs = await getDocs(collection(db, colName));
-          pollVotes = qs.docs.reduce((sum,d)=> sum + (Number(d.data().totalVotes||0)), 0);
-        }
-      } catch (_) {}
-    }
-
-    setText("totalMembers", totalMembers);
-    setText("newMembers", newMembers);
-    setText("videoUploads", videoUploads);
-    setText("fanArt", fanArt);
-    setText("trophies", trophies);
-    setText("combos", combos);
-    setText("pollVotes", pollVotes);
-  }
-
-  // ---------- UNION WATCH (highlight card) ----------
-  async function populateUnionWatch() {
-    const container = document.querySelector('.box h2, .box h3');
-    const card = document.querySelector('.showoff-card');
-    const img  = document.querySelector('.showoff-card .showoff-img');
-    const titleEl = document.querySelector('.showoff-card .showoff-info h3');
-    const capEl   = document.querySelector('.showoff-card .showoff-info p');
-
-    try {
-      const colName = await firstExistingCollection(["highlights","union_watch","spotlight"]);
-      if (!colName) { hideBoxByHeading("made the union watch"); return; }
-
-      const qs = await getDocs(query(collection(db, colName), orderBy("createdAt","desc"), limit(1)));
-      if (qs.empty) { hideBoxByHeading("made the union watch"); return; }
-
-      const h = qs.docs[0].data();
-      if (img && h.thumbnailUrl) img.src = h.thumbnailUrl;
-      if (titleEl) titleEl.textContent = h.title || h.username ? `@${h.username} — ${h.title || "Highlight"}` : (h.title || "Highlight");
-      if (capEl) capEl.textContent = h.caption || h.description || "";
-      if (img && !h.thumbnailUrl) {
-        // if no image, collapse the image area but keep the text
-        img.style.display = "none";
-      }
-    } catch (e) {
-      console.warn("Union Watch error:", e);
-      hideBoxByHeading("made the union watch");
-    }
-  }
-
-  // ---------- TALK OF THE WEEK ----------
-  async function populateTalkOfWeek() {
-    const quoteEl = document.querySelector('.talk-quote blockquote');
-    const srcEl   = document.querySelector('.talk-quote p');
-
-    try {
-      // allow either a singleton doc or a collection
-      const colName = await firstExistingCollection(["talk_of_week","quotes","lounge_quotes"]);
-      if (!colName) { hideBoxByHeading("union rewind"); return; }
-
-      // Try doc "current" first
-      let text, source;
-      try {
-        const qs = await getDocs(query(collection(db, colName), orderBy("createdAt","desc"), limit(1)));
-        if (!qs.empty) {
-          const d = qs.docs[0].data();
-          text = d.text || d.quote || "";
-          source = d.source || d.username || "GSU Lounge";
-        }
-      } catch (_) {}
-
-      if (!text) { hideBoxByHeading("union rewind"); return; }
-
-      if (quoteEl) quoteEl.textContent = `“${text}”`;
-      if (srcEl)   srcEl.textContent   = `— Pulled from ${source}`;
-    } catch (e) {
-      console.warn("Talk of Week error:", e);
-      hideBoxByHeading("union rewind");
-    }
-  }
-
-  // ---------- ONE TROPHY. ONE FLEX. ----------
-  async function populateOneFlex() {
-    const box = [...document.querySelectorAll('.box')].find(b => (b.querySelector('h2')?.textContent||'').includes('One Trophy'));
-    if (!box) return;
-    const imgEl = box.querySelector('.certified-img');
-    const capEl = box.querySelector('.certified-caption');
-
-    try {
-      const colName = await firstExistingCollection(["trophies","achievements","player_trophies"]);
-      if (!colName) { box.style.display = 'none'; return; }
-
-      const qs = await getDocs(query(collection(db, colName), orderBy("createdAt","desc"), limit(1)));
-      if (qs.empty) { box.style.display = 'none'; return; }
-
-      const t = qs.docs[0].data();
-      const url = t.screenshotUrl || t.imageUrl || t.thumbnailUrl;
-      const user = t.username || t.user || t.handle || "Unknown";
-      const line = t.caption || t.moment || t.title || "";
-
-      if (url && imgEl) imgEl.src = url; else if (imgEl) imgEl.style.display = 'none';
-      if (capEl) capEl.innerHTML = `${line ? `“${line}” — ` : ""}<strong>@${user}</strong>`;
-    } catch (e) {
-      console.warn("One Flex error:", e);
-      box.style.display = 'none';
-    }
-  }
-
-  // ---------- run everything ----------
-  async function runAll() {
-    await populateStats();
-    await Promise.all([
-      populateUnionWatch(),
-      populateTalkOfWeek(),
-      populateOneFlex()
-    ]);
-  }
-
-  // Run regardless of auth; some sections personalize later anyway
-  document.addEventListener('DOMContentLoaded', runAll);
-
-  // If you want the blocks to refresh on login state change, keep this:
-  onAuthStateChanged(auth, () => runAll());
-
+});
 </script>
-
 
 <script type="module">
   import {
