@@ -1,1 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>GSU Command Strike</title>
+<link rel="icon" href="GSU_LOGO.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+<style>
+  :root{ --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7 }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:16px; gap:12px;
+  }
+  header{display:flex; flex-direction:column; align-items:center; gap:8px}
+  nav{display:flex; gap:10px; flex-wrap:wrap}
+  nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
+  .wrap{
+    width:min(1000px,96vw); border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
+    box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
+    background:linear-gradient(#0a0a0a,#000);
+  }
+  .hud{display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem)}
+  .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
+  .arena{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  }
+  .panel{
+    border:1px solid #2a2a2a; border-radius:12px; padding:10px; background:#0a0a0a;
+    min-height:260px; display:flex; flex-direction:column; gap:10px;
+  }
+  .panel h3{margin:0 0 4px 0}
+  .cmd{
+    background:#0f0f0f; border:1px dashed #444; border-radius:12px; padding:10px; min-height:70px;
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  }
+  .token{
+    padding:8px 10px; border-radius:8px; background:#171717; border:1px solid #333;
+  }
+  .token.pending{opacity:.7}
+  .token.ok{outline:2px solid #29d07a}
+  .token.bad{outline:2px solid #d02121}
+  .buffer{
+    background:#0f0f0f; border:1px solid #333; border-radius:10px; padding:8px; font-size:.95rem; min-height:40px;
+  }
+  .keys{font-size:.9rem; color:var(--muted)}
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .btn{
+    border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
+    box-shadow:0 0 10px #e60023aa; font-weight:700;
+  }
+  .btn:disabled{opacity:.5; cursor:not-allowed}
+  footer{opacity:.7; font-size:.85rem}
+  @media (max-width:800px){ .arena{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+  <header>
+    <img src="GSU_LOGO.png" alt="GSU" style="max-width:96px">
+    <div>GAMESYNC UNION</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="uploads.html">GSU Player Lounge</a>
+    </nav>
+  </header>
+
+  <section class="wrap">
+    <h1 style="margin:6px 0 10px 6px;">GSU COMMAND STRIKE</h1>
+    <div class="hud">
+      <div class="pill">🧩 Seed <strong id="seedShort">—</strong></div>
+      <div class="pill">📜 Round <strong id="round">1</strong>/5</div>
+      <div class="pill">🏆 P1 Wins <strong id="p1Wins">0</strong></div>
+      <div class="pill">🏆 P2 Wins <strong id="p2Wins">0</strong></div>
+      <div class="pill">⏱ P1 <strong id="p1Time">0</strong>ms</div>
+      <div class="pill">⏱ P2 <strong id="p2Time">0</strong>ms</div>
+    </div>
+
+    <div class="arena">
+      <div class="panel" id="p1">
+        <h3>Player 1 — Arrows + Z/X/C (P/K/G)</h3>
+        <div class="cmd" id="p1Cmd"></div>
+        <div class="buffer" id="p1Buf">Buffer: —</div>
+        <div class="keys">Rewind: <strong>Backspace</strong> (1 per round)</div>
+      </div>
+      <div class="panel" id="p2">
+        <h3>Player 2 — WASD + J/K/L (P/K/G)</h3>
+        <div class="cmd" id="p2Cmd"></div>
+        <div class="buffer" id="p2Buf">Buffer: —</div>
+        <div class="keys">Rewind: <strong>H</strong> (1 per round)</div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:12px;">
+      <button class="btn" id="start">▶ Start Match</button>
+      <button class="btn" id="next" disabled>⏭ Next Round</button>
+      <div class="keys">Simultaneous inputs are shown with a “+”. Follow tokens left to right.</div>
+    </div>
+  </section>
+
+  <footer>Built for GameSync Union — GSU Command Strike™</footer>
+
+<script>
+/* ------------------------ Token Grammar ------------------------ */
+const DIR_P1 = {ArrowUp:"↑",ArrowDown:"↓",ArrowLeft:"←",ArrowRight:"→"};
+const BTN_P1 = {KeyZ:"P",KeyX:"K",KeyC:"G"};
+const DIR_P2 = {KeyW:"↑",KeyS:"↓",KeyA:"←",KeyD:"→"};
+const BTN_P2 = {KeyJ:"P",KeyK:"K",KeyL:"G"};
+
+const TOK_DIR = ["↑","↓","←","→","↙","↘","↖","↗"];
+const TOK_BTN = ["P","K","G"];
+
+function randomChoice(arr){ return arr[Math.floor(Math.random()*arr.length)] }
+
+function genCommand(roundSeed){
+  // L1 (short) → L5 (long)
+  const len = [4,5,6,7,8][Math.min(roundSeed-1,4)];
+  const tokens = [];
+  for (let i=0;i<len;i++){
+    if (Math.random() < 0.33 && i>0){ // simultaneous chunk occasionally
+      const prev = tokens[tokens.length-1];
+      if (!prev.includes("+")){
+        const add = Math.random()<0.5? randomChoice(TOK_DIR) : randomChoice(TOK_BTN);
+        tokens[tokens.length-1] = prev + " + " + add;
+        continue;
+      }
+    }
+    const t = Math.random()<0.5? randomChoice(TOK_DIR) : randomChoice(TOK_BTN);
+    tokens.push(t);
+  }
+  return tokens;
+}
+
+/* ------------------------ State ------------------------ */
+const seedShort = document.getElementById('seedShort');
+const roundEl = document.getElementById('round');
+const p1WinsEl = document.getElementById('p1Wins');
+const p2WinsEl = document.getElementById('p2Wins');
+const p1TimeEl = document.getElementById('p1Time');
+const p2TimeEl = document.getElementById('p2Time');
+const p1Cmd = document.getElementById('p1Cmd');
+const p2Cmd = document.getElementById('p2Cmd');
+const p1Buf = document.getElementById('p1Buf');
+const p2Buf = document.getElementById('p2Buf');
+const startBtn = document.getElementById('start');
+const nextBtn  = document.getElementById('next');
+
+let match = null;
+
+function newMatch(){
+  return {
+    seed: crypto.randomUUID(),
+    round:1, maxRounds:5,
+    p1:{idx:0,buf:[],rew:1,done:false,start:0,end:0,acc:0},
+    p2:{idx:0,buf:[],rew:1,done:false,start:0,end:0,acc:0},
+    tokens:[], p1Wins:0, p2Wins:0, active:false
+  }
+}
+
+function renderCmd(container, tokens, progress){
+  container.innerHTML = tokens.map((t,i)=>{
+    const cls = i < progress ? "token ok" : (i===progress ? "token pending":"token");
+    return `<div class="${cls}">${t}</div>`;
+  }).join("");
+}
+
+function setHUD(){
+  seedShort.textContent = match.seed.slice(0,6);
+  roundEl.textContent = match.round;
+  p1WinsEl.textContent = match.p1Wins;
+  p2WinsEl.textContent = match.p2Wins;
+  p1TimeEl.textContent = match.p1.end && match.p1.start ? (match.p1.end - match.p1.start) : 0;
+  p2TimeEl.textContent = match.p2.end && match.p2.start ? (match.p2.end - match.p2.start) : 0;
+  p1Buf.textContent = "Buffer: " + (match.p1.buf.join(" ") || "—");
+  p2Buf.textContent = "Buffer: " + (match.p2.buf.join(" ") || "—");
+}
+
+function startRound(){
+  match.active = true;
+  match.tokens = genCommand(match.round);
+  ["p1","p2"].forEach(p=>{
+    match[p].idx=0; match[p].buf=[]; match[p].done=false; match[p].acc=0;
+    match[p].start=performance.now(); match[p].end=0; match[p].rew=1;
+  });
+  renderCmd(p1Cmd, match.tokens, 0);
+  renderCmd(p2Cmd, match.tokens, 0);
+  setHUD();
+  startBtn.disabled = true; nextBtn.disabled = true;
+}
+
+function endRound(){
+  match.active = false;
+  // score: accuracy then speed then rewinds
+  function scoreSide(p){
+    const acc = match[p].acc;
+    const time = (match[p].end||performance.now()) - match[p].start;
+    const rew = (match[p].rew===0)?1:0;
+    return {acc,time,rew};
+  }
+  const s1 = scoreSide("p1"), s2 = scoreSide("p2");
+  let winner = null;
+  if (s1.acc !== s2.acc) winner = (s1.acc > s2.acc)? "p1":"p2";
+  else if (s1.time !== s2.time) winner = (s1.time < s2.time)? "p1":"p2";
+  else if (s1.rew !== s2.rew) winner = (s1.rew > s2.rew)? "p1":"p2";
+
+  if (winner){
+    match[winner+"Wins"]++;
+    // flash panel
+    const panel = document.getElementById(winner);
+    const prev = panel.style.boxShadow;
+    panel.style.boxShadow="0 0 18px #21d07a";
+    setTimeout(()=> panel.style.boxShadow=prev, 350);
+  }
+
+  setHUD();
+  if (match.p1Wins>=3 || match.p2Wins>=3 || match.round>=5){
+    startBtn.disabled=false; startBtn.textContent="🔁 Restart Match"; nextBtn.disabled=true;
+  } else {
+    nextBtn.disabled=false;
+  }
+}
+
+function applyInput(side, sym){
+  if (!match.active) return;
+  const me = match[side];
+  if (me.done) return;
+  // simultaneous tokens support: token like "→ + P"
+  const target = match.tokens[me.idx];
+  const parts = target.split("+").map(s=>s.trim());
+  // update buffer optimistically
+  me.buf.push(sym);
+  setHUD();
+
+  // check if sym completes current part
+  const needed = parts[me.buf.length-1];
+  const ok = sym === needed;
+  if (!ok){
+    // over-input penalty: mark bad briefly
+    const panel = document.getElementById(side);
+    panel.style.outline="2px solid #d02121";
+    setTimeout(()=> panel.style.outline="none", 180);
+    return;
+  }
+  // if part complete and all parts matched, advance token
+  if (me.buf.length === parts.length){
+    me.idx++;
+    me.acc++;
+    me.buf = [];
+    renderCmd(side==="p1"?p1Cmd:p2Cmd, match.tokens, me.idx);
+    if (me.idx >= match.tokens.length){
+      me.done = true;
+      me.end = performance.now();
+      // if both done, end; or if one done and the other times out later, end on timeout
+      if (match.p1.done && match.p2.done) endRound();
+    }
+  }
+}
+
+function rewind(side){
+  if (!match.active) return;
+  const me = match[side];
+  if (me.rew<=0) return;
+  if (me.idx===0 && me.buf.length===0) return;
+  // penalty visual
+  const panel = document.getElementById(side);
+  panel.style.outline="2px solid #ffae00";
+  setTimeout(()=> panel.style.outline="none", 180);
+  // logic: drop current buffer, step back one token if buffer empty
+  if (me.buf.length>0){ me.buf=[]; }
+  else { me.idx = Math.max(0, me.idx-1); }
+  me.rew--;
+  renderCmd(side==="p1"?p1Cmd:p2Cmd, match.tokens, me.idx);
+  setHUD();
+}
+
+/* ------------------------ Events ------------------------ */
+startBtn.addEventListener('click', ()=>{
+  match = newMatch();
+  setHUD();
+  startBtn.textContent="⏳ Get Ready…";
+  setTimeout(()=>{ startBtn.textContent="▶ Start Match"; startRound(); }, 600);
+});
+nextBtn.addEventListener('click', ()=>{
+  match.round++;
+  startRound();
+});
+
+window.addEventListener('keydown', (e)=>{
+  if (!match) return;
+
+  // P1 Inputs
+  if (e.key in DIR_P1) return applyInput("p1", DIR_P1[e.key]);
+  if (e.code in BTN_P1) return applyInput("p1", BTN_P1[e.code]);
+  if (e.key === "Backspace") return rewind("p1");
+
+  // P2 Inputs
+  if (e.code in {KeyW:1,KeyA:1,KeyS:1,KeyD:1}) return applyInput("p2", DIR_P2[e.code]);
+  if (e.code in BTN_P2) return applyInput("p2", BTN_P2[e.code]);
+  if (e.code === "KeyH") return rewind("p2");
+});
+</script>
+</body>
+</html>
 
