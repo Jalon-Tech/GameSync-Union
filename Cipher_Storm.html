@@ -13,18 +13,18 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
+    --controls-h: 0px; /* set by JS when keyboard opens */
   }
   *{box-sizing:border-box}
 
-  /* Like your other pages: simple, scrollable layout (no transform scaling) */
-  html, body { height:100%; }
-  html, body { margin:0; overflow-x:hidden; }
+  html, body { height:100%; margin:0; overflow-x:hidden; }
   body{
     font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
     min-height:100svh; display:flex; flex-direction:column; align-items:center; gap:14px;
     padding:calc(12px + var(--safe-top)) calc(16px + var(--safe-right))
             calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
     -webkit-text-size-adjust: 100%;
+    transition: padding-bottom .15s ease;
   }
 
   header{display:flex; flex-direction:column; align-items:center; gap:8px}
@@ -50,13 +50,14 @@
 
   #board{
     position:relative;
-    height:min(520px,62svh); /* use svh like the other game for iOS stability */
+    height:min(520px,62svh); /* stable on iOS */
     overflow:hidden; border:1px solid #222; border-radius:12px;
     background-image:
       linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
       linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
     background-size:40px 40px; isolation:isolate;
     touch-action:manipulation;
+    transition: height .15s ease;
   }
 
   .tile{
@@ -74,13 +75,22 @@
   .controls{
     margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
   }
+  /* When keyboard is open, dock the controls above it */
+  body.kb-open .controls{
+    position:fixed; left:0; right:0;
+    bottom:calc(0px + var(--safe-bottom));
+    z-index:20;
+    padding:10px calc(16px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(16px + var(--safe-left));
+    background:linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,.7));
+    border-top:1px solid #222; backdrop-filter: blur(6px);
+  }
+
   #typed{
     width:min(520px,90%); font-family:inherit;
-    font-size:max(16px, 1.05rem); /* prevent iOS auto-zoom */
+    font-size:max(16px, 1.05rem); /* stop iOS auto-zoom */
     color:#fff; background:#0a0a0a;
     border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
-    scroll-margin: 18vh; /* keep visible when keyboard pops */
   }
   #startBtn, .btn{
     border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
@@ -90,6 +100,7 @@
   .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
 
   footer{opacity:.7; font-size:.85rem}
+
   @media (max-width:640px){ .hud{grid-template-columns:repeat(2,1fr)} }
 </style>
 </head>
@@ -114,8 +125,8 @@
 
     <div id="board" aria-live="polite"></div>
 
-    <div class="controls">
-      <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
+    <div class="controls" id="controls">
+      <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" autocapitalize="off" autocorrect="off" inputmode="latin" />
       <button id="startBtn">▶ Start Run</button>
       <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
     </div>
@@ -128,28 +139,15 @@
   <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
 
 <script>
-/* ------------------------ Easier Word Lists (3–5 letters only) ------------------------ */
+/* ------------------------ Word Lists ------------------------ */
 const WORD_BANK = {
-  games: [
-    "rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
+  games: ["rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
     "aim","ping","lag","farm","gank","bait","poke","zone","stun","root","bind","smite","spray","carry","steal","skill",
     "stack","stats","quest","equip","dodge","feint","super","ultra","patch","boss","raid","loot","gold","coins","armor",
     "spawn","smurf","macro","micro","ghost","score","reset","stage","match","camp","heal","perks","runes","punch","block",
-    "slide","burst","clash","scope","tilt"
-  ],
-  tech: [
-    "byte","data","code","build","stack","array","debug","query","cache","ping","queue","input",
-    "index","token","regex","route","param","class","scope","state","event","logic","parse","print",
-    "stdin","shell","linux","macos","proxy","redis","mongo","nexus","azure","cloud","https","http",
-    "email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh",
-    "grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"
-  ],
-  heroes: [
-    "loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic",
-    "Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan",
-    "Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby",
-    "Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"
-  ]
+    "slide","burst","clash","scope","tilt"],
+  tech: ["byte","data","code","build","stack","array","debug","query","cache","ping","queue","input","index","token","regex","route","param","class","scope","state","event","logic","parse","print","stdin","shell","linux","macos","proxy","redis","mongo","nexus","azure","cloud","https","http","email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh","grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"],
+  heroes: ["loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic","Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan","Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby","Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"]
 };
 const THEMES = Object.keys(WORD_BANK);
 
@@ -163,12 +161,11 @@ const livesEl = document.getElementById('lives');
 const typed   = document.getElementById('typed');
 const startBtn= document.getElementById('startBtn');
 const slowmoBtn = document.getElementById('slowmoBtn');
+const controls = document.getElementById('controls');
 
 /* ------------------------ Helpers ------------------------ */
 function pickTheme(){ return THEMES[Math.floor(Math.random()*THEMES.length)] }
 function sample(list){ return list[Math.floor(Math.random()*list.length)] }
-
-/* Keep first & last letters fixed when scrambling */
 function scrambleWord(w){
   if (w.length <= 3) return w;
   const first = w[0], last = w[w.length-1];
@@ -186,25 +183,17 @@ let state = null;
 let rafId = null, timerId = null, slowId = null;
 let theme = "games";
 
-const BASE_SPEED = 55;      // px/sec
-const SPEED_PER_WAVE = 8;
-const MAX_SPEED = 160;
-const SLOW_FACTOR = 0.6;
+const BASE_SPEED = 55, SPEED_PER_WAVE = 8, MAX_SPEED = 160, SLOW_FACTOR = 0.6;
 
 function initialState(){
-  return {
-    time: 60, lives:3, score:0, streak:0, wave:1, running:false,
-    activeTile:null, powerReady:false, slow:false, seed:crypto.randomUUID(),
-    lastT: 0
-  }
+  return { time:60, lives:3, score:0, streak:0, wave:1, running:false,
+    activeTile:null, powerReady:false, slow:false, seed:crypto.randomUUID(), lastT:0 };
 }
-
 function currentSpeed(){
   const raw = BASE_SPEED + (state.wave-1)*SPEED_PER_WAVE;
   const s = Math.min(raw, MAX_SPEED);
   return state.slow ? s*SLOW_FACTOR : s;
 }
-
 function setHUD(){
   timeEl.textContent = state.time;
   livesEl.textContent = state.lives;
@@ -215,60 +204,36 @@ function setHUD(){
 }
 
 /* ------------------------ Spawning ------------------------ */
-function allowedMaxLen(){
-  if (state.wave <= 3) return 4;
-  return 5;
-}
-
+function allowedMaxLen(){ return state.wave <= 3 ? 4 : 5; }
 function spawnTile(){
   const words = WORD_BANK[theme].filter(w => w.length <= allowedMaxLen());
-  const word = sample(words);
-  const scram = scrambleWord(word);
-
+  const word = sample(words); const scram = scrambleWord(word);
   const tile = document.createElement('div');
-  tile.className='tile';
-  tile.style.top='-52px';
-  tile.style.left = `${15 + Math.random()*70}%`;
-
+  tile.className='tile'; tile.style.top='-52px'; tile.style.left = `${15 + Math.random()*70}%`;
   const hintMask = word[0] + " " + "_ ".repeat(Math.max(0,word.length-2)) + word[word.length-1];
   tile.innerHTML = `<div class="word">${scram}</div><div class="hint">${hintMask.trim()}</div>`;
   board.appendChild(tile);
-
   state.activeTile = {el:tile, y:-52, word, scram};
 }
 
 /* ------------------------ Game Loop ------------------------ */
 function clearTile(ok){
   if(!state.activeTile) return;
-  const el = state.activeTile.el;
-  el.classList.add(ok? 'ok':'bad');
-  state.activeTile = null;
+  const el = state.activeTile.el; el.classList.add(ok? 'ok':'bad'); state.activeTile = null;
   setTimeout(()=> el.remove(), 160);
 }
-
-function nextWave(){
-  state.wave++;
-  if (state.wave % 4 === 0) state.powerReady = true;
-}
-
+function nextWave(){ state.wave++; if (state.wave % 4 === 0) state.powerReady = true; }
 function loop(ts){
   if (!state.running) return;
   if (!state.lastT) state.lastT = ts;
-  const dt = Math.min(0.05, (ts - state.lastT) / 1000);
-  state.lastT = ts;
-
+  const dt = Math.min(0.05, (ts - state.lastT) / 1000); state.lastT = ts;
   if (state.activeTile){
     const px = currentSpeed() * dt;
     state.activeTile.y += px;
     state.activeTile.el.style.top = `${state.activeTile.y}px`;
-
     if (state.activeTile.y > board.clientHeight - 60){
-      clearTile(false);
-      state.streak = 0;
-      state.lives--;
-      setHUD();
-      if (state.lives <= 0){ endRun(); return; }
-      spawnTile();
+      clearTile(false); state.streak = 0; state.lives--; setHUD();
+      if (state.lives <= 0){ endRun(); return; } spawnTile();
     }
   }
   rafId = requestAnimationFrame(loop);
@@ -278,34 +243,21 @@ function loop(ts){
 function startRun(){
   if (state?.running) return;
   cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
-  board.innerHTML = ""; typed.value = "";
-  theme = pickTheme();
-  state = initialState();
-  state.running = true;
-  setHUD();
-  spawnTile();
+  board.innerHTML = ""; typed.value = ""; theme = pickTheme();
+  state = initialState(); state.running = true; setHUD(); spawnTile();
 
   timerId = setInterval(()=>{
     if(!state.running) return;
-    state.time--;
-    if(state.time<=0){ state.lives=0; endRun(); }
+    state.time--; if(state.time<=0){ state.lives=0; endRun(); }
     setHUD();
   },1000);
 
-  state.lastT = 0;
-  rafId = requestAnimationFrame(loop);
-
-  // focus input like the other pages
+  state.lastT = 0; rafId = requestAnimationFrame(loop);
   typed.focus({preventScroll:false});
 }
-
 function endRun(){
-  state.running=false;
-  cancelAnimationFrame(rafId);
-  clearInterval(timerId);
-  clearTimeout(slowId);
-  const frame = document.querySelector('.frame');
-  const prev = frame.style.boxShadow;
+  state.running=false; cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
+  const frame = document.querySelector('.frame'), prev = frame.style.boxShadow;
   frame.style.boxShadow="0 0 30px #e60023, inset 0 0 18px #e6002344";
   setTimeout(()=> frame.style.boxShadow=prev || "0 0 18px #e60023cc, inset 0 0 18px #e6002326", 280);
   startBtn.textContent="🔁 Run Again";
@@ -314,26 +266,17 @@ function endRun(){
 /* Submit + live assist */
 function submitWord(){
   if(!state.running || !state.activeTile) return;
-  const guess = typed.value.trim().toLowerCase();
-  if (!guess) return;
+  const guess = typed.value.trim().toLowerCase(); if (!guess) return;
   const target = state.activeTile.word.toLowerCase();
-
   if (guess === target){
     const base = 100 * target.length;
     state.streak = Math.min(999, state.streak + 1);
     const streakBonus = 1 + Math.min(0.5, state.streak*0.1);
     state.score += Math.floor(base * streakBonus);
-    clearTile(true);
-    typed.value="";
-    nextWave();
-    spawnTile();
-    setHUD();
+    clearTile(true); typed.value=""; nextWave(); spawnTile(); setHUD();
   } else {
-    const el = state.activeTile.el;
-    el.classList.add('bad');
-    setTimeout(()=> el.classList.remove('bad'), 140);
-    state.streak = 0;
-    setHUD();
+    const el = state.activeTile.el; el.classList.add('bad'); setTimeout(()=> el.classList.remove('bad'), 140);
+    state.streak = 0; setHUD();
   }
 }
 
@@ -344,9 +287,32 @@ function useSlow(){
   slowId = setTimeout(()=>{ state.slow=false; setHUD(); }, 5000);
 }
 
-/* ------------------------ Events ------------------------ */
+/* ------------------------ Keyboard-docking fixes ------------------------ */
+function openKeyboardDock(){
+  // lock board height to stop jump
+  board.style.height = board.getBoundingClientRect().height + 'px';
+  document.body.classList.add('kb-open');
+  // measure controls and create bottom padding so content above remains visible
+  requestAnimationFrame(()=>{
+    const h = controls.getBoundingClientRect().height;
+    document.documentElement.style.setProperty('--controls-h', h + 'px');
+    document.body.style.paddingBottom = `calc(${h}px + 12px + var(--safe-bottom))`;
+  });
+}
+function closeKeyboardDock(){
+  document.body.classList.remove('kb-open');
+  document.body.style.paddingBottom = '';
+  board.style.height = ''; // restore CSS height
+}
+
 startBtn.addEventListener('click', startRun);
 slowmoBtn.addEventListener('click', useSlow);
+
+typed.addEventListener('focus', ()=>{
+  openKeyboardDock();
+  setTimeout(()=> typed.scrollIntoView({block:'end', behavior:'smooth'}), 50);
+});
+typed.addEventListener('blur', closeKeyboardDock);
 
 typed.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){ e.preventDefault(); submitWord(); return; }
@@ -360,7 +326,7 @@ typed.addEventListener('keydown', (e)=>{
   }
 });
 
-/* Keep input handy while running (desktop convenience) */
+/* keep input focus on desktop when playing */
 window.addEventListener('keydown', ()=>{
   if(state?.running && document.activeElement !== typed){
     typed.focus({preventScroll:true});
