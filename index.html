@@ -10,6 +10,11 @@
 
   <style>
     :root { --gsu-red:#e60023; --black-main:#191818; --black-faded:#1F1F1F; --white-text:#FFFFFF; }
+
+    /* ---------- Auth gate (hide until signed in) ---------- */
+    body[data-auth="out"] .auth-required { display:none !important; }
+    body[data-auth="in"]  .auth-required { display:block; }
+
     *{margin:0; padding:0; box-sizing:border-box;}
     body{ font-family:'Roboto',sans-serif; background:var(--black-main); color:var(--white-text); }
 
@@ -21,69 +26,113 @@
     nav a{ text-decoration:none; color:var(--white-text); font-family:'Montserrat',sans-serif; transition:color .3s; font-size:1rem; }
     nav a:hover{ color:var(--gsu-red); }
 
-    /* 3-column shell (original ratio) */
+    /* --- 3-column shell (original layout) --- */
     .main-container{ display:grid; grid-template-columns:1fr 3fr 1fr; gap:1.5rem; padding:2rem; }
     aside, main{ display:flex; flex-direction:column; gap:1.2rem; }
-    .box{ background:var(--black-faded); border-radius:12px; padding:1rem; color:var(--white-text); transition:transform .3s, box-shadow .3s, border .3s; border:1px solid #333; box-shadow:0 0 12px rgba(255,255,255,.05); }
-    .box:hover{ transform:translateY(-4px); box-shadow:0 6px 16px rgba(230,0,35,.25), 0 0 10px rgba(255,255,255,.05); border-color:#444; }
-    .box h2{ font-family:'Montserrat',sans-serif; margin-bottom:.7rem; color:#fff!important; text-shadow:0 0 6px rgba(255,0,55,.25); }
+    .box{ background:var(--black-faded); border-radius:12px; padding:1rem; color:var(--white-text); transition:transform .3s, box-shadow .3s, border .3s; border:2px solid #333; box-shadow:0 0 12px rgba(255,255,255,.05); }
+    .box:hover{ transform:translateY(-6px) scale(1.01); box-shadow:0 6px 16px rgba(230,0,35,.4), 0 0 10px rgba(255,255,255,.05); border:2px solid var(--gsu-red); }
+    .box h2{ font-family:'Montserrat',sans-serif; margin-bottom:.7rem; color:#fff!important; text-shadow:0 0 6px rgba(255,0,55,.3); }
     main > .box:not(:last-child) { margin-bottom:2.2rem; }
 
     .input-field{ padding:.6rem; border:none; border-radius:6px; margin-bottom:.6rem; width:100%; background:#2a2a2a; color:var(--white-text); }
     .btn{ background:var(--gsu-red); border:none; color:#fff; padding:.8rem; width:100%; border-radius:6px; cursor:pointer; font-family:'Montserrat',sans-serif; }
-    .btn:hover{ opacity:.9; }
+    .btn:hover{ opacity:.85; }
 
     footer{ background:var(--black-faded); text-align:center; padding:1.2rem 1rem; margin-top:4rem; }
     .platform-icons{ display:flex; justify-content:center; align-items:center; gap:1.5rem; margin-bottom:.6rem; }
     .platform-icons img{ height:32px; width:auto; opacity:.9; }
 
-    /* Profile card polish */
-    #profile-box { background:linear-gradient(to bottom right,#1e1e1e,#282828); border:1px solid #333; box-shadow:0 0 12px rgba(230,0,35,.15); border-radius:12px; text-align:center; font-size:1rem; }
-    .stat-box { margin-bottom:12px; padding:12px 14px; border:1px solid #333; border-left:4px solid var(--gsu-red); border-radius:10px; background:rgba(255,255,255,0.04); }
-    .update-flash-img { animation: flashGlow 1s ease-in-out; }
-    @keyframes flashGlow { 0%{ box-shadow:0 0 0 rgba(230,0,35,0);} 50%{ box-shadow:0 0 18px rgba(230,0,35,.45);} 100%{ box-shadow:0 0 0 rgba(230,0,35,0);} }
+    /* --- Single glow animation for update flashes --- */
+    @keyframes flashGlow {
+      0%   { box-shadow:0 0 0 rgba(230,0,35,0); }
+      50%  { box-shadow:0 0 18px rgba(230,0,35,.45); }
+      100% { box-shadow:0 0 0 rgba(230,0,35,0); }
+    }
+    .update-flash-img { animation: flashGlow 1.3s ease-in-out; }
+    .update-flash { animation: flashGlow 1.8s ease-in-out; }
 
-    .retro-header { font-size:1.1rem; color:var(--gsu-red); font-family:'Montserrat',sans-serif; margin-bottom:.6rem; }
+    /* --- Profile card polish --- */
+    #profile-box { background:linear-gradient(to bottom right,#1e1e1e,#282828); border:2px solid var(--gsu-red); box-shadow:0 0 12px rgba(230,0,35,.2); border-radius:10px; text-align:center; font-size:1rem; }
+    .stat-box { margin-bottom:12px; padding:10px 15px; border:2px solid #e60023; border-radius:10px; background:rgba(255,255,255,0.05); transition:margin .3s ease; }
+    .profile-fav-img { height:280px; object-fit:contain; background:#111; border-radius:12px; box-shadow:0 0 10px rgba(255,255,255,.08); transition:transform .3s ease; scroll-snap-align:center; padding:6px; }
+    .profile-fav-img:hover { transform:scale(1.05); box-shadow:0 0 12px rgba(230,0,35,.3); }
+
+    /* --- Retro / Knowledge UI --- */
     .match-review-style h2 { color:#e60023; font-family:'Montserrat',sans-serif; font-size:1.2rem; margin-bottom:.75rem; text-shadow:0 0 8px rgba(230,0,35,.7); border-bottom:2px solid #e60023; padding-bottom:.5rem; }
-    .match-review-style { background:#1f1f1f; border:1px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 12px rgba(255,255,255,.05); }
+    .match-review-style { background:#1f1f1f; border:2px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 12px rgba(255,255,255,.05); transition:transform .3s ease, box-shadow .3s ease; }
+    .match-review-style:hover { transform:scale(1.01); box-shadow:0 0 14px rgba(230,0,35,.2); }
+    .retro-header{ font-size:1.1rem; color:var(--gsu-red); font-family:'Montserrat',sans-serif; margin-bottom:.6rem; }
+    .sync-desc { font-size:.9rem; color:#ccc; margin-bottom:1rem; }
 
-    .livewire-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
-    .stat-item { background:#2a2a2a; padding:1rem; border-radius:10px; font-size:.95rem; box-shadow:0 0 6px rgba(0,0,0,.3); border:1px solid #3a3a3a; }
+    /* --- Statline --- */
+    .livewire-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-top:1rem; }
+    .stat-item { background:#2a2a2a; padding:1rem; border-radius:8px; font-size:.95rem; box-shadow:0 0 6px rgba(0,0,0,.3); transition:transform .3s ease, box-shadow .3s ease; }
+    .stat-item:hover { transform:scale(1.03); background:#333; box-shadow:0 0 10px rgba(230,0,35,.25); }
 
-    .culture-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; text-align:center; }
-    .culture-tile { background:#2a2a2a; padding:1.4rem 1rem; border-radius:10px; font-family:'Montserrat',sans-serif; font-size:1rem; color:#fff; text-decoration:none; transition:transform .3s, background .3s; border:1px solid #3a3a3a; }
+    /* --- Culture tiles --- */
+    .culture-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1rem; text-align:center; }
+    .culture-tile { background:#2a2a2a; padding:1.4rem 1rem; border-radius:10px; font-family:'Montserrat',sans-serif; font-size:1rem; color:#fff; text-decoration:none; transition:transform .3s, background .3s; }
     .culture-tile:hover { background:var(--gsu-red); transform:scale(1.05); }
     .tile-hover { margin-top:.4rem; font-size:.85rem; color:#ddd; }
 
-    /* Favorite images – tidy grid */
-    #fav-images{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; padding:1rem; border:1px solid #444; border-radius:10px; background:#1b1b1b; min-height:200px; }
-    #fav-images img{ width:100%; height:180px; object-fit:cover; background:#111; border-radius:12px; }
+    /* --- Union Watch / Trophy / Talk --- */
+    .showoff-card{ display:flex; gap:1rem; flex-wrap:wrap; align-items:center; background:#2a2a2a; border-radius:10px; padding:1rem; }
+    .showoff-img{ width:200px; height:120px; object-fit:cover; border-radius:8px; box-shadow:0 0 10px rgba(255,255,255,.1); }
+    .talk-quote{ background:#2a2a2a; padding:1rem 1.2rem; border:4px solid var(--gsu-red); border-radius:8px; font-style:italic; }
+    .talk-quote blockquote{ font-size:1.1rem; color:#eee; margin-bottom:.5rem; font-family:'Montserrat',sans-serif; }
+    .talk-quote p{ font-size:.95rem; color:#aaa; }
 
-    #spotlight3{ background:linear-gradient(to bottom right,#1f1f1f,#262626); border:1px solid #3a3a3a; border-radius:12px; padding:2rem 1.5rem; box-shadow:0 0 16px rgba(230,0,35,.25); text-align:center; max-width:900px; margin:1.5rem auto; }
-    #spotlight3:hover{ border-color:#555; }
+    .certified-moment{ text-align:center; }
+    .certified-img{ width:100%; max-width:400px; height:auto; border-radius:10px; box-shadow:0 0 10px rgba(255,255,255,.1); margin-bottom:.8rem; }
+    .certified-caption{ font-size:1rem; margin-bottom:.6rem; }
+
+    .incoming-drop{ margin-top:1rem; padding-left:1rem; color:#ddd; font-size:.95rem; list-style-type:square; }
+
+    /* --- Spotlight 3 --- */
+    #spotlight3{ background:linear-gradient(to bottom right,#1f1f1f,#262626); border:2px solid transparent; border-radius:12px; padding:2rem 1.5rem; box-shadow:0 0 16px rgba(230,0,35,.3); text-align:center; max-width:800px; margin:1.5rem auto; transition:border .3s ease; }
+    #spotlight3:hover{ border-color:var(--gsu-red); }
+    #spotlight3 h2{ color:var(--gsu-red); font-size:1.4rem; margin-bottom:.5rem; }
+    #spotlight3 p{ font-size:.95rem; color:#ccc; margin-bottom:1.2rem; }
+
     #fav-game-updates{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; padding:1rem; margin-top:1rem; }
-    .spotlight-video{ background:#2a2a2a; padding:1rem; border-radius:10px; border:1px solid #3a3a3a; }
+    .spotlight-video{ background:#2a2a2a; padding:1rem; border-radius:10px; border:2px solid transparent; transition:transform .3s, box-shadow .3s, border .3s; opacity:0; animation:fadeIn .6s ease forwards; width:100%; max-width:100%; }
+    .spotlight-video:hover{ transform:scale(1.02); border-color:var(--gsu-red); box-shadow:0 0 10px rgba(255,255,255,.08); }
     .spotlight-video iframe{ width:100%; height:200px; border:none; border-radius:8px; margin:.6rem 0; }
+    .spotlight-video h3{ color:var(--gsu-red); margin-bottom:.5rem; font-size:1rem; font-family:'Montserrat',sans-serif; }
+    .spotlight-video p{ color:#bbb; font-size:.9rem; }
 
-    .showoff-card { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; background:#2a2a2a; border-radius:10px; padding:1rem; border:1px solid #3a3a3a; }
-    .showoff-img { width:200px; height:120px; object-fit:cover; border-radius:8px; }
+    @keyframes fadeIn { to{opacity:1;} }
 
-    .talk-quote { background:#2a2a2a; padding:1rem 1.2rem; border:4px solid var(--gsu-red); border-radius:8px; font-style:italic; }
-    .certified-moment { text-align:center; }
-    .certified-img { width:100%; max-width:420px; height:auto; border-radius:10px; margin-bottom:.8rem; }
+    /* --- Favorite images row (scrollable) --- */
+    #fav-images{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:1rem; padding:.5rem 0; justify-content:flex-start; max-width:100%; border:1px solid #444; border-radius:10px; background:#1b1b1b; }
+    #fav-images::-webkit-scrollbar{ height:8px; }
+    #fav-images::-webkit-scrollbar-thumb{ background:var(--gsu-red); border-radius:6px; }
 
+    /* --- Character sync card --- */
+    #character-sync-box{ border:2px solid #e60023; border-radius:12px; padding:12px; margin-top:1rem; background:#1a1a1a; transition:transform .3s, box-shadow .3s; box-shadow:0 0 10px rgba(230,0,35,.4); }
+    #character-sync-box:hover{ transform:scale(1.02); box-shadow:0 0 18px rgba(230,0,35,.6); }
+    #character-image{ height:140px; width:140px; object-fit:contain; border-radius:10px; padding:6px; background:#000; border:1px solid #444; transition:transform .3s; }
+    #character-image:hover{ transform:scale(1.05); box-shadow:0 0 12px rgba(255,255,255,.2); }
+    #character-desc{ font-size:.85rem; max-width:260px; color:#ccc; text-align:left; }
+
+    /* --- Modal --- */
     .modal{ display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,.7); }
-    .modal-content{ background:var(--black-faded); margin:10% auto; padding:24px; border:2px solid var(--gsu-red); border-radius:12px; width:80%; max-width:500px; color:var(--white-text); }
-    .modal-content input{ width:100%; padding:12px; margin:10px 0 18px; background:#2a2a2a; color:#fff; border:1px solid #444; border-radius:6px; }
+    .modal-content{ background:var(--black-faded); margin:10% auto; padding:24px; border:2px solid var(--gsu-red); border-radius:12px; width:80%; max-width:500px; color:var(--white-text); font-family:'Montserrat',sans-serif; box-shadow:0 0 12px rgba(230,0,35,.3); }
+    .modal-content label{ font-weight:600; margin-top:10px; display:block; color:var(--gsu-red); }
+    .modal-content input, .modal-content select{ width:100%; padding:12px; margin:10px 0 18px; background:#2a2a2a; color:#fff; border:1px solid #444; border-radius:6px; font-family:'Roboto',sans-serif; }
+    .modal-content button{ background:var(--gsu-red); color:#fff; border:none; padding:12px 18px; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Montserrat',sans-serif; transition:background .3s, transform .2s; }
+    .modal-content button:hover{ background:#cc001f; transform:scale(1.03); }
+    .close{ float:right; font-size:28px; font-weight:bold; color:var(--gsu-red); cursor:pointer; transition:color .3s; }
+    .close:hover{ color:#ff3344; }
+    .edit-btn{ background:var(--gsu-red); color:#fff; padding:10px 14px; border:none; border-radius:8px; cursor:pointer; margin-top:15px; font-family:'Montserrat',sans-serif; font-weight:600; transition:background .3s, transform .2s; }
+    .edit-btn:hover{ background:#cc001f; transform:scale(1.03); }
 
-    /* Auth gating: hide certain blocks until signed in */
-    body[data-auth="out"] .auth-required { display:none !important; }
-    body[data-auth="in"]  .auth-required { display:block; }
-
+    /* --- Responsive --- */
     @media (max-width:1024px){ .main-container{ grid-template-columns:1fr; padding:1rem; } header{ flex-direction:column; align-items:flex-start; } }
     @media (max-width:600px){ .logo img{ height:40px; } .logo-text{ font-size:1.2rem; } nav a{ font-size:.9rem; } .btn{ padding:.7rem; } .input-field{ font-size:.9rem; } }
   </style>
 </head>
+
 <body data-auth="out">
   <header>
     <div class="logo">
@@ -118,19 +167,23 @@
         </p>
       </div>
 
+      <!-- 🕹️ Retro Game Flashback -->
       <div class="box match-review-style">
         <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
-        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">Step back into the early days of gaming. One random flashback every click.</p>
+        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">
+          Step back into the early days of gaming. One random flashback every click.
+        </p>
         <div class="retro-body">
           <div class="game-title">From here, the Retroverse info unfolds.</div>
           <div class="game-fact" id="retro-fact" style="max-height:90px; overflow-y:auto;">Loading fact...</div>
-          <button class="btn" id="spinRetro" style="margin-top:.8rem; font-size:.85rem;">🕹️ Spin the Retro Wheel</button>
+          <button class="btn" onclick="loadRetroFact()" style="margin-top:.8rem; font-size:.85rem;">🕹️ Spin the Retro Wheel</button>
         </div>
       </div>
 
+      <!-- 🎮 GSU Character Sync -->
       <div class="box match-review-style">
         <h2 class="retro-header">🎮 GSU Character Sync-Up</h2>
-        <p style="font-size:.9rem; color:#ccc; margin-bottom:1rem;">Choose your platform to reveal which video game legend is synced with your GSU energy.</p>
+        <p class="sync-desc">Choose your platform to reveal which video game legend is synced with your GSU energy.</p>
 
         <label class="sync-label">🕹️ Choose Your Platform to Begin the Sync:</label>
         <select id="platform-select" class="input-field">
@@ -144,10 +197,10 @@
         <div id="no-character-msg" style="color:red; font-size:.9rem; margin-bottom:1rem; text-align:center;">No Video Game Character in Sync.</div>
 
         <div id="character-role" style="text-align:center; font-weight:600; margin:.5rem 0;"></div>
-        <div style="border:2px solid #e60023; border-radius:12px; padding:12px; background:#1a1a1a;">
+        <div id="character-sync-box">
           <div style="display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center;">
-            <img id="character-image" src="GSU_LOGO.png" alt="Character" style="height:140px; width:140px; object-fit:contain; border-radius:10px; padding:6px; background-color:#000; border:1px solid #444;">
-            <div id="character-desc" style="font-size:.9rem; max-width:260px; color:#ccc; text-align:left;">Choose your platform to reveal your synced legend.</div>
+            <img id="character-image" src="GSU_LOGO.png" alt="Character" />
+            <div id="character-desc">Choose your platform to reveal your synced legend.</div>
           </div>
         </div>
       </div>
@@ -164,15 +217,15 @@
       <!-- Profile (shown only when signed in) -->
       <div class="box auth-required" id="profile-box">
         <h2 style="color:var(--gsu-red);">Your Profile</h2>
-        <p class="stat-box" id="fav-games">🔥 Favorite Games</p>
-        <p class="stat-box" id="games-played">🎮 Number Of Games Played</p>
-        <p class="stat-box" id="trophy-stats">🏆 Trophy Stats (Total Trophies)</p>
+        <p id="fav-games" class="stat-box">🔥 Favorite Games</p>
+        <p id="games-played" class="stat-box">🎮 Number Of Games Played</p>
+        <p id="trophy-stats" class="stat-box">🏆 Trophy Stats (Total Trophies)</p>
 
         <div style="margin-top:.5rem; text-align:left; font-size:.9rem; color:#ccc;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</div>
         <div id="fav-images"></div>
 
         <div style="margin-top:1rem; text-align:center;">
-          <button onclick="openEditModal()" class="btn" style="max-width:240px;">Update GSU Profile</button>
+          <button onclick="openEditModal()" class="edit-btn" style="max-width:240px;">Update GSU Profile</button>
         </div>
       </div>
 
@@ -192,7 +245,7 @@
         </div>
       </div>
 
-      <!-- Featured Clip -->
+      <!-- Featured Clip (Union Watch) -->
       <div class="box">
         <h2 style="color:var(--gsu-red); text-align:center;">🔥 Made the Union Watch</h2>
         <p style="text-align:center;">When the Union highlights you — it means something. Real gameplay earns the light.</p>
@@ -253,7 +306,7 @@
       <!-- Spotlight (personalized videos) -->
       <div class="box" id="spotlight3">
         <h2>🎮 GameSync Spotlight 3</h2>
-        <p>Daily gameplay drops from the titles that matter to you.</p>
+        <p>GameSync Spotlight 3 delivers gameplay from the titles that matter to you — daily.</p>
         <div id="fav-game-updates"></div>
       </div>
     </main>
@@ -270,11 +323,11 @@
         </div>
       </div>
 
-      <div class="box match-review-style" id="knowledgeDrop">
+      <div class="box match-review-style">
         <h2 class="retro-header">🧠 Game Dev Knowledge Drop</h2>
-        <p id="kdLead" style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">Level design is more psychology than geometry.</p>
+        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">Level design is more psychology than geometry.</p>
         <div class="retro-body" style="display:flex; flex-direction:column; gap:.5rem;">
-          <div id="kdBullet" style="font-size:.85rem;">📘 Analyzing flow, affordances, and feedback loops.</div>
+          <div style="font-size:.85rem;">📘 Analyzing flow, affordances, and feedback loops.</div>
           <button class="btn" style="font-size:.85rem;">📚 Learn More</button>
         </div>
       </div>
@@ -305,14 +358,14 @@
   <!-- Edit Modal -->
   <div id="editModal" class="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeEditModal()" style="float:right; font-size:28px; color:var(--gsu-red); cursor:pointer;">&times;</span>
+      <span class="close" onclick="closeEditModal()">&times;</span>
       <h2>Update Profile</h2>
 
       <label>Username:</label>
       <input type="text" id="editUsername" placeholder="Change your Username">
 
       <label>Platform:</label>
-      <select id="editPlatform" class="input-field">
+      <select id="editPlatform">
         <option value="">-- Select your new Platform --</option>
         <option value="PlayStation">PlayStation</option>
         <option value="PC">PC</option>
@@ -333,7 +386,7 @@
       <label>Total Trophy Count:</label>
       <input type="number" id="editTrophies" min="0">
 
-      <button class="btn" onclick="saveProfileChanges()" style="margin-top:.5rem;">Save Changes</button>
+      <button onclick="saveProfileChanges()">Save Changes</button>
     </div>
   </div>
 
@@ -345,15 +398,56 @@
   </div>
   <div id="authOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,.5); z-index:9998;"></div>
 
-  <!-- ========================= JS ========================= -->
+  <!-- ---------- Client-side helpers (non-module) ---------- -->
+  <script>
+    /* Retro facts + character data (used by both classic handlers and module) */
+    const RetroFacts = [
+      "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
+      "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
+      "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
+      "🎯 Pong (1972) was so popular that the original machine overflowed with quarters and broke.",
+      "🎮 The Sega Genesis had a hidden sound test screen used for cheat codes in Sonic games.",
+      "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
+      "🎤 Mortal Kombat sparked U.S. hearings that led to the ESRB rating system.",
+      "🌀 SNES Mode 7 enabled fake 3D effects in F-Zero and Mario Kart.",
+      "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
+    ];
+    const CharacterAssignments = [
+      { name:"Peter Parker/Spider-Man", role:"superhero", desc:"You balance smarts, strength, and soul. In every crisis, you choose the right thing — even when it costs you everything.", img:"https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg", platforms:["PlayStation","PC"] },
+      { name:"Kratos", role:"anti-hero", desc:"Fueled by rage but guided by growth. You don’t run — you conquer.", img:"https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg", platforms:["PlayStation"] },
+      { name:"Miles Morales", role:"superhero", desc:"You carry the weight of two worlds — and still move with purpose, heart, and style.", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg", platforms:["PlayStation","PC"] },
+      { name:"Aloy", role:"hunter-protector", desc:"Curiosity + courage. You push boundaries to save the world.", img:"https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg", platforms:["PlayStation","PC"] },
+      { name:"Jin Sakai", role:"samurai-turned-ghost", desc:"Honor matters — survival adapts. You do what it takes.", img:"https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg", platforms:["PlayStation"] },
+      { name:"Ratchet", role:"galactic hero", desc:"Inventive, loyal, always ready to blast through challenge.", img:"https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100", platforms:["PlayStation"] },
+      { name:"Mario", role:"hero-plumber", desc:"Whether it’s Bowser, bricks, or bananas, you jump in with heart and hustle.", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/03/super-mario-odyssey-sequel-beanbean-kingdom.jpg", platforms:["Nintendo"] },
+      { name:"Donkey Kong", role:"jungle powerhouse", desc:"Bold, strong, unshakable. Loyal to your crew.", img:"https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646", platforms:["Nintendo"] }
+    ];
+    function loadRetroFact(){ const r = RetroFacts[Math.floor(Math.random()*RetroFacts.length)]; document.getElementById("retro-fact").innerText = r; }
+    function updateCharacterOptions(){
+      const platform = (document.getElementById("platform-select")?.value)||"";
+      const roleEl = document.getElementById("character-role"), descEl = document.getElementById("character-desc"), imgEl = document.getElementById("character-image"), msgEl = document.getElementById("no-character-msg");
+      const gsuLogo = "GSU_LOGO.png";
+      if (!platform){ roleEl.innerText=""; descEl.innerText=""; imgEl.src=gsuLogo; msgEl.style.display="block"; return; }
+      const filtered = CharacterAssignments.filter(c => c.platforms.includes(platform));
+      if (!filtered.length){ roleEl.innerText=""; descEl.innerText=""; imgEl.src=gsuLogo; msgEl.style.display="block"; return; }
+      const chosen = filtered[Math.floor(Math.random()*filtered.length)];
+      roleEl.innerText = `🎮 You Are: ${chosen.name} (${chosen.role})`;
+      descEl.innerText = chosen.desc; imgEl.src = chosen.img; msgEl.style.display="none";
+    }
+    window.addEventListener('DOMContentLoaded', () => { updateCharacterOptions(); loadRetroFact(); });
 
-  <!-- Firebase core + SDKs -->
+    /* Auth notice helpers used by the module below */
+    function showAuthNotice(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="block"; if(o) o.style.display="block"; }
+    function hideAuthNotice(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="none"; if(o) o.style.display="none"; }
+    window.showAuthNotice = showAuthNotice; window.hideAuthNotice = hideAuthNotice;
+  </script>
+
+  <!-- ---------- Firebase init + basic profile editing (module) ---------- -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    // --- Firebase config (yours) ---
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
       authDomain: "gamesync-union.firebaseapp.com",
@@ -368,20 +462,17 @@
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
-    // Persist login
-    setPersistence(auth, browserLocalPersistence).catch(console.error);
-
-    // Expose for other scripts in this page
+    // Make available globally for other scripts on this page
     window.db = db; window.auth = auth; window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
 
-    // --- Auth UI ---
+    setPersistence(auth, browserLocalPersistence).catch(console.error);
+
     const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
     const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
     const signInBtn = document.getElementById('signInBtn');
     const createAccountBtn = document.getElementById('createAccountBtn');
 
     if (createAccountBtn) createAccountBtn.addEventListener('click', () => window.location.href = "account_creation.html");
-
     if (signInBtn) {
       signInBtn.addEventListener('click', async () => {
         const email = (emailInput?.value || "").trim();
@@ -390,7 +481,6 @@
         try {
           const userCred = await signInWithEmailAndPassword(auth, email, password);
           await loadProfile(userCred.user.uid);
-          hideAuthNotice();
           alert("Signed in successfully");
         } catch (err) { alert("Login failed: " + err.message); }
       });
@@ -404,15 +494,9 @@
       });
     }
 
-    // Signed-out overlay helpers
-    window.showAuthNotice = function(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="block"; if(o) o.style.display="block"; }
-    window.hideAuthNotice = function(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="none"; if(o) o.style.display="none"; }
-
-    // --- Profile loader ---
     async function loadProfile(uid) {
       const snap = await getDoc(doc(db, "users", uid));
       if (!snap.exists()) return;
-
       const data = snap.data();
       const profileBox = document.getElementById("profile-box");
 
@@ -446,13 +530,13 @@
           const img = document.createElement("img");
           img.src = url;
           img.alt = (data.favoriteGames && data.favoriteGames[index]) || `Game ${index+1}`;
-          img.classList.add("update-flash-img");
+          img.classList.add("profile-fav-img","update-flash-img");
           imageRow.appendChild(img);
         });
       }
     }
 
-    // Edit modal helpers
+    // Expose edit modal helpers
     window.openEditModal = function () {
       document.getElementById('editModal').style.display = 'block';
       document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
@@ -494,99 +578,71 @@
       const profileBox = document.getElementById("profile-box");
       if (user) { profileBox?.style && (profileBox.style.display = "block"); loadProfile(user.uid); hideAuthNotice(); }
       else      { profileBox?.style && (profileBox.style.display = "none"); showAuthNotice(); setTimeout(hideAuthNotice, 8000); }
-      runHome(); // rebuild content on state change
     });
   </script>
 
-  <!-- Stats, Spotlight, Alerts, Talk of the Week, Featured Clip -->
+  <!-- ---------- Data orchestrator (module) ---------- -->
   <script type="module">
     import {
       collection, query, where, orderBy, limit, getDocs,
       getCountFromServer, Timestamp, doc, getDoc
     } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { onAuthStateChanged, getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
     const db   = window.db;
-    const auth = window.auth;
+    const auth = window.auth || getAuth();
 
+    /* ---------- Helpers ---------- */
     const $ = (id) => document.getElementById(id);
     const setText = (id, val) => { const el = $(id); if (el) el.textContent = String(val); };
 
-    /* ---------- Daily rotation helpers ---------- */
-    const dayKey = () => new Date().toISOString().slice(0,10); // YYYY-MM-DD
-    const hash = (s) => { let h=2166136261>>>0; for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h>>>0; };
-    const dailyPickIndex = (len, salt="") => len ? hash(dayKey()+salt) % len : 0;
+    const dayKey = () => new Date().toISOString().slice(0,10);           // YYYY-MM-DD
+    const hash   = (s) => { let h=2166136261>>>0; for (let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0; };
+    const dailyPickIndex = (len, salt="") => len ? (hash(dayKey()+salt) % len) : 0;
 
-    /* ---------- Content pools ---------- */
-    const RetroFacts = [
-      "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
-      "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
-      "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
-      "🎯 Pong (1972) was so popular the original machine overflowed with quarters and broke.",
-      "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
-      "🎤 Mortal Kombat helped spark the ESRB rating system.",
-      "🌀 SNES Mode 7 enabled fake 3D in F-Zero and Mario Kart."
-    ];
-    const KnowledgeDrops = [
-      { lead:"Level design is more psychology than geometry.", bullet:"📘 Flow, affordances, and feedback loops guide players subconsciously." },
-      { lead:"Enemy placement teaches without text.", bullet:"🎯 Choke points + audio stingers = anticipation & pacing." },
-      { lead:"Juice & polish are UX, not fluff.", bullet:"✨ Screenshake, hit-stop, and audio layers communicate impact." },
-      { lead:"Onboarding beats difficulty spikes.", bullet:"📈 Ladder the mechanics: introduce, test, remix, master." },
-      { lead:"Good checkpoints reduce fear of failure.", bullet:"🧭 Smart respawns keep you in the learning zone." }
-    ];
     const FallbackQuotes = [
       "Bro didn’t dodge — he teleported 💀",
       "Parry windows were forged in the fires of lag.",
       "If it’s not a flex, why’s it on the timeline?",
-      "Damage is temporary. Style is forever.",
-      "That whiff punish cured my boredom."
+      "Damage is temporary. Style is forever."
     ];
 
-    const CharacterAssignments = [
-      { name:"Peter Parker/Spider-Man", role:"superhero", desc:"Smarts, strength, and soul. You choose right — even when it costs you.", img:"https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg", platforms:["PlayStation","PC"] },
-      { name:"Kratos", role:"anti-hero", desc:"Fueled by rage, guided by growth. You don’t run — you conquer.", img:"https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg", platforms:["PlayStation"] },
-      { name:"Miles Morales", role:"superhero", desc:"Weight of two worlds, still moving with purpose. You’re the spark.", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg", platforms:["PlayStation","PC"] },
-      { name:"Aloy", role:"hunter-protector", desc:"Curiosity + courage. You push boundaries to save the world.", img:"https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg", platforms:["PlayStation","PC"] },
-      { name:"Jin Sakai", role:"samurai-turned-ghost", desc:"Honor matters — survival adapts. You do what it takes.", img:"https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg", platforms:["PlayStation"] },
-      { name:"Ratchet", role:"galactic hero", desc:"Inventive, loyal, always ready to blast through challenge.", img:"https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100", platforms:["PlayStation"] },
-      { name:"Mario", role:"hero-plumber", desc:"Heart and hustle. It’s-a you!", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/03/super-mario-odyssey-sequel-beanbean-kingdom.jpg", platforms:["Nintendo"] },
-      { name:"Donkey Kong", role:"jungle powerhouse", desc:"Bold, strong, unshakable. Loyal to your crew.", img:"https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646", platforms:["Nintendo"] }
-    ];
-
-    /* ---------- UI helpers ---------- */
-    function applyDailyRetro(){ setText("retro-fact", RetroFacts[dailyPickIndex(RetroFacts.length, "retro")]); }
-    function updateCharacterOptions(){
-      const platform = ($("platform-select")?.value)||"";
-      const roleEl = $("character-role"), descEl = $("character-desc"), imgEl = $("character-image"), msgEl = $("no-character-msg");
-      if (!platform){ roleEl.textContent=""; descEl.textContent=""; imgEl.src="GSU_LOGO.png"; msgEl.style.display="block"; return; }
-      const filtered = CharacterAssignments.filter(c => c.platforms.includes(platform));
-      if (!filtered.length){ roleEl.textContent=""; descEl.textContent=""; imgEl.src="GSU_LOGO.png"; msgEl.style.display="block"; return; }
-      const chosen = filtered[dailyPickIndex(filtered.length, platform)];
-      roleEl.textContent = `🎮 You Are: ${chosen.name} (${chosen.role})`;
-      descEl.textContent = chosen.desc; imgEl.src = chosen.img; msgEl.style.display = "none";
+    function applyDailyRetro(){ setText("retro-fact", (window.RetroFacts||[])[dailyPickIndex((window.RetroFacts||[]).length, "retro")] || "Retro fact loading failed."); }
+    function applyDailyQuote(){
+      const q = $("talkQuoteText"), w = $("talkQuoteWho");
+      if (!q || !w) return;
+      q.textContent = `“${FallbackQuotes[dailyPickIndex(FallbackQuotes.length, "quote")]}”`;
+      w.textContent = "— GSU Lounge";
     }
-    $("spinRetro")?.addEventListener("click", () => setText("retro-fact", RetroFacts[Math.floor(Math.random()*RetroFacts.length)]));
-    $("platform-select")?.addEventListener("change", updateCharacterOptions);
+    function updateCharacterOptionsDaily(){
+      const select = $("platform-select"); if (!select) return;
+      const platform = select.value || "";
+      const roleEl = $("character-role"), descEl = $("character-desc"), imgEl = $("character-image");
+      const msgEl  = $("no-character-msg");
+      const CharacterAssignments = window.CharacterAssignments || [];
+      if (!platform){ roleEl.innerText=""; descEl.innerText=""; imgEl.src="GSU_LOGO.png"; if(msgEl) msgEl.style.display="block"; return; }
+      const filtered = CharacterAssignments.filter(c => (c.platforms||[]).includes(platform));
+      const chosen = filtered.length ? filtered[dailyPickIndex(filtered.length, platform)] : null;
+      if (!chosen){ roleEl.innerText=""; descEl.innerText=""; imgEl.src="GSU_LOGO.png"; if(msgEl) msgEl.style.display="block"; return; }
+      roleEl.innerText = `🎮 You Are: ${chosen.name} (${chosen.role})`;
+      descEl.innerText = chosen.desc; imgEl.src = chosen.img; if(msgEl) msgEl.style.display="none";
+    }
+    $("platform-select")?.addEventListener("change", updateCharacterOptionsDaily);
 
-    /* ---------- Firestore blocks ---------- */
+    /* ---------- Firestore queries ---------- */
     async function safeCount(colName, qParts=[]){
       try{
         const base = collection(db, colName);
-        const q = qParts.length ? query(base, ...qParts) : base;
+        const q    = qParts.length ? query(base, ...qParts) : base;
         const snap = await getCountFromServer(q);
         return snap.data().count || 0;
-      }catch(e){ return 0; }
+      }catch{ return 0; }
     }
     async function countSubmissions({type=null, hasVideo=false}={}){
       try{
-        if (type) {
-          const n = await safeCount("submissions", [ where("type","==", type) ]);
-          if (n) return n;
-        }
-      }catch{}
-      try{
+        if (type){ const n = await safeCount("submissions", [ where("type","==", type) ]); if (n) return n; }
         const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(200)));
-        return qs.docs.filter(d=>{
+        return qs.docs.filter(d => {
           const x = d.data()||{};
           const okType  = type ? String(x.type||"").toLowerCase()===type : true;
           const okMedia = hasVideo ? !!x.videoUrl : true;
@@ -606,22 +662,21 @@
         },0);
       }catch{ return 0; }
     }
+    async function usernameFrom(uid){
+      if (!uid) return "GSU_Player";
+      try{ const s = await getDoc(doc(db,"users",uid)); const u = s.data()||{}; return (u.username || (u.email?.split("@")[0]) || "GSU_Player"); }
+      catch{ return "GSU_Player"; }
+    }
+
     async function populateStats(){
       const sevenDaysAgo = Timestamp.fromDate(new Date(Date.now() - 7*24*3600*1000));
-      const totalMembers = await safeCount("users");
-      const newMembers   = await safeCount("users", [ where("createdAt", ">=", sevenDaysAgo) ]);
-      const videoUploads = await countSubmissions({ hasVideo:true });
-      const fanArt       = await safeCount("community_art");
-      const trophies     = await safeCount("community_trophies");
-      const combos       = await countSubmissions({ type:"combo" });
-      const pollVotes    = await sumPollVotes();
-      setText("totalMembers", totalMembers);
-      setText("newMembers",   newMembers);
-      setText("videoUploads", videoUploads);
-      setText("fanArt",       fanArt);
-      setText("trophies",     trophies);
-      setText("combos",       combos);
-      setText("pollVotes",    pollVotes);
+      setText("totalMembers", await safeCount("users"));
+      setText("newMembers",   await safeCount("users", [ where("createdAt", ">=", sevenDaysAgo) ]));
+      setText("videoUploads", await countSubmissions({ hasVideo:true }));
+      setText("fanArt",       await safeCount("community_art"));
+      setText("trophies",     await safeCount("community_trophies"));
+      setText("combos",       await countSubmissions({ type:"combo" }));
+      setText("pollVotes",    await sumPollVotes());
     }
 
     function youtubeEmbed(url){
@@ -630,45 +685,38 @@
         const u = new URL(url);
         if (u.hostname.includes("youtu.be")) return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
         if (u.hostname.includes("youtube.com")){
-          const id = u.searchParams.get("v"); if (id) return `https://www.youtube.com/embed/${id}`;
+          const id = u.searchParams.get("v");
+          if (id) return `https://www.youtube.com/embed/${id}`;
         }
       }catch{}
       return "";
     }
 
-    const H24 = 24*60*60*1000;
+    const H24   = 24*60*60*1000;
     const since = Timestamp.fromDate(new Date(Date.now() - H24));
 
-    async function usernameFrom(uid){
-      if (!uid) return "GSU_Player";
-      try{ const s = await getDoc(doc(db,"users",uid)); const u = s.data()||{}; return (u.username || (u.email?.split("@")[0]) || "GSU_Player"); }
-      catch{ return "GSU_Player"; }
-    }
-
     async function buildUnionWatch(){
-      const media = $("unionWatchMedia"), title = $("unionWatchTitle"), cap   = $("unionWatchCaption");
+      const media = $("unionWatchMedia"), title = $("unionWatchTitle"), cap = $("unionWatchCaption");
       if (!media) return;
-
-      let docHit = null;
+      let hit = null;
       try{
         const qs = await getDocs(query(collection(db,"submissions"), where("timestamp", ">=", since), orderBy("timestamp","desc"), limit(15)));
-        docHit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
+        hit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
       }catch{}
-      if (!docHit){
+      if (!hit){
         try{
           const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(20)));
-          docHit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
+          hit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
         }catch{}
       }
-      if (!docHit){ title.textContent = "No featured clip yet — be the first!"; cap.textContent=""; media.innerHTML=""; return; }
-
-      const user = await usernameFrom(docHit.userId);
-      const embed = youtubeEmbed(docHit.videoUrl);
+      if (!hit){ title && (title.textContent = "No featured clip yet — be the first!"); cap && (cap.textContent=""); media.innerHTML=""; return; }
+      const user = await usernameFrom(hit.userId);
+      const embed = youtubeEmbed(hit.videoUrl);
       media.innerHTML = embed
         ? `<iframe src="${embed}" allowfullscreen style="width:100%;height:360px;border-radius:10px;"></iframe>`
-        : `<img src="${docHit.cover || 'GSU_LOGO.png'}" alt="Clip" class="showoff-img" />`;
-      title.textContent = `@${user} — ${docHit.title || "Featured Clip"}`;
-      cap.textContent   = docHit.caption || "Certified GSU moment.";
+        : `<img src="${hit.cover || 'GSU_LOGO.png'}" alt="Clip" class="showoff-img" />`;
+      if (title) title.textContent = `@${user} — ${hit.title || "Featured Clip"}`;
+      if (cap)   cap.textContent   = hit.caption || "Certified GSU moment.";
     }
 
     async function buildCertifiedMoment(){
@@ -690,124 +738,115 @@
       try{
         const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(10)));
         const hit = qs.docs.map(d=>d.data()).find(x => (x.caption||"").length > 0);
-        if (hit){
-          const user = await usernameFrom(hit.userId);
-          const text = String(hit.caption).trim().replace(/^["“]|["”]$/g,"");
-          q.textContent = `“${text}”`; w.textContent = `— @${user}`; return;
-        }
+        if (hit){ const user = await usernameFrom(hit.userId); q.textContent = `“${String(hit.caption).trim().replace(/^["“]|["”]$/g,"")}”`; w.textContent = `— @${user}`; return; }
       }catch{}
-      q.textContent = `“${FallbackQuotes[dailyPickIndex(FallbackQuotes.length, "quote")]}”`;
-      w.textContent = "— GSU Lounge";
+      applyDailyQuote(); // fallback daily rotation
     }
 
     async function buildAlerts(){
       const list = $("alertsList"); if (!list) return;
       list.innerHTML = `<li>Loading…</li>`;
       const rows = [];
-
       async function pushFrom(col, maker){
         try{
           const qs = await getDocs(query(collection(db,col), where("timestamp", ">=", since), orderBy("timestamp","desc")));
           for (const d of qs.docs){
-            const x = d.data()||{};
-            const user = await usernameFrom(x.userId);
-            const line = maker(x, user);
-            if (line) rows.push(`<li>${line}</li>`);
+            const x = d.data()||{}; const user = await usernameFrom(x.userId);
+            const line = maker(x,user); if (line) rows.push(`<li>${line}</li>`);
           }
-        }catch(e){}
+        }catch{}
       }
-
-      await pushFrom("submissions", (x,u)=>{
-        if (x.videoUrl) return `🎥 New upload: <strong>${x.title || 'Clip'}</strong> — @${u}`;
-        if ((x.type||"").toLowerCase()==="combo") return `🥊 New combo guide: <strong>${x.title || 'Combo'}</strong> — @${u}`;
-        return null;
-      });
+      await pushFrom("submissions", (x,u)=> x.videoUrl ? `🎥 New upload: <strong>${x.title || 'Clip'}</strong> — @${u}` :
+                                            (String(x.type||"").toLowerCase()==="combo" ? `🥊 New combo guide: <strong>${x.title || 'Combo'}</strong> — @${u}` : null));
       await pushFrom("community_art",      (x,u)=> `🎨 New art: <strong>${x.title || 'Art drop'}</strong> — @${u}`);
       await pushFrom("community_trophies", (x,u)=> `🏆 New trophy: <strong>${x.title || x.game || 'Trophy'}</strong> — @${u}`);
-
       list.innerHTML = rows.length ? rows.join("") : `<li>No new drops in the last 24 hours — be the first! 🔔</li>`;
     }
 
-    /* ---------- Personalized Spotlight ---------- */
-    const youtubeApiKey = "YOUR_YOUTUBE_API_KEY";
+    /* ---------- Personalized Spotlight (YouTube) ---------- */
+    const spotlightRef = $("fav-game-updates");
+    const YT_KEY = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // Your YouTube API key
+
     async function rotateYouTubeVideosForUser(uid){
-      const cont = $("fav-game-updates"); if (!cont) return;
-      if (!youtubeApiKey || youtubeApiKey === "YOUR_YOUTUBE_API_KEY"){
-        cont.innerHTML = `<p style="color:var(--gsu-red); text-align:center;">Add your YouTube API key to enable personalized gameplay drops.</p>`;
+      if (!spotlightRef) return;
+      if (!YT_KEY || YT_KEY === "YOUR_YOUTUBE_API_KEY"){
+        spotlightRef.innerHTML = `<p style="color:var(--gsu-red); text-align:center;">Add your YouTube API key to enable personalized gameplay drops.</p>`;
         return;
       }
       try{
         const snap = await getDoc(doc(db,"users",uid));
-        if (!snap.exists()){ cont.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>"; return; }
-        const { favoriteGames } = snap.data();
-        if (!Array.isArray(favoriteGames) || !favoriteGames.length){
-          cont.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>"; return;
-        }
-        cont.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
+        if (!snap.exists()){ spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>"; return; }
+        const { favoriteGames=[] } = snap.data();
+        if (!favoriteGames.length){ spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>"; return; }
 
-        // Rotate which 3 we show each day if they have more than 3
-        const games = favoriteGames.slice(0);
-        const offset = dailyPickIndex(Math.max(1, games.length), "vids");
-        const show = [games[(0+offset)%games.length], games[(1+offset)%games.length], games[(2+offset)%games.length]].filter(Boolean);
+        spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
 
-        const blocks = await Promise.all(
-          show.map(async (title) => {
-            const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim();
-            try{
-              const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${youtubeApiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`);
-              const data = await res.json();
-              const video = data.items?.find(item => item.id.kind === "youtube#video");
-              const videoId = video?.id?.videoId;
-              if (!videoId) throw new Error("No videos found");
-              return `
-                <div class="spotlight-video">
-                  <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
-                  <h3 style="color:var(--gsu-red);">🎮 ${title}</h3>
-                  <p>▶️ Daily gameplay drop powered by YouTube</p>
-                </div>
-              `;
-            } catch(err){
-              console.error(`Error loading video for ${title}:`, err);
-              return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
+        // Pick 3 favorites deterministically per-day
+        const offset = dailyPickIndex(Math.max(1,favoriteGames.length), "vids");
+        const show = [favoriteGames[(0+offset)%favoriteGames.length], favoriteGames[(1+offset)%favoriteGames.length], favoriteGames[(2+offset)%favoriteGames.length]].filter(Boolean);
+
+        const blocks = await Promise.all(show.map(async (title)=>{
+          const clean = title.replace(/[^\w\s:]/gi,"").trim();
+          try{
+            const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${YT_KEY}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(clean + " gameplay")}`);
+            const data = await res.json();
+            if (data?.error?.errors?.[0]?.reason === "quotaExceeded"){
+              return `<div style="color:var(--gsu-red); text-align:center; padding:1rem;">
+                        Today’s video drops are temporarily unavailable. Check back tomorrow!
+                        <br/><br/>
+                        <button onclick="window.location.href='uploads.html'" style="background-color: var(--gsu-red); color:#fff; border:none; padding:.6rem 1rem; border-radius:6px; cursor:pointer; font-family:'Montserrat',sans-serif; font-weight:600;">Explore GSU Player Lounge</button>
+                      </div>`;
             }
-          })
-        );
-        cont.innerHTML = blocks.join("");
-      } catch(e){
-        console.error("Error fetching YouTube videos:", e);
-        cont.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
+            const video = data.items?.find(it => it.id?.kind==="youtube#video");
+            const id = video?.id?.videoId;
+            if (!id) throw new Error("No videos");
+            return `
+              <div class="spotlight-video">
+                <iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
+                <h3>🎮 ${title}</h3>
+                <p>▶️ Daily gameplay drop powered by YouTube</p>
+              </div>
+            `;
+          }catch(e){
+            console.error("YT error", e);
+            return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
+          }
+        }));
+        spotlightRef.innerHTML = blocks.join("");
+      }catch(e){
+        console.error(e);
+        spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
       }
-    }
-
-    /* ---------- Knowledge Drop (daily) ---------- */
-    function applyDailyKnowledge(){
-      const k = KnowledgeDrops[dailyPickIndex(KnowledgeDrops.length, "kd")];
-      $("kdLead").textContent = k.lead;
-      $("kdBullet").textContent = k.bullet;
     }
 
     /* ---------- Orchestrator ---------- */
     async function runHome(){
-      try { applyDailyRetro(); applyDailyKnowledge(); updateCharacterOptions(); } catch {}
-      try { await populateStats(); } catch {}
+      try{ applyDailyRetro(); updateCharacterOptionsDaily(); }catch{}
+      try{ await populateStats(); }catch{}
       await Promise.all([buildUnionWatch(), buildCertifiedMoment(), buildTalkOfWeek(), buildAlerts()]);
       const user = auth.currentUser;
-      const vidsContainer = $("fav-game-updates");
-      if (vidsContainer) {
+      if (spotlightRef){
         if (user) rotateYouTubeVideosForUser(user.uid);
-        else vidsContainer.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
+        else spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
       }
     }
 
-    // Rebuild at midnight for daily rotations
     function scheduleMidnightRefresh(){
       const now = new Date();
       const next = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0,0,2);
       setTimeout(()=>{ runHome(); scheduleMidnightRefresh(); }, next - now);
     }
 
+    // Auth state: flip the gate + run build
+    onAuthStateChanged(auth, (user)=>{
+      document.body.dataset.auth = user ? "in" : "out";
+      if (user){ window.hideAuthNotice?.(); }
+      else     { window.showAuthNotice?.(); setTimeout(window.hideAuthNotice, 8000); }
+      runHome();
+    });
+
     // Boot
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", ()=>{
       runHome();
       scheduleMidnightRefresh();
       setInterval(buildAlerts, 10*60*1000); // keep 24h window rolling
