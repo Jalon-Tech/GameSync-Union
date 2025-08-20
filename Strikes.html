@@ -23,59 +23,46 @@
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
   }
+  .wrap.shake{animation:shake .3s ease}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-4px)}}
+
   .hud{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem)}
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
 
-  .panel{
-    border:1px solid #2a2a2a; border-radius:12px; padding:12px; background:#0b0b0b;
-    display:flex; flex-direction:column; gap:12px;
-  }
-  .cmd{
-    background:#0f0f0f; border:1px dashed #444; border-radius:12px; padding:12px; min-height:80px;
-    display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
-  }
-  .token{
-    padding:10px 12px; border-radius:10px; background:#171717; border:1px solid #333; font-size:1.05rem;
-  }
+  .panel{border:1px solid #2a2a2a; border-radius:12px; padding:12px; background:#0b0b0b; display:flex; flex-direction:column; gap:12px;}
+
+  /* FX Stage */
+  .stage{position:relative; height:180px; border:1px solid #333; border-radius:12px; background:#0f0f0f; overflow:hidden}
+  .fx{position:absolute; inset:0; pointer-events:none}
+  .target{position:absolute; right:18px; top:24px; font-size:52px; filter:drop-shadow(0 0 8px #fff)}
+  .target.hit{filter:drop-shadow(0 0 14px #e60023)}
+  .logoFly{position:absolute; width:64px; left:-90px; top:120px; animation:fly .8s ease-out forwards}
+  @keyframes fly{from{left:-90px; top:120px; transform:rotate(-15deg)} to{left:calc(100% - 120px); top:26px; transform:rotate(10deg)}}
+  .boom{position:absolute; right:12px; top:20px; font-size:64px; opacity:0; animation:pop .45s ease-out forwards}
+  @keyframes pop{from{transform:scale(.5); opacity:.2} to{transform:scale(1.2); opacity:1}}
+
+  .big-next{text-align:center; font-size:clamp(1.2rem,4.5vw,1.8rem); background:#0f0f0f; border:1px solid #333; border-radius:12px; padding:12px;}
+  .cmd{background:#0f0f0f; border:1px dashed #444; border-radius:12px; padding:12px; min-height:80px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;}
+  .token{padding:10px 12px; border-radius:10px; background:#171717; border:1px solid #333; font-size:1.05rem}
   .token.pending{outline:2px solid #ffae00}
   .token.ok{outline:2px solid #29d07a}
   .token.bad{outline:2px solid #d02121}
 
-  .big-next{
-    text-align:center; font-size:clamp(1.2rem,4.5vw,1.8rem);
-    background:#0f0f0f; border:1px solid #333; border-radius:12px; padding:12px;
-  }
-
   .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center}
-  .btn{
-    border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
-    box-shadow:0 0 10px #e60023aa; font-weight:700;
-  }
+  .btn{border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer; box-shadow:0 0 10px #e60023aa; font-weight:700}
   .btn:disabled{opacity:.5; cursor:not-allowed}
-
-  /* On-screen controls */
-  .controls{
-    margin-top:10px; display:grid; grid-template-columns:repeat(3,64px); gap:8px; justify-content:center; align-items:center;
-    user-select:none;
-  }
-  .key{
-    width:64px; height:64px; border-radius:12px; background:#121212; border:1px solid #333; display:flex;
-    align-items:center; justify-content:center; font-size:1.2rem; cursor:pointer;
-    box-shadow:0 0 8px rgba(255,255,255,.05);
-  }
-  .key:active{filter:brightness(1.2)}
-  .face{
-    display:flex; gap:10px; justify-content:center; margin-top:6px;
-  }
-  .face .key{width:72px; height:48px; font-weight:700}
   .hint{color:var(--muted); text-align:center; font-size:.95rem}
 
-  footer{opacity:.7; font-size:.85rem}
+  /* On-screen controls */
+  .controls{margin-top:6px; display:grid; grid-template-columns:repeat(3,64px); gap:8px; justify-content:center; align-items:center; user-select:none}
+  .key{width:64px; height:64px; border-radius:12px; background:#121212; border:1px solid #333; display:flex; align-items:center; justify-content:center; font-size:1.2rem; cursor:pointer; box-shadow:0 0 8px rgba(255,255,255,.05)}
+  .key:active{filter:brightness(1.2)}
+  .letters{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:6px}
+  .letters .key{width:48px; height:44px}
 
-  @media (max-width:720px){
-    .hud{grid-template-columns:repeat(2,1fr)}
-  }
+  footer{opacity:.7; font-size:.85rem}
+  @media (max-width:720px){ .hud{grid-template-columns:repeat(2,1fr)} }
 </style>
 </head>
 <body>
@@ -89,7 +76,7 @@
     </nav>
   </header>
 
-  <section class="wrap">
+  <section class="wrap" id="wrap">
     <h1 style="margin:6px 0 10px 6px;">GSU COMMAND STRIKE — SOLO</h1>
     <div class="hud">
       <div class="pill">📜 Round <strong id="round">1</strong>/5</div>
@@ -100,6 +87,11 @@
     </div>
 
     <div class="panel">
+      <!-- FX Stage -->
+      <div class="stage" id="stage">
+        <div class="fx" id="fx"></div>
+      </div>
+
       <div class="big-next">Next: <span id="nextToken">—</span></div>
       <div class="cmd" id="cmd"></div>
 
@@ -109,41 +101,44 @@
         <button class="btn" id="restart" disabled>🔁 Restart</button>
       </div>
 
-      <div class="hint">Controls: Arrow Keys for directions • Z = P • X = K • C = G</div>
+      <div class="hint">Arrows = directions • Letters = press the same letter (A/S/D/Q/E/F/J/K/L/Z/X/C)</div>
 
-      <!-- On-screen controls (mobile friendly) -->
+      <!-- On-screen controls -->
       <div class="controls" aria-label="D-Pad">
         <div></div><div class="key" data-sym="↑">↑</div><div></div>
         <div class="key" data-sym="←">←</div><div class="key" data-sym="↓">↓</div><div class="key" data-sym="→">→</div>
       </div>
-      <div class="face">
-        <div class="key" data-sym="P">P</div>
-        <div class="key" data-sym="K">K</div>
-        <div class="key" data-sym="G">G</div>
-      </div>
+      <div class="letters" id="lettersRow"></div>
     </div>
   </section>
 
   <footer>Built for GameSync Union — GSU Command Strike™</footer>
 
 <script>
-/* ------------------------ Simple, Sequential Grammar (no simultaneous) ------------------------ */
+/* ---------------- Tokens & Pattern Gen (variety, no immediate repeats) ---------------- */
 const DIR = ["↑","↓","←","→"];
-const BTN = ["P","K","G"];
+const LETTER_TOKENS = ["A","S","D","Q","E","F","J","K","L","Z","X","C"];
 
-/** Generate a friendly pattern of 4–7 tokens, mostly directions with a few buttons. */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
 function genPattern(round){
   const len = [4,5,5,6,7][Math.min(4, round-1)];
   const toks = [];
   for (let i=0;i<len;i++){
-    const isBtn = Math.random() < 0.35; // 35% buttons to keep it readable
-    toks.push(isBtn ? BTN[Math.floor(Math.random()*BTN.length)]
-                    : DIR[Math.floor(Math.random()*DIR.length)]);
+    const pool = Math.random() < 0.5 ? DIR : LETTER_TOKENS;
+    let t = pick(pool);
+    if (i>0 && t===toks[i-1]){ // avoid immediate repeat
+      const alt = pool.filter(x=>x!==t);
+      t = pick(alt);
+    }
+    toks.push(t);
   }
   return toks;
 }
 
-/* ------------------------ State ------------------------ */
+/* ---------------- State & DOM ---------------- */
+const wrap = document.getElementById('wrap');
+const stage = document.getElementById('stage');
+const fx = document.getElementById('fx');
 const roundEl = document.getElementById('round');
 const progEl  = document.getElementById('progress');
 const timeEl  = document.getElementById('time');
@@ -154,16 +149,15 @@ const nextTok = document.getElementById('nextToken');
 const startBtn= document.getElementById('start');
 const nextBtn = document.getElementById('next');
 const restartBtn=document.getElementById('restart');
+const lettersRow = document.getElementById('lettersRow');
 
 let game = null;
-
 function newGame(){
-  return {
-    round:1, maxRounds:5,
-    tokens:[], idx:0, start:0, end:0,
-    hits:0, presses:0, streak:0, active:false
-  }
+  return { round:1, maxRounds:5, tokens:[], idx:0, start:0, end:0, hits:0, presses:0, streak:0, active:false };
 }
+
+/* Build on-screen letters */
+lettersRow.innerHTML = LETTER_TOKENS.map(ch=>`<div class="key" data-sym="${ch}">${ch}</div>`).join("");
 
 function renderCmd(){
   cmdEl.innerHTML = game.tokens.map((t,i)=>{
@@ -193,12 +187,21 @@ function startRound(){
   game.start = performance.now(); game.end = 0;
   renderCmd(); setHUD();
   startBtn.disabled = true; nextBtn.disabled = true; restartBtn.disabled = false;
+  // Reset stage visual
+  fx.innerHTML = '';
+  // Spawn fresh target
+  const t = document.createElement('div');
+  t.className = 'target';
+  t.textContent = '🎮';
+  fx.appendChild(t);
 }
 
 function endRound(){
   game.active = false;
   game.end = performance.now();
   setHUD();
+  // Awesome strike FX
+  playStrike();
   if (game.round >= game.maxRounds){
     startBtn.disabled = false; startBtn.textContent="🔁 New Drill";
     nextBtn.disabled = true;
@@ -207,68 +210,82 @@ function endRound(){
   }
 }
 
-function nextRound(){
-  game.round++;
-  startRound();
-}
+function nextRound(){ game.round++; startRound(); }
 
-/* ------------------------ Input Handling ------------------------ */
+/* ---------------- Input Handling (letters fixed) ---------------- */
 function apply(sym){
   if (!game?.active) return;
   game.presses++;
-
   const need = game.tokens[game.idx];
+
   if (sym === need){
     game.hits++; game.streak = Math.min(999, game.streak+1);
     game.idx++;
     renderCmd(); setHUD();
-    if (game.idx >= game.tokens.length){
-      endRound();
-    }
+    if (game.idx >= game.tokens.length){ endRound(); }
   } else {
     game.streak = 0;
-    // brief bad flash on the current token
     const tokenEls = cmdEl.querySelectorAll('.token');
     const cur = tokenEls[game.idx];
-    if (cur){
-      cur.classList.add('bad');
-      setTimeout(()=>cur.classList.remove('bad'), 150);
-    }
+    if (cur){ cur.classList.add('bad'); setTimeout(()=>cur.classList.remove('bad'), 150); }
     setHUD();
   }
 }
 
-/* Keyboard: make sure arrows don't scroll the page */
-window.addEventListener('keydown', (e)=>{
+/* Capture arrows + ANY letter reliably (works across layouts) */
+function onKey(e){
+  // prevent page scroll on arrows/space
   if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) e.preventDefault();
   if (!game) return;
 
-  if (e.key === "ArrowUp")    return apply("↑");
-  if (e.key === "ArrowDown")  return apply("↓");
-  if (e.key === "ArrowLeft")  return apply("←");
-  if (e.key === "ArrowRight") return apply("→");
+  let sym = null;
+  if (e.key === "ArrowUp") sym = "↑";
+  else if (e.key === "ArrowDown") sym = "↓";
+  else if (e.key === "ArrowLeft") sym = "←";
+  else if (e.key === "ArrowRight") sym = "→";
+  else if (/^[a-z]$/i.test(e.key)) sym = e.key.toUpperCase(); // letters!
 
-  if (e.code === "KeyZ") return apply("P");
-  if (e.code === "KeyX") return apply("K");
-  if (e.code === "KeyC") return apply("G");
-});
+  if (sym){
+    // Only accept letters we actually use
+    if (DIR.includes(sym) || LETTER_TOKENS.includes(sym)) apply(sym);
+  }
+}
+window.addEventListener('keydown', onKey);
 
-/* On-screen controls */
+/* On-screen buttons (mobile/touch) */
 document.querySelectorAll('.key[data-sym]').forEach(k=>{
   k.addEventListener('click', ()=> apply(k.getAttribute('data-sym')));
 });
 
 /* Buttons */
-startBtn.addEventListener('click', ()=>{
-  if (!game) game = newGame();
-  else { game.round = 1; }
-  startRound();
-});
+startBtn.addEventListener('click', ()=>{ if (!game) game = newGame(); else game.round = 1; startRound(); });
 nextBtn.addEventListener('click', nextRound);
-restartBtn.addEventListener('click', ()=>{
-  if (!game) return;
-  startRound();
-});
+restartBtn.addEventListener('click', ()=>{ if (game) startRound(); });
+
+/* ---------------- Strike Animation ---------------- */
+function playStrike(){
+  const logo = document.createElement('img');
+  logo.src = 'GSU_LOGO.png';
+  logo.alt = 'GSU';
+  logo.className = 'logoFly';
+
+  const target = fx.querySelector('.target') || (()=>{const t=document.createElement('div');t.className='target';t.textContent='🎮';fx.appendChild(t);return t;})();
+  fx.appendChild(logo);
+
+  logo.addEventListener('animationend', ()=>{
+    target.classList.add('hit');
+    // Boom!
+    const boom = document.createElement('div');
+    boom.className = 'boom';
+    boom.textContent = '💥';
+    fx.appendChild(boom);
+    // Screen shake
+    wrap.classList.add('shake');
+    setTimeout(()=> wrap.classList.remove('shake'), 400);
+    // Cleanup FX
+    setTimeout(()=> { logo.remove(); target.remove(); boom.remove(); }, 900);
+  }, {once:true});
+}
 </script>
 </body>
 </html>
