@@ -34,7 +34,7 @@
 
   /* ---------- FX Stage ---------- */
   .stage{
-    position:relative; height:180px; border:1px solid #333; border-radius:12px;
+    position:relative; height:200px; border:1px solid #333; border-radius:12px;
     background:#0f0f0f; overflow:hidden;
   }
   .fx{position:absolute; inset:0; pointer-events:none}
@@ -45,6 +45,30 @@
     filter:drop-shadow(0 0 8px rgba(230,0,35,.6));
   }
   .boom{position:absolute; font-size:64px; opacity:0}
+
+  /* Speedlines when on streak */
+  .speedlines{
+    position:absolute; inset:0; pointer-events:none; opacity:0.0; mix-blend-mode:screen;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 2px, transparent 2px 8px);
+    animation:lines 1.1s linear infinite;
+  }
+  .speedlines.fast{opacity:.35; animation-duration:.6s}
+  .speedlines.med{opacity:.22}
+  @keyframes lines{
+    from{transform:translateX(0)}
+    to{transform:translateX(-40px)}
+  }
+
+  .overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;
+    font-weight:800; letter-spacing:1px;
+  }
+  .overlay .banner{
+    padding:10px 16px; border:2px solid #fff; border-radius:14px; background:rgba(230,0,35,.15);
+    text-shadow:0 0 12px rgba(255,255,255,.45); font-size:clamp(1.2rem,4.5vw,2rem);
+    transform:scale(.8); opacity:0;
+  }
 
   .big-next{text-align:center; font-size:clamp(1.2rem,4.5vw,1.8rem); background:#0f0f0f; border:1px solid #333; border-radius:12px; padding:12px;}
   .cmd{background:#0f0f0f; border:1px dashed #444; border-radius:12px; padding:12px; min-height:80px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;}
@@ -65,6 +89,13 @@
   .letters{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:6px}
   .letters .key{width:48px; height:44px}
 
+  /* Sparks & confetti */
+  .spark{
+    position:absolute; width:8px; height:8px; border-radius:50%;
+    background:radial-gradient(circle,#fff 0 45%, rgba(255,255,255,.2) 60%, transparent 70%);
+    box-shadow:0 0 10px rgba(255,255,255,.6);
+  }
+  .confetti{position:absolute; width:8px; height:12px; will-change:transform; opacity:.95}
   footer{opacity:.7; font-size:.85rem}
   @media (max-width:720px){ .hud{grid-template-columns:repeat(2,1fr)} }
 </style>
@@ -83,7 +114,7 @@
   <section class="wrap" id="wrap">
     <h1 style="margin:6px 0 10px 6px;">GSU COMMAND STRIKE — SOLO</h1>
     <div class="hud">
-      <div class="pill">📜 Round <strong id="round">1</strong>/5</div>
+      <div class="pill">📜 Round <strong id="round">1</strong>/12</div>
       <div class="pill">🎯 Progress <strong id="progress">0</strong>%</div>
       <div class="pill">⏱ Time <strong id="time">0</strong>ms</div>
       <div class="pill">✅ Accuracy <strong id="acc">0</strong>%</div>
@@ -94,6 +125,8 @@
       <!-- Stage for FX -->
       <div class="stage" id="stage">
         <div class="fx" id="fx"></div>
+        <div class="speedlines" id="speedlines"></div>
+        <div class="overlay" id="overlay"><div class="banner" id="banner">ROUND CLEAR!</div></div>
       </div>
 
       <div class="big-next">Next: <span id="nextToken">—</span></div>
@@ -122,10 +155,16 @@
 /* ---------------- Tokens & Pattern (variety, no immediate repeats) ---------------- */
 const DIR = ["↑","↓","←","→"];
 const LETTER_TOKENS = ["A","S","D","Q","E","F","J","K","L","Z","X","C","W","R","U","I"]; // expanded variety
+const MAX_ROUNDS = 12;
 
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
+function tokenLengthByRound(r){
+  // smooth ramp: 4 -> 8 across 12 rounds
+  const map = [4,4,5,5,6,6,6,7,7,7,8,8];
+  return map[Math.min(MAX_ROUNDS-1, Math.max(0, r-1))];
+}
 function genPattern(round){
-  const len = [4,5,5,6,7][Math.min(4, round-1)];
+  const len = tokenLengthByRound(round);
   const toks = [];
   for (let i=0;i<len;i++){
     const pool = Math.random() < 0.5 ? DIR : LETTER_TOKENS;
@@ -143,6 +182,10 @@ function genPattern(round){
 const wrap = document.getElementById('wrap');
 const stage = document.getElementById('stage');
 const fx = document.getElementById('fx');
+const speedlines = document.getElementById('speedlines');
+const overlay = document.getElementById('overlay');
+const banner = document.getElementById('banner');
+
 const roundEl = document.getElementById('round');
 const progEl  = document.getElementById('progress');
 const timeEl  = document.getElementById('time');
@@ -157,7 +200,7 @@ const lettersRow = document.getElementById('lettersRow');
 
 let game = null;
 function newGame(){
-  return { round:1, maxRounds:5, tokens:[], idx:0, start:0, end:0, hits:0, presses:0, streak:0, active:false };
+  return { round:1, maxRounds:MAX_ROUNDS, tokens:[], idx:0, start:0, end:0, hits:0, presses:0, streak:0, active:false };
 }
 
 /* Build on-screen letters */
@@ -182,6 +225,25 @@ function setHUD(){
   const acc = game.presses ? Math.floor(100 * (game.hits / game.presses)) : 0;
   accEl.textContent = acc;
   streakEl.textContent = game.streak;
+  updateSpeedlines();
+}
+
+/* ---------------- Audio (simple bleeps) ---------------- */
+let audioCtx = null;
+function ensureAudio(){
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+function beep(freq=880, dur=0.06, vol=0.04){
+  if (!audioCtx) return;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.frequency.value = freq;
+  o.type = 'triangle';
+  g.gain.value = vol;
+  o.connect(g).connect(audioCtx.destination);
+  o.start();
+  g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+  o.stop(audioCtx.currentTime + dur);
 }
 
 /* ---------------- Strike helpers & variants ---------------- */
@@ -191,6 +253,7 @@ function clamp(v,min,max){ return Math.max(min, Math.min(max,v)) }
 
 function spawnTarget(){
   fx.innerHTML = ""; // clear old fx
+  banner.style.opacity = 0;
   const rect = stage.getBoundingClientRect();
   const pad = 24;
   const x = rand(pad, rect.width - pad - 52);
@@ -198,7 +261,7 @@ function spawnTarget(){
   const t = document.createElement('div');
   t.className = 'target';
   t.style.transform = `translate(${x}px, ${y}px)`;
-  t.textContent = pick(['🎮','🕹️','👾','💿','🧩']);
+  t.textContent = pick(['🎮','🕹️','👾','💿','🧩','🎯','🛡️','🗡️','🏆','🪙','😂','😈','🤡','🙄','☠️','🤪','🤬','🤑','😴','👺', '🐒','🦅','🐸','🐷','🐊','🐰','🐉']);
   fx.appendChild(t);
   return {x,y,el:t};
 }
@@ -211,7 +274,7 @@ function flyController(keyframes, onHit){
   fx.appendChild(logo);
 
   if (!keyframes[0]?.transform){
-    keyframes[0] = {transform:`translate(-90px, ${rand(80,140)}px) rotate(-15deg) scale(1)`};
+    keyframes[0] = {transform:`translate(-90px, ${rand(80,160)}px) rotate(-15deg) scale(1)`};
   }
   const anim = logo.animate(keyframes, {duration: 900, easing: 'cubic-bezier(.2,.7,.2,1)', fill:'forwards'});
 
@@ -220,7 +283,7 @@ function flyController(keyframes, onHit){
     if (t){ t.classList.add('hit'); }
     const boom = document.createElement('div');
     boom.className = 'boom';
-    boom.textContent = pick(['💥','✨','⚡']);
+    boom.textContent = pick(['💥','✨','⚡','🔥']);
     const bx = (currentTarget?.x ?? 120) + rand(-8,8);
     const by = (currentTarget?.y ?? 24)  + rand(-8,8);
     boom.style.transform = `translate(${bx}px, ${by}px) scale(.6)`;
@@ -248,7 +311,7 @@ function flyController(keyframes, onHit){
 }
 
 function variantArc(){
-  const sx = -90, sy = rand(80,140);
+  const sx = -90, sy = rand(80,160);
   const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
   const midx = (sx + tx)/2 + rand(-40,40);
   const midy = Math.min(sy, ty) - rand(30,70);
@@ -260,7 +323,7 @@ function variantArc(){
 }
 function variantZigzag(){
   const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
-  const sx = rand(-70, 20), sy = rand(40, 150);
+  const sx = rand(-70, 20), sy = rand(40, 170);
   const kf = [];
   const steps = 4;
   for (let i=0;i<=steps;i++){
@@ -273,7 +336,7 @@ function variantZigzag(){
 }
 function variantSpinDrop(){
   const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
-  const sx = rand(40, stage.clientWidth-80), sy = -100;
+  const sx = rand(40, stage.clientWidth-80), sy = -120;
   return [
     {transform:`translate(${sx}px, ${sy}px) rotate(-360deg) scale(.9)`},
     {transform:`translate(${sx}px, ${ty-30}px) rotate(-90deg) scale(1)`},
@@ -282,7 +345,7 @@ function variantSpinDrop(){
 }
 function variantBoomerang(){
   const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
-  const sx = stage.clientWidth + 50, sy = rand(40, 150);
+  const sx = stage.clientWidth + 50, sy = rand(40, 180);
   const overX = clamp(tx + rand(40,90), 0, stage.clientWidth-60);
   return [
     {transform:`translate(${sx}px, ${sy}px) rotate(15deg) scale(1)`},
@@ -296,8 +359,8 @@ function variantRainAndHit(){
     mini.src = 'GSU_LOGO.png'; mini.alt='GSU'; mini.className='controller'; mini.style.width = '40px';
     fx.appendChild(mini);
     const sx = rand(0, stage.clientWidth-50);
-    const sy = -rand(30,140);
-    const ey = stage.clientHeight - rand(30,80);
+    const sy = -rand(30,160);
+    const ey = stage.clientHeight - rand(30,100);
     mini.animate(
       [{transform:`translate(${sx}px, ${sy}px)`, opacity:.9},
        {transform:`translate(${sx+rand(-20,20)}px, ${ey}px)`, opacity:.2}],
@@ -305,7 +368,7 @@ function variantRainAndHit(){
     ).onfinish=()=> mini.remove();
   }
   const tx = (currentTarget?.x ?? 220), ty = (currentTarget?.y ?? 40);
-  const sx = -80, sy = rand(40, 150);
+  const sx = -80, sy = rand(40, 160);
   return [
     {transform:`translate(${sx}px, ${sy}px) rotate(-5deg) scale(1)`},
     {transform:`translate(${tx}px, ${ty}px) rotate(8deg) scale(1.08)`}
@@ -314,7 +377,53 @@ function variantRainAndHit(){
 function playStrikeVariant(){
   const variants = [variantArc, variantZigzag, variantSpinDrop, variantBoomerang, variantRainAndHit];
   const chosen = pick(variants);
-  flyController(chosen());
+  flyController(chosen(), ()=>{
+    confetti(40);
+    showBanner(game.round >= game.maxRounds ? "ALL ROUNDS CLEARED!" : "ROUND CLEAR!");
+    beep(330, .08, .05);
+  });
+}
+
+/* ---------------- Flair: sparks, speedlines, confetti, banner ---------------- */
+function spawnSpark(){
+  const s = document.createElement('div');
+  s.className = 'spark';
+  const x = rand(10, stage.clientWidth-10);
+  const y = rand(10, stage.clientHeight-10);
+  s.style.transform = `translate(${x}px, ${y}px)`;
+  fx.appendChild(s);
+  s.animate(
+    [{transform:`translate(${x}px,${y}px) scale(.9)`, opacity:1},
+     {transform:`translate(${x+rand(-20,20)}px,${y-25}px) scale(.4)`, opacity:0}],
+    {duration: 300, easing:'ease-out', fill:'forwards'}
+  ).onfinish=()=> s.remove();
+}
+function updateSpeedlines(){
+  const st = game?.streak||0;
+  if (st >= 8){ speedlines.classList.add('fast'); speedlines.classList.remove('med'); }
+  else if (st >= 4){ speedlines.classList.add('med'); speedlines.classList.remove('fast'); }
+  else { speedlines.classList.remove('fast','med'); }
+}
+function confetti(n=30){
+  for(let i=0;i<n;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.background = pick(['#e60023','#22cc88','#33aaff','#ffcc33','#dd66ff','#ffffff']);
+    const sx = (currentTarget?.x ?? stage.clientWidth/2) + rand(-12,12);
+    const sy = (currentTarget?.y ?? stage.clientHeight/3) + rand(-8,8);
+    c.style.transform = `translate(${sx}px, ${sy}px) rotate(${rand(0,360)}deg)`;
+    fx.appendChild(c);
+    c.animate(
+      [{transform:`translate(${sx}px, ${sy}px) rotate(0deg)`, opacity:1},
+       {transform:`translate(${sx+rand(-80,80)}px, ${stage.clientHeight + 20}px) rotate(${rand(180,720)}deg)`, opacity:rand(.6,.95)}],
+      {duration: rand(900,1400), easing:'cubic-bezier(.2,.7,.2,1)', fill:'forwards'}
+    ).onfinish = ()=> c.remove();
+  }
+}
+function showBanner(text){
+  banner.textContent = text;
+  banner.animate([{opacity:0, transform:'scale(.8)'},{opacity:1, transform:'scale(1)'}], {duration:260, fill:'forwards', easing:'ease-out'});
+  setTimeout(()=> banner.animate([{opacity:1},{opacity:0}], {duration:400, fill:'forwards'}), 900);
 }
 
 /* ---------------- Game flow ---------------- */
@@ -327,7 +436,6 @@ function startRound(){
   startBtn.disabled = true; nextBtn.disabled = true; restartBtn.disabled = false;
   currentTarget = spawnTarget(); // randomized target each round
 }
-
 function endRound(){
   game.active = false;
   game.end = performance.now();
@@ -340,7 +448,6 @@ function endRound(){
     nextBtn.disabled = false;
   }
 }
-
 function nextRound(){ game.round++; startRound(); }
 
 /* ---------------- Input Handling ---------------- */
@@ -350,11 +457,25 @@ function apply(sym){
   const need = game.tokens[game.idx];
 
   if (sym === need){
+    ensureAudio(); beep(880 + (game.streak%4)*60, 0.05, 0.035);
     game.hits++; game.streak = Math.min(999, game.streak+1);
+    spawnSpark();
+    // token pulse
+    const tokenEls = cmdEl.querySelectorAll('.token');
+    const cur = tokenEls[game.idx];
+    if (cur){ cur.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}], {duration:160}); }
+
     game.idx++;
     renderCmd(); setHUD();
+
+    if (game.streak && game.streak % 5 === 0){
+      showBanner(`COMBO x${game.streak}!`);
+      beep(240, .08, .05);
+    }
+
     if (game.idx >= game.tokens.length){ endRound(); }
   } else {
+    ensureAudio(); beep(180, .06, .05);
     game.streak = 0;
     const tokenEls = cmdEl.querySelectorAll('.token');
     const cur = tokenEls[game.idx];
@@ -386,6 +507,7 @@ document.querySelectorAll('.key[data-sym]').forEach(k=>{
 
 /* Buttons */
 startBtn.addEventListener('click', ()=>{
+  ensureAudio();
   if (!game) game = newGame();
   else game.round = 1;
   startRound();
