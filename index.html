@@ -2,370 +2,431 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GameSync Union</title>
   <link rel="icon" href="GSU_LOGO.png" />
   <link rel="apple-touch-icon" href="GSU_LOGO.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Montserrat:wght@600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet"/>
 
   <style>
-    :root { --gsu-red:#e60023; --black-main:#191818; --black-faded:#1F1F1F; --white-text:#FFFFFF; }
-
-    /* ---------- Auth gate (hide until signed in) ---------- */
-    body[data-auth="out"] .auth-required { display:none !important; }
-    body[data-auth="in"]  .auth-required { display:block; }
-
-    *{margin:0; padding:0; box-sizing:border-box;}
-    body{ font-family:'Roboto',sans-serif; background:var(--black-main); color:var(--white-text); }
-
-    header { background:var(--black-faded); display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; flex-wrap:wrap; gap:1rem; position:relative; z-index:1000; }
-    .logo{ display:flex; align-items:center; }
-    .logo img{ height:60px; margin-right:1rem; }
-    .logo-text{ font-size:1.6rem; font-family:'Montserrat',sans-serif; color:var(--white-text); }
-    nav{ display:flex; flex-wrap:wrap; gap:1rem; }
-    nav a{ text-decoration:none; color:var(--white-text); font-family:'Montserrat',sans-serif; transition:color .3s; font-size:1rem; }
-    nav a:hover{ color:var(--gsu-red); }
-
-    /* --- 3-column shell (original layout) --- */
-    .main-container{ display:grid; grid-template-columns:1fr 3fr 1fr; gap:1.5rem; padding:2rem; }
-    aside, main{ display:flex; flex-direction:column; gap:1.2rem; }
-    .box{ background:var(--black-faded); border-radius:12px; padding:1rem; color:var(--white-text); transition:transform .3s, box-shadow .3s, border .3s; border:2px solid #333; box-shadow:0 0 12px rgba(255,255,255,.05); }
-    .box:hover{ transform:translateY(-6px) scale(1.01); box-shadow:0 6px 16px rgba(230,0,35,.4), 0 0 10px rgba(255,255,255,.05); border:2px solid var(--gsu-red); }
-    .box h2{ font-family:'Montserrat',sans-serif; margin-bottom:.7rem; color:#fff!important; text-shadow:0 0 6px rgba(255,0,55,.3); }
-    main > .box:not(:last-child) { margin-bottom:2.2rem; }
-
-    .input-field{ padding:.6rem; border:none; border-radius:6px; margin-bottom:.6rem; width:100%; background:#2a2a2a; color:var(--white-text); }
-    .btn{ background:var(--gsu-red); border:none; color:#fff; padding:.8rem; width:100%; border-radius:6px; cursor:pointer; font-family:'Montserrat',sans-serif; }
-    .btn:hover{ opacity:.85; }
-
-    footer{ background:var(--black-faded); text-align:center; padding:1.2rem 1rem; margin-top:4rem; }
-    .platform-icons{ display:flex; justify-content:center; align-items:center; gap:1.5rem; margin-bottom:.6rem; }
-    .platform-icons img{ height:32px; width:auto; opacity:.9; }
-
-    /* --- Single glow animation for update flashes --- */
-    @keyframes flashGlow {
-      0%   { box-shadow:0 0 0 rgba(230,0,35,0); }
-      50%  { box-shadow:0 0 18px rgba(230,0,35,.45); }
-      100% { box-shadow:0 0 0 rgba(230,0,35,0); }
+    :root{
+      --gsu-red:#e60023;
+      --black-main:#191818;
+      --black-faded:#1F1F1F;
+      --white:#fff;
+      --ink:#e9e9e9;
+      --muted:#bdbdbd;
+      --radius:12px;
+      --gap:1rem;
+      --shadow:0 0 12px rgba(255,255,255,.05);
     }
-    .update-flash-img { animation: flashGlow 1.3s ease-in-out; }
-    .update-flash { animation: flashGlow 1.8s ease-in-out; }
 
-    /* --- Profile card polish --- */
-    #profile-box { background:linear-gradient(to bottom right,#1e1e1e,#282828); border:2px solid var(--gsu-red); box-shadow:0 0 12px rgba(230,0,35,.2); border-radius:10px; text-align:center; font-size:1rem; }
-    .stat-box { margin-bottom:12px; padding:10px 15px; border:2px solid #e60023; border-radius:10px; background:rgba(255,255,255,0.05); transition:margin .3s ease; }
-    .profile-fav-img { height:280px; object-fit:contain; background:#111; border-radius:12px; box-shadow:0 0 10px rgba(255,255,255,.08); transition:transform .3s ease; scroll-snap-align:center; padding:6px; }
-    .profile-fav-img:hover { transform:scale(1.05); box-shadow:0 0 12px rgba(230,0,35,.3); }
+    /* Auth gating */
+    body[data-auth="out"] .auth-required{display:none!important;}
+    body[data-auth="in"]  .auth-required{display:block;}
 
-    /* --- Retro / Knowledge UI --- */
-    .match-review-style h2 { color:#e60023; font-family:'Montserrat',sans-serif; font-size:1.2rem; margin-bottom:.75rem; text-shadow:0 0 8px rgba(230,0,35,.7); border-bottom:2px solid #e60023; padding-bottom:.5rem; }
-    .match-review-style { background:#1f1f1f; border:2px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 12px rgba(255,255,255,.05); transition:transform .3s ease, box-shadow .3s ease; }
-    .match-review-style:hover { transform:scale(1.01); box-shadow:0 0 14px rgba(230,0,35,.2); }
-    .retro-header{ font-size:1.1rem; color:var(--gsu-red); font-family:'Montserrat',sans-serif; margin-bottom:.6rem; }
-    .sync-desc { font-size:.9rem; color:#ccc; margin-bottom:1rem; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Roboto,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+      background:var(--black-main);
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-    /* --- Statline --- */
-    .livewire-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-top:1rem; }
-    .stat-item { background:#2a2a2a; padding:1rem; border-radius:8px; font-size:.95rem; box-shadow:0 0 6px rgba(0,0,0,.3); transition:transform .3s ease, box-shadow .3s ease; }
-    .stat-item:hover { transform:scale(1.03); background:#333; box-shadow:0 0 10px rgba(230,0,35,.25); }
+    /* Page container for sane widths on big screens */
+    .page{max-width:1280px; margin-inline:auto; padding-inline:clamp(12px,2.4vw,24px);}
 
-    /* --- Culture tiles --- */
-    .culture-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1rem; text-align:center; }
-    .culture-tile { background:#2a2a2a; padding:1.4rem 1rem; border-radius:10px; font-family:'Montserrat',sans-serif; font-size:1rem; color:#fff; text-decoration:none; transition:transform .3s, background .3s; }
-    .culture-tile:hover { background:var(--gsu-red); transform:scale(1.05); }
-    .tile-hover { margin-top:.4rem; font-size:.85rem; color:#ddd; }
+    header{
+      background:var(--black-faded);
+      position:sticky; top:0; z-index:30;
+      border-bottom:1px solid #2a2a2a;
+    }
+    .header-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:.75rem; padding:12px clamp(12px,2.4vw,24px);
+      max-width:1280px; margin-inline:auto;
+    }
+    .logo{display:flex; align-items:center; gap:.75rem}
+    .logo img{height:48px; width:auto}
+    .logo-text{font-family:Montserrat, sans-serif; font-weight:700; letter-spacing:.5px}
 
-    /* --- Union Watch / Trophy / Talk --- */
-    .showoff-card{ display:flex; gap:1rem; flex-wrap:wrap; align-items:center; background:#2a2a2a; border-radius:10px; padding:1rem; }
-    .showoff-img{ width:200px; height:120px; object-fit:cover; border-radius:8px; box-shadow:0 0 10px rgba(255,255,255,.1); }
-    .talk-quote{ background:#2a2a2a; padding:1rem 1.2rem; border:4px solid var(--gsu-red); border-radius:8px; font-style:italic; }
-    .talk-quote blockquote{ font-size:1.1rem; color:#eee; margin-bottom:.5rem; font-family:'Montserrat',sans-serif; }
-    .talk-quote p{ font-size:.95rem; color:#aaa; }
+    nav{display:flex; flex-wrap:wrap; align-items:center; gap:.8rem}
+    nav a{
+      color:var(--white); text-decoration:none; font:500 .95rem/1 Roboto,sans-serif;
+      padding:.45rem .6rem; border-radius:8px; transition:.25s ease;
+    }
+    nav a:hover{color:var(--gsu-red); background:#262626}
 
-    .certified-moment{ text-align:center; }
-    .certified-img{ width:100%; max-width:400px; height:auto; border-radius:10px; box-shadow:0 0 10px rgba(255,255,255,.1); margin-bottom:.8rem; }
-    .certified-caption{ font-size:1rem; margin-bottom:.6rem; }
+    .btn{
+      background:var(--gsu-red); color:#fff; border:none; cursor:pointer;
+      padding:.75rem 1rem; border-radius:10px; font:600 .95rem/1 Montserrat,sans-serif;
+      transition:filter .2s ease, transform .15s ease;
+    }
+    .btn:hover{filter:brightness(.95); transform:translateY(-1px)}
 
-    .incoming-drop{ margin-top:1rem; padding-left:1rem; color:#ddd; font-size:.95rem; list-style-type:square; }
+    /* 3-column grid with safe min widths & fluid middle */
+    .main-container{
+      display:grid; gap:clamp(.9rem,2.2vw,1.5rem);
+      grid-template-columns:minmax(240px,1fr) minmax(540px,2.2fr) minmax(240px,1fr);
+      padding:clamp(12px,2.4vw,24px);
+    }
+    @media (max-width:1024px){ .main-container{grid-template-columns:1fr} }
 
-    /* --- Spotlight 3 --- */
-    #spotlight3{ background:linear-gradient(to bottom right,#1f1f1f,#262626); border:2px solid transparent; border-radius:12px; padding:2rem 1.5rem; box-shadow:0 0 16px rgba(230,0,35,.3); text-align:center; max-width:800px; margin:1.5rem auto; transition:border .3s ease; }
-    #spotlight3:hover{ border-color:var(--gsu-red); }
-    #spotlight3 h2{ color:var(--gsu-red); font-size:1.4rem; margin-bottom:.5rem; }
-    #spotlight3 p{ font-size:.95rem; color:#ccc; margin-bottom:1.2rem; }
+    .box{
+      background:var(--black-faded);
+      border:1px solid #2b2b2b;
+      border-radius:var(--radius);
+      padding:clamp(.9rem,2.2vw,1.25rem);
+      box-shadow:var(--shadow);
+      transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .box:hover{ transform:translateY(-3px); border-color:var(--gsu-red); box-shadow:0 6px 18px rgba(230,0,35,.25), var(--shadow); }
+    .box h2{
+      margin:0 0 .6rem; font:700 clamp(1rem,2.3vw,1.25rem)/1.1 Montserrat,sans-serif;
+      color:#fff; text-shadow:0 0 6px rgba(255,0,55,.25);
+    }
 
-    #fav-game-updates{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; padding:1rem; margin-top:1rem; }
-    .spotlight-video{ background:#2a2a2a; padding:1rem; border-radius:10px; border:2px solid transparent; transition:transform .3s, box-shadow .3s, border .3s; opacity:0; animation:fadeIn .6s ease forwards; width:100%; max-width:100%; }
-    .spotlight-video:hover{ transform:scale(1.02); border-color:var(--gsu-red); box-shadow:0 0 10px rgba(255,255,255,.08); }
-    .spotlight-video iframe{ width:100%; height:200px; border:none; border-radius:8px; margin:.6rem 0; }
-    .spotlight-video h3{ color:var(--gsu-red); margin-bottom:.5rem; font-size:1rem; font-family:'Montserrat',sans-serif; }
-    .spotlight-video p{ color:#bbb; font-size:.9rem; }
+    .input-field{
+      width:100%; padding:.7rem .8rem; border-radius:9px; border:1px solid #333;
+      background:#262626; color:#fff; margin-bottom:.6rem;
+    }
 
-    @keyframes fadeIn { to{opacity:1;} }
+    /* Profile header & stats */
+    #profile-box{
+      background:linear-gradient(180deg,#1e1e1e,#242424);
+      border:1px solid #333; box-shadow:0 0 10px rgba(230,0,35,.18);
+    }
+    .profile-header{
+      text-align:center; margin-bottom:.25rem;
+    }
+    .profile-meta{
+      display:grid; gap:.4rem; justify-items:center; margin-bottom:.6rem;
+      color:var(--ink);
+      font-size:.95rem;
+    }
+    .profile-meta span{display:inline-flex; align-items:center; gap:.4rem}
 
-    /* --- Favorite images row (scrollable) --- */
-    #fav-images{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:1rem; padding:.5rem 0; justify-content:flex-start; max-width:100%; border:1px solid #444; border-radius:10px; background:#1b1b1b; }
-    #fav-images::-webkit-scrollbar{ height:8px; }
-    #fav-images::-webkit-scrollbar-thumb{ background:var(--gsu-red); border-radius:6px; }
+    /* Replaced old red “stat boxes” with clean rows that never duplicate */
+    .stats-list{
+      display:grid; gap:.6rem;
+      grid-template-columns:1fr;
+    }
+    @media (min-width:640px){
+      .stats-list{ grid-template-columns:repeat(2, 1fr); }
+    }
+    @media (min-width:980px){
+      .stats-list{ grid-template-columns:repeat(3, 1fr); }
+    }
+    .stat-row{
+      display:flex; align-items:center; gap:.6rem;
+      background:#232323; border:1px solid #343434; border-left:4px solid var(--gsu-red);
+      padding:.7rem .8rem; border-radius:10px; color:#eaeaea;
+      min-height:44px;
+    }
+    .stat-row .icon{opacity:.9}
 
-    /* --- Character sync card --- */
-    #character-sync-box{ border:2px solid #e60023; border-radius:12px; padding:12px; margin-top:1rem; background:#1a1a1a; transition:transform .3s, box-shadow .3s; box-shadow:0 0 10px rgba(230,0,35,.4); }
-    #character-sync-box:hover{ transform:scale(1.02); box-shadow:0 0 18px rgba(230,0,35,.6); }
-    #character-image{ height:140px; width:140px; object-fit:contain; border-radius:10px; padding:6px; background:#000; border:1px solid #444; transition:transform .3s; }
-    #character-image:hover{ transform:scale(1.05); box-shadow:0 0 12px rgba(255,255,255,.2); }
-    #character-desc{ font-size:.85rem; max-width:260px; color:#ccc; text-align:left; }
+    /* Favorite images — responsive grid (falls back to row on very narrow) */
+    #fav-images{
+      display:grid; gap:.8rem; margin-top:.8rem;
+      grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
+    }
+    .profile-fav-img{
+      width:100%; height:clamp(120px, 22vw, 220px);
+      object-fit:cover; border-radius:12px; background:#111; border:1px solid #2b2b2b;
+      transition:transform .25s ease, box-shadow .25s ease;
+    }
+    .profile-fav-img:hover{ transform:scale(1.02); box-shadow:0 0 12px rgba(230,0,35,.28); }
 
-    /* --- Modal --- */
-    .modal{ display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,.7); }
-    .modal-content{ background:var(--black-faded); margin:10% auto; padding:24px; border:2px solid var(--gsu-red); border-radius:12px; width:80%; max-width:500px; color:var(--white-text); font-family:'Montserrat',sans-serif; box-shadow:0 0 12px rgba(230,0,35,.3); }
-    .modal-content label{ font-weight:600; margin-top:10px; display:block; color:var(--gsu-red); }
-    .modal-content input, .modal-content select{ width:100%; padding:12px; margin:10px 0 18px; background:#2a2a2a; color:#fff; border:1px solid #444; border-radius:6px; font-family:'Roboto',sans-serif; }
-    .modal-content button{ background:var(--gsu-red); color:#fff; border:none; padding:12px 18px; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Montserrat',sans-serif; transition:background .3s, transform .2s; }
-    .modal-content button:hover{ background:#cc001f; transform:scale(1.03); }
-    .close{ float:right; font-size:28px; font-weight:bold; color:var(--gsu-red); cursor:pointer; transition:color .3s; }
-    .close:hover{ color:#ff3344; }
-    .edit-btn{ background:var(--gsu-red); color:#fff; padding:10px 14px; border:none; border-radius:8px; cursor:pointer; margin-top:15px; font-family:'Montserrat',sans-serif; font-weight:600; transition:background .3s, transform .2s; }
-    .edit-btn:hover{ background:#cc001f; transform:scale(1.03); }
+    .label-muted{color:#cfcfcf; font-size:.92rem; margin-top:.4rem}
 
-    /* --- Responsive --- */
-    @media (max-width:1024px){ .main-container{ grid-template-columns:1fr; padding:1rem; } header{ flex-direction:column; align-items:flex-start; } }
-    @media (max-width:600px){ .logo img{ height:40px; } .logo-text{ font-size:1.2rem; } nav a{ font-size:.9rem; } .btn{ padding:.7rem; } .input-field{ font-size:.9rem; } }
+    /* Retro + knowledge + sync card */
+    .match-review-style h2{
+      color:var(--gsu-red); border-bottom:2px solid var(--gsu-red);
+      padding-bottom:.5rem; text-shadow:0 0 8px rgba(230,0,35,.35);
+    }
+    #character-sync-box{
+      border:1px solid #333; border-left:4px solid var(--gsu-red);
+      background:#1a1a1a; border-radius:12px; padding:12px;
+    }
+    #character-image{
+      width:140px; height:140px; object-fit:contain; background:#000;
+      border:1px solid #444; border-radius:10px;
+    }
+    #character-desc{ color:#cfcfcf; font-size:.92rem; max-width:280px }
+
+    /* Spotlight */
+    #spotlight3{ background:linear-gradient(180deg,#1f1f1f,#242424); border:1px solid #2e2e2e }
+    #fav-game-updates{
+      display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      margin-top:.8rem;
+    }
+    .spotlight-video{
+      border:1px solid #333; border-radius:12px; background:#262626; padding:12px;
+    }
+    .spotlight-video iframe{ width:100%; height:clamp(180px, 28vw, 320px); border:0; border-radius:10px }
+
+    /* Footer */
+    footer{ background:var(--black-faded); border-top:1px solid #2b2b2b; margin-top:40px }
+    .platform-icons{ display:flex; justify-content:center; gap:18px; padding:14px 0 6px }
+    .platform-icons img{ height:28px; opacity:.9 }
+
+    /* Small helpers */
+    .row{display:flex; gap:.6rem; align-items:center}
+    .center{text-align:center}
+    .mt-05{margin-top:.5rem}
+    .mt-10{margin-top:1rem}
+
+    /* Subtle flash used on image updates only (remove heavy glow) */
+    @keyframes softFlash{0%{box-shadow:0 0 0 rgba(230,0,35,0)}50%{box-shadow:0 0 14px rgba(230,0,35,.35)}100%{box-shadow:0 0 0 rgba(230,0,35,0)}}
+    .update-flash-img{animation:softFlash 900ms ease}
   </style>
 </head>
 
 <body data-auth="out">
   <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo" />
-      <div class="logo-text">GAMESYNC UNION</div>
+    <div class="header-inner">
+      <div class="logo">
+        <img src="GSU_LOGO.png" alt="GSU Logo"/>
+        <div class="logo-text">GAMESYNC UNION</div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="games.html">Games</a>
+        <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
+        <a href="art.html">Art</a>
+        <a href="game-guides.html">GSU Gameplay Center</a>
+        <a href="uploads.html">GSU Player Lounge</a>
+      </nav>
+      <button id="logoutBtn" class="btn" style="background:#777">Log Out</button>
     </div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="games.html">Games</a>
-      <a href="trophies.html">GSU Hall of Trophies & Achievements</a>
-      <a href="art.html">Art</a>
-      <a href="game-guides.html">GSU Gameplay Center</a>
-      <a href="uploads.html">GSU Player Lounge</a>
-    </nav>
-    <button id="logoutBtn" class="btn" style="max-width:120px; background-color:#777;">Log Out</button>
   </header>
 
-  <div class="main-container">
-    <!-- LEFT COLUMN -->
-    <aside>
-      <div class="box" id="auth-box">
-        <h2>Create Account or Sign In</h2>
-        <input type="text" class="input-field" placeholder="Email" />
-        <input type="text" class="input-field" placeholder="Username" />
-        <input type="password" class="input-field" placeholder="Password" />
-        <button class="btn" id="signInBtn">Sign In</button>
-        <p style="text-align:center; margin-top:.6rem;">
-          Not a GSU member?
-          <button class="btn" id="createAccountBtn" style="display:block; margin:1rem auto; padding:.25rem .75rem; font-size:.85rem;">
-            Create your GSU account
+  <div class="page">
+    <div class="main-container">
+      <!-- LEFT -->
+      <aside>
+        <div class="box" id="auth-box">
+          <h2>Sign in</h2>
+          <input type="text" class="input-field" placeholder="Email"/>
+          <input type="text" class="input-field" placeholder="Username"/>
+          <input type="password" class="input-field" placeholder="Password"/>
+          <button class="btn" id="signInBtn">Sign In</button>
+          <p class="center mt-05">
+            Not a GSU member?
+            <button class="btn mt-05" id="createAccountBtn" style="padding:.45rem .8rem; font-size:.9rem">Create your GSU account</button>
+          </p>
+        </div>
+
+        <div class="box match-review-style">
+          <h2>🕹️ Retro Game Flashback</h2>
+          <p style="color:#cfcfcf; font-size:.95rem" class="mt-05">Step back into the early days of gaming. One random flashback every click.</p>
+          <div class="mt-10">
+            <div class="row" style="justify-content:space-between">
+              <div style="font-weight:700; color:var(--gsu-red)">Retroverse</div>
+            </div>
+            <div id="retro-fact" style="margin-top:.4rem; max-height:88px; overflow:auto; color:#ddd">Loading fact…</div>
+            <button class="btn mt-10" onclick="loadRetroFact()" style="font-size:.9rem">🕹️ Spin the Retro Wheel</button>
+          </div>
+        </div>
+
+        <div class="box match-review-style">
+          <h2>🎮 GSU Character Sync-Up</h2>
+          <p style="color:#cfcfcf; font-size:.95rem" class="mt-05">Choose your platform to reveal which legend is synced with your GSU energy.</p>
+          <label class="mt-05">🕹️ Platform</label>
+          <select id="platform-select" class="input-field">
+            <option value="">-- Choose Platform --</option>
+            <option value="PlayStation">PlayStation</option>
+            <option value="PC">PC</option>
+            <option value="Xbox">Xbox</option>
+            <option value="Nintendo">Nintendo</option>
+          </select>
+          <div id="no-character-msg" class="center" style="color:#ff7474; font-size:.92rem">No Video Game Character in Sync.</div>
+          <div id="character-role" class="center mt-05" style="font-weight:700"></div>
+          <div id="character-sync-box" class="mt-05">
+            <div class="row" style="flex-wrap:wrap; justify-content:center">
+              <img id="character-image" src="GSU_LOGO.png" alt="Character"/>
+              <div id="character-desc">Choose your platform to reveal your synced legend.</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER -->
+      <main>
+        <div class="box center">
+          <h2>Welcome to GameSync Union</h2>
+          <p class="mt-05">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
+          <button class="btn mt-10" onclick="window.location.href='about.html'">
+            📘🎮 The Full Breakdown: GameSync Union Explained
           </button>
-        </p>
-      </div>
-
-      <!-- 🕹️ Retro Game Flashback -->
-      <div class="box match-review-style">
-        <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
-        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">
-          Step back into the early days of gaming. One random flashback every click.
-        </p>
-        <div class="retro-body">
-          <div class="game-title">From here, the Retroverse info unfolds.</div>
-          <div class="game-fact" id="retro-fact" style="max-height:90px; overflow-y:auto;">Loading fact...</div>
-          <button class="btn" onclick="loadRetroFact()" style="margin-top:.8rem; font-size:.85rem;">🕹️ Spin the Retro Wheel</button>
         </div>
-      </div>
 
-      <!-- 🎮 GSU Character Sync -->
-      <div class="box match-review-style">
-        <h2 class="retro-header">🎮 GSU Character Sync-Up</h2>
-        <p class="sync-desc">Choose your platform to reveal which video game legend is synced with your GSU energy.</p>
+        <!-- Profile -->
+        <div class="box auth-required" id="profile-box">
+          <div class="profile-header">
+            <h2>Your Profile</h2>
+          </div>
+          <div class="profile-meta">
+            <span class="username-info">👤 Username: —</span>
+            <span class="platform-info">🔹 Platform: —</span>
+          </div>
 
-        <label class="sync-label">🕹️ Choose Your Platform to Begin the Sync:</label>
-        <select id="platform-select" class="input-field">
-          <option value="">-- Choose Platform --</option>
-          <option value="PlayStation">PlayStation</option>
-          <option value="PC">PC</option>
-          <option value="Xbox">Xbox</option>
-          <option value="Nintendo">Nintendo</option>
-        </select>
+          <!-- Clean responsive stats -->
+          <div class="stats-list" aria-live="polite">
+            <div id="fav-games"   class="stat-row"><span class="icon">🔥</span><span>Favorite Games —</span></div>
+            <div id="games-played" class="stat-row"><span class="icon">🎮</span><span>Number Of Games Played —</span></div>
+            <div id="trophy-stats" class="stat-row"><span class="icon">🏆</span><span>Trophy Stats —</span></div>
+          </div>
 
-        <div id="no-character-msg" style="color:red; font-size:.9rem; margin-bottom:1rem; text-align:center;">No Video Game Character in Sync.</div>
+          <div class="label-muted mt-10">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</div>
+          <div id="fav-images"></div>
 
-        <div id="character-role" style="text-align:center; font-weight:600; margin:.5rem 0;"></div>
-        <div id="character-sync-box">
-          <div style="display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center;">
-            <img id="character-image" src="GSU_LOGO.png" alt="Character" />
-            <div id="character-desc">Choose your platform to reveal your synced legend.</div>
+          <div class="center mt-10">
+            <button onclick="openEditModal()" class="btn" style="max-width:240px">Update GSU Profile</button>
           </div>
         </div>
-      </div>
-    </aside>
 
-    <!-- CENTER COLUMN -->
-    <main>
-      <div class="box" style="text-align:center;">
-        <h2>Welcome to GameSync Union</h2>
-        <p style="margin-bottom:1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
-        <button class="btn" onclick="window.location.href='about.html'"><h3>📘🎮 The Full Breakdown: GameSync Union Explained</h3></button>
-      </div>
+        <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies…"/>
 
-      <!-- Profile (shown only when signed in) -->
-      <div class="box auth-required" id="profile-box">
-        <h2 style="color:var(--gsu-red);">Your Profile</h2>
-        <p id="fav-games" class="stat-box">🔥 Favorite Games</p>
-        <p id="games-played" class="stat-box">🎮 Number Of Games Played</p>
-        <p id="trophy-stats" class="stat-box">🏆 Trophy Stats (Total Trophies)</p>
-
-        <div style="margin-top:.5rem; text-align:left; font-size:.9rem; color:#ccc;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</div>
-        <div id="fav-images"></div>
-
-        <div style="margin-top:1rem; text-align:center;">
-          <button onclick="openEditModal()" class="edit-btn" style="max-width:240px;">Update GSU Profile</button>
-        </div>
-      </div>
-
-      <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
-
-      <!-- Statline Supreme (auth gated) -->
-      <div class="box auth-required" id="statsCard">
-        <h2 style="color:var(--gsu-red); text-align:center;">🔥 Statline Supreme: All Union. All Synced.</h2>
-        <div class="livewire-stats">
-          <div class="stat-item">👥 Total GSU Members: <span id="totalMembers">_</span></div>
-          <div class="stat-item">🆕 New Members This Week: <span id="newMembers">_</span></div>
-          <div class="stat-item">📹 Videos Shared Across the GSU Community: <span id="videoUploads">_</span></div>
-          <div class="stat-item">🎨 Fan Art Pieces Shared: <span id="fanArt">_</span></div>
-          <div class="stat-item">🏆 Trophies Earned by GSU Players: <span id="trophies">_</span></div>
-          <div class="stat-item">🥊 Combo Guides Shared: <span id="combos">_</span></div>
-          <div class="stat-item">📊 Total Community Poll Votes: <span id="pollVotes">_</span></div>
-        </div>
-      </div>
-
-      <!-- Featured Clip (Union Watch) -->
-      <div class="box">
-        <h2 style="color:var(--gsu-red); text-align:center;">🔥 Made the Union Watch</h2>
-        <p style="text-align:center;">When the Union highlights you — it means something. Real gameplay earns the light.</p>
-        <div class="showoff-card" id="unionWatch" style="flex-direction:column; align-items:center;">
-          <div id="unionWatchMedia" style="width:100%; max-width:720px;"></div>
-          <div class="showoff-info" style="text-align:center;">
-            <h3 id="unionWatchTitle">Loading featured clip…</h3>
-            <p id="unionWatchCaption"></p>
+        <!-- Stats (sitewide) -->
+        <div class="box auth-required" id="statsCard">
+          <h2 class="center">🔥 Statline Supreme: All Union. All Synced.</h2>
+          <div class="livewire-stats">
+            <div class="stat-row"><span class="icon">👥</span> Total GSU Members: <span id="totalMembers" style="margin-left:.4rem">_</span></div>
+            <div class="stat-row"><span class="icon">🆕</span> New Members This Week: <span id="newMembers" style="margin-left:.4rem">_</span></div>
+            <div class="stat-row"><span class="icon">📹</span> Videos Shared: <span id="videoUploads" style="margin-left:.4rem">_</span></div>
+            <div class="stat-row"><span class="icon">🎨</span> Fan Art Pieces: <span id="fanArt" style="margin-left:.4rem">_</span></div>
+            <div class="stat-row"><span class="icon">🏆</span> Trophies Earned: <span id="trophies" style="margin-left:.4rem">_</span></div>
+            <div class="stat-row"><span class="icon">🥊</span> Combo Guides: <span id="combos" style="margin-left:.4rem">_</span></div>
+            <div class="stat-row"><span class="icon">📊</span> Total Poll Votes: <span id="pollVotes" style="margin-left:.4rem">_</span></div>
           </div>
         </div>
-        <div style="width:100%; display:flex; justify-content:center; margin-top:1.2rem;">
-          <button onclick="window.location.href='uploads.html'" class="btn" style="width:100%; max-width:240px;">See Why Everyone’s Talking</button>
-        </div>
-      </div>
 
-      <!-- Latest Trophy -->
-      <div class="box">
-        <h2 style="color:var(--gsu-red); text-align:center;">👑 One Trophy. One Flex.</h2>
-        <div class="certified-moment">
-          <img id="certifiedImg" src="GSU_LOGO.png" alt="Moment Screenshot" class="certified-img" />
-          <p class="certified-caption" id="certifiedCaption">Finding a legendary flex…</p>
-          <div style="text-align:center;">
-            <button class="btn" onclick="window.location.href='trophies.html'" style="margin:0 auto; display:inline-block; max-width:220px;">Relive the Moment</button>
+        <!-- Union Watch -->
+        <div class="box">
+          <h2 class="center">🔥 Made the Union Watch</h2>
+          <p class="center" style="color:#d7d7d7">When the Union highlights you — it means something. Real gameplay earns the light.</p>
+          <div id="unionWatch" class="showoff-card" style="flex-direction:column; align-items:center;">
+            <div id="unionWatchMedia" style="width:100%; max-width:760px"></div>
+            <div class="showoff-info center">
+              <h3 id="unionWatchTitle" style="color:var(--gsu-red)">Loading featured clip…</h3>
+              <p id="unionWatchCaption"></p>
+            </div>
+          </div>
+          <div class="center mt-10">
+            <button class="btn" onclick="window.location.href='uploads.html'">See Why Everyone’s Talking</button>
           </div>
         </div>
-      </div>
 
-      <!-- Talk of the Week -->
-      <div class="box">
-        <h2 style="color:var(--gsu-red); text-align:center;">🎭 Union Rewind: Talk of the Week</h2>
-        <div class="talk-quote">
-          <blockquote id="talkQuoteText">Scanning the Lounge…</blockquote>
-          <p id="talkQuoteWho">—</p>
+        <!-- Trophy -->
+        <div class="box">
+          <h2 class="center">👑 One Trophy. One Flex.</h2>
+          <div class="certified-moment">
+            <img id="certifiedImg" src="GSU_LOGO.png" alt="Moment" class="certified-img"/>
+            <p id="certifiedCaption" class="certified-caption center">Finding a legendary flex…</p>
+            <div class="center">
+              <button class="btn" onclick="window.location.href='trophies.html'">Relive the Moment</button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- Alerts -->
-      <div class="box">
-        <h2 style="color:var(--gsu-red); text-align:center;">📡 Union Alerts (last 24h)</h2>
-        <ul class="incoming-drop" id="alertsList"><li>Loading fresh drops…</li></ul>
-      </div>
-
-      <!-- Culture tiles -->
-      <div class="box">
-        <h2 style="color:var(--gsu-red); text-align:center;">💪 Built by GSU. Flexed by Gamers.</h2>
-        <div class="culture-grid">
-          <a href="games.html" class="culture-tile">🎮 Game Lineup<div class="tile-hover">What We’re Really Playing.</div></a>
-          <a href="boss-fight-strategies.html" class="culture-tile">⚔️ Boss Fight Guides<div class="tile-hover">Dominate Every Encounter.</div></a>
-          <a href="gameplay-tutorials.html" class="culture-tile">🎓 Gameplay Tutorials<div class="tile-hover">Learn Fast. Play Smarter.</div></a>
-          <a href="community-gameplay-videos.html" class="culture-tile">🎥 Gameplay Hub<div class="tile-hover">Your Best Runs. On Display.</div></a>
-          <a href="combo-guides.html" class="culture-tile">🥊 Combo Guides<div class="tile-hover">Damage That Matters.</div></a>
-          <a href="trophy-tips.html" class="culture-tile">📈 Trophy Tips<div class="tile-hover">Level Up Without Wasting Time.</div></a>
-          <a href="uploads.html" class="culture-tile">💬 Player Lounge<div class="tile-hover">Talk Real. Squad Up.</div></a>
-          <a href="art.html" class="culture-tile">🖼️ Fan Art<div class="tile-hover">Clipped. Posted. Respected.</div></a>
+        <!-- Talk -->
+        <div class="box">
+          <h2 class="center">🎭 Union Rewind: Talk of the Week</h2>
+          <div class="talk-quote">
+            <blockquote id="talkQuoteText">Scanning the Lounge…</blockquote>
+            <p id="talkQuoteWho">—</p>
+          </div>
         </div>
-      </div>
 
-      <!-- Spotlight (personalized videos) -->
-      <div class="box" id="spotlight3">
-        <h2>🎮 GameSync Spotlight 3</h2>
-        <p>GameSync Spotlight 3 delivers gameplay from the titles that matter to you — daily.</p>
-        <div id="fav-game-updates"></div>
-      </div>
-    </main>
-
-    <!-- RIGHT COLUMN -->
-    <aside>
-      <div class="box match-review-style">
-        <h2 class="retro-header">🕹️ The GameSync Game Room</h2>
-        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">Quick hitters that test reflexes, focus, and precision.</p>
-        <div class="retro-body" style="display:flex; flex-direction:column; gap:.5rem;">
-          <button class="btn" style="font-size:.85rem;" onclick="location.href='Charge_Run.html'">GSU Charge Run</button>
-          <button class="btn" style="font-size:.85rem;">GSU Command Strike</button>
-          <button class="btn" style="font-size:.85rem;">GSU Cipher Storm</button>
+        <!-- Alerts -->
+        <div class="box">
+          <h2 class="center">📡 Union Alerts (last 24h)</h2>
+          <ul class="incoming-drop" id="alertsList"><li>Loading fresh drops…</li></ul>
         </div>
-      </div>
 
-      <div class="box match-review-style">
-        <h2 class="retro-header">🧠 Game Dev Knowledge Drop</h2>
-        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">Level design is more psychology than geometry.</p>
-        <div class="retro-body" style="display:flex; flex-direction:column; gap:.5rem;">
-          <div style="font-size:.85rem;">📘 Analyzing flow, affordances, and feedback loops.</div>
-          <button class="btn" style="font-size:.85rem;">📚 Learn More</button>
+        <!-- Culture -->
+        <div class="box">
+          <h2 class="center">💪 Built by GSU. Flexed by Gamers.</h2>
+          <div class="culture-grid">
+            <a href="games.html" class="culture-tile">🎮 Game Lineup<div class="tile-hover">What We’re Really Playing.</div></a>
+            <a href="boss-fight-strategies.html" class="culture-tile">⚔️ Boss Fight Guides<div class="tile-hover">Dominate Every Encounter.</div></a>
+            <a href="gameplay-tutorials.html" class="culture-tile">🎓 Gameplay Tutorials<div class="tile-hover">Learn Fast. Play Smarter.</div></a>
+            <a href="community-gameplay-videos.html" class="culture-tile">🎥 Gameplay Hub<div class="tile-hover">Your Best Runs. On Display.</div></a>
+            <a href="combo-guides.html" class="culture-tile">🥊 Combo Guides<div class="tile-hover">Damage That Matters.</div></a>
+            <a href="trophy-tips.html" class="culture-tile">📈 Trophy Tips<div class="tile-hover">Level Up Without Wasting Time.</div></a>
+            <a href="uploads.html" class="culture-tile">💬 Player Lounge<div class="tile-hover">Talk Real. Squad Up.</div></a>
+            <a href="art.html" class="culture-tile">🖼️ Fan Art<div class="tile-hover">Clipped. Posted. Respected.</div></a>
+          </div>
         </div>
-      </div>
 
-      <div class="box match-review-style">
-        <h2 class="retro-header">💬 GSU Vibe Check</h2>
-        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">We scan the Lounge, uploads, and plays for the pulse.</p>
-        <div class="retro-body" style="display:flex; flex-direction:column; gap:.6rem;">
-          <div style="font-size:1rem; color:#fff; font-weight:bold;">🔥 Mood: Hype & Competitive</div>
-          <div style="font-size:.85rem; color:#bbb;">Top quoted: “Don’t get perfect-parried again.”</div>
-          <div style="font-size:.85rem; color:#bbb;">Top activity: Trophy flexes + fan art drops</div>
-          <button class="btn" style="margin-top:.6rem; font-size:.85rem;">📡 Scan Live Vibe</button>
+        <!-- Spotlight -->
+        <div class="box" id="spotlight3">
+          <h2>🎮 GameSync Spotlight 3</h2>
+          <p>Daily gameplay drops from the titles that matter to you.</p>
+          <div id="fav-game-updates"></div>
         </div>
-      </div>
-    </aside>
+      </main>
+
+      <!-- RIGHT -->
+      <aside>
+        <div class="box match-review-style">
+          <h2>🕹️ The GameSync Game Room</h2>
+          <p style="color:#cfcfcf; font-size:.95rem" class="mt-05">Quick hitters that test reflexes, focus, and precision.</p>
+          <div class="mt-10" style="display:flex; flex-direction:column; gap:.5rem">
+            <button class="btn" style="font-size:.9rem" onclick="location.href='Charge_Run.html'">GSU Charge Run</button>
+            <button class="btn" style="font-size:.9rem">GSU Command Strike</button>
+            <button class="btn" style="font-size:.9rem">GSU Cipher Storm</button>
+          </div>
+        </div>
+
+        <div class="box match-review-style">
+          <h2>🧠 Game Dev Knowledge Drop</h2>
+          <p style="color:#cfcfcf; font-size:.95rem" class="mt-05">Level design is more psychology than geometry.</p>
+          <div class="mt-10">
+            <div style="font-size:.95rem">📘 Flow, affordances, and feedback loops.</div>
+            <button class="btn mt-10" style="font-size:.9rem">📚 Learn More</button>
+          </div>
+        </div>
+
+        <div class="box match-review-style">
+          <h2>💬 GSU Vibe Check</h2>
+          <p style="color:#cfcfcf; font-size:.95rem" class="mt-05">We scan the Lounge, uploads, and plays for the pulse.</p>
+          <div class="mt-10" style="display:flex; flex-direction:column; gap:.5rem">
+            <div style="font-weight:700">🔥 Mood: Hype & Competitive</div>
+            <div style="color:#bdbdbd">Top quoted: “Don’t get perfect-parried again.”</div>
+            <div style="color:#bdbdbd">Top activity: Trophy flexes + fan art drops</div>
+            <button class="btn" style="font-size:.9rem">📡 Scan Live Vibe</button>
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
 
   <footer>
     <div class="platform-icons">
-      <img src="PS_Logo.png" alt="PlayStation" />
-      <img src="Xbox.png" alt="Xbox" />
-      <img src="Steam.png" alt="PC" />
-      <img src="Switch.png" alt="Nintendo Switch" />
+      <img src="PS_Logo.png" alt="PlayStation"/>
+      <img src="Xbox.png" alt="Xbox"/>
+      <img src="Steam.png" alt="PC"/>
+      <img src="Switch.png" alt="Nintendo Switch"/>
     </div>
-    <p>&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
+    <p class="center" style="color:#cfcfcf; padding-bottom:14px">&copy; 2025 GameSync Union. Built for gamers, by gamers.</p>
   </footer>
 
   <!-- Edit Modal -->
-  <div id="editModal" class="modal">
-    <div class="modal-content">
+  <div id="editModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:60;">
+    <div class="modal-content" style="max-width:520px">
       <span class="close" onclick="closeEditModal()">&times;</span>
       <h2>Update Profile</h2>
 
       <label>Username:</label>
-      <input type="text" id="editUsername" placeholder="Change your Username">
+      <input type="text" id="editUsername" placeholder="Change your Username" class="input-field" style="margin:10px 0 14px">
 
       <label>Platform:</label>
-      <select id="editPlatform">
+      <select id="editPlatform" class="input-field">
         <option value="">-- Select your new Platform --</option>
         <option value="PlayStation">PlayStation</option>
         <option value="PC">PC</option>
@@ -375,481 +436,334 @@
       </select>
 
       <label>Favorite Games (comma-separated):</label>
-      <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank...">
+      <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank..." class="input-field">
 
       <label>Number of Games Played:</label>
-      <input type="number" id="editGamesPlayed" min="0">
+      <input type="number" id="editGamesPlayed" min="0" class="input-field">
 
       <label>Favorite Games' Cover Image URLs (comma-separated):</label>
-      <input type="text" id="editGameImages" placeholder="url1, url2, url3">
+      <input type="text" id="editGameImages" placeholder="url1, url2, url3" class="input-field">
 
       <label>Total Trophy Count:</label>
-      <input type="number" id="editTrophies" min="0">
+      <input type="number" id="editTrophies" min="0" class="input-field">
 
-      <button onclick="saveProfileChanges()">Save Changes</button>
+      <button class="btn" onclick="saveProfileChanges()">Save Changes</button>
     </div>
   </div>
 
-  <!-- Signed-out notice -->
-  <div id="authNotice" style="display:none; position:fixed; top:12%; left:50%; transform:translateX(-50%); background:#ffffff; color:#e60023; border:2px solid #e60023; padding:1.25rem 1.5rem; border-radius:12px; z-index:9999; font-family:'Montserrat',sans-serif; font-size:.95rem; max-width:360px; box-shadow:0 0 20px rgba(0,0,0,.3); text-align:center; line-height:1.6;">
-    <div style="color:#000; font-weight:bold; margin-bottom:.75rem; font-size:1rem;">Signed out:</div>
-    <div style="margin-bottom:1rem;">Access limited — sign in or create your GSU account to get the full GSU experience.</div>
-    <button onclick="hideAuthNotice()" style="background:#e60023; color:#fff; border:none; padding:.5rem 1rem; border-radius:8px; font-family:'Montserrat'; cursor:pointer;">Close</button>
+  <!-- Signed-out notice + overlay -->
+  <div id="authNotice" style="display:none; position:fixed; top:12%; left:50%; transform:translateX(-50%); background:#fff; color:#e60023; border:2px solid #e60023; padding:1rem 1.25rem; border-radius:12px; z-index:70; font-family:Montserrat,sans-serif; font-size:.95rem; max-width:360px; box-shadow:0 0 20px rgba(0,0,0,.3); text-align:center;">
+    <div style="color:#000; font-weight:700; margin-bottom:.5rem">Signed out:</div>
+    <div style="color:#111; margin-bottom:.8rem">Access limited — sign in or create your GSU account to get the full GSU experience.</div>
+    <button class="btn" onclick="hideAuthNotice()" style="padding:.5rem .9rem">Close</button>
   </div>
-  <div id="authOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,.5); z-index:9998;"></div>
+  <div id="authOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:65;"></div>
 
-  <!-- ---------- Client-side helpers (non-module) ---------- -->
+  <!-- ===== JS: UI bits used by modules ===== -->
   <script>
-    /* Retro facts + character data (used by both classic handlers and module) */
-    const RetroFacts = [
+    const RetroFacts=[
       "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
       "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
       "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
-      "🎯 Pong (1972) was so popular that the original machine overflowed with quarters and broke.",
-      "🎮 The Sega Genesis had a hidden sound test screen used for cheat codes in Sonic games.",
+      "🎯 Pong (1972) was so popular the original machine overflowed with quarters and broke.",
       "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
-      "🎤 Mortal Kombat sparked U.S. hearings that led to the ESRB rating system.",
-      "🌀 SNES Mode 7 enabled fake 3D effects in F-Zero and Mario Kart.",
-      "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
+      "🎤 Mortal Kombat helped spark the ESRB rating system.",
+      "🌀 SNES Mode 7 enabled fake 3D in F-Zero and Mario Kart."
     ];
-    const CharacterAssignments = [
-      { name:"Peter Parker/Spider-Man", role:"superhero", desc:"You balance smarts, strength, and soul. In every crisis, you choose the right thing — even when it costs you everything.", img:"https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg", platforms:["PlayStation","PC"] },
-      { name:"Kratos", role:"anti-hero", desc:"Fueled by rage but guided by growth. You don’t run — you conquer.", img:"https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg", platforms:["PlayStation"] },
-      { name:"Miles Morales", role:"superhero", desc:"You carry the weight of two worlds — and still move with purpose, heart, and style.", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg", platforms:["PlayStation","PC"] },
-      { name:"Aloy", role:"hunter-protector", desc:"Curiosity + courage. You push boundaries to save the world.", img:"https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg", platforms:["PlayStation","PC"] },
-      { name:"Jin Sakai", role:"samurai-turned-ghost", desc:"Honor matters — survival adapts. You do what it takes.", img:"https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg", platforms:["PlayStation"] },
-      { name:"Ratchet", role:"galactic hero", desc:"Inventive, loyal, always ready to blast through challenge.", img:"https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100", platforms:["PlayStation"] },
-      { name:"Mario", role:"hero-plumber", desc:"Whether it’s Bowser, bricks, or bananas, you jump in with heart and hustle.", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/03/super-mario-odyssey-sequel-beanbean-kingdom.jpg", platforms:["Nintendo"] },
-      { name:"Donkey Kong", role:"jungle powerhouse", desc:"Bold, strong, unshakable. Loyal to your crew.", img:"https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646", platforms:["Nintendo"] }
+    const CharacterAssignments=[
+      {name:"Peter Parker/Spider-Man",role:"superhero",desc:"Smarts, strength, and soul. You choose right — even when it costs you.",img:"https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg",platforms:["PlayStation","PC"]},
+      {name:"Kratos",role:"anti-hero",desc:"Fueled by rage, guided by growth. You don’t run — you conquer.",img:"https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg",platforms:["PlayStation"]},
+      {name:"Miles Morales",role:"superhero",desc:"Weight of two worlds, still moving with purpose. You’re the spark.",img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg",platforms:["PlayStation","PC"]},
+      {name:"Aloy",role:"hunter-protector",desc:"Curiosity + courage. You push boundaries to save the world.",img:"https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg",platforms:["PlayStation","PC"]},
+      {name:"Jin Sakai",role:"samurai-turned-ghost",desc:"Honor matters — survival adapts. You do what it takes.",img:"https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg",platforms:["PlayStation"]},
+      {name:"Ratchet",role:"galactic hero",desc:"Inventive, loyal, ready to blast through any challenge.",img:"https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100",platforms:["PlayStation"]},
+      {name:"Mario",role:"hero-plumber",desc:"Heart and hustle. It’s-a you!",img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/03/super-mario-odyssey-sequel-beanbean-kingdom.jpg",platforms:["Nintendo"]},
+      {name:"Donkey Kong",role:"jungle powerhouse",desc:"Bold, strong, unshakable. Loyal to your crew.",img:"https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646",platforms:["Nintendo"]},
     ];
-    function loadRetroFact(){ const r = RetroFacts[Math.floor(Math.random()*RetroFacts.length)]; document.getElementById("retro-fact").innerText = r; }
+    function $(id){return document.getElementById(id)}
+    function loadRetroFact(){ const r=RetroFacts[Math.floor(Math.random()*RetroFacts.length)]; $("retro-fact").textContent=r; }
     function updateCharacterOptions(){
-      const platform = (document.getElementById("platform-select")?.value)||"";
-      const roleEl = document.getElementById("character-role"), descEl = document.getElementById("character-desc"), imgEl = document.getElementById("character-image"), msgEl = document.getElementById("no-character-msg");
-      const gsuLogo = "GSU_LOGO.png";
-      if (!platform){ roleEl.innerText=""; descEl.innerText=""; imgEl.src=gsuLogo; msgEl.style.display="block"; return; }
-      const filtered = CharacterAssignments.filter(c => c.platforms.includes(platform));
-      if (!filtered.length){ roleEl.innerText=""; descEl.innerText=""; imgEl.src=gsuLogo; msgEl.style.display="block"; return; }
-      const chosen = filtered[Math.floor(Math.random()*filtered.length)];
-      roleEl.innerText = `🎮 You Are: ${chosen.name} (${chosen.role})`;
-      descEl.innerText = chosen.desc; imgEl.src = chosen.img; msgEl.style.display="none";
+      const p=$("platform-select").value, role=$("character-role"), desc=$("character-desc"), img=$("character-image"), msg=$("no-character-msg");
+      if(!p){ role.textContent=""; desc.textContent=""; img.src="GSU_LOGO.png"; msg.style.display="block"; return; }
+      const pool=CharacterAssignments.filter(c=>c.platforms.includes(p));
+      if(!pool.length){ role.textContent=""; desc.textContent=""; img.src="GSU_LOGO.png"; msg.style.display="block"; return; }
+      const choice=pool[Math.floor(Math.random()*pool.length)];
+      role.textContent=`🎮 You Are: ${choice.name} (${choice.role})`;
+      desc.textContent=choice.desc; img.src=choice.img; msg.style.display="none";
     }
-    window.addEventListener('DOMContentLoaded', () => { updateCharacterOptions(); loadRetroFact(); });
-
-    /* Auth notice helpers used by the module below */
-    function showAuthNotice(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="block"; if(o) o.style.display="block"; }
-    function hideAuthNotice(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="none"; if(o) o.style.display="none"; }
-    window.showAuthNotice = showAuthNotice; window.hideAuthNotice = hideAuthNotice;
+    window.showAuthNotice=function(){ $("authNotice").style.display="block"; $("authOverlay").style.display="block"; }
+    window.hideAuthNotice=function(){ $("authNotice").style.display="none"; $("authOverlay").style.display="none"; }
+    window.addEventListener("DOMContentLoaded",()=>{ loadRetroFact(); updateCharacterOptions(); });
   </script>
 
-  <!-- ---------- Firebase init + basic profile editing (module) ---------- -->
+  <!-- ===== Firebase + data wiring ===== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs, getCountFromServer, Timestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "488911705365",
-      appId: "1:488911705365:web:ad8b3be7936a46bb77c51c",
-      measurementId: "G-CP48EXW1EV"
+      apiKey:"AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
+      authDomain:"gamesync-union.firebaseapp.com",
+      projectId:"gamesync-union",
+      storageBucket:"gamesync-union.appspot.com",
+      messagingSenderId:"488911705365",
+      appId:"1:488911705365:web:ad8b3be7936a46bb77c51c",
+      measurementId:"G-CP48EXW1EV"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
-
-    // Make available globally for other scripts on this page
-    window.db = db; window.auth = auth; window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
+    const app=initializeApp(firebaseConfig);
+    const auth=getAuth(app);
+    const db=getFirestore(app);
+    window.db=db; window.auth=auth; // expose
 
     setPersistence(auth, browserLocalPersistence).catch(console.error);
 
-    const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
-    const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
-    const signInBtn = document.getElementById('signInBtn');
-    const createAccountBtn = document.getElementById('createAccountBtn');
+    /* Auth UI */
+    const emailInput=document.querySelector('#auth-box input[placeholder="Email"]');
+    const passwordInput=document.querySelector('#auth-box input[placeholder="Password"]');
+    const signInBtn=document.getElementById('signInBtn');
+    const createAccountBtn=document.getElementById('createAccountBtn');
 
-    if (createAccountBtn) createAccountBtn.addEventListener('click', () => window.location.href = "account_creation.html");
-    if (signInBtn) {
-      signInBtn.addEventListener('click', async () => {
-        const email = (emailInput?.value || "").trim();
-        const password = (passwordInput?.value || "");
-        if (!email || !password) { alert("Enter both Email and Password."); return; }
-        try {
-          const userCred = await signInWithEmailAndPassword(auth, email, password);
-          await loadProfile(userCred.user.uid);
-          alert("Signed in successfully");
-        } catch (err) { alert("Login failed: " + err.message); }
+    createAccountBtn?.addEventListener('click',()=>window.location.href="account_creation.html");
+    signInBtn?.addEventListener('click',async()=>{
+      const email=(emailInput?.value||"").trim(); const password=(passwordInput?.value||"");
+      if(!email||!password){ alert("Enter both Email and Password."); return; }
+      try{ const cred=await signInWithEmailAndPassword(auth,email,password); await loadProfile(cred.user.uid); alert("Signed in successfully"); }
+      catch(err){ alert("Login failed: "+err.message); }
+    });
+
+    document.getElementById("logoutBtn")?.addEventListener("click",()=>signOut(auth).catch(e=>alert(e.message)));
+
+    /* Profile load/update */
+    async function loadProfile(uid){
+      const snap=await getDoc(doc(db,"users",uid));
+      if(!snap.exists()) return;
+      const data=snap.data();
+      const favGames = Array.isArray(data.favoriteGames) ? data.favoriteGames : [];
+      const favImgs  = Array.isArray(data.favoriteImages) ? data.favoriteImages : [];
+
+      // meta
+      const metaUser=document.querySelector(".username-info");
+      const metaPlat=document.querySelector(".platform-info");
+      metaUser.textContent=`👤 Username: ${data.username||"N/A"}`;
+      metaPlat.textContent=`🔹 Platform: ${data.platform||"N/A"}`;
+
+      // stats
+      document.getElementById("fav-games").lastElementChild
+      document.getElementById("fav-games").innerHTML   = `<span class="icon">🔥</span><span>Favorite Games: ${favGames.length?favGames.join(", "):"N/A"}</span>`;
+      document.getElementById("games-played").innerHTML= `<span class="icon">🎮</span><span>Number Of Games Played: ${data.gamesPlayed ?? "N/A"}</span>`;
+      document.getElementById("trophy-stats").innerHTML= `<span class="icon">🏆</span><span>Trophy Stats (Total Trophies): ${data.trophyCount ?? "N/A"}</span>`;
+
+      // covers
+      const row=document.getElementById("fav-images");
+      row.innerHTML="";
+      favImgs.slice(0,3).forEach((url,i)=>{
+        const img=document.createElement("img");
+        img.src=url; img.alt=favGames[i]||`Game ${i+1}`; img.className="profile-fav-img update-flash-img";
+        row.appendChild(img);
       });
     }
 
-    // Logout
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", async () => {
-        try { await signOut(auth); } catch (err) { alert("Error signing out: " + err.message); }
-      });
-    }
-
-    async function loadProfile(uid) {
-      const snap = await getDoc(doc(db, "users", uid));
-      if (!snap.exists()) return;
-      const data = snap.data();
-      const profileBox = document.getElementById("profile-box");
-
-      // Remove old header tags if any
-      profileBox.querySelector(".username-info")?.remove();
-      profileBox.querySelector(".platform-info")?.remove();
-
-      const usernameEl = document.createElement("p");
-      usernameEl.className = "username-info";
-      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
-      usernameEl.style.fontWeight = "bold";
-      usernameEl.style.marginBottom = "0.5rem";
-      profileBox.prepend(usernameEl);
-
-      const platformEl = document.createElement("p");
-      platformEl.className = "platform-info";
-      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
-      platformEl.style.marginBottom = "0.5rem";
-      profileBox.insertBefore(platformEl, usernameEl.nextSibling);
-
-      // Stats
-      document.getElementById("fav-games").textContent     = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-      document.getElementById("games-played").textContent  = `🎮 Number Of Games Played: ${data.gamesPlayed ?? "N/A"}`;
-      document.getElementById("trophy-stats").textContent  = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount ?? "N/A"}`;
-
-      // Covers
-      const imageRow = document.getElementById("fav-images");
-      imageRow.innerHTML = "";
-      if (Array.isArray(data.favoriteImages)) {
-        data.favoriteImages.slice(0,3).forEach((url, index) => {
-          const img = document.createElement("img");
-          img.src = url;
-          img.alt = (data.favoriteGames && data.favoriteGames[index]) || `Game ${index+1}`;
-          img.classList.add("profile-fav-img","update-flash-img");
-          imageRow.appendChild(img);
-        });
-      }
-    }
-
-    // Expose edit modal helpers
-    window.openEditModal = function () {
-      document.getElementById('editModal').style.display = 'block';
-      document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
-      document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('🎮 Number Of Games Played: ', '');
-      document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('🏆 Trophy Stats (Total Trophies): ', '');
-      document.getElementById('editUsername').value = document.querySelector(".username-info")?.textContent.replace("👤 Username: ", "") || '';
-      document.getElementById('editPlatform').value = document.querySelector(".platform-info")?.textContent.replace("🔹 Platform: ", "") || '';
+    window.openEditModal=function(){
+      document.getElementById('editModal').style.display='block';
+      document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace(/^.*?:\s*/,'');
+      document.getElementById('editGamesPlayed').value = (document.getElementById('games-played').textContent.match(/\d+/)||[""])[0];
+      document.getElementById('editTrophies').value = (document.getElementById('trophy-stats').textContent.match(/\d+/)||[""])[0];
+      document.getElementById('editUsername').value = document.querySelector(".username-info")?.textContent.replace("👤 Username: ","")||'';
+      document.getElementById('editPlatform').value = document.querySelector(".platform-info")?.textContent.replace("🔹 Platform: ","")||'';
     };
-    window.closeEditModal = function () { document.getElementById('editModal').style.display = 'none'; };
+    window.closeEditModal=function(){ document.getElementById('editModal').style.display='none'; };
 
-    window.saveProfileChanges = async function () {
-      const user = auth.currentUser;
-      if (!user) { alert("You must be signed in to update your profile."); return; }
+    window.saveProfileChanges=async function(){
+      const user=auth.currentUser; if(!user){ alert("You must be signed in."); return; }
+      const games=document.getElementById('editGames').value.trim();
+      const gamesPlayed=document.getElementById('editGamesPlayed').value.trim();
+      const imageUrls=document.getElementById('editGameImages').value.split(',').map(s=>s.trim()).filter(Boolean);
+      const trophies=document.getElementById('editTrophies').value.trim();
+      const username=document.getElementById('editUsername').value.trim();
+      const platform=document.getElementById('editPlatform').value;
 
-      const games = document.getElementById('editGames').value.trim();
-      const gamesPlayed = document.getElementById('editGamesPlayed').value.trim();
-      const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim()).filter(Boolean);
-      const trophies = document.getElementById('editTrophies').value.trim();
-      const username = document.getElementById('editUsername').value.trim();
-      const platform = document.getElementById('editPlatform').value;
-
-      const uid = user.uid;
-      await setDoc(doc(db, "users", uid), {
-        username,
-        platform,
-        favoriteGames: games ? games.split(',').map(s => s.trim()) : [],
-        gamesPlayed: gamesPlayed ? parseInt(gamesPlayed) : 0,
+      await setDoc(doc(db,"users",user.uid),{
+        username, platform,
+        favoriteGames: games?games.split(',').map(s=>s.trim()):[],
+        gamesPlayed: gamesPlayed?parseInt(gamesPlayed):0,
         favoriteImages: imageUrls,
-        trophyCount: trophies ? parseInt(trophies) : 0,
-      }, { merge: true });
+        trophyCount: trophies?parseInt(trophies):0
+      },{merge:true});
 
-      await loadProfile(uid);
+      await loadProfile(user.uid);
       window.closeEditModal();
     };
 
-    // Flip body data-auth based on login state + gate sections
-    onAuthStateChanged(auth, (user) => {
-      document.body.dataset.auth = user ? "in" : "out";
-      const profileBox = document.getElementById("profile-box");
-      if (user) { profileBox?.style && (profileBox.style.display = "block"); loadProfile(user.uid); hideAuthNotice(); }
-      else      { profileBox?.style && (profileBox.style.display = "none"); showAuthNotice(); setTimeout(hideAuthNotice, 8000); }
-    });
-  </script>
-
-  <!-- ---------- Data orchestrator (module) ---------- -->
-  <script type="module">
-    import {
-      collection, query, where, orderBy, limit, getDocs,
-      getCountFromServer, Timestamp, doc, getDoc
-    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    import { onAuthStateChanged, getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-
-    const db   = window.db;
-    const auth = window.auth || getAuth();
-
-    /* ---------- Helpers ---------- */
-    const $ = (id) => document.getElementById(id);
-    const setText = (id, val) => { const el = $(id); if (el) el.textContent = String(val); };
-
-    const dayKey = () => new Date().toISOString().slice(0,10);           // YYYY-MM-DD
-    const hash   = (s) => { let h=2166136261>>>0; for (let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0; };
-    const dailyPickIndex = (len, salt="") => len ? (hash(dayKey()+salt) % len) : 0;
-
-    const FallbackQuotes = [
-      "Bro didn’t dodge — he teleported 💀",
-      "Parry windows were forged in the fires of lag.",
-      "If it’s not a flex, why’s it on the timeline?",
-      "Damage is temporary. Style is forever."
-    ];
-
-    function applyDailyRetro(){ setText("retro-fact", (window.RetroFacts||[])[dailyPickIndex((window.RetroFacts||[]).length, "retro")] || "Retro fact loading failed."); }
-    function applyDailyQuote(){
-      const q = $("talkQuoteText"), w = $("talkQuoteWho");
-      if (!q || !w) return;
-      q.textContent = `“${FallbackQuotes[dailyPickIndex(FallbackQuotes.length, "quote")]}”`;
-      w.textContent = "— GSU Lounge";
-    }
-    function updateCharacterOptionsDaily(){
-      const select = $("platform-select"); if (!select) return;
-      const platform = select.value || "";
-      const roleEl = $("character-role"), descEl = $("character-desc"), imgEl = $("character-image");
-      const msgEl  = $("no-character-msg");
-      const CharacterAssignments = window.CharacterAssignments || [];
-      if (!platform){ roleEl.innerText=""; descEl.innerText=""; imgEl.src="GSU_LOGO.png"; if(msgEl) msgEl.style.display="block"; return; }
-      const filtered = CharacterAssignments.filter(c => (c.platforms||[]).includes(platform));
-      const chosen = filtered.length ? filtered[dailyPickIndex(filtered.length, platform)] : null;
-      if (!chosen){ roleEl.innerText=""; descEl.innerText=""; imgEl.src="GSU_LOGO.png"; if(msgEl) msgEl.style.display="block"; return; }
-      roleEl.innerText = `🎮 You Are: ${chosen.name} (${chosen.role})`;
-      descEl.innerText = chosen.desc; imgEl.src = chosen.img; if(msgEl) msgEl.style.display="none";
-    }
-    $("platform-select")?.addEventListener("change", updateCharacterOptionsDaily);
-
-    /* ---------- Firestore queries ---------- */
-    async function safeCount(colName, qParts=[]){
-      try{
-        const base = collection(db, colName);
-        const q    = qParts.length ? query(base, ...qParts) : base;
-        const snap = await getCountFromServer(q);
-        return snap.data().count || 0;
-      }catch{ return 0; }
-    }
-    async function countSubmissions({type=null, hasVideo=false}={}){
-      try{
-        if (type){ const n = await safeCount("submissions", [ where("type","==", type) ]); if (n) return n; }
-        const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(200)));
-        return qs.docs.filter(d => {
-          const x = d.data()||{};
-          const okType  = type ? String(x.type||"").toLowerCase()===type : true;
-          const okMedia = hasVideo ? !!x.videoUrl : true;
-          return okType && okMedia;
-        }).length;
-      }catch{ return 0; }
-    }
-    async function sumPollVotes(){
-      try{
-        const qs = await getDocs(collection(db,"polls"));
-        return qs.docs.reduce((sum,d)=>{
-          const p = d.data()||{};
-          if (typeof p.totalVotes === "number") return sum + p.totalVotes;
-          if (Array.isArray(p.options)) return sum + p.options.reduce((s,o)=> s + Number(o.votes ?? o.count ?? 0), 0);
-          if (p.choices && typeof p.choices === "object") return sum + Object.values(p.choices).reduce((s,v)=> s + Number(v||0), 0);
-          return sum;
-        },0);
-      }catch{ return 0; }
-    }
-    async function usernameFrom(uid){
-      if (!uid) return "GSU_Player";
-      try{ const s = await getDoc(doc(db,"users",uid)); const u = s.data()||{}; return (u.username || (u.email?.split("@")[0]) || "GSU_Player"); }
-      catch{ return "GSU_Player"; }
-    }
-
-    async function populateStats(){
-      const sevenDaysAgo = Timestamp.fromDate(new Date(Date.now() - 7*24*3600*1000));
-      setText("totalMembers", await safeCount("users"));
-      setText("newMembers",   await safeCount("users", [ where("createdAt", ">=", sevenDaysAgo) ]));
-      setText("videoUploads", await countSubmissions({ hasVideo:true }));
-      setText("fanArt",       await safeCount("community_art"));
-      setText("trophies",     await safeCount("community_trophies"));
-      setText("combos",       await countSubmissions({ type:"combo" }));
-      setText("pollVotes",    await sumPollVotes());
-    }
+    /* Data blocks */
+    const $ = (id)=>document.getElementById(id);
+    const since = Timestamp.fromDate(new Date(Date.now()-24*60*60*1000));
 
     function youtubeEmbed(url){
-      if (!url) return "";
       try{
-        const u = new URL(url);
-        if (u.hostname.includes("youtu.be")) return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
-        if (u.hostname.includes("youtube.com")){
-          const id = u.searchParams.get("v");
-          if (id) return `https://www.youtube.com/embed/${id}`;
-        }
+        const u=new URL(url);
+        if(u.hostname.includes("youtu.be")) return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
+        if(u.hostname.includes("youtube.com")){ const v=u.searchParams.get("v"); if(v) return `https://www.youtube.com/embed/${v}`; }
       }catch{}
       return "";
     }
 
-    const H24   = 24*60*60*1000;
-    const since = Timestamp.fromDate(new Date(Date.now() - H24));
+    async function usernameFrom(uid){
+      try{ const s=await getDoc(doc(db,"users",uid)); const u=s.data()||{}; return (u.username || (u.email?.split("@")[0]) || "GSU_Player"); }
+      catch{ return "GSU_Player"; }
+    }
 
     async function buildUnionWatch(){
-      const media = $("unionWatchMedia"), title = $("unionWatchTitle"), cap = $("unionWatchCaption");
-      if (!media) return;
-      let hit = null;
+      const media=$("unionWatchMedia"), title=$("unionWatchTitle"), cap=$("unionWatchCaption");
+      let hit=null;
       try{
-        const qs = await getDocs(query(collection(db,"submissions"), where("timestamp", ">=", since), orderBy("timestamp","desc"), limit(15)));
-        hit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
+        const qs=await getDocs(query(collection(db,"submissions"), where("timestamp",">=",since), orderBy("timestamp","desc"), limit(15)));
+        hit=qs.docs.map(d=>({id:d.id,...d.data()})).find(x=>x.videoUrl);
       }catch{}
-      if (!hit){
+      if(!hit){
         try{
-          const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(20)));
-          hit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
+          const qs=await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(20)));
+          hit=qs.docs.map(d=>({id:d.id,...d.data()})).find(x=>x.videoUrl);
         }catch{}
       }
-      if (!hit){ title && (title.textContent = "No featured clip yet — be the first!"); cap && (cap.textContent=""); media.innerHTML=""; return; }
-      const user = await usernameFrom(hit.userId);
-      const embed = youtubeEmbed(hit.videoUrl);
-      media.innerHTML = embed
-        ? `<iframe src="${embed}" allowfullscreen style="width:100%;height:360px;border-radius:10px;"></iframe>`
-        : `<img src="${hit.cover || 'GSU_LOGO.png'}" alt="Clip" class="showoff-img" />`;
-      if (title) title.textContent = `@${user} — ${hit.title || "Featured Clip"}`;
-      if (cap)   cap.textContent   = hit.caption || "Certified GSU moment.";
+      if(!hit){ title.textContent="No featured clip yet — be the first!"; cap.textContent=""; media.innerHTML=""; return; }
+      const user=await usernameFrom(hit.userId);
+      const embed=youtubeEmbed(hit.videoUrl);
+      media.innerHTML= embed ? `<iframe src="${embed}" allowfullscreen></iframe>` : `<img src="${hit.cover||'GSU_LOGO.png'}" alt="Clip" class="profile-fav-img" style="height:auto">`;
+      title.textContent=`@${user} — ${hit.title||"Featured Clip"}`;
+      cap.textContent=hit.caption||"Certified GSU moment.";
     }
 
     async function buildCertifiedMoment(){
-      const img = $("certifiedImg"), p = $("certifiedCaption");
-      if (!img || !p) return;
+      const img=$("certifiedImg"), p=$("certifiedCaption");
       try{
-        const qs = await getDocs(query(collection(db,"community_trophies"), orderBy("timestamp","desc"), limit(1)));
-        const d  = qs.docs[0]?.data();
-        if (!d){ p.textContent="No trophies yet — earn one and take the spotlight."; return; }
-        const user = await usernameFrom(d.userId);
-        img.src = d.cover || "GSU_LOGO.png"; img.alt = d.game || "Trophy";
-        p.innerHTML = `"${d.title || d.description || 'New Trophy'}" — <strong>@${user}</strong>`;
+        const qs=await getDocs(query(collection(db,"community_trophies"), orderBy("timestamp","desc"), limit(1)));
+        const d=qs.docs[0]?.data();
+        if(!d){ p.textContent="No trophies yet — earn one and take the spotlight."; return; }
+        const user=await usernameFrom(d.userId);
+        img.src=d.cover||"GSU_LOGO.png"; img.alt=d.game||"Trophy";
+        p.innerHTML=`"${d.title||d.description||'New Trophy'}" — <strong>@${user}</strong>`;
       }catch{ p.textContent="Couldn’t load trophies."; }
     }
 
     async function buildTalkOfWeek(){
-      const q = $("talkQuoteText"), w = $("talkQuoteWho");
-      if (!q || !w) return;
+      const q=$("talkQuoteText"), w=$("talkQuoteWho");
       try{
-        const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(10)));
-        const hit = qs.docs.map(d=>d.data()).find(x => (x.caption||"").length > 0);
-        if (hit){ const user = await usernameFrom(hit.userId); q.textContent = `“${String(hit.caption).trim().replace(/^["“]|["”]$/g,"")}”`; w.textContent = `— @${user}`; return; }
+        const qs=await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(10)));
+        const hit=qs.docs.map(d=>d.data()).find(x => (x.caption||"").length>0);
+        if(hit){ const user=await usernameFrom(hit.userId); q.textContent=`“${String(hit.caption).trim().replace(/^["“]|["”]$/g,"")}”`; w.textContent=`— @${user}`; return; }
       }catch{}
-      applyDailyQuote(); // fallback daily rotation
+      q.textContent="“Bro didn’t dodge — he teleported 💀”"; w.textContent="— GSU Lounge";
     }
 
-    async function buildAlerts(){
-      const list = $("alertsList"); if (!list) return;
-      list.innerHTML = `<li>Loading…</li>`;
-      const rows = [];
-      async function pushFrom(col, maker){
-        try{
-          const qs = await getDocs(query(collection(db,col), where("timestamp", ">=", since), orderBy("timestamp","desc")));
-          for (const d of qs.docs){
-            const x = d.data()||{}; const user = await usernameFrom(x.userId);
-            const line = maker(x,user); if (line) rows.push(`<li>${line}</li>`);
-          }
-        }catch{}
-      }
-      await pushFrom("submissions", (x,u)=> x.videoUrl ? `🎥 New upload: <strong>${x.title || 'Clip'}</strong> — @${u}` :
-                                            (String(x.type||"").toLowerCase()==="combo" ? `🥊 New combo guide: <strong>${x.title || 'Combo'}</strong> — @${u}` : null));
-      await pushFrom("community_art",      (x,u)=> `🎨 New art: <strong>${x.title || 'Art drop'}</strong> — @${u}`);
-      await pushFrom("community_trophies", (x,u)=> `🏆 New trophy: <strong>${x.title || x.game || 'Trophy'}</strong> — @${u}`);
-      list.innerHTML = rows.length ? rows.join("") : `<li>No new drops in the last 24 hours — be the first! 🔔</li>`;
+    async function safeCount(col, parts=[]){
+      try{ const base=collection(db,col); const q=parts.length?query(base,...parts):base; const snap=await getCountFromServer(q); return snap.data().count||0; }
+      catch{ return 0; }
+    }
+    async function countSubmissions({type=null,hasVideo=false}={}){
+      try{
+        if(type){ const n=await safeCount("submissions",[where("type","==",type)]); if(n) return n; }
+        const qs=await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(200)));
+        return qs.docs.filter(d=>{ const x=d.data()||{}; const okType= type? String(x.type||"").toLowerCase()===type : true; const okMedia= hasVideo? !!x.videoUrl : true; return okType && okMedia; }).length;
+      }catch{ return 0; }
+    }
+    async function sumPollVotes(){
+      try{
+        const qs=await getDocs(collection(db,"polls"));
+        return qs.docs.reduce((s,d)=>{ const p=d.data()||{}; if(typeof p.totalVotes==="number") return s+p.totalVotes;
+          if(Array.isArray(p.options)) return s + p.options.reduce((a,o)=>a+Number(o.votes??o.count??0),0);
+          if(p.choices && typeof p.choices==="object") return s + Object.values(p.choices).reduce((a,v)=>a+Number(v||0),0);
+          return s; },0);
+      }catch{ return 0; }
+    }
+    async function populateStats(){
+      const seven=Timestamp.fromDate(new Date(Date.now()-7*24*3600*1000));
+      document.getElementById("totalMembers").textContent = await safeCount("users");
+      document.getElementById("newMembers").textContent   = await safeCount("users",[where("createdAt",">=",seven)]);
+      document.getElementById("videoUploads").textContent = await countSubmissions({hasVideo:true});
+      document.getElementById("fanArt").textContent       = await safeCount("community_art");
+      document.getElementById("trophies").textContent     = await safeCount("community_trophies");
+      document.getElementById("combos").textContent       = await countSubmissions({type:"combo"});
+      document.getElementById("pollVotes").textContent    = await sumPollVotes();
     }
 
-    /* ---------- Personalized Spotlight (YouTube) ---------- */
-    const spotlightRef = $("fav-game-updates");
-    const YT_KEY = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // Your YouTube API key
+    /* Spotlight (YouTube) */
+    const spotlightRef=document.getElementById("fav-game-updates");
+    const YT_KEY="AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA";
+
+    function dayKey(){return new Date().toISOString().slice(0,10)}
+    function hash(s){ let h=2166136261>>>0; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0;}
+    function dailyPickIndex(n,salt=""){return n?hash(dayKey()+salt)%n:0}
 
     async function rotateYouTubeVideosForUser(uid){
-      if (!spotlightRef) return;
-      if (!YT_KEY || YT_KEY === "YOUR_YOUTUBE_API_KEY"){
-        spotlightRef.innerHTML = `<p style="color:var(--gsu-red); text-align:center;">Add your YouTube API key to enable personalized gameplay drops.</p>`;
-        return;
-      }
+      if(!spotlightRef) return;
+      if(!YT_KEY){ spotlightRef.innerHTML=`<p class="center" style="color:var(--gsu-red)">Add your YouTube API key to enable personalized gameplay drops.</p>`; return; }
       try{
-        const snap = await getDoc(doc(db,"users",uid));
-        if (!snap.exists()){ spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>"; return; }
+        const snap=await getDoc(doc(db,"users",uid));
+        if(!snap.exists()){ spotlightRef.innerHTML="<p class='center' style='color:red'>❌ No user data found.</p>"; return; }
         const { favoriteGames=[] } = snap.data();
-        if (!favoriteGames.length){ spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>"; return; }
+        if(!favoriteGames.length){ spotlightRef.innerHTML="<p class='center' style='color:red'>❌ No favorite games set.</p>"; return; }
 
-        spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
+        spotlightRef.innerHTML="<p class='center'>🔄 Loading gameplay drops...</p>";
 
-        // Pick 3 favorites deterministically per-day
-        const offset = dailyPickIndex(Math.max(1,favoriteGames.length), "vids");
-        const show = [favoriteGames[(0+offset)%favoriteGames.length], favoriteGames[(1+offset)%favoriteGames.length], favoriteGames[(2+offset)%favoriteGames.length]].filter(Boolean);
+        const offset=dailyPickIndex(Math.max(1,favoriteGames.length),"vids");
+        const show=[favoriteGames[(0+offset)%favoriteGames.length], favoriteGames[(1+offset)%favoriteGames.length], favoriteGames[(2+offset)%favoriteGames.length]].filter(Boolean);
 
-        const blocks = await Promise.all(show.map(async (title)=>{
-          const clean = title.replace(/[^\w\s:]/gi,"").trim();
+        const blocks=await Promise.all(show.map(async(title)=>{
+          const q=encodeURIComponent(title.replace(/[^\w\s:]/gi,"").trim()+" gameplay");
           try{
-            const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${YT_KEY}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(clean + " gameplay")}`);
-            const data = await res.json();
-            if (data?.error?.errors?.[0]?.reason === "quotaExceeded"){
-              return `<div style="color:var(--gsu-red); text-align:center; padding:1rem;">
-                        Today’s video drops are temporarily unavailable. Check back tomorrow!
-                        <br/><br/>
-                        <button onclick="window.location.href='uploads.html'" style="background-color: var(--gsu-red); color:#fff; border:none; padding:.6rem 1rem; border-radius:6px; cursor:pointer; font-family:'Montserrat',sans-serif; font-weight:600;">Explore GSU Player Lounge</button>
-                      </div>`;
+            const res=await fetch(`https://www.googleapis.com/youtube/v3/search?key=${YT_KEY}&part=snippet&type=video&maxResults=5&q=${q}`);
+            const data=await res.json();
+            if(data?.error?.errors?.[0]?.reason==="quotaExceeded"){
+              return `<div class="center" style="color:var(--gsu-red); padding:10px;">YouTube quota temporarily exceeded for today.</div>`;
             }
-            const video = data.items?.find(it => it.id?.kind==="youtube#video");
-            const id = video?.id?.videoId;
-            if (!id) throw new Error("No videos");
-            return `
-              <div class="spotlight-video">
-                <iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
-                <h3>🎮 ${title}</h3>
-                <p>▶️ Daily gameplay drop powered by YouTube</p>
-              </div>
-            `;
-          }catch(e){
-            console.error("YT error", e);
-            return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
-          }
+            const v=data.items?.find(i=>i.id?.kind==="youtube#video")?.id?.videoId;
+            if(!v) throw new Error("No video");
+            return `<div class="spotlight-video"><iframe src="https://www.youtube.com/embed/${v}" allowfullscreen></iframe><h3 style="margin:.4rem 0 0; color:var(--gsu-red)">🎮 ${title}</h3><p style="color:#bbb; margin:.25rem 0 0">▶️ Daily gameplay drop</p></div>`;
+          }catch{ return `<div class="center" style="color:red">❌ Failed to load video for <strong>${title}</strong></div>`; }
         }));
-        spotlightRef.innerHTML = blocks.join("");
+        spotlightRef.innerHTML=blocks.join("");
       }catch(e){
         console.error(e);
-        spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
+        spotlightRef.innerHTML=`<p class="center" style="color:red">❌ Could not load personalized videos.</p>`;
       }
     }
 
-    /* ---------- Orchestrator ---------- */
-    async function runHome(){
-      try{ applyDailyRetro(); updateCharacterOptionsDaily(); }catch{}
-      try{ await populateStats(); }catch{}
-      await Promise.all([buildUnionWatch(), buildCertifiedMoment(), buildTalkOfWeek(), buildAlerts()]);
-      const user = auth.currentUser;
-      if (spotlightRef){
-        if (user) rotateYouTubeVideosForUser(user.uid);
-        else spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
-      }
-    }
-
-    function scheduleMidnightRefresh(){
-      const now = new Date();
-      const next = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0,0,2);
-      setTimeout(()=>{ runHome(); scheduleMidnightRefresh(); }, next - now);
-    }
-
-    // Auth state: flip the gate + run build
-    onAuthStateChanged(auth, (user)=>{
+    /* Auth state & page build */
+    onAuthStateChanged(auth, async(user)=>{
       document.body.dataset.auth = user ? "in" : "out";
-      if (user){ window.hideAuthNotice?.(); }
-      else     { window.showAuthNotice?.(); setTimeout(window.hideAuthNotice, 8000); }
-      runHome();
+      if(user){ window.hideAuthNotice?.(); await loadProfile(user.uid); await populateStats(); rotateYouTubeVideosForUser(user.uid); }
+      else{ window.showAuthNotice?.(); setTimeout(window.hideAuthNotice, 8000);
+            // Clear personalized areas gracefully
+            document.getElementById("fav-images").innerHTML="";
+            document.getElementById("fav-game-updates").innerHTML=`<p class="center" style="color:red">❌ Please log in to see personalized videos.</p>`;
+      }
+      // Always build global blocks
+      buildUnionWatch(); buildCertifiedMoment(); buildTalkOfWeek(); buildAlerts();
     });
 
-    // Boot
+    async function buildAlerts(){
+      const list=$("alertsList"); if(!list) return;
+      list.innerHTML=`<li>Loading…</li>`;
+      const rows=[];
+      async function pushFrom(col, maker){
+        try{
+          const qs=await getDocs(query(collection(db,col), where("timestamp",">=",since), orderBy("timestamp","desc")));
+          for(const d of qs.docs){ const x=d.data()||{}; const user=await usernameFrom(x.userId); const line=maker(x,user); if(line) rows.push(`<li>${line}</li>`); }
+        }catch{}
+      }
+      await pushFrom("submissions",(x,u)=> x.videoUrl ? `🎥 New upload: <strong>${x.title||'Clip'}</strong> — @${u}` :
+        (String(x.type||"").toLowerCase()==="combo" ? `🥊 New combo guide: <strong>${x.title||'Combo'}</strong> — @${u}` : null));
+      await pushFrom("community_art",(x,u)=> `🎨 New art: <strong>${x.title||'Art drop'}</strong> — @${u}`);
+      await pushFrom("community_trophies",(x,u)=> `🏆 New trophy: <strong>${x.title||x.game||'Trophy'}</strong> — @${u}`);
+      list.innerHTML= rows.length ? rows.join("") : `<li>No new drops in the last 24 hours — be the first! 🔔</li>`;
+    }
+
+    // First paints for non-signed-in views
     document.addEventListener("DOMContentLoaded", ()=>{
-      runHome();
-      scheduleMidnightRefresh();
-      setInterval(buildAlerts, 10*60*1000); // keep 24h window rolling
+      loadRetroFact(); updateCharacterOptions();
+      buildUnionWatch(); buildCertifiedMoment(); buildTalkOfWeek(); buildAlerts();
     });
   </script>
 </body>
