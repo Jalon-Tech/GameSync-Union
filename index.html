@@ -1,3 +1,8 @@
+Here you go — a **complete, fixed, single-file `index.html`** that pulls real stats from your Firestore, shows fresh 24-hour alerts & shout-outs, rotates in a featured clip + latest trophy, and personalizes Spotlight videos from the signed-in user’s favorite games.
+
+> Paste this in as your whole page. No other files required.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,103 +12,8 @@
   <link rel="icon" href="GSU_LOGO.png" />
   <link rel="apple-touch-icon" href="GSU_LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+
   <style>
-    .update-flash-img { animation: flashGlow 1.3s ease-in-out; }
-
-    /* One canonical flashGlow for images */
-    @keyframes flashGlow {
-      0%   { background-color:#e60023; color:#fff; border:2px solid #fff; box-shadow:0 0 18px 6px #e60023; margin-bottom:14px; }
-      50%  { background-color:rgba(230,0,35,0.15); color:#e60023; border:2px solid #e60023; box-shadow:0 0 28px 10px #e60023; margin-bottom:24px; }
-      100% { background-color:transparent; color:#fff; border:2px solid #e60023; box-shadow:none; margin-bottom:14px; }
-    }
-
-    /* Separate profile flash so it doesn't collide */
-    @keyframes flashGlowProfile {
-      0%   { background-color:#e60023; color:#fff; border:2px solid #fff; box-shadow:0 0 18px 6px #e60023; }
-      50%  { background-color:#fff; color:#e60023; border:2px solid #e60023; box-shadow:0 0 28px 10px #fff; }
-      100% { background-color:transparent; color:#fff; border:2px solid var(--gsu-red); box-shadow:none; }
-    }
-
-    .dropdown-wrapper { position:relative; display:inline-block; width:100%; }
-    .dropdown-wrapper::after {
-      content:"🔽"; position:absolute; top:50%; right:16px; transform:translateY(-50%);
-      font-size:1.2rem; pointer-events:none; transition:transform .3s ease;
-    }
-    .dropdown-wrapper:hover::after, .dropdown-wrapper:focus-within::after { transform:translateY(-50%) rotate(180deg); }
-
-    #editPlatform {
-      width:100%; background-color:rgba(255,255,255,0.05); color:#fff; border:2px solid #e60023; border-radius:10px;
-      padding:10px 40px 10px 15px; font-family:'Orbitron',sans-serif; font-size:1rem; appearance:none; cursor:pointer; position:relative; z-index:1;
-    }
-
-    .stat-box { margin-bottom:12px; padding:10px 15px; border:2px solid #e60023; border-radius:10px; background:rgba(255,255,255,0.05); transition:margin .3s ease; }
-
-    #profile-box.update-flash p,
-    #profile-box.mid-flash p,
-    #profile-box.update-flash div p,
-    #profile-box.mid-flash div p,
-    #profile-box.update-flash > p,
-    #profile-box.mid-flash > p { margin-bottom:14px!important; line-height:1.6!important; }
-
-    #profile-box.update-flash { animation: flashGlowProfile 1.2s ease-in-out; }
-    #profile-box.update-flash .stat-box, #profile-box.mid-flash .stat-box { margin-bottom:24px!important; }
-    .update-flash { animation: flashGlowProfile 1.8s ease-in-out; }
-
-    .sync-desc { font-size:.9rem; color:#ccc; font-family:'Roboto',sans-serif; margin-bottom:1rem; }
-
-    .match-review-style h2 {
-      color:#e60023; font-family:'Montserrat',sans-serif; font-size:1.2rem; margin-bottom:.75rem;
-      text-shadow:0 0 8px rgba(230,0,35,.7); border-bottom:2px solid #e60023; padding-bottom:.5rem;
-    }
-    .match-review-style { background:#1f1f1f; border:2px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 12px rgba(255,255,255,.05); transition:transform .3s, box-shadow .3s; }
-    .match-review-style:hover { transform:scale(1.01); box-shadow:0 0 14px rgba(230,0,35,.2); }
-
-    .review-box { border:2px solid #fff; background:#1c1c1c; color:#fff; padding:.75rem; border-radius:10px; font-family:'Roboto',sans-serif; transition:border-color .3s; width:100%; resize:vertical; min-height:100px; }
-    .review-box:focus { outline:none; border-color:#e60023; }
-
-    .retro-body .game-title { font-size:1rem; font-weight:bold; color:var(--gsu-red); margin-bottom:.4rem; }
-    #reviewGame, #reviewText {
-      background:#222; color:#fff; border:2px solid #444; border-radius:8px; padding:8px; font-size:.9rem; margin-bottom:.6rem; transition:border .3s, box-shadow .3s;
-    }
-    #reviewGame:focus, #reviewText:focus { border-color:var(--gsu-red); box-shadow:0 0 8px rgba(230,0,35,.4); outline:none; }
-    #reviewText { min-height:80px; resize:vertical; }
-
-    #quick-review-box { background:#1f1f1f; border:2px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 8px rgba(0,0,0,.2); transition:all .3s; animation:fadeSlideIn .5s ease-out; }
-    #quick-review-box:hover { transform:translateY(-6px) scale(1.01); box-shadow:0 6px 16px rgba(230,0,35,.4), 0 0 8px rgba(255,255,255,.05); border:1px solid var(--gsu-red); }
-    #quick-review-box h2 {
-      color:#e60023; font-family:'Montserrat',sans-serif; font-size:1.2rem; margin-bottom:.75rem; text-shadow:0 0 8px rgba(230,0,35,.7); border-bottom:2px solid #e60023; padding-bottom:.5rem;
-    }
-
-    @keyframes fadeSlideIn { 0%{opacity:0; transform:translateY(10px);} 100%{opacity:1; transform:translateY(0);} }
-
-    main > .box:not(:last-child) { margin-bottom:2.2rem; }
-    #profile-box { background:linear-gradient(to bottom right,#1e1e1e,#282828); border:2px solid var(--gsu-red); box-shadow:0 0 12px rgba(230,0,35,.2); border-radius:10px; text-align:center; font-size:1rem; animation:fadeSlideIn .5s ease-out; }
-
-    .retro-flashback { background:var(--black-faded); border-radius:8px; padding:1rem; font-family:'Roboto',sans-serif; color:var(--white-text); box-shadow:0 0 8px rgba(255,0,55,.12); transition:transform .3s, box-shadow .3s; }
-    .retro-flashback:hover { transform:translateY(-4px); box-shadow:0 0 14px rgba(230,0,35,.25); }
-    .retro-header { font-size:1.1rem; color:var(--gsu-red); font-family:'Montserrat',sans-serif; margin-bottom:.6rem; }
-    .retro-body .game-fact { font-size:.9rem; line-height:1.5; color:#ccc; }
-
-    .livewire-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-top:1rem; }
-    .stat-item { background:#2a2a2a; padding:1rem; border-radius:8px; font-size:.95rem; font-family:'Roboto',sans-serif; transition:transform .3s, box-shadow .3s; box-shadow:0 0 6px rgba(0,0,0,.3); }
-    .stat-item:hover { transform:scale(1.03); background:#333; box-shadow:0 0 10px rgba(230,0,35,.25); }
-
-    .culture-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1rem; text-align:center; }
-    .culture-tile { background:#2a2a2a; padding:1.4rem 1rem; border-radius:10px; font-family:'Montserrat',sans-serif; font-size:1rem; color:#fff; text-decoration:none; position:relative; overflow:hidden; transition:transform .3s, background .3s; }
-    .culture-tile:hover { background:var(--gsu-red); transform:scale(1.05); }
-    .tile-hover { margin-top:.4rem; font-size:.85rem; color:#ddd; }
-    .showoff-card { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; background:#2a2a2a; border-radius:10px; padding:1rem; }
-    .showoff-img { width:200px; height:120px; object-fit:cover; border-radius:8px; box-shadow:0 0 10px rgba(255,255,255,.1); }
-    .showoff-info h3 { color:var(--gsu-red); font-family:'Montserrat',sans-serif; font-size:1.2rem; margin-bottom:.4rem; }
-    .showoff-info p { font-size:.95rem; font-family:'Roboto',sans-serif; margin-bottom:.6rem; }
-    .talk-quote { background:#2a2a2a; padding:1rem 1.2rem; border:4px solid var(--gsu-red); border-radius:8px; font-style:italic; }
-    .talk-quote blockquote { font-size:1.1rem; color:#eee; margin-bottom:.5rem; font-family:'Montserrat',sans-serif; }
-    .talk-quote p { font-size:.95rem; color:#aaa; font-family:'Roboto',sans-serif; }
-    .certified-moment { text-align:center; font-family:'Roboto',sans-serif; }
-    .certified-img { width:100%; max-width:400px; height:auto; border-radius:10px; box-shadow:0 0 10px rgba(255,255,255,.1); margin-bottom:.8rem; }
-    .certified-caption { font-size:1rem; margin-bottom:.6rem; }
-    .incoming-drop { margin-top:1rem; padding-left:1rem; color:#ddd; font-family:'Roboto',sans-serif; font-size:.95rem; list-style-type:square; }
-
     :root { --gsu-red:#e60023; --black-main:#191818; --black-faded:#1F1F1F; --white-text:#FFFFFF; }
     *{margin:0; padding:0; box-sizing:border-box;}
     body{ font-family:'Roboto',sans-serif; background:var(--black-main); color:var(--white-text); }
@@ -120,8 +30,8 @@
     aside, main{ display:flex; flex-direction:column; gap:1.2rem; }
     .box{ background:var(--black-faded); border-radius:12px; padding:1rem; color:var(--white-text); transition:transform .3s, box-shadow .3s, border .3s; border:2px solid #333; box-shadow:0 0 12px rgba(255,255,255,.05); }
     .box:hover{ transform:translateY(-6px) scale(1.01); box-shadow:0 6px 16px rgba(230,0,35,.4), 0 0 10px rgba(255,255,255,.05); border:2px solid var(--gsu-red); }
-    .box li{ transition:transform .3s; } .box:hover li{ transform:translateX(6px); }
     .box h2{ font-family:'Montserrat',sans-serif; margin-bottom:.7rem; color:#fff!important; text-shadow:0 0 6px rgba(255,0,55,.3); }
+    main > .box:not(:last-child) { margin-bottom:2.2rem; }
 
     .input-field{ padding:.6rem; border:none; border-radius:6px; margin-bottom:.6rem; width:100%; background:#2a2a2a; color:var(--white-text); }
     .btn{ background:var(--gsu-red); border:none; color:#fff; padding:.8rem; width:100%; border-radius:6px; cursor:pointer; font-family:'Montserrat',sans-serif; }
@@ -130,74 +40,51 @@
     footer{ background:var(--black-faded); text-align:center; padding:1.2rem 1rem; margin-top:4rem; }
     .platform-icons{ display:flex; justify-content:center; align-items:center; gap:1.5rem; margin-bottom:.6rem; }
     .platform-icons img{ height:32px; width:auto; opacity:.9; }
-    footer p{ color:#ccc; font-size:1rem; font-family:'Roboto',sans-serif; }
 
-    .section-flex{ display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-    .section-flex div{ flex:1 1 100px; text-align:center; }
-
-    @media (max-width:1024px){
-      .main-container{ grid-template-columns:1fr; padding:1rem; }
-      header{ flex-direction:column; align-items:flex-start; }
-      nav{ justify-content:flex-start; }
-      .logo-text{ font-size:1.3rem; }
-      .section-flex{ flex-direction:column; text-align:center; }
-    }
-    @media (max-width:600px){
-      .logo img{ height:40px; }
-      .logo-text{ font-size:1.2rem; }
-      nav a{ font-size:.9rem; }
-      .btn{ padding:.7rem; }
-      .input-field{ font-size:.9rem; }
+    .stat-box { margin-bottom:12px; padding:10px 15px; border:2px solid #e60023; border-radius:10px; background:rgba(255,255,255,0.05); transition:margin .3s ease; }
+    #profile-box { background:linear-gradient(to bottom right,#1e1e1e,#282828); border:2px solid var(--gsu-red); box-shadow:0 0 12px rgba(230,0,35,.2); border-radius:10px; text-align:center; font-size:1rem; }
+    .update-flash-img { animation: flashGlow 1.3s ease-in-out; }
+    @keyframes flashGlow {
+      0%   { background-color:#e60023; color:#fff; border:2px solid #fff; box-shadow:0 0 18px 6px #e60023; margin-bottom:14px; }
+      50%  { background-color:rgba(230,0,35,0.15); color:#e60023; border:2px solid #e60023; box-shadow:0 0 28px 10px #e60023; margin-bottom:24px; }
+      100% { background-color:transparent; color:#fff; border:2px solid #e60023; box-shadow:none; margin-bottom:14px; }
     }
 
-    #spotlight3{
-      background:linear-gradient(to bottom right,#1f1f1f,#262626); border:2px solid transparent; border-radius:12px; padding:2rem 1.5rem;
-      box-shadow:0 0 16px rgba(230,0,35,.3); color:var(--white-text); font-family:'Montserrat',sans-serif; text-align:center; margin-bottom:1.5rem; transition:border .3s; max-width:800px; margin-left:auto; margin-right:auto;
-    }
+    .retro-header { font-size:1.1rem; color:var(--gsu-red); font-family:'Montserrat',sans-serif; margin-bottom:.6rem; }
+    .match-review-style h2 { color:#e60023; font-family:'Montserrat',sans-serif; font-size:1.2rem; margin-bottom:.75rem; text-shadow:0 0 8px rgba(230,0,35,.7); border-bottom:2px solid #e60023; padding-bottom:.5rem; }
+    .match-review-style { background:#1f1f1f; border:2px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 12px rgba(255,255,255,.05); }
+    .review-box { border:2px solid #fff; background:#1c1c1c; color:#fff; padding:.75rem; border-radius:10px; width:100%; resize:vertical; min-height:100px; }
+
+    .livewire-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-top:1rem; }
+    .stat-item { background:#2a2a2a; padding:1rem; border-radius:8px; font-size:.95rem; font-family:'Roboto',sans-serif; box-shadow:0 0 6px rgba(0,0,0,.3); }
+
+    .culture-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1rem; text-align:center; }
+    .culture-tile { background:#2a2a2a; padding:1.4rem 1rem; border-radius:10px; font-family:'Montserrat',sans-serif; font-size:1rem; color:#fff; text-decoration:none; transition:transform .3s, background .3s; }
+    .culture-tile:hover { background:var(--gsu-red); transform:scale(1.05); }
+    .tile-hover { margin-top:.4rem; font-size:.85rem; color:#ddd; }
+
+    #fav-images{ display:flex; overflow-x:auto; gap:1rem; padding:1rem 0; scroll-snap-type:x mandatory; border:1px solid #444; border-radius:10px; background:#1b1b1b; }
+    #fav-images img{ height:280px; object-fit:contain; background:#111; border-radius:12px; padding:6px; }
+
+    #spotlight3{ background:linear-gradient(to bottom right,#1f1f1f,#262626); border:2px solid transparent; border-radius:12px; padding:2rem 1.5rem; box-shadow:0 0 16px rgba(230,0,35,.3); text-align:center; max-width:800px; margin:1.5rem auto; }
     #spotlight3:hover{ border-color:var(--gsu-red); }
-    #spotlight3 h2{ color:var(--gsu-red); font-size:1.4rem; margin-bottom:.5rem; }
-    #spotlight3 p{ font-size:.95rem; color:#ccc; margin-bottom:1.2rem; }
-    .spotlight-video:hover{ transform:scale(1.02); border-color:var(--gsu-red); box-shadow:0 0 12px rgba(255,255,255,.1); }
-    .spotlight-video iframe{ width:100%; height:340px; border-radius:10px; }
-    @media (max-width:768px){ .spotlight-video iframe{ height:220px; } }
-    .spotlight-video iframe{ margin-top:.5rem; margin-bottom:.5rem; }
-    .spotlight-video h3{ color:var(--gsu-red); margin-bottom:.5rem; font-size:1.1rem; font-family:'Montserrat',sans-serif; }
+    #fav-game-updates{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; padding:1rem; margin-top:1rem; }
+    .spotlight-video{ background:#2a2a2a; padding:1rem; border-radius:10px; border:2px solid transparent; }
+    .spotlight-video iframe{ width:100%; height:200px; border:none; border-radius:8px; margin:.6rem 0; }
 
-    /* Character image: only keep the sync-box sizing */
-    #character-image{
-      height:140px; width:140px; object-fit:contain; border-radius:10px; padding:6px; background-color:#000; border:1px solid #444; transition:transform .3s ease; display:block; margin:0 auto;
-    }
-    #character-image:hover{ transform:scale(1.05); box-shadow:0 0 12px rgba(255,255,255,.2); }
-    #character-desc{ font-size:.85rem; max-width:260px; color:#ccc; text-align:left; }
+    .showoff-card { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; background:#2a2a2a; border-radius:10px; padding:1rem; }
+    .showoff-img { width:200px; height:120px; object-fit:cover; border-radius:8px; }
 
-    #fav-images{ scroll-behavior:smooth; display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:1rem; padding:.5rem 0; justify-content:flex-start; max-width:100%; }
-    #fav-images::-webkit-scrollbar{ height:8px; }
-    #fav-images::-webkit-scrollbar-thumb{ background-color:var(--gsu-red); border-radius:6px; }
-    #fav-images img{
-      height:280px; width:auto; object-fit:contain; scroll-snap-align:center; background:#111; padding:6px; border-radius:12px; box-shadow:0 0 10px rgba(255,255,255,.08); transition:transform .3s, box-shadow .3s;
-    }
-    #fav-images img:hover{ transform:scale(1.05); box-shadow:0 0 12px rgba(230,0,35,.3); }
+    .talk-quote { background:#2a2a2a; padding:1rem 1.2rem; border:4px solid var(--gsu-red); border-radius:8px; font-style:italic; }
+    .certified-moment { text-align:center; }
+    .certified-img { width:100%; max-width:400px; height:auto; border-radius:10px; margin-bottom:.8rem; }
 
-    .profile-fav-img{ height:280px; object-fit:contain; background:#111; border-radius:12px; box-shadow:0 0 10px rgba(255,255,255,.08); transition:transform .3s; scroll-snap-align:center; padding:6px; }
-    .profile-fav-img:hover{ transform:scale(1.05); box-shadow:0 0 12px rgba(230,0,35,.3); }
+    .modal{ display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,.7); }
+    .modal-content{ background:var(--black-faded); margin:10% auto; padding:24px; border:2px solid var(--gsu-red); border-radius:12px; width:80%; max-width:500px; color:var(--white-text); }
+    .modal-content input{ width:100%; padding:12px; margin:10px 0 18px; background:#2a2a2a; color:#fff; border:1px solid #444; border-radius:6px; }
 
-    #upcoming-events{ animation:fadeSlideIn .6s ease-out; }
-
-    #character-sync-box{
-      border:2px solid #e60023; border-radius:12px; padding:12px; margin-top:1rem; background:#1a1a1a; transition:transform .3s, box-shadow .3s; box-shadow:0 0 10px rgba(230,0,35,.4);
-    }
-    #character-sync-box:hover{ transform:scale(1.02); box-shadow:0 0 18px rgba(230,0,35,.6); }
-
-    .gsu-sync-box{
-      background:#1f1f1f; border:2px solid #333; border-radius:12px; padding:1.2rem; margin-bottom:1.5rem; transition:transform .3s, box-shadow .3s, border .3s; box-shadow:0 0 10px rgba(255,255,255,.05);
-    }
-    .gsu-sync-box:hover{ transform:translateY(-6px); box-shadow:0 6px 16px rgba(230,0,35,.4), 0 0 10px rgba(255,255,255,.05); border:2px solid var(--gsu-red); }
-
-    .gsu-dropdown{
-      width:100%; padding:12px; margin:10px 0 18px; background:rgba(255,255,255,.05); color:#fff; border:2px solid #e60023; border-radius:10px; font-family:'Orbitron',sans-serif; font-size:1rem; transition:box-shadow .3s, background-color .3s;
-      appearance:none; background-position:right 18px center; background-size:16px; padding-right:48px; height:42px; line-height:1.2;
-    }
-    .gsu-dropdown:hover, .gsu-dropdown:focus{ box-shadow:0 0 10px 2px #e60023; outline:none; background-color:rgba(255,255,255,.08); }
+    @media (max-width:1024px){ .main-container{ grid-template-columns:1fr; padding:1rem; } header{ flex-direction:column; align-items:flex-start; } }
+    @media (max-width:600px){ .logo img{ height:40px; } .logo-text{ font-size:1.2rem; } nav a{ font-size:.9rem; } .btn{ padding:.7rem; } .input-field{ font-size:.9rem; } }
   </style>
 </head>
 <body>
@@ -218,6 +105,7 @@
   </header>
 
   <div class="main-container">
+    <!-- LEFT COLUMN -->
     <aside>
       <div class="box" id="auth-box">
         <h2>Create Account or Sign In</h2>
@@ -235,8 +123,8 @@
 
       <div class="box match-review-style">
         <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
-        <p style="font-size:.9rem; color:#ccc; font-family:'Roboto',sans-serif; margin-bottom:.8rem;">
-          Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry — a reminder of where the journey began.
+        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">
+          Step back into the early days of gaming. One random flashback every click.
         </p>
         <div class="retro-body">
           <div class="game-title">From here, the Retroverse info unfolds.</div>
@@ -245,11 +133,13 @@
         </div>
       </div>
 
-      <div class="gsu-sync-box">
+      <div class="box match-review-style">
         <h2 class="retro-header">🎮 GSU Character Sync-Up</h2>
-        <p class="sync-desc">Ready to find out who you’re synced with? Choose your platform and let GSU reveal the video game character that fits your world best.</p>
+        <p style="font-size:.9rem; color:#ccc; margin-bottom:1rem;">
+          Choose your platform to reveal which video game legend is synced with your GSU energy.
+        </p>
 
-        <label for="platform-select" class="sync-label">🕹️ Choose Your Platform to Begin the Sync:</label>
+        <label class="sync-label">🕹️ Choose Your Platform to Begin the Sync:</label>
         <select id="platform-select" class="input-field" onchange="updateCharacterOptions()">
           <option value="">-- Choose Platform --</option>
           <option value="PlayStation">PlayStation</option>
@@ -260,75 +150,17 @@
 
         <div id="no-character-msg" style="color:red; font-size:.9rem; margin-bottom:1rem; text-align:center;">No Video Game Character in Sync.</div>
 
-        <div id="character-role" class="sync-role"></div>
-
-        <div id="character-sync-box">
+        <div id="character-role" class="sync-role" style="text-align:center; font-weight:600; margin:.5rem 0;"></div>
+        <div style="border:2px solid #e60023; border-radius:12px; padding:12px; background:#1a1a1a;">
           <div style="display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center;">
-            <img id="character-image" src="GSU_LOGO.png" alt="Character" />
-            <div id="character-desc">Choose your platform to reveal which video game legend is synced with your GSU energy.</div>
+            <img id="character-image" src="GSU_LOGO.png" alt="Character" style="height:140px; width:140px; object-fit:contain; border-radius:10px; padding:6px; background-color:#000; border:1px solid #444;">
+            <div id="character-desc" style="font-size:.9rem; max-width:260px; color:#ccc; text-align:left;">Choose your platform to reveal your synced legend.</div>
           </div>
         </div>
       </div>
-
-      <!-- Retro facts + character assignments -->
-      <script>
-        const RetroFacts = [
-          "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
-          "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
-          "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
-          "🎯 Pong (1972) was so popular that the original machine overflowed with quarters and broke.",
-          "🎮 The Sega Genesis had a hidden sound test screen used for cheat codes in Sonic games.",
-          "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
-          "🎤 Mortal Kombat sparked U.S. government hearings that led to the ESRB rating system.",
-          "🌀 SNES Mode 7 graphics enabled fake 3D effects in F-Zero and Mario Kart.",
-          "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
-        ];
-
-        const CharacterAssignments = [
-          { name:"Peter Parker/Spider-Man", role:"superhero", desc:"You balance smarts, strength, and soul. In every crisis, you choose the right thing — even when it costs you everything.", game:"Marvel's Spider-Man 2", img:"https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg", platforms:["PlayStation","PC"] },
-          { name:"Kratos", role:"anti-hero", desc:"Fueled by rage but guided by growth, you’ve fought your past and forged a new path. You don’t run — you conquer.", game:"God of War Ragnarök", img:"https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg", platforms:["PlayStation"] },
-          { name:"Miles Morales", role:"superhero", desc:"You carry the weight of two worlds on your shoulders — and still move with purpose, heart, and style. You’re the spark.", game:"Marvel's Spider-Man: Miles Morales", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg", platforms:["PlayStation","PC"] },
-          { name:"Aloy", role:"hunter-protector", desc:"Driven by curiosity and courage, you never stop pushing boundaries. You’re not afraid to question the world to save it.", game:"Horizon Forbidden West", img:"https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg", platforms:["PlayStation","PC"] },
-          { name:"Jin Sakai", role:"samurai-turned-ghost", desc:"Honor matters — but survival means adapting. You protect your people not by tradition, but by any means necessary.", game:"Ghost of Tsushima", img:"https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg", platforms:["PlayStation"] },
-          { name:"Ratchet", role:"galactic hero", desc:"You’re inventive, loyal, and always ready to blast through any challenge. No matter the dimension, you rise up with grit and gear.", game:"Ratchet & Clank: Rift Apart", img:"https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100", platforms:["PlayStation"] },
-          { name:"Mario", role:"hero-plumber", desc:"Whether it’s Bowser, bricks, or bananas, you’re jumping in with heart and hustle. It’s-a you!", game:"Super Mario Odyssey", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/03/super-mario-odyssey-sequel-beanbean-kingdom.jpg", platforms:["Nintendo"] },
-          { name:"Donkey Kong", role:"jungle powerhouse", desc:"You’re bold, strong, and unshakable. Whether it’s Kremlings or chaos, you smash through with fearless energy and loyalty to your crew.", game:"Donkey Kong Bananza", img:"https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646", platforms:["Nintendo"] }
-        ];
-
-        function loadRetroFact() {
-          const random = RetroFacts[Math.floor(Math.random() * RetroFacts.length)];
-          document.getElementById("retro-fact").innerText = random;
-        }
-
-        function updateCharacterOptions() {
-          const platform = document.getElementById("platform-select").value;
-          const roleEl = document.getElementById("character-role");
-          const descEl = document.getElementById("character-desc");
-          const imgEl  = document.getElementById("character-image");
-          const msgEl  = document.getElementById("no-character-msg");
-          const gsuLogo = "GSU_LOGO.png";
-
-          if (!platform) {
-            roleEl.innerText = ""; descEl.innerText = ""; imgEl.src = gsuLogo; msgEl.style.display = "block"; return;
-          }
-          const filtered = CharacterAssignments.filter(c => c.platforms.includes(platform));
-          if (!filtered.length) {
-            roleEl.innerText = ""; descEl.innerText = ""; imgEl.src = gsuLogo; msgEl.style.display = "block"; return;
-          }
-          const chosen = filtered[Math.floor(Math.random() * filtered.length)];
-          roleEl.innerText = `🎮 You Are: ${chosen.name} (${chosen.role})`;
-          descEl.innerText = chosen.desc;
-          imgEl.src = chosen.img;
-          msgEl.style.display = "none";
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-          loadRetroFact();
-          updateCharacterOptions(); // default state
-        });
-      </script>
     </aside>
 
+    <!-- CENTER COLUMN -->
     <main>
       <div class="box" style="text-align:center;">
         <h2>Welcome to GameSync Union</h2>
@@ -345,18 +177,17 @@
         <div style="margin-top:1rem;">
           <label style="color:#ccc; font-size:.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
         </div>
-
-        <div id="fav-images" style="margin-top:.8rem; display:flex; overflow-x:auto; justify-content:center; flex-wrap:wrap; gap:1rem; padding:1rem 0; scroll-snap-type:x mandatory; border:1px solid #444; border-radius:10px; background:#1b1b1b;"></div>
+        <div id="fav-images"></div>
 
         <div style="margin-top:1rem; text-align:center;">
-          <button onclick="openEditModal()" class="edit-btn">Update GSU Profile</button>
+          <button onclick="openEditModal()" class="btn" style="max-width:240px;">Update GSU Profile</button>
         </div>
       </div>
 
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
       <div class="box">
-        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
+        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">🔥 Statline Supreme: All Union. All Synced.</h2>
         <div class="livewire-stats">
           <div class="stat-item">👥 Total GSU Members: <span id="totalMembers">_</span></div>
           <div class="stat-item">🆕 New Members This Week: <span id="newMembers">_</span></div>
@@ -366,6 +197,55 @@
           <div class="stat-item">🥊 Combo Guides Shared: <span id="combos">_</span></div>
           <div class="stat-item">📊 Total Community Poll Votes: <span id="pollVotes">_</span></div>
         </div>
+      </div>
+
+      <!-- 🔥 Made the Union Watch (dynamic) -->
+      <div class="box">
+        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">🔥 Made the Union Watch</h2>
+        <p style="text-align:center; font-family:'Roboto'; color: var(--white-text);">
+          When the Union highlights you — it means something. Real gameplay earns the light.
+        </p>
+
+        <div class="showoff-card" id="unionWatch" style="flex-direction:column; align-items:center;">
+          <div id="unionWatchMedia" style="width:100%; max-width:720px;"></div>
+          <div class="showoff-info" style="text-align:center;">
+            <h3 id="unionWatchTitle">Loading featured clip…</h3>
+            <p id="unionWatchCaption"></p>
+          </div>
+        </div>
+
+        <div style="width:100%; display:flex; justify-content:center; margin-top:1.2rem;">
+          <button onclick="window.location.href='uploads.html'" class="btn" style="width:100%; max-width:240px;">See Why Everyone’s Talking</button>
+        </div>
+      </div>
+
+      <!-- 👑 Certified Moment (dynamic) -->
+      <div class="box">
+        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">👑 One Trophy. One Flex.</h2>
+        <div class="certified-moment">
+          <img id="certifiedImg" src="GSU_LOGO.png" alt="Moment Screenshot" class="certified-img" />
+          <p class="certified-caption" id="certifiedCaption">Finding a legendary flex…</p>
+          <div style="text-align:center;">
+            <button class="btn" onclick="window.location.href='trophies.html'" style="margin:0 auto; display:inline-block; max-width:220px;">Relive the Moment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🎭 Talk of the Week (dynamic) -->
+      <div class="box">
+        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">🎭 Union Rewind: Talk of the Week</h2>
+        <div class="talk-quote">
+          <blockquote id="talkQuoteText">Scanning the Lounge…</blockquote>
+          <p id="talkQuoteWho">—</p>
+        </div>
+      </div>
+
+      <!-- 📡 Union Alerts (last 24h) -->
+      <div class="box">
+        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">📡 Union Alerts (last 24h)</h2>
+        <ul class="incoming-drop" id="alertsList">
+          <li>Loading fresh drops…</li>
+        </ul>
       </div>
 
       <div class="box">
@@ -382,66 +262,19 @@
         </div>
       </div>
 
-      <div class="box">
-        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">🔥 Made the Union Watch</h2>
-        <p style="text-align:center; font-family:'Roboto'; color: var(--white-text);">
-          When the Union highlights you — it means something. If your name’s echoing in live chat, it’s because your skills made the noise. Real gameplay earns the light.
-        </p>
-        <div class="showoff-card" style="flex-direction:column; align-items:center;">
-          <div style="display:flex; justify-content:center;">
-            <img src="https://your-image-url.jpg" alt="Elite Clip Thumbnail" class="showoff-img" />
-          </div>
-          <div class="showoff-info" style="text-align:center;">
-            <h3>@QuantumX - “One Parry, One Kill”</h3>
-            <p>Disrespected the Valkyrie Queen with no HUD in God of War: Ragnarök. Certified GSU moment.</p>
-          </div>
-        </div>
-        <div style="width:100%; display:flex; justify-content:center; margin-top:1.2rem;">
-          <button onclick="window.location.href='uploads.html'" class="btn" style="width:100%; max-width:240px;">See Why Everyone’s Talking</button>
-        </div>
-      </div>
-
-      <div class="box">
-        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">🎭 Union Rewind: Talk of the Week</h2>
-        <div class="talk-quote">
-          <blockquote>“Bro didn’t dodge — he teleported 💀”</blockquote>
-          <p>— Pulled from GSU Lounge</p>
-        </div>
-      </div>
-
-      <div class="box">
-        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">👑 One Trophy. One Flex. You Dropped It — Now the Union Sees Why.</h2>
-        <div class="certified-moment">
-          <img src="https://your-image-url.jpg" alt="Moment Screenshot" class="certified-img" />
-          <p class="certified-caption">“Left the boss at 1% just to taunt 💀” — <strong>@ThroneSnatcher</strong></p>
-          <div style="text-align:center;">
-            <button class="btn" onclick="window.location.href='trophies.html'" style="margin:0 auto; display:inline-block;">Relive the Moment</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="box">
-        <h2 style="color:var(--gsu-red); font-family:'Montserrat',sans-serif; text-align:center;">📡 Union Alert: Drop Goes Live Soon</h2>
-        <ul class="incoming-drop">
-          <li>🎯 Challenge Theme dropping Friday: <strong>✨ Style Over Damage</strong></li>
-          <li>🖼️ Fan Art Tournament Round 2 this weekend</li>
-          <li>🆕 GSU Custom Avatars launching soon</li>
-        </ul>
-      </div>
-
+      <!-- Spotlight videos personalized -->
       <div class="box" id="spotlight3">
         <h2>🎮 GameSync Spotlight 3</h2>
-        <p>GameSync Spotlight 3 delivers gameplay from the titles that matter to you — daily.</p>
+        <p>Daily gameplay drops from the titles that matter to you.</p>
         <div id="fav-game-updates"></div>
       </div>
     </main>
 
+    <!-- RIGHT COLUMN -->
     <aside>
       <div class="box match-review-style">
         <h2 class="retro-header">🕹️ The GameSync Game Room</h2>
-        <p style="font-size:.9rem; color:#ccc; font-family:'Roboto',sans-serif; margin-bottom:.8rem;">
-          Explore GSU’s original mini-games—designed to deliver quick, high-impact experiences that challenge reflexes, focus, and precision.
-        </p>
+        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">Quick hitters that test reflexes, focus, and precision.</p>
         <div class="retro-body" style="display:flex; flex-direction:column; gap:.5rem;">
           <button class="btn" style="font-size:.85rem;" onclick="location.href='Charge_Run.html'">GSU Charge Run</button>
           <button class="btn" style="font-size:.85rem;">GSU Command Strike</button>
@@ -451,20 +284,16 @@
 
       <div class="box match-review-style">
         <h2 class="retro-header">🧠 Game Dev Knowledge Drop</h2>
-        <p style="font-size:.9rem; color:#ccc; font-family:'Roboto',sans-serif; margin-bottom:.8rem;">
-          Game development goes way beyond just code. Level design, engines, AI, and even psychology play a role. Level up your dev brain here.
-        </p>
+        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">Level design is more psychology than geometry.</p>
         <div class="retro-body" style="display:flex; flex-direction:column; gap:.5rem;">
-          <div style="font-size:.85rem;">📘 <strong>Today's Topic:</strong> Why level design is more psychology than geometry.</div>
+          <div style="font-size:.85rem;">📘 Analyzing flow, affordances, and feedback loops.</div>
           <button class="btn" style="font-size:.85rem;">📚 Learn More</button>
         </div>
       </div>
 
       <div class="box match-review-style">
         <h2 class="retro-header">💬 GSU Vibe Check</h2>
-        <p style="font-size:.9rem; color:#ccc; font-family:'Roboto',sans-serif; margin-bottom:.8rem;">
-          What’s the vibe across GameSync Union right now? We scanned the Lounge, uploads, and current plays to bring you the mood.
-        </p>
+        <p style="font-size:.9rem; color:#ccc; margin-bottom:.8rem;">We scan the Lounge, uploads, and plays for the pulse.</p>
         <div class="retro-body" style="display:flex; flex-direction:column; gap:.6rem;">
           <div style="font-size:1rem; color:#fff; font-weight:bold;">🔥 Mood: Hype & Competitive</div>
           <div style="font-size:.85rem; color:#bbb;">Top quoted: “Don’t get perfect-parried again.”</div>
@@ -488,23 +317,21 @@
   <!-- Edit Modal -->
   <div id="editModal" class="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeEditModal()">&times;</span>
+      <span class="close" onclick="closeEditModal()" style="float:right; font-size:28px; color:var(--gsu-red); cursor:pointer;">&times;</span>
       <h2>Update Profile</h2>
 
       <label>Username:</label>
       <input type="text" id="editUsername" placeholder="Change your Username">
 
       <label>Platform:</label>
-      <div class="dropdown-wrapper">
-        <select id="editPlatform">
-          <option value="">-- Select your new Platform --</option>
-          <option value="PlayStation">PlayStation</option>
-          <option value="PC">PC</option>
-          <option value="Xbox">Xbox</option>
-          <option value="Nintendo">Nintendo</option>
-          <option value="Multiple">Multiple Platforms</option>
-        </select>
-      </div>
+      <select id="editPlatform" class="input-field">
+        <option value="">-- Select your new Platform --</option>
+        <option value="PlayStation">PlayStation</option>
+        <option value="PC">PC</option>
+        <option value="Xbox">Xbox</option>
+        <option value="Nintendo">Nintendo</option>
+        <option value="Multiple">Multiple Platforms</option>
+      </select>
 
       <label>Favorite Games (comma-separated):</label>
       <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank...">
@@ -518,39 +345,27 @@
       <label>Total Trophy Count:</label>
       <input type="number" id="editTrophies" min="0">
 
-      <button onclick="saveProfileChanges()">Save Changes</button>
+      <button class="btn" onclick="saveProfileChanges()" style="margin-top:.5rem;">Save Changes</button>
     </div>
   </div>
 
-  <style>
-    .edit-btn{ background:var(--gsu-red); color:#fff; padding:10px 14px; border:none; border-radius:8px; cursor:pointer; margin-top:15px; font-family:'Montserrat',sans-serif; font-weight:600; transition:background-color .3s, transform .2s; }
-    .edit-btn:hover{ background:#cc001f; transform:scale(1.03); }
-    .modal{ display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,.7); }
-    .modal-content{ background:var(--black-faded); margin:10% auto; padding:24px; border:2px solid var(--gsu-red); border-radius:12px; width:80%; max-width:500px; color:var(--white-text); font-family:'Montserrat',sans-serif; box-shadow:0 0 12px rgba(230,0,35,.3); }
-    .modal-content label{ font-weight:600; margin-top:10px; display:block; color:var(--gsu-red); }
-    .modal-content input{ width:100%; padding:12px; margin:10px 0 18px; background:#2a2a2a; color:var(--white-text); border:1px solid #444; border-radius:6px; font-family:'Roboto',sans-serif; }
-    .modal-content button{ background:#e60023; color:#fff; border:none; padding:12px 18px; border-radius:8px; cursor:pointer; font-weight:600; font-family:'Montserrat',sans-serif; transition:background-color .3s, transform .2s; }
-    .modal-content button:hover{ background:#cc001f; transform:scale(1.03); }
-    .close{ float:right; font-size:28px; font-weight:bold; color:var(--gsu-red); cursor:pointer; transition:color .3s ease; }
-    .close:hover{ color:#ff3344; }
+  <!-- Signed-out notice -->
+  <div id="authNotice" style="display:none; position:fixed; top:12%; left:50%; transform:translateX(-50%); background:#ffffff; color:#e60023; border:2px solid #e60023; padding:1.25rem 1.5rem; border-radius:12px; z-index:9999; font-family:'Montserrat',sans-serif; font-size:.95rem; max-width:360px; box-shadow:0 0 20px rgba(0,0,0,.3); text-align:center; line-height:1.6;">
+    <div style="color:#000; font-weight:bold; margin-bottom:.75rem; font-size:1rem;">Signed out:</div>
+    <div style="margin-bottom:1rem;">Access limited — sign in or create your GSU account to get the full GSU experience.</div>
+    <button onclick="hideAuthNotice()" style="background:#e60023; color:#fff; border:none; padding:.5rem 1rem; border-radius:8px; font-family:'Montserrat'; cursor:pointer;">Close</button>
+  </div>
+  <div id="authOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,.5); z-index:9998;"></div>
 
-    #fav-game-updates{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; padding:1rem; margin-top:1rem; }
-    #fav-game-updates::-webkit-scrollbar{ width:6px; }
-    #fav-game-updates::-webkit-scrollbar-thumb{ background:var(--gsu-red); border-radius:6px; }
-    .spotlight-video{ background:#2a2a2a; padding:1rem; border-radius:10px; border:2px solid transparent; transition:transform .3s, box-shadow .3s, border .3s; opacity:0; animation:fadeIn .5s ease forwards; width:100%; max-width:100%; }
-    .spotlight-video:hover{ transform:scale(1.02); border-color:var(--gsu-red); box-shadow:0 0 10px rgba(255,255,255,.08); }
-    .spotlight-video iframe{ width:100%; height:200px; border:none; border-radius:8px; margin:.6rem 0; }
-    .spotlight-video h3{ font-family:'Montserrat',sans-serif; color:var(--gsu-red); font-size:1rem; padding:.8rem 1rem 0 1rem; }
-    .spotlight-video p{ color:#bbb; font-size:.9rem; padding:0 1rem 1rem 1rem; }
-    @keyframes fadeIn { to{opacity:1;} }
-  </style>
+  <!-- ========================= JS ========================= -->
 
-  <!-- App + Firebase (auth/profile) -->
+  <!-- Firebase core + SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
+    // --- Firebase config (yours) ---
     const firebaseConfig = {
       apiKey: "AIzaSyBA7aIUj919ub7QtkQkAp-xv4XC0tzmSCI",
       authDomain: "gamesync-union.firebaseapp.com",
@@ -568,7 +383,10 @@
     // Persist login
     setPersistence(auth, browserLocalPersistence).catch(console.error);
 
-    // Auth UI
+    // Expose globally for other modules
+    window.db = db; window.auth = auth; window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc; window.getAuth = getAuth;
+
+    // --- Auth UI (simple email/password sign-in) ---
     const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
     const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
     const signInBtn = document.querySelector('#auth-box .btn');
@@ -580,27 +398,25 @@
     if (signInBtn) {
       signInBtn.addEventListener('click', async () => {
         const email = (emailInput?.value || "").trim();
-        const password = passwordInput?.value || "";
-        if (!email || !password) { alert("Enter both Email and Password to sign into your GSU account."); return; }
+        const password = (passwordInput?.value || "");
+        if (!email || !password) { alert("Enter both Email and Password."); return; }
         try {
           const userCred = await signInWithEmailAndPassword(auth, email, password);
           loadProfile(userCred.user.uid);
           alert("Signed in successfully");
-        } catch (err) {
-          alert("Login failed: " + err.message);
-        }
+        } catch (err) { alert("Login failed: " + err.message); }
       });
     }
 
+    // Load Profile
     async function loadProfile(uid) {
-      window.favoriteCoverMap = {};
       const snap = await getDoc(doc(db, "users", uid));
-      if (!snap.exists()) { console.warn("User profile data not found."); return; }
+      if (!snap.exists()) return;
 
       const data = snap.data();
       const profileBox = document.getElementById("profile-box");
 
-      // Username + Platform (rebuild fresh)
+      // Username
       profileBox.querySelector(".username-info")?.remove();
       profileBox.querySelector(".platform-info")?.remove();
 
@@ -608,57 +424,34 @@
       usernameEl.className = "username-info";
       usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
       usernameEl.style.fontWeight = "bold";
-      usernameEl.style.fontSize = "1rem";
       usernameEl.style.marginBottom = "0.5rem";
       profileBox.prepend(usernameEl);
 
       const platformEl = document.createElement("p");
       platformEl.className = "platform-info";
       platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
-      platformEl.style.fontSize = "0.95rem";
       platformEl.style.marginBottom = "0.5rem";
       profileBox.insertBefore(platformEl, usernameEl.nextSibling);
 
       // Stats
-      const favGamesEl = document.getElementById("fav-games");
-      const gamesPlayedEl = document.getElementById("games-played");
-      const trophyStatsEl = document.getElementById("trophy-stats");
+      document.getElementById("fav-games").textContent     = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+      document.getElementById("games-played").textContent  = `🎮 Number Of Games Played: ${data.gamesPlayed ?? "N/A"}`;
+      document.getElementById("trophy-stats").textContent  = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount ?? "N/A"}`;
+
       const imageRow = document.getElementById("fav-images");
-
-      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed ?? "N/A"}`;
-      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount ?? "N/A"}`;
-
       imageRow.innerHTML = "";
       if (Array.isArray(data.favoriteImages)) {
         data.favoriteImages.forEach((url, index) => {
           const img = document.createElement("img");
           img.src = url;
           img.alt = (data.favoriteGames && data.favoriteGames[index]) || `Game ${index+1}`;
-          img.classList.add("profile-fav-img");
+          img.classList.add("update-flash-img");
           imageRow.appendChild(img);
         });
       }
     }
 
-    // Logout
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", async () => {
-        try {
-          await auth.signOut();
-          document.getElementById("profile-box").style.display = "none";
-          localStorage.setItem("gsu_logged_out", "true");
-          window.location.href = "index.html";
-        } catch (err) {
-          alert("Error signing out: " + err.message);
-        }
-      });
-    }
-
-    // Expose
-    window.db = db; window.doc = doc; window.setDoc = setDoc; window.getAuth = getAuth; window.auth = auth;
-
+    // Edit modal helpers
     window.openEditModal = function () {
       document.getElementById('editModal').style.display = 'block';
       document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
@@ -687,38 +480,28 @@
         favoriteGames: games ? games.split(',').map(s => s.trim()) : [],
         gamesPlayed: gamesPlayed ? parseInt(gamesPlayed) : 0,
         favoriteImages: imageUrls,
-        trophyCount: trophies ? parseInt(trophies) : 0
+        trophyCount: trophies ? parseInt(trophies) : 0,
       }, { merge: true });
 
-      // instant UI update
-      const profileBox = document.getElementById("profile-box");
-      let usernameEl = profileBox.querySelector(".username-info");
-      if (!usernameEl) { usernameEl = document.createElement("p"); usernameEl.className="username-info"; usernameEl.style.fontWeight="bold"; usernameEl.style.fontSize="1rem"; usernameEl.style.marginBottom="0.5rem"; profileBox.prepend(usernameEl); }
-      usernameEl.textContent = `👤 Username: ${username || "N/A"}`;
-
-      let platformEl = profileBox.querySelector(".platform-info");
-      if (!platformEl) { platformEl = document.createElement("p"); platformEl.className="platform-info"; platformEl.style.fontSize="0.95rem"; platformEl.style.marginBottom="0.5rem"; usernameEl.insertAdjacentElement("afterend", platformEl); }
-      platformEl.textContent = `🔹 Platform: ${platform || "N/A"}`;
-
-      document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games || "N/A"}`;
-      document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed || "N/A"}`;
-      document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies || "N/A"}`;
-
-      const imageRow = document.getElementById("fav-images");
-      imageRow.innerHTML = "";
-      imageUrls.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url; img.alt = "Game cover"; img.classList.add("profile-fav-img");
-        imageRow.appendChild(img);
-        img.classList.add("update-flash-img"); setTimeout(() => img.classList.remove("update-flash-img"), 1300);
-      });
-
-      [usernameEl, platformEl, document.getElementById('fav-games'), document.getElementById('games-played'), document.getElementById('trophy-stats'), imageRow].forEach(el => {
-        el.classList.remove('update-flash'); void el.offsetWidth; el.classList.add('update-flash');
-      });
-
+      await loadProfile(uid);
       window.closeEditModal();
     };
+
+    // Logout
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        try {
+          await auth.signOut();
+          document.getElementById("profile-box").style.display = "none";
+          window.location.href = "index.html";
+        } catch (err) { alert("Error signing out: " + err.message); }
+      });
+    }
+
+    // Signed-out overlay helpers
+    window.showAuthNotice = function(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="block"; if(o) o.style.display="block"; }
+    window.hideAuthNotice = function(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="none"; if(o) o.style.display="none"; }
 
     // Show/hide personalized sections based on auth
     onAuthStateChanged(auth, (user) => {
@@ -726,91 +509,273 @@
       if (user) { loadProfile(user.uid); if (profileBox) profileBox.style.display = "block"; }
       else      { if (profileBox) profileBox.style.display = "none"; showAuthNotice(); setTimeout(hideAuthNotice, 10000); }
     });
-
-    // Expose simple notice fns
-    window.showAuthNotice = function(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="block"; if(o) o.style.display="block"; }
-    window.hideAuthNotice = function(){ const b=document.getElementById("authNotice"); const o=document.getElementById("authOverlay"); if(b) b.style.display="none"; if(o) o.style.display="none"; }
   </script>
 
-  <!-- Stats + Spotlight (YouTube) -->
+  <!-- Stats, Spotlight, Alerts, Talk of the Week, Featured Clip -->
   <script type="module">
-    import { getFirestore, collection, query, where, orderBy, limit, getDocs, getCountFromServer, Timestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import {
+      getFirestore, collection, query, where, orderBy, limit, getDocs,
+      getCountFromServer, Timestamp, doc, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-    const db = window.db || getFirestore();
+    const db   = window.db   || getFirestore();
     const auth = window.auth || getAuth();
-    const spotlightRef = document.getElementById("fav-game-updates");
-    const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA";
 
-    async function firstExistingCollection(names){
-      for (const name of names){
-        try { await getDocs(query(collection(db, name), limit(1))); return name; } catch(e){/* try next */ }
-      } return null;
-    }
+    const $ = (id) => document.getElementById(id);
 
-    async function safeCount({ names, filter=null }){
-      const colName = await firstExistingCollection(names);
-      if (!colName) return 0;
-      try {
+    // ---- helpers ----
+    function setText(id, val){ const el = $(id); if (el) el.textContent = String(val); }
+
+    async function safeCount(colName, qParts=[]){
+      try{
         const base = collection(db, colName);
-        const q = Array.isArray(filter) ? query(base, ...filter) : (filter ? query(base, filter) : base);
-        const res = await getCountFromServer(q);
-        return res.data().count || 0;
-      } catch(e){ console.warn("Count error for", names, e); return 0; }
+        const q = qParts.length ? query(base, ...qParts) : base;
+        const snap = await getCountFromServer(q);
+        return snap.data().count || 0;
+      }catch(e){ return 0; }
     }
 
-    function setText(id, val){ const el=document.getElementById(id); if(el) el.textContent = String(val); }
+    async function countSubmissions({type=null, hasVideo=false}={}){
+      // If your 'submissions' have consistent fields:
+      try{
+        if (type) {
+          const n = await safeCount("submissions", [ where("type","==", type) ]);
+          if (n) return n;
+        }
+      }catch{}
+      // Fallback: shallow scan of newest docs
+      try{
+        const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(200)));
+        return qs.docs.filter(d=>{
+          const x = d.data()||{};
+          const okType  = type ? String(x.type||"").toLowerCase()===type : true;
+          const okMedia = hasVideo ? !!x.videoUrl : true;
+          return okType && okMedia;
+        }).length;
+      }catch{ return 0; }
+    }
 
-    async function populateStats(){
+    async function sumPollVotes(){
+      try{
+        const qs = await getDocs(collection(db,"polls"));
+        return qs.docs.reduce((sum,d)=>{
+          const p = d.data()||{};
+          if (typeof p.totalVotes === "number") return sum + p.totalVotes;
+          if (Array.isArray(p.options)) return sum + p.options.reduce((s,o)=> s + Number(o.votes ?? o.count ?? 0), 0);
+          if (p.choices && typeof p.choices === "object") return sum + Object.values(p.choices).reduce((s,v)=> s + Number(v||0), 0);
+          return sum;
+        },0);
+      }catch{ return 0; }
+    }
+
+    async function usernameFrom(uid){
+      if (!uid) return "GSU_Player";
+      try{
+        const s = await getDoc(doc(db,"users",uid));
+        const u = s.data()||{};
+        return (u.username || (u.email?.split("@")[0]) || "GSU_Player");
+      }catch{ return "GSU_Player"; }
+    }
+
+    function youtubeEmbed(url){
+      if (!url) return "";
+      try{
+        const u = new URL(url);
+        if (u.hostname.includes("youtu.be")) return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
+        if (u.hostname.includes("youtube.com")){
+          const id = u.searchParams.get("v"); if (id) return `https://www.youtube.com/embed/${id}`;
+        }
+      }catch{}
+      return "";
+    }
+
+    // ---- Retro facts + Character sync ----
+    const RetroFacts = [
+      "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
+      "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
+      "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
+      "🎯 Pong (1972) was so popular the original machine overflowed with quarters and broke.",
+      "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
+      "🎤 Mortal Kombat helped spark the ESRB rating system.",
+      "🌀 SNES Mode 7 enabled fake 3D in F-Zero and Mario Kart."
+    ];
+    window.loadRetroFact = function(){
+      const random = RetroFacts[Math.floor(Math.random() * RetroFacts.length)];
+      setText("retro-fact", random);
+    };
+    const CharacterAssignments = [
+      { name:"Peter Parker/Spider-Man", role:"superhero", desc:"Smarts, strength, and soul. You choose right — even when it costs you.", img:"https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg", platforms:["PlayStation","PC"] },
+      { name:"Kratos", role:"anti-hero", desc:"Fueled by rage, guided by growth. You don’t run — you conquer.", img:"https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg", platforms:["PlayStation"] },
+      { name:"Miles Morales", role:"superhero", desc:"Weight of two worlds, still moving with purpose. You’re the spark.", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg", platforms:["PlayStation","PC"] },
+      { name:"Aloy", role:"hunter-protector", desc:"Curiosity + courage. You push boundaries to save the world.", img:"https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg", platforms:["PlayStation","PC"] },
+      { name:"Jin Sakai", role:"samurai-turned-ghost", desc:"Honor matters — survival adapts. You do what it takes.", img:"https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg", platforms:["PlayStation"] },
+      { name:"Ratchet", role:"galactic hero", desc:"Inventive, loyal, always ready to blast through challenge.", img:"https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100", platforms:["PlayStation"] },
+      { name:"Mario", role:"hero-plumber", desc:"Heart and hustle. It’s-a you!", img:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/03/super-mario-odyssey-sequel-beanbean-kingdom.jpg", platforms:["Nintendo"] },
+      { name:"Donkey Kong", role:"jungle powerhouse", desc:"Bold, strong, unshakable. Loyal to your crew.", img:"https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646", platforms:["Nintendo"] }
+    ];
+    window.updateCharacterOptions = function() {
+      const platform = (document.getElementById("platform-select")?.value)||"";
+      const roleEl = $("character-role");
+      const descEl = $("character-desc");
+      const imgEl  = $("character-image");
+      const msgEl  = $("no-character-msg");
+      if (!platform) { roleEl.textContent=""; descEl.textContent=""; imgEl.src="GSU_LOGO.png"; msgEl.style.display="block"; return; }
+      const filtered = CharacterAssignments.filter(c => c.platforms.includes(platform));
+      if (!filtered.length) { roleEl.textContent=""; descEl.textContent=""; imgEl.src="GSU_LOGO.png"; msgEl.style.display="block"; return; }
+      const chosen = filtered[Math.floor(Math.random()*filtered.length)];
+      roleEl.textContent = `🎮 You Are: ${chosen.name} (${chosen.role})`;
+      descEl.textContent = chosen.desc;
+      imgEl.src = chosen.img;
+      msgEl.style.display = "none";
+    };
+    document.addEventListener('DOMContentLoaded', () => { loadRetroFact(); updateCharacterOptions(); });
+
+    // ---- Stats ----
+    window.populateStats = async function(){
       const sevenDaysAgo = Timestamp.fromDate(new Date(Date.now() - 7*24*3600*1000));
-
-      const totalMembers = await safeCount({ names:["users","members","gsu_users"] });
-      const newMembers   = await safeCount({ names:["users","members","gsu_users"], filter:[ where("createdAt", ">=", sevenDaysAgo) ] });
-      const videoUploads = await (async () => {
-        try { const n = await safeCount({ names:["videos","uploads","community_videos"], filter:[ where("type","in",["video","gameplay"]) ] }); if (n>0) return n; } catch(_){}
-        return safeCount({ names:["videos","uploads","community_videos"] });
-      })();
-      const fanArt   = await safeCount({ names:["art","fan_art","fanArt"] });
-      const trophies = await safeCount({ names:["trophies","achievements","player_trophies"] });
-      const combos   = await (async () => {
-        try { const n = await safeCount({ names:["videos","combo_guides","combos"], filter:[ where("type","in",["combo","guide"]) ] }); if (n>0) return n; } catch(_){}
-        return safeCount({ names:["combo_guides","combos"] });
-      })();
-      let pollVotes = await safeCount({ names:["poll_votes","votes"] });
-      if (!pollVotes) {
-        try {
-          const col = await firstExistingCollection(["polls","community_polls"]);
-          if (col){
-            const qs = await getDocs(collection(db, col));
-            pollVotes = qs.docs.reduce((sum,d)=> sum + (Number(d.data().totalVotes||0)), 0);
-          }
-        } catch(_){}
-      }
+      const totalMembers = await safeCount("users");
+      const newMembers   = await safeCount("users", [ where("createdAt", ">=", sevenDaysAgo) ]);
+      const videoUploads = await countSubmissions({ hasVideo:true });
+      const fanArt       = await safeCount("community_art");
+      const trophies     = await safeCount("community_trophies");
+      const combos       = await countSubmissions({ type:"combo" });
+      const pollVotes    = await sumPollVotes();
 
       setText("totalMembers", totalMembers);
-      setText("newMembers", newMembers);
+      setText("newMembers",   newMembers);
       setText("videoUploads", videoUploads);
-      setText("fanArt",      fanArt);
-      setText("trophies",    trophies);
-      setText("combos",      combos);
-      setText("pollVotes",   pollVotes);
+      setText("fanArt",       fanArt);
+      setText("trophies",     trophies);
+      setText("combos",       combos);
+      setText("pollVotes",    pollVotes);
+    };
+
+    // ---- Featured Clip (Union Watch) ----
+    const H24 = 24*60*60*1000;
+    const since = Timestamp.fromDate(new Date(Date.now() - H24));
+
+    async function buildUnionWatch(){
+      const media = $("unionWatchMedia");
+      const title = $("unionWatchTitle");
+      const cap   = $("unionWatchCaption");
+      if (!media) return;
+
+      let docHit = null;
+      try{
+        const qs = await getDocs(query(
+          collection(db,"submissions"),
+          where("timestamp", ">=", since),
+          orderBy("timestamp","desc"),
+          limit(15)
+        ));
+        docHit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
+      }catch{}
+
+      if (!docHit){
+        try{
+          const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(20)));
+          docHit = qs.docs.map(d=>({id:d.id, ...d.data()})).find(x => x.videoUrl);
+        }catch{}
+      }
+
+      if (!docHit){ title.textContent = "No featured clip yet — be the first!"; cap.textContent=""; media.innerHTML=""; return; }
+
+      const user = await usernameFrom(docHit.userId);
+      const embed = youtubeEmbed(docHit.videoUrl);
+      media.innerHTML = embed
+        ? `<iframe src="${embed}" allowfullscreen style="width:100%;height:360px;border-radius:10px;"></iframe>`
+        : `<img src="${docHit.cover || 'GSU_LOGO.png'}" alt="Clip" class="showoff-img" />`;
+
+      title.textContent = `@${user} — ${docHit.title || "Featured Clip"}`;
+      cap.textContent   = docHit.caption || "Certified GSU moment.";
     }
 
+    // ---- Certified Moment (latest trophy) ----
+    async function buildCertifiedMoment(){
+      const img = $("certifiedImg");
+      const p   = $("certifiedCaption");
+      if (!img || !p) return;
+      try{
+        const qs = await getDocs(query(collection(db,"community_trophies"), orderBy("timestamp","desc"), limit(1)));
+        const d  = qs.docs[0]?.data();
+        if (!d){ p.textContent="No trophies yet — earn one and take the spotlight."; return; }
+        const user = await usernameFrom(d.userId);
+        img.src = d.cover || "GSU_LOGO.png";
+        img.alt = d.game || "Trophy";
+        p.innerHTML = `"${d.title || d.description || 'New Trophy'}" — <strong>@${user}</strong>`;
+      }catch{
+        p.textContent="Couldn’t load trophies.";
+      }
+    }
+
+    // ---- Talk of the Week ----
+    async function buildTalkOfWeek(){
+      const q = $("talkQuoteText");
+      const w = $("talkQuoteWho");
+      if (!q || !w) return;
+      try{
+        const qs = await getDocs(query(collection(db,"submissions"), orderBy("timestamp","desc"), limit(10)));
+        const hit = qs.docs.map(d=>d.data()).find(x => (x.caption||"").length > 0);
+        if (!hit){ q.textContent="“Bro didn’t dodge — he teleported 💀”"; w.textContent="— GSU Lounge"; return; }
+        const user = await usernameFrom(hit.userId);
+        const text = String(hit.caption).trim().replace(/^["“]|["”]$/g,"");
+        q.textContent = `“${text}”`;
+        w.textContent = `— @${user}`;
+      }catch{
+        q.textContent="“We’re syncing up the quote feed…”"; w.textContent="— GSU";
+      }
+    }
+
+    // ---- Alerts (last 24h) ----
+    async function buildAlerts(){
+      const list = $("alertsList");
+      if (!list) return;
+      list.innerHTML = `<li>Loading…</li>`;
+      const rows = [];
+
+      async function pushFrom(col, maker){
+        try{
+          const qs = await getDocs(query(collection(db,col), where("timestamp", ">=", since), orderBy("timestamp","desc")));
+          for (const d of qs.docs){
+            const x = d.data()||{};
+            const user = await usernameFrom(x.userId);
+            const line = maker(x, user);
+            if (line) rows.push(`<li>${line}</li>`);
+          }
+        }catch(e){ /* collection may not exist */ }
+      }
+
+      await pushFrom("submissions", (x,u)=>{
+        if (x.videoUrl) return `🎥 New upload: <strong>${x.title || 'Clip'}</strong> — @${u}`;
+        if ((x.type||"").toLowerCase()==="combo") return `🥊 New combo guide: <strong>${x.title || 'Combo'}</strong> — @${u}`;
+        return null;
+      });
+      await pushFrom("community_art",      (x,u)=> `🎨 New art: <strong>${x.title || 'Art drop'}</strong> — @${u}`);
+      await pushFrom("community_trophies", (x,u)=> `🏆 New trophy: <strong>${x.title || x.game || 'Trophy'}</strong> — @${u}`);
+
+      list.innerHTML = rows.length ? rows.join("") : `<li>No new drops in the last 24 hours — be the first! 🔔</li>`;
+    }
+
+    // ---- Spotlight videos personalized by favoriteGames ----
+    const youtubeApiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA";
     async function rotateYouTubeVideosForUser(uid){
+      const cont = $("fav-game-updates");
+      if (!cont) return;
       try{
         const snap = await getDoc(doc(db,"users",uid));
-        if (!snap.exists()){ spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>"; return; }
+        if (!snap.exists()){ cont.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>"; return; }
         const { favoriteGames } = snap.data();
         if (!Array.isArray(favoriteGames) || !favoriteGames.length){
-          spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>"; return;
+          cont.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>"; return;
         }
-        spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
+        cont.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
 
         const blocks = await Promise.all(
           favoriteGames.slice(0,3).map(async (title) => {
             const cleanTitle = title.replace(/[^\w\s:]/gi, "").trim();
             try{
-              const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`);
+              const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${youtubeApiKey}&part=snippet&type=video&maxResults=5&q=${encodeURIComponent(cleanTitle + " gameplay")}`);
               const data = await res.json();
 
               if (data?.error?.errors?.[0]?.reason === 'quotaExceeded'){
@@ -832,7 +797,7 @@
               return `
                 <div class="spotlight-video">
                   <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
-                  <h3>🎮 ${title}</h3>
+                  <h3 style="color:var(--gsu-red);">🎮 ${title}</h3>
                   <p>▶️ Daily gameplay drop powered by YouTube</p>
                 </div>
               `;
@@ -842,49 +807,31 @@
             }
           })
         );
-        spotlightRef.innerHTML = blocks.join("");
+        cont.innerHTML = blocks.join("");
       } catch(e){
         console.error("Error fetching YouTube videos:", e);
-        spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
+        cont.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
       }
     }
 
-    async function runAll(){
-      await populateStats();
+    // ---- Run everything ----
+    async function runHome(){
+      try{ await window.populateStats?.(); }catch{}
+      await Promise.all([buildUnionWatch(), buildCertifiedMoment(), buildTalkOfWeek(), buildAlerts()]);
       const user = auth.currentUser;
-      if (user) rotateYouTubeVideosForUser(user.uid);
-      else spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
+      const vidsContainer = $("fav-game-updates");
+      if (vidsContainer) {
+        if (user) rotateYouTubeVideosForUser(user.uid);
+        else vidsContainer.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', runAll);
-    onAuthStateChanged(auth, () => runAll());
-  </script>
+    document.addEventListener("DOMContentLoaded", runHome);
+    onAuthStateChanged(auth, runHome);
 
-  <script type="module">
-    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    window.submitGameReview = async () => {
-      const title = document.getElementById("reviewGame").value.trim();
-      const content = document.getElementById("reviewText").value.trim();
-      const user = window.auth.currentUser;
-      if (!user || !title || !content) { alert("You must be signed in and fill out both fields."); return; }
-      try {
-        await addDoc(collection(window.db, "game_reviews"), { title, review:content, userId:user.uid, username:user.email, timestamp: serverTimestamp() });
-        alert("✅ Review submitted successfully!"); document.getElementById("reviewGame").value=""; document.getElementById("reviewText").value="";
-      } catch (err) { console.error("❌ Error submitting review:", err); alert("Something went wrong while saving your review."); }
-    };
-  </script>
-
-  <div id="authNotice" style="display:none; position:fixed; top:12%; left:50%; transform:translateX(-50%); background:#ffffff; color:#e60023; border:2px solid #e60023; padding:1.25rem 1.5rem; border-radius:12px; z-index:9999; font-family:'Montserrat',sans-serif; font-size:.95rem; max-width:360px; box-shadow:0 0 20px rgba(0,0,0,.3); text-align:center; line-height:1.6;">
-    <div style="color:#000; font-weight:bold; margin-bottom:.75rem; font-size:1rem;">Signed out:</div>
-    <div style="margin-bottom:1rem;">Access limited — sign in or create your GSU account to get the full GSU experience.</div>
-    <button onclick="hideAuthNotice()" style="background:#e60023; color:#fff; border:none; padding:.5rem 1rem; border-radius:8px; font-family:'Montserrat'; cursor:pointer;">Close</button>
-  </div>
-  <div id="authOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,.5); z-index:9998;"></div>
-
-  <!-- Optional local modules (safe to keep; remove if not used) -->
-  <script type="module">
-    import './firebase-init.js';
-    import './profile-loader.js';
+    // refresh alerts every 10 minutes to keep the 24h window rolling
+    setInterval(buildAlerts, 10*60*1000);
   </script>
 </body>
 </html>
+```
