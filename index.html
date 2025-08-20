@@ -21,35 +21,31 @@
     nav a{ text-decoration:none; color:var(--white-text); font-family:'Montserrat',sans-serif; transition:color .3s; font-size:1rem; }
     nav a:hover{ color:var(--gsu-red); }
 
-    /* --- 3-column shell (original layout) --- */
+    /* 3-column shell (original ratio) */
     .main-container{ display:grid; grid-template-columns:1fr 3fr 1fr; gap:1.5rem; padding:2rem; }
     aside, main{ display:flex; flex-direction:column; gap:1.2rem; }
-    .box{ background:var(--black-faded); border-radius:12px; padding:1rem; color:var(--white-text); transition:transform .3s, box-shadow .3s, border .3s; border:2px solid #333; box-shadow:0 0 12px rgba(255,255,255,.05); }
-    .box:hover{ transform:translateY(-6px) scale(1.01); box-shadow:0 6px 16px rgba(230,0,35,.4), 0 0 10px rgba(255,255,255,.05); border:2px solid var(--gsu-red); }
-    .box h2{ font-family:'Montserrat',sans-serif; margin-bottom:.7rem; color:#fff!important; text-shadow:0 0 6px rgba(255,0,55,.3); }
+    .box{ background:var(--black-faded); border-radius:12px; padding:1rem; color:var(--white-text); transition:transform .3s, box-shadow .3s, border .3s; border:1px solid #333; box-shadow:0 0 12px rgba(255,255,255,.05); }
+    .box:hover{ transform:translateY(-4px); box-shadow:0 6px 16px rgba(230,0,35,.25), 0 0 10px rgba(255,255,255,.05); border-color:#444; }
+    .box h2{ font-family:'Montserrat',sans-serif; margin-bottom:.7rem; color:#fff!important; text-shadow:0 0 6px rgba(255,0,55,.25); }
     main > .box:not(:last-child) { margin-bottom:2.2rem; }
 
     .input-field{ padding:.6rem; border:none; border-radius:6px; margin-bottom:.6rem; width:100%; background:#2a2a2a; color:var(--white-text); }
     .btn{ background:var(--gsu-red); border:none; color:#fff; padding:.8rem; width:100%; border-radius:6px; cursor:pointer; font-family:'Montserrat',sans-serif; }
-    .btn:hover{ opacity:.85; }
+    .btn:hover{ opacity:.9; }
 
     footer{ background:var(--black-faded); text-align:center; padding:1.2rem 1rem; margin-top:4rem; }
     .platform-icons{ display:flex; justify-content:center; align-items:center; gap:1.5rem; margin-bottom:.6rem; }
     .platform-icons img{ height:32px; width:auto; opacity:.9; }
 
-    /* --- Profile card polish (no big red frames) --- */
+    /* Profile card polish */
     #profile-box { background:linear-gradient(to bottom right,#1e1e1e,#282828); border:1px solid #333; box-shadow:0 0 12px rgba(230,0,35,.15); border-radius:12px; text-align:center; font-size:1rem; }
     .stat-box { margin-bottom:12px; padding:12px 14px; border:1px solid #333; border-left:4px solid var(--gsu-red); border-radius:10px; background:rgba(255,255,255,0.04); }
     .update-flash-img { animation: flashGlow 1s ease-in-out; }
-    @keyframes flashGlow {
-      0%{ box-shadow:0 0 0 rgba(230,0,35,0); }
-      50%{ box-shadow:0 0 18px rgba(230,0,35,.45); }
-      100%{ box-shadow:0 0 0 rgba(230,0,35,0); }
-    }
+    @keyframes flashGlow { 0%{ box-shadow:0 0 0 rgba(230,0,35,0);} 50%{ box-shadow:0 0 18px rgba(230,0,35,.45);} 100%{ box-shadow:0 0 0 rgba(230,0,35,0);} }
 
     .retro-header { font-size:1.1rem; color:var(--gsu-red); font-family:'Montserrat',sans-serif; margin-bottom:.6rem; }
     .match-review-style h2 { color:#e60023; font-family:'Montserrat',sans-serif; font-size:1.2rem; margin-bottom:.75rem; text-shadow:0 0 8px rgba(230,0,35,.7); border-bottom:2px solid #e60023; padding-bottom:.5rem; }
-    .match-review-style { background:#1f1f1f; border:2px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 12px rgba(255,255,255,.05); }
+    .match-review-style { background:#1f1f1f; border:1px solid #333; border-radius:12px; padding:1rem; box-shadow:0 0 12px rgba(255,255,255,.05); }
 
     .livewire-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
     .stat-item { background:#2a2a2a; padding:1rem; border-radius:10px; font-size:.95rem; box-shadow:0 0 6px rgba(0,0,0,.3); border:1px solid #3a3a3a; }
@@ -59,12 +55,12 @@
     .culture-tile:hover { background:var(--gsu-red); transform:scale(1.05); }
     .tile-hover { margin-top:.4rem; font-size:.85rem; color:#ddd; }
 
-    /* Favorite images as a tidy grid on desktop */
-    #fav-images{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; padding:1rem; border:1px solid #444; border-radius:10px; background:#1b1b1b; }
-    #fav-images img{ width:100%; height:180px; object-fit:cover; background:#111; border-radius:12px; padding:0; }
+    /* Favorite images – tidy grid */
+    #fav-images{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; padding:1rem; border:1px solid #444; border-radius:10px; background:#1b1b1b; min-height:200px; }
+    #fav-images img{ width:100%; height:180px; object-fit:cover; background:#111; border-radius:12px; }
 
-    #spotlight3{ background:linear-gradient(to bottom right,#1f1f1f,#262626); border:2px solid transparent; border-radius:12px; padding:2rem 1.5rem; box-shadow:0 0 16px rgba(230,0,35,.3); text-align:center; max-width:900px; margin:1.5rem auto; }
-    #spotlight3:hover{ border-color:var(--gsu-red); }
+    #spotlight3{ background:linear-gradient(to bottom right,#1f1f1f,#262626); border:1px solid #3a3a3a; border-radius:12px; padding:2rem 1.5rem; box-shadow:0 0 16px rgba(230,0,35,.25); text-align:center; max-width:900px; margin:1.5rem auto; }
+    #spotlight3:hover{ border-color:#555; }
     #fav-game-updates{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; padding:1rem; margin-top:1rem; }
     .spotlight-video{ background:#2a2a2a; padding:1rem; border-radius:10px; border:1px solid #3a3a3a; }
     .spotlight-video iframe{ width:100%; height:200px; border:none; border-radius:8px; margin:.6rem 0; }
@@ -350,6 +346,7 @@
   <div id="authOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,.5); z-index:9998;"></div>
 
   <!-- ========================= JS ========================= -->
+
   <!-- Firebase core + SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
@@ -371,6 +368,7 @@
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
+    // Persist login
     setPersistence(auth, browserLocalPersistence).catch(console.error);
 
     // Expose for other scripts in this page
@@ -383,6 +381,7 @@
     const createAccountBtn = document.getElementById('createAccountBtn');
 
     if (createAccountBtn) createAccountBtn.addEventListener('click', () => window.location.href = "account_creation.html");
+
     if (signInBtn) {
       signInBtn.addEventListener('click', async () => {
         const email = (emailInput?.value || "").trim();
@@ -390,7 +389,8 @@
         if (!email || !password) { alert("Enter both Email and Password."); return; }
         try {
           const userCred = await signInWithEmailAndPassword(auth, email, password);
-          loadProfile(userCred.user.uid);
+          await loadProfile(userCred.user.uid);
+          hideAuthNotice();
           alert("Signed in successfully");
         } catch (err) { alert("Login failed: " + err.message); }
       });
@@ -496,13 +496,28 @@
       else      { profileBox?.style && (profileBox.style.display = "none"); showAuthNotice(); setTimeout(hideAuthNotice, 8000); }
       runHome(); // rebuild content on state change
     });
+  </script>
 
-    // --- Daily rotation helpers (guaranteed new every 24h) ---
+  <!-- Stats, Spotlight, Alerts, Talk of the Week, Featured Clip -->
+  <script type="module">
+    import {
+      collection, query, where, orderBy, limit, getDocs,
+      getCountFromServer, Timestamp, doc, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const db   = window.db;
+    const auth = window.auth;
+
+    const $ = (id) => document.getElementById(id);
+    const setText = (id, val) => { const el = $(id); if (el) el.textContent = String(val); };
+
+    /* ---------- Daily rotation helpers ---------- */
     const dayKey = () => new Date().toISOString().slice(0,10); // YYYY-MM-DD
     const hash = (s) => { let h=2166136261>>>0; for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h>>>0; };
-    const dailyPickIndex = (listLen, salt="") => listLen ? hash(dayKey()+salt) % listLen : 0;
+    const dailyPickIndex = (len, salt="") => len ? hash(dayKey()+salt) % len : 0;
 
-    // --- Static pools for rotation ---
+    /* ---------- Content pools ---------- */
     const RetroFacts = [
       "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
       "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
@@ -527,7 +542,6 @@
       "That whiff punish cured my boredom."
     ];
 
-    // Character sync data
     const CharacterAssignments = [
       { name:"Peter Parker/Spider-Man", role:"superhero", desc:"Smarts, strength, and soul. You choose right — even when it costs you.", img:"https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg", platforms:["PlayStation","PC"] },
       { name:"Kratos", role:"anti-hero", desc:"Fueled by rage, guided by growth. You don’t run — you conquer.", img:"https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg", platforms:["PlayStation"] },
@@ -539,40 +553,22 @@
       { name:"Donkey Kong", role:"jungle powerhouse", desc:"Bold, strong, unshakable. Loyal to your crew.", img:"https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646", platforms:["Nintendo"] }
     ];
 
-    // UI helpers
-    const $ = (id) => document.getElementById(id);
-    const setText = (id, val) => { const el = $(id); if (el) el.textContent = String(val); };
-
-    // Retro fact (daily default + spin button randomizes)
-    function applyDailyRetro() {
-      setText("retro-fact", RetroFacts[dailyPickIndex(RetroFacts.length, "retro")]);
-    }
-    $("spinRetro")?.addEventListener("click", () => {
-      const r = Math.floor(Math.random()*RetroFacts.length);
-      setText("retro-fact", RetroFacts[r]);
-    });
-
-    // Character picker
+    /* ---------- UI helpers ---------- */
+    function applyDailyRetro(){ setText("retro-fact", RetroFacts[dailyPickIndex(RetroFacts.length, "retro")]); }
     function updateCharacterOptions(){
       const platform = ($("platform-select")?.value)||"";
       const roleEl = $("character-role"), descEl = $("character-desc"), imgEl = $("character-image"), msgEl = $("no-character-msg");
       if (!platform){ roleEl.textContent=""; descEl.textContent=""; imgEl.src="GSU_LOGO.png"; msgEl.style.display="block"; return; }
       const filtered = CharacterAssignments.filter(c => c.platforms.includes(platform));
       if (!filtered.length){ roleEl.textContent=""; descEl.textContent=""; imgEl.src="GSU_LOGO.png"; msgEl.style.display="block"; return; }
-      const chosen = filtered[dailyPickIndex(filtered.length, platform)]; // stable daily per platform
+      const chosen = filtered[dailyPickIndex(filtered.length, platform)];
       roleEl.textContent = `🎮 You Are: ${chosen.name} (${chosen.role})`;
-      descEl.textContent = chosen.desc;
-      imgEl.src = chosen.img;
-      msgEl.style.display = "none";
+      descEl.textContent = chosen.desc; imgEl.src = chosen.img; msgEl.style.display = "none";
     }
+    $("spinRetro")?.addEventListener("click", () => setText("retro-fact", RetroFacts[Math.floor(Math.random()*RetroFacts.length)]));
     $("platform-select")?.addEventListener("change", updateCharacterOptions);
 
-    // --- Firestore powered blocks (stats / watch / trophy / alerts / talk) ---
-    import {
-      collection, query, where, orderBy, limit, getDocs,
-      getCountFromServer, Timestamp
-    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
+    /* ---------- Firestore blocks ---------- */
     async function safeCount(colName, qParts=[]){
       try{
         const base = collection(db, colName);
@@ -634,8 +630,7 @@
         const u = new URL(url);
         if (u.hostname.includes("youtu.be")) return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
         if (u.hostname.includes("youtube.com")){
-          const id = u.searchParams.get("v");
-          if (id) return `https://www.youtube.com/embed/${id}`;
+          const id = u.searchParams.get("v"); if (id) return `https://www.youtube.com/embed/${id}`;
         }
       }catch{}
       return "";
@@ -701,7 +696,6 @@
           q.textContent = `“${text}”`; w.textContent = `— @${user}`; return;
         }
       }catch{}
-      // Fallback rotates daily
       q.textContent = `“${FallbackQuotes[dailyPickIndex(FallbackQuotes.length, "quote")]}”`;
       w.textContent = "— GSU Lounge";
     }
@@ -734,7 +728,7 @@
       list.innerHTML = rows.length ? rows.join("") : `<li>No new drops in the last 24 hours — be the first! 🔔</li>`;
     }
 
-    // Personalized Spotlight (YouTube)
+    /* ---------- Personalized Spotlight ---------- */
     const youtubeApiKey = "YOUR_YOUTUBE_API_KEY";
     async function rotateYouTubeVideosForUser(uid){
       const cont = $("fav-game-updates"); if (!cont) return;
@@ -752,7 +746,7 @@
         cont.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
 
         // Rotate which 3 we show each day if they have more than 3
-        const games = favoriteGames.slice(0); // clone
+        const games = favoriteGames.slice(0);
         const offset = dailyPickIndex(Math.max(1, games.length), "vids");
         const show = [games[(0+offset)%games.length], games[(1+offset)%games.length], games[(2+offset)%games.length]].filter(Boolean);
 
@@ -785,14 +779,14 @@
       }
     }
 
-    // Build Knowledge Drop (daily)
+    /* ---------- Knowledge Drop (daily) ---------- */
     function applyDailyKnowledge(){
       const k = KnowledgeDrops[dailyPickIndex(KnowledgeDrops.length, "kd")];
       $("kdLead").textContent = k.lead;
       $("kdBullet").textContent = k.bullet;
     }
 
-    // Run everything + rollovers
+    /* ---------- Orchestrator ---------- */
     async function runHome(){
       try { applyDailyRetro(); applyDailyKnowledge(); updateCharacterOptions(); } catch {}
       try { await populateStats(); } catch {}
