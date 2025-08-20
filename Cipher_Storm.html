@@ -1,19 +1,39 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <title>GSU Cipherstorm</title>
 <link rel="icon" href="GSU_LOGO.png" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
-  :root{ --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7 }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
+  :root{
+    --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7;
+    /* iOS safe areas */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
   }
+  *{box-sizing:border-box}
+
+  /* Allow vertical scroll, block sideways */
+  html, body{height:100%}
+  html, body{margin:0; overflow-x:hidden;}
+  body{
+    font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
+    min-height:100svh; display:flex; justify-content:flex-start;
+    padding:calc(12px + var(--safe-top)) calc(16px + var(--safe-right))
+            calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+  }
+
+  /* Global page scaler (we scale this, not the inner frame) */
+  #game-wrapper{
+    transform-origin: top center;
+    width:100%;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+  }
+
   header{display:flex; flex-direction:column; align-items:center; gap:8px}
   nav{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
   nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
@@ -21,16 +41,13 @@
   .logo img{max-width:96px}
   .logo .text{letter-spacing:2px; opacity:.9}
 
-  /* Zoomed-out frame for visibility */
+  /* Frame (no fixed transform anymore) */
   .frame{
     width:min(900px,95vw);
     border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
-    transform: scale(.92);
-    transform-origin: top center;
   }
-  @media (max-width:600px){ .frame{ transform: scale(.88) } }
 
   .hud{
     display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem);
@@ -44,6 +61,7 @@
       linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
       linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
     background-size:40px 40px; isolation:isolate;
+    touch-action:manipulation;
   }
 
   .tile{
@@ -74,44 +92,84 @@
   .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
 
   footer{opacity:.7; font-size:.85rem}
+
   @media (max-width:640px){ .hud{grid-template-columns:repeat(2,1fr)} }
 </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo">
-      <div class="text">GAMESYNC UNION</div>
-    </div>
-    <nav>
-      <a href="index.html">Home</a>
-    </nav>
-  </header>
+  <div id="game-wrapper">
+    <header>
+      <div class="logo">
+        <img src="GSU_LOGO.png" alt="GSU Logo">
+        <div class="text">GAMESYNC UNION</div>
+      </div>
+      <nav><a href="index.html">Home</a></nav>
+    </header>
 
-  <section class="frame">
-    <h1 style="margin:6px 0 10px 6px;">GSU CIPHERSTORM</h1>
-    <div class="hud">
-      <div class="pill">⏱ <strong id="time">60</strong>s</div>
-      <div class="pill">🔢 Wave <strong id="wave">1</strong></div>
-      <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
-      <div class="pill">⭐ Score <strong id="score">0</strong></div>
-      <div class="pill">❤️ <strong id="lives">3</strong></div>
-    </div>
+    <section class="frame">
+      <h1 style="margin:6px 0 10px 6px;">GSU CIPHERSTORM</h1>
+      <div class="hud">
+        <div class="pill">⏱ <strong id="time">60</strong>s</div>
+        <div class="pill">🔢 Wave <strong id="wave">1</strong></div>
+        <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
+        <div class="pill">⭐ Score <strong id="score">0</strong></div>
+        <div class="pill">❤️ <strong id="lives">3</strong></div>
+      </div>
 
-    <div id="board" aria-live="polite"></div>
+      <div id="board" aria-live="polite"></div>
 
-    <div class="controls">
-      <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
-      <button id="startBtn">▶ Start Run</button>
-      <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
-    </div>
+      <div class="controls">
+        <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
+        <button id="startBtn">▶ Start Run</button>
+        <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
+      </div>
 
-    <div class="row" style="color:var(--muted);margin-top:6px;">
-      <span>Tip: your tile glows **green** while your typed prefix is correct.</span>
-    </div>
-  </section>
+      <div class="row" style="color:var(--muted);margin-top:6px;">
+        <span>Tip: your tile glows green while your typed prefix is correct.</span>
+      </div>
+    </section>
 
-  <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
+    <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
+  </div>
+
+<script>
+/* ===== Global auto-scale (scroll allowed, no sideways scroll) ===== */
+(function(){
+  const vvp = () => window.visualViewport || { width: innerWidth, height: innerHeight };
+  const wrapper = document.getElementById('game-wrapper');
+
+  function scalePage(){
+    if(!wrapper) return;
+    // reset to measure natural layout height/width
+    wrapper.style.transform = 'scale(1)';
+    const contentH = wrapper.scrollHeight;
+    const contentW = wrapper.scrollWidth;
+    const vw = vvp().width, vh = vvp().height;
+
+    // choose the smaller scale that fits both height and width
+    const sH = (vh - 2) / contentH;
+    const sW = (vw - 2) / contentW;
+    let scale = Math.min(sH, sW);
+
+    // don't upscale on big screens; keep usable on tiny ones
+    if (scale > 1) scale = 1;
+    scale = Math.max(0.6, scale);
+
+    wrapper.style.transform = `scale(${scale})`;
+  }
+
+  let raf=null;
+  function requestFit(){ if(raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(scalePage); }
+
+  addEventListener('load', requestFit);
+  addEventListener('resize', requestFit);
+  addEventListener('orientationchange', requestFit);
+  window.visualViewport && visualViewport.addEventListener('resize', requestFit);
+
+  // Expose if game changes height a lot (e.g., after starting)
+  window.gsuFit = { refresh: requestFit };
+})();
+</script>
 
 <script>
 /* ------------------------ Easier Word Lists (3–5 letters only) ------------------------ */
@@ -123,7 +181,6 @@ games: [
   "spawn","smurf","macro","micro","ghost","score","reset","stage","match","camp","heal","perks","runes","punch","block",
   "slide","burst","clash","scope","tilt"
 ],
-
 tech: [
   "byte","data","code","build","stack","array","debug","query","cache","ping","queue","input",
   "index","token","regex","route","param","class","scope","state","event","logic","parse","print",
@@ -131,14 +188,12 @@ tech: [
   "email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh",
   "grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"
 ],
-
 heroes: [
   "loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic",
   "Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan",
   "Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby",
   "Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"
 ]
-
 };
 const THEMES = Object.keys(WORD_BANK);
 
@@ -287,6 +342,9 @@ function startRun(){
 
   state.lastT = 0;
   rafId = requestAnimationFrame(loop);
+
+  // ensure scale is correct after UI changes on start
+  window.gsuFit?.refresh();
 }
 
 function endRun(){
@@ -299,6 +357,7 @@ function endRun(){
   frame.style.boxShadow="0 0 30px #e60023, inset 0 0 18px #e6002344";
   setTimeout(()=> frame.style.boxShadow=prev || "0 0 18px #e60023cc, inset 0 0 18px #e6002326", 280);
   startBtn.textContent="🔁 Run Again";
+  window.gsuFit?.refresh();
 }
 
 /* Submit + live assist */
@@ -337,6 +396,8 @@ function useSlow(){
 
 /* ------------------------ Events ------------------------ */
 startBtn.addEventListener('click', startRun);
+slowmoBtn.addEventListener('click', useSlow);
+
 typed.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){ e.preventDefault(); submitWord(); return; }
   // Live assist: outline green if typed prefix is correct
@@ -350,9 +411,13 @@ typed.addEventListener('keydown', (e)=>{
   }
 });
 
-/* Keep input focused while running */
+/* Keep input focused while running (and rescale if keyboard affects viewport) */
 window.addEventListener('keydown', ()=>{
   if(state?.running) typed.focus();
+});
+window.visualViewport && visualViewport.addEventListener('resize', ()=> {
+  if (state?.running) typed.focus();
+  window.gsuFit?.refresh();
 });
 </script>
 </body>
