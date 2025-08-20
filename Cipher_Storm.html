@@ -9,7 +9,6 @@
 <style>
   :root{
     --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7;
-    /* iOS safe areas */
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
@@ -17,17 +16,18 @@
   }
   *{box-sizing:border-box}
 
-  /* Allow vertical scroll, block sideways */
   html, body{height:100%}
   html, body{margin:0; overflow-x:hidden;}
   body{
     font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100svh; display:flex; justify-content:flex-start;
+    min-height:100svh; display:flex; flex-direction:column; align-items:center;
     padding:calc(12px + var(--safe-top)) calc(16px + var(--safe-right))
             calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+    -webkit-text-size-adjust: 100%;
+    gap:14px;
   }
 
-  /* Global page scaler (we scale this, not the inner frame) */
+  /* Scaled wrapper: header + board only (NOT the input!) */
   #game-wrapper{
     transform-origin: top center;
     width:100%;
@@ -41,7 +41,6 @@
   .logo img{max-width:96px}
   .logo .text{letter-spacing:2px; opacity:.9}
 
-  /* Frame (no fixed transform anymore) */
   .frame{
     width:min(900px,95vw);
     border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
@@ -76,27 +75,40 @@
   .ok{outline:2px solid #21d07a}
   .bad{outline:2px solid #d02121}
 
+  /* Controls LIVE OUTSIDE the scaled wrapper so iOS keyboard doesn't glitch */
   .controls{
-    margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
+    margin-top:2px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
+    width:100%;
   }
   #typed{
-    width:min(520px,90%); font-family:inherit; font-size:1.05rem; color:#fff; background:#0a0a0a;
+    width:min(520px,90%); font-family:inherit;
+    /* Prevent iOS zoom-on-focus: ensure >= 16px */
+    font-size: max(16px, 1.05rem);
+    color:#fff; background:#0a0a0a;
     border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
+    /* Keep it visible when keyboard opens */
+    scroll-margin: 15vh;
   }
   #startBtn, .btn{
     border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
     box-shadow:0 0 10px #e60023aa; font-weight:700;
+    font-size:max(16px, 1rem); /* no zoom on these either */
   }
   #startBtn:hover,.btn:hover{filter:brightness(1.1)}
   .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+  .hintline{color:var(--muted); text-align:center}
 
   footer{opacity:.7; font-size:.85rem}
 
   @media (max-width:640px){ .hud{grid-template-columns:repeat(2,1fr)} }
+
+  /* While typing, we suppress re-scaling to avoid jumps */
+  body.typing #game-wrapper{ will-change: auto; }
 </style>
 </head>
 <body>
+  <!-- Scaled stuff -->
   <div id="game-wrapper">
     <header>
       <div class="logo">
@@ -117,44 +129,40 @@
       </div>
 
       <div id="board" aria-live="polite"></div>
-
-      <div class="controls">
-        <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
-        <button id="startBtn">▶ Start Run</button>
-        <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
-      </div>
-
-      <div class="row" style="color:var(--muted);margin-top:6px;">
-        <span>Tip: your tile glows green while your typed prefix is correct.</span>
-      </div>
     </section>
-
-    <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
   </div>
 
+  <!-- NOT scaled: input & buttons (fixes iOS keyboard issues) -->
+  <div class="controls">
+    <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
+    <button id="startBtn">▶ Start Run</button>
+    <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
+  </div>
+  <div class="row hintline" style="margin-top:6px;">
+    <span>Tip: your tile glows green while your typed prefix is correct.</span>
+  </div>
+
+  <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
+
 <script>
-/* ===== Global auto-scale (scroll allowed, no sideways scroll) ===== */
+/* ===== Global auto-scale (don’t scale the input area) ===== */
 (function(){
   const vvp = () => window.visualViewport || { width: innerWidth, height: innerHeight };
   const wrapper = document.getElementById('game-wrapper');
 
   function scalePage(){
     if(!wrapper) return;
-    // reset to measure natural layout height/width
-    wrapper.style.transform = 'scale(1)';
+    if (document.body.classList.contains('typing')) return; // skip while keyboard is up/typing
+    wrapper.style.transform = 'scale(1)'; // reset
     const contentH = wrapper.scrollHeight;
     const contentW = wrapper.scrollWidth;
     const vw = vvp().width, vh = vvp().height;
 
-    // choose the smaller scale that fits both height and width
     const sH = (vh - 2) / contentH;
     const sW = (vw - 2) / contentW;
     let scale = Math.min(sH, sW);
-
-    // don't upscale on big screens; keep usable on tiny ones
     if (scale > 1) scale = 1;
     scale = Math.max(0.6, scale);
-
     wrapper.style.transform = `scale(${scale})`;
   }
 
@@ -164,9 +172,11 @@
   addEventListener('load', requestFit);
   addEventListener('resize', requestFit);
   addEventListener('orientationchange', requestFit);
-  window.visualViewport && visualViewport.addEventListener('resize', requestFit);
+  window.visualViewport && visualViewport.addEventListener('resize', ()=>{
+    if (!document.body.classList.contains('typing')) requestFit();
+  });
 
-  // Expose if game changes height a lot (e.g., after starting)
+  // Public refresh (call after big layout changes)
   window.gsuFit = { refresh: requestFit };
 })();
 </script>
@@ -214,10 +224,9 @@ function sample(list){ return list[Math.floor(Math.random()*list.length)] }
 
 /* Easier scramble: ALWAYS keep first & last letters fixed */
 function scrambleWord(w){
-  if (w.length <= 3) return w; // tiny words stay as-is to be super easy
+  if (w.length <= 3) return w;
   const first = w[0], last = w[w.length-1];
   const mid = w.slice(1,-1).split("");
-  // light shuffle middle only
   for (let i = mid.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
     [mid[i], mid[j]] = [mid[j], mid[i]];
@@ -262,7 +271,6 @@ function setHUD(){
 
 /* ------------------------ Spawning (easier selection) ------------------------ */
 function allowedMaxLen(){
-  // Very gentle ramp: waves 1–3 → max 4 letters, 4–6 → max 5, 7+ → still 5
   if (state.wave <= 3) return 4;
   return 5;
 }
@@ -277,7 +285,6 @@ function spawnTile(){
   tile.style.top='-52px';
   tile.style.left = `${15 + Math.random()*70}%`;
 
-  // Add a friendly hint pattern like "p _ _ r y"
   const hintMask = word[0] + " " + "_ ".repeat(Math.max(0,word.length-2)) + word[word.length-1];
   tile.innerHTML = `<div class="word">${scram}</div><div class="hint">${hintMask.trim()}</div>`;
   board.appendChild(tile);
@@ -343,8 +350,12 @@ function startRun(){
   state.lastT = 0;
   rafId = requestAnimationFrame(loop);
 
-  // ensure scale is correct after UI changes on start
+  // Re-scale the non-input area after UI changes
   window.gsuFit?.refresh();
+
+  // put caret in the input & scroll it nicely into view
+  typed.focus({ preventScroll:false });
+  typed.scrollIntoView({ block:'center', behavior:'smooth' });
 }
 
 function endRun(){
@@ -378,7 +389,6 @@ function submitWord(){
     spawnTile();
     setHUD();
   } else {
-    // gentle feedback only
     const el = state.activeTile.el;
     el.classList.add('bad');
     setTimeout(()=> el.classList.remove('bad'), 140);
@@ -398,9 +408,17 @@ function useSlow(){
 startBtn.addEventListener('click', startRun);
 slowmoBtn.addEventListener('click', useSlow);
 
+typed.addEventListener('focus', ()=>{
+  document.body.classList.add('typing');           // pause re-scaling
+  setTimeout(()=> typed.scrollIntoView({block:'center'}), 50);
+});
+typed.addEventListener('blur', ()=>{
+  document.body.classList.remove('typing');        // resume re-scaling
+  window.gsuFit?.refresh();
+});
+
 typed.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){ e.preventDefault(); submitWord(); return; }
-  // Live assist: outline green if typed prefix is correct
   if (state?.activeTile){
     const g = (typed.value + (e.key.length===1? e.key : "")).toLowerCase();
     const target = state.activeTile.word.toLowerCase();
@@ -411,13 +429,11 @@ typed.addEventListener('keydown', (e)=>{
   }
 });
 
-/* Keep input focused while running (and rescale if keyboard affects viewport) */
+/* Keep input focused while running (handy on desktop too) */
 window.addEventListener('keydown', ()=>{
-  if(state?.running) typed.focus();
-});
-window.visualViewport && visualViewport.addEventListener('resize', ()=> {
-  if (state?.running) typed.focus();
-  window.gsuFit?.refresh();
+  if(state?.running && document.activeElement !== typed){
+    typed.focus({preventScroll:true});
+  }
 });
 </script>
 </body>
