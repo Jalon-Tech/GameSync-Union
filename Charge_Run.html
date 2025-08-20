@@ -4,65 +4,163 @@
 <meta charset="UTF-8" />
 <title>GSU Charge Run</title>
 <link rel="icon" href="GSU_LOGO.png" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
-  :root{ --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7; --cell:36px }
+  :root{
+    /* This is auto-updated by JS to fit your screen */
+    --cell: 36px;
+
+    --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7;
+  }
   *{box-sizing:border-box}
   body{
     margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:16px;
-    padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
-    touch-action:manipulation;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
-  header{display:flex; flex-direction:column; align-items:center; gap:8px}
-  .logo{display:flex; flex-direction:column; align-items:center}
-  .logo img{width:clamp(88px,10vw,120px)}
-  .frame{width:min(1040px,96vw); border:3px solid var(--gsu-red); border-radius:16px; padding:14px; box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326; background:linear-gradient(#0a0a0a,#000);}
-  .frame.shake{animation:shake .25s ease}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
-  .hud{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.85rem,2vw,1rem)}
+
+  /* Header — centered perfectly */
+  header{
+    width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  }
+  .logo{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  }
+  .logo img{
+    width:clamp(88px, 10vw, 120px);
+    height:auto; display:block; margin:0 auto;
+  }
+  .logo .text{letter-spacing:2px; opacity:.9}
+
+  nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+  nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
+
+  /* Game frame */
+  .frame{
+    width:min(1040px, 96vw);
+    border:3px solid var(--gsu-red); border-radius:16px; padding:14px;
+    box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
+    background:linear-gradient(#0a0a0a,#000);
+  }
+  .frame.shake{animation:shake .25s ease}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
+
+  h1{margin:6px 0 0 6px}
+  h2.sub{margin:4px 0 10px 6px; color:var(--gsu-red); font-size:1rem; opacity:.9}
+
+  /* HUD */
+  .hud{
+    display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:10px;
+    font-size:clamp(.8rem,2vw,1rem);
+  }
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
+
+  /* Board */
   #boardWrap{position:relative; display:flex; justify-content:center}
   #gameCanvas{
-    display:grid; grid-template-columns:repeat(20,var(--cell)); grid-template-rows:repeat(20,var(--cell));
+    display:grid;
+    grid-template-columns: repeat(20, var(--cell));
+    grid-template-rows: repeat(20, var(--cell));
     border:2px solid #222; border-radius:12px; overflow:hidden;
-    background:linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
-    background-size:var(--cell) var(--cell); box-shadow:0 0 20px #e60023aa inset;
+    background:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: var(--cell) var(--cell);
+    box-shadow:0 0 20px #e60023aa inset;
   }
-  #gameCanvas.power{animation:powerGlow 1s ease-in-out infinite alternate; border-color:#ff4060}
-  @keyframes powerGlow{from{box-shadow:0 0 16px #e60023aa inset}to{box-shadow:0 0 30px #ff6a80cc inset}}
-  .grid-cell{width:var(--cell); height:var(--cell); position:relative}
-  .grid-cell div{width:100%; height:100%; position:absolute; display:flex; align-items:center; justify-content:center; font-size:calc(var(--cell)*.7)}
-  .controller{background-image:url('GSU_LOGO.png'); background-size:contain; background-repeat:no-repeat; background-position:center; z-index:3; transform:scale(1.55); filter:drop-shadow(0 0 8px rgba(230,0,35,.7)); animation:idle 1.4s ease-in-out infinite}@keyframes idle{0%,100%{transform:scale(1.52)}50%{transform:scale(1.62)}}
-  .battery::after{content:'🔋'} .hazard::after{content:'🔥'} .reverse-surge::after{content:'🔄'}
-  .trapped-fire{background-image:url('GSU_LOGO.png'); background-size:contain; background-repeat:no-repeat; background-position:center; animation:flash 1s infinite; filter:hue-rotate(140deg) drop-shadow(0 0 8px #66d1ff)}@keyframes flash{0%,100%{opacity:.9}50%{opacity:.6}}
-  .float{position:absolute; font-size:14px; color:#fff; text-shadow:0 0 6px rgba(255,255,255,.7); animation:floatUp .6s ease-out forwards; pointer-events:none}@keyframes floatUp{from{transform:translateY(0);opacity:1}to{transform:translateY(-16px);opacity:0}}
-  .btn{border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer; box-shadow:0 0 10px #e60023aa; font-weight:700}
-  .btn:disabled{opacity:.6; cursor:not-allowed}
+  /* Glow when Surge is active */
+  #gameCanvas.power{
+    animation:powerGlow 1s ease-in-out infinite alternate;
+    border-color:#ff4060;
+  }
+  @keyframes powerGlow{
+    from{box-shadow:0 0 16px #e60023aa inset}
+    to  {box-shadow:0 0 30px #ff6a80cc inset}
+  }
+
+  .grid-cell{width:var(--cell); height:var(--cell); position:relative; overflow:visible}
+  .grid-cell div{
+    width:100%; height:100%; background-size:contain; background-repeat:no-repeat; background-position:center; position:absolute;
+    display:flex; align-items:center; justify-content:center; font-size:calc(var(--cell) * .7);
+  }
+
+  /* Player controller — made BIGGER and easy to see */
+  .controller{
+    background-image:url('GSU_LOGO.png'); z-index:3;
+    transform:scale(1.55);   /* bigger than a cell, but centered */
+    filter:drop-shadow(0 0 8px rgba(230,0,35,.7));
+    animation:idlePulse 1.4s ease-in-out infinite;
+  }
+  @keyframes idlePulse{0%,100%{transform:scale(1.52)}50%{transform:scale(1.62)}}
+
+  .battery::after{content:'🔋'}
+  .hazard::after{content:'🔥'}
+  .reverse-surge::after{content:'🔄'}
+  .trapped-fire{
+    background-image:url('GSU_LOGO.png');
+    animation:flash 1s infinite;
+    filter:hue-rotate(140deg) drop-shadow(0 0 8px #66d1ff);
+  }
+  @keyframes flash{0%,100%{opacity:.9}50%{opacity:.6}}
+
+  /* Floating feedback */
+  .float{
+    position:absolute; font-size:14px; color:#fff; text-shadow:0 0 6px rgba(255,255,255,.7);
+    animation:floatUp .6s ease-out forwards;
+    pointer-events:none;
+  }
+  @keyframes floatUp{from{transform:translateY(0); opacity:1}to{transform:translateY(-16px); opacity:0}}
+
+  /* Controls & Buttons */
   .controls{margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:8px}
   .dpad{display:grid; grid-template-columns:repeat(3,64px); gap:8px}
-  .key{width:64px; height:64px; border-radius:12px; background:#121212; border:1px solid #333; display:flex; align-items:center; justify-content:center; font-size:1.4rem; cursor:pointer; user-select:none}
+  .key{
+    width:64px; height:64px; border-radius:12px; background:#121212; border:1px solid #333; display:flex;
+    align-items:center; justify-content:center; font-size:1.4rem; cursor:pointer; user-select:none;
+    box-shadow:0 0 8px rgba(255,255,255,.05);
+  }
   .key:active{filter:brightness(1.2)}
-  .overlay{position:absolute; inset:0; display:none; align-items:center; justify-content:center; backdrop-filter:blur(2px)}
+  .btn{
+    border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
+    box-shadow:0 0 10px #e60023aa; font-weight:700;
+  }
+  .btn:disabled{opacity:.6; cursor:not-allowed}
+
+  /* Overlay screens */
+  .overlay{
+    position:absolute; inset:0; display:none; align-items:center; justify-content:center; backdrop-filter:blur(2px);
+  }
   .overlay.show{display:flex}
-  .panel{background:#0b0b0b; border:1px solid #333; border-radius:14px; padding:16px 20px; text-align:center; min-width:260px; box-shadow:0 0 20px rgba(0,0,0,.6)}
-  .panel h2{margin:0 0 8px 0; color:var(--gsu-red)} .panel .row{display:flex; gap:10px; justify-content:center; margin-top:10px}
-  .compact .hud{grid-template-columns:repeat(3,1fr)}
+  .panel{
+    background:#0b0b0b; border:1px solid #333; border-radius:14px; padding:16px 20px; text-align:center; min-width:260px;
+    box-shadow:0 0 20px rgba(0,0,0,.6);
+  }
+  .panel h2{margin:0 0 8px 0; color:var(--gsu-red)}
+  .panel .row{display:flex; gap:10px; justify-content:center; margin-top:10px}
+
+  footer{opacity:.7; font-size:.85rem; text-align:center; margin-top:10px}
+
+  /* Responsive tweaks */
+  @media (max-width:720px){
+    .hud{grid-template-columns:repeat(3,1fr)}
+  }
 </style>
-<script>
-  (function(){const apply=()=>{const h=(visualViewport?.height??innerHeight),w=(visualViewport?.width??innerWidth);document.documentElement.classList.toggle('compact', w<420||h<720);};addEventListener('resize',apply,{passive:true});addEventListener('orientationchange',apply,{passive:true});addEventListener('DOMContentLoaded',apply,{once:true});})();
-</script>
 </head>
 <body>
-  <header class="logo">
-    <img src="GSU_LOGO.png" alt="GSU Logo" />
-    <div>GAMESYNC UNION</div>
+  <header>
+    <div class="logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
+      <div class="text">GAMESYNC UNION</div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+    </nav>
   </header>
 
   <section class="frame" id="frame">
     <h1>GSU CHARGE RUN</h1>
-    <h2 style="margin:.2rem 0 1rem;color:#e60023;opacity:.9;font-size:1rem">Collect batteries, dodge fires, and trigger Reverse Surge to freeze hazards.</h2>
+    <h2 class="sub">Collect batteries, dodge fires, and trigger Reverse Surge to freeze hazards.</h2>
 
     <div class="hud">
       <div class="pill">🔋 Goal <strong id="goalText">0 / 10</strong></div>
@@ -77,6 +175,7 @@
     <div id="boardWrap">
       <div id="gameCanvas" aria-live="polite"></div>
 
+      <!-- Overlays -->
       <div class="overlay" id="gameOver">
         <div class="panel">
           <h2>Game Over</h2>
@@ -89,7 +188,10 @@
       </div>
 
       <div class="overlay" id="levelUp">
-        <div class="panel"><h2>Level Up!</h2><div style="opacity:.85">Grid surges with power. Hazards increase.</div></div>
+        <div class="panel">
+          <h2>Level Up!</h2>
+          <div style="opacity:.85">Grid surges with power. Hazards increase.</div>
+        </div>
       </div>
     </div>
 
@@ -106,6 +208,8 @@
         <div class="key" data-dir="ArrowLeft">⬅️</div><div class="key" data-dir="ArrowDown">⬇️</div><div class="key" data-dir="ArrowRight">➡️</div>
       </div>
     </div>
+
+    <footer>Built for GameSync Union — GSU Charge Run™</footer>
   </section>
 
 <script>
@@ -115,9 +219,11 @@ const canvas = document.getElementById("gameCanvas");
 const startBtn = document.getElementById("startGameBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const fitBtn = document.getElementById("fitBtn");
+
 const gameOverOverlay = document.getElementById("gameOver");
 const levelUpOverlay = document.getElementById("levelUp");
 const finalStats = document.getElementById("finalStats");
+
 const timerDisplay = document.getElementById("timer");
 const livesDisplay = document.getElementById("lives");
 const goalText = document.getElementById("goalText");
@@ -128,46 +234,82 @@ const reverseHint = document.getElementById("reverseHint");
 
 const rows = 20, cols = 20;
 let controllerPos = { x: 10, y: 10 };
-let batteryPositions = [], firePositions = [], reverseSurgeTiles = [], trappedFires = [];
-let collectedBatteries = 0, totalCollected = 0;
-let lives = 3, timer = 30, level = 0;
+let batteryPositions = [];
+let firePositions = [];
+let reverseSurgeTiles = [];
+let trappedFires = [];
+let collectedBatteries = 0;
+let lives = 3;
+let timer = 30;
+let level = 0;
 let gameInterval, moveInterval, freezeInterval;
-let isTimerExpired = false, surgeActive = false, paused = false;
+let isTimerExpired = false;
+let surgeActive = false;
+let paused = false;
+let totalCollected = 0;
 
-/* ===== Fit-to-screen ===== */
+/* ===== Fit-to-screen logic (ZOOM OUT smartly) ===== */
 function fitBoard(auto=false){
   const wrap = document.getElementById('boardWrap');
-  const top = wrap.getBoundingClientRect().top;
-  const vh = (window.visualViewport?.height ?? window.innerHeight);
-  const usableH = Math.max(260, vh - top - 140);
-  const usableW = wrap.clientWidth - 8;
-  const byW = Math.floor(usableW / cols), byH = Math.floor(usableH / rows);
-  const minCell = (window.innerWidth < 420 ? 18 : 24);
-  const maxCell = (window.innerWidth < 420 ? 34 : 42);
-  const cell = Math.max(minCell, Math.min(maxCell, Math.min(byW, byH)));
+  const usableW = wrap.clientWidth - 10;       // padding
+  const usableH = Math.max(260, window.innerHeight - wrap.getBoundingClientRect().top - 140);
+  const byW = Math.floor(usableW / cols);
+  const byH = Math.floor(usableH / rows);
+  const cell = Math.max(24, Math.min(42, Math.min(byW, byH)));
   document.documentElement.style.setProperty('--cell', cell + 'px');
-  if (!auto){ canvas.style.transition='transform .15s'; canvas.style.transform='scale(.995)'; setTimeout(()=>canvas.style.transform='scale(1)',160); }
+  if (auto) return;
+  // little nudge effect
+  canvas.style.transition = 'transform .15s ease';
+  canvas.style.transform = 'scale(0.995)';
+  setTimeout(()=>{ canvas.style.transform = 'scale(1)'; }, 160);
 }
-addEventListener('resize', ()=>fitBoard(true), {passive:true});
-addEventListener('orientationchange', ()=>fitBoard(true), {passive:true});
+window.addEventListener('resize', ()=>fitBoard(true));
+fitBoard(true);
 
 /* ===== Grid helpers ===== */
 function createGrid(){
-  canvas.innerHTML = ""; canvas.classList.remove('power');
-  const frag=document.createDocumentFragment();
-  for(let i=0;i<rows*cols;i++){ const cell=document.createElement("div"); cell.classList.add("grid-cell"); frag.appendChild(cell); }
+  canvas.innerHTML = "";
+  canvas.classList.remove('power');
+  const frag = document.createDocumentFragment();
+  for (let i=0;i<rows*cols;i++){
+    const cell = document.createElement("div");
+    cell.classList.add("grid-cell");
+    frag.appendChild(cell);
+  }
   canvas.appendChild(frag);
 }
-const idx=(x,y)=>y*cols+x;
+function getIndex(x,y){ return y * cols + x; }
 
 function render(){
   const cells = canvas.querySelectorAll(".grid-cell");
-  cells.forEach(c=>c.innerHTML="");
-  const ctr=document.createElement("div"); ctr.classList.add("controller"); cells[idx(controllerPos.x, controllerPos.y)].appendChild(ctr);
-  batteryPositions.forEach(p=>{ const el=document.createElement("div"); el.classList.add("battery"); cells[idx(p.x,p.y)].appendChild(el); });
-  firePositions.forEach(p=>{ const el=document.createElement("div"); el.classList.add("hazard"); cells[idx(p.x,p.y)].appendChild(el); });
-  trappedFires.forEach(p=>{ const el=document.createElement("div"); el.classList.add("trapped-fire"); cells[idx(p.x,p.y)].appendChild(el); });
-  reverseSurgeTiles.forEach(p=>{ const el=document.createElement("div"); el.classList.add("reverse-surge"); cells[idx(p.x,p.y)].appendChild(el); });
+  cells.forEach(cell => cell.innerHTML = "");
+
+  // controller
+  const c = document.createElement("div");
+  c.classList.add("controller");
+  cells[getIndex(controllerPos.x, controllerPos.y)].appendChild(c);
+
+  // items
+  batteryPositions.forEach(pos=>{
+    const el = document.createElement("div");
+    el.classList.add("battery");
+    cells[getIndex(pos.x, pos.y)].appendChild(el);
+  });
+  firePositions.forEach(pos=>{
+    const el = document.createElement("div");
+    el.classList.add("hazard");
+    cells[getIndex(pos.x, pos.y)].appendChild(el);
+  });
+  trappedFires.forEach(pos=>{
+    const el = document.createElement("div");
+    el.classList.add("trapped-fire");
+    cells[getIndex(pos.x, pos.y)].appendChild(el);
+  });
+  reverseSurgeTiles.forEach(pos=>{
+    const el = document.createElement("div");
+    el.classList.add("reverse-surge");
+    cells[getIndex(pos.x, pos.y)].appendChild(el);
+  });
 
   goalText.textContent = `${collectedBatteries} / ${10 + level*2}`;
   livesDisplay.textContent = lives;
@@ -177,81 +319,229 @@ function render(){
   reverseHint.textContent = `${reverseSurgeTiles.length} tiles`;
 }
 
-function uniquePositions(count, exclude=[]){
-  const res=[], ban=new Set(exclude.map(e=>`${e.x},${e.y}`));
-  while(res.length<count){
-    const p={x:Math.floor(Math.random()*cols),y:Math.floor(Math.random()*rows)}, k=`${p.x},${p.y}`;
-    if(!ban.has(k) && !res.some(e=>`${e.x},${e.y}`===k)) res.push(p);
+function getRandomUniquePositions(count, exclude = []){
+  const positions = [];
+  const excludeSet = new Set(exclude.map(e=>`${e.x},${e.y}`));
+  while (positions.length < count){
+    const pos = { x:Math.floor(Math.random()*cols), y:Math.floor(Math.random()*rows) };
+    const key = `${pos.x},${pos.y}`;
+    if (!excludeSet.has(key) && !positions.some(e=>`${e.x},${e.y}`===key)){
+      positions.push(pos);
+    }
   }
-  return res;
+  return positions;
 }
-function moveRandom(list){
-  return list.map(p=>{const d=[[0,-1],[0,1],[-1,0],[1,0]][Math.floor(Math.random()*4)]; return {x:Math.max(0,Math.min(cols-1,p.x+d[0])), y:Math.max(0,Math.min(rows-1,p.y+d[1]))};});
+
+function moveItemsRandomly(list){
+  return list.map(pos=>{
+    const dirs = [{x:0,y:-1},{x:0,y:1},{x:-1,y:0},{x:1,y:0}];
+    const dir = dirs[Math.floor(Math.random()*dirs.length)];
+    const nx = Math.max(0, Math.min(cols-1, pos.x+dir.x));
+    const ny = Math.max(0, Math.min(rows-1, pos.y+dir.y));
+    return {x:nx, y:ny};
+  });
 }
-function floatText(t,pos){ const s=document.createElement('div'); s.className='float'; s.textContent=t; canvas.children[idx(pos.x,pos.y)]?.appendChild(s); setTimeout(()=>s.remove(),650); }
+
+function floatText(text, pos){
+  const span = document.createElement('div');
+  span.className = 'float';
+  span.textContent = text;
+  const cell = canvas.children[getIndex(pos.x, pos.y)];
+  cell?.appendChild(span);
+  setTimeout(()=>span.remove(), 650);
+}
 
 /* ===== Level & Timer ===== */
 function spawnLevel(){
-  const bNeed=10+level*2, fNeed=20+level*2, ex=[controllerPos];
-  batteryPositions = uniquePositions(bNeed, ex);
-  firePositions    = uniquePositions(fNeed, [...ex,...batteryPositions]);
-  reverseSurgeTiles= uniquePositions(2,   [...ex,...batteryPositions,...firePositions]);
-  trappedFires=[]; collectedBatteries=0; timer=30+level*5; isTimerExpired=false; surgeActive=false;
-  canvas.classList.remove('power'); render();
+  const batteriesNeeded = 10 + level * 2;
+  const firesNeeded = 20 + level * 2;
+  const exclude = [controllerPos];
+
+  batteryPositions = getRandomUniquePositions(batteriesNeeded, exclude);
+  firePositions = getRandomUniquePositions(firesNeeded, [...exclude, ...batteryPositions]);
+  reverseSurgeTiles = getRandomUniquePositions(2, [...exclude, ...batteryPositions, ...firePositions]);
+  trappedFires = [];
+  collectedBatteries = 0;
+  timer = 30 + level * 5;
+  isTimerExpired = false;
+  surgeActive = false;
+  canvas.classList.remove('power');
+
+  render();
 }
+
 function startTimer(){
   clearInterval(gameInterval); clearInterval(moveInterval); clearInterval(freezeInterval);
-  gameInterval=setInterval(()=>{ if(paused) return; if(!isTimerExpired && !surgeActive){ timer--; timerDisplay.textContent=`${timer}`; if(timer<=0){isTimerExpired=true; loseLife();} } },1000);
-  moveInterval=setInterval(()=>{ if(paused) return; batteryPositions=moveRandom(batteryPositions); reverseSurgeTiles=moveRandom(reverseSurgeTiles); if(!surgeActive) firePositions=moveRandom(firePositions); checkCollision(); },900);
+
+  gameInterval = setInterval(()=>{
+    if (paused) return;
+    if (!isTimerExpired && !surgeActive){
+      timer--;
+      timerDisplay.textContent = `${timer}`;
+      if (timer <= 0){
+        isTimerExpired = true;
+        loseLife();
+      }
+    }
+  },1000);
+
+  moveInterval = setInterval(()=>{
+    if (paused) return;
+    batteryPositions = moveItemsRandomly(batteryPositions);
+    reverseSurgeTiles = moveItemsRandomly(reverseSurgeTiles);
+    if (!surgeActive){
+      firePositions = moveItemsRandomly(firePositions);
+    }
+    checkCollision();
+  }, 900);
 }
+
 function loseLife(){
-  lives--; frame.classList.add('shake'); setTimeout(()=>frame.classList.remove('shake'),250);
-  if(lives<=0){ clearInterval(gameInterval); clearInterval(moveInterval); finalStats.textContent=`Levels cleared: ${level} • Batteries total: ${totalCollected}`; gameOverOverlay.classList.add('show'); pauseBtn.disabled=true; }
-  else { spawnLevel(); startTimer(); }
+  lives--;
+  frame.classList.add('shake');
+  setTimeout(()=>frame.classList.remove('shake'), 250);
+
+  if (lives <= 0){
+    clearInterval(gameInterval); clearInterval(moveInterval);
+    finalStats.textContent = `Levels cleared: ${level} • Batteries total: ${totalCollected}`;
+    gameOverOverlay.classList.add('show');
+    pauseBtn.disabled = true;
+  } else {
+    spawnLevel();
+    startTimer();
+  }
 }
 
 /* ===== Power-up ===== */
 function activateReverseSurge(){
-  if(surgeActive) return; surgeActive=true; canvas.classList.add('power'); trappedFires=[...firePositions]; firePositions=[];
-  let freezeCounter=8;
-  freezeInterval=setInterval(()=>{ freezeCounter--; if(freezeCounter<=0){ surgeActive=false; firePositions=[...firePositions,...trappedFires]; trappedFires=[]; clearInterval(freezeInterval); canvas.classList.remove('power'); } render(); },1000);
+  if (surgeActive) return;
+  surgeActive = true;
+  canvas.classList.add('power');
+  trappedFires = [...firePositions];
+  firePositions = [];
+
+  let freezeCounter = 8;
+  freezeInterval = setInterval(()=>{
+    freezeCounter--;
+    if (freezeCounter <= 0){
+      surgeActive = false;
+      firePositions = [...firePositions, ...trappedFires];
+      trappedFires = [];
+      clearInterval(freezeInterval);
+      canvas.classList.remove('power');
+    }
+    render();
+  },1000);
 }
 
-/* ===== Collisions ===== */
+/* ===== Collisions & Progress ===== */
 function checkCollision(){
-  let leveled=false;
-  batteryPositions=batteryPositions.filter(p=>{ if(p.x===controllerPos.x && p.y===controllerPos.y){ collectedBatteries++; totalCollected++; floatText('+🔋',p); return false; } return true; });
-  reverseSurgeTiles=reverseSurgeTiles.filter(p=>{ if(p.x===controllerPos.x && p.y===controllerPos.y){ activateReverseSurge(); floatText('⚡ Freeze!',p); return false; } return true; });
-  trappedFires=trappedFires.filter(p=> !(p.x===controllerPos.x && p.y===controllerPos.y));
-  for(const p of firePositions){ if(p.x===controllerPos.x && p.y===controllerPos.y && !isTimerExpired){ isTimerExpired=true; floatText('🔥 Ouch!',p); return loseLife(); } }
-  if(collectedBatteries >= 10 + level*2){ level++; if(level>=5){ clearInterval(gameInterval); clearInterval(moveInterval); gameOverOverlay.classList.add('show'); finalStats.textContent=`FULL SYNC COMPLETE! Levels: ${level} • Batteries: ${totalCollected}`; pauseBtn.disabled=true; return; } leveled=true; }
+  let leveled = false;
+
+  // battery
+  batteryPositions = batteryPositions.filter(pos=>{
+    if (pos.x === controllerPos.x && pos.y === controllerPos.y){
+      collectedBatteries++; totalCollected++;
+      floatText('+🔋', pos);
+      return false;
+    }
+    return true;
+  });
+
+  // reverse surge
+  reverseSurgeTiles = reverseSurgeTiles.filter(pos=>{
+    if (pos.x === controllerPos.x && pos.y === controllerPos.y){
+      activateReverseSurge();
+      floatText('⚡ Freeze!', pos);
+      return false;
+    }
+    return true;
+  });
+
+  // trapped fires do nothing
+  trappedFires = trappedFires.filter(pos=> !(pos.x === controllerPos.x && pos.y === controllerPos.y));
+
+  // fire hit
+  for (const pos of firePositions){
+    if (pos.x === controllerPos.x && pos.y === controllerPos.y && !isTimerExpired){
+      isTimerExpired = true;
+      floatText('🔥 Ouch!', pos);
+      return loseLife();
+    }
+  }
+
+  // level up?
+  if (collectedBatteries >= 10 + level*2){
+    level++;
+    if (level >= 5){
+      clearInterval(gameInterval); clearInterval(moveInterval);
+      gameOverOverlay.classList.add('show');
+      finalStats.textContent = `FULL SYNC COMPLETE! Levels: ${level} • Batteries: ${totalCollected}`;
+      pauseBtn.disabled = true;
+      return;
+    }
+    leveled = true;
+  }
+
   render();
-  if(leveled){ powerBar.textContent=`${level}`; surgeLevelDisplay.textContent=`${level}`; levelUpOverlay.classList.add('show'); setTimeout(()=>levelUpOverlay.classList.remove('show'),900); spawnLevel(); startTimer(); }
+
+  if (leveled){
+    powerBar.textContent = `${level}`;
+    surgeLevelDisplay.textContent = `${level}`;
+    levelUpOverlay.classList.add('show');
+    setTimeout(()=> levelUpOverlay.classList.remove('show'), 900);
+    spawnLevel();
+    startTimer();
+  }
 }
 
 /* ===== Game Control ===== */
 function startGame(){
-  gameOverOverlay.classList.remove('show'); levelUpOverlay.classList.remove('show');
-  lives=3; level=0; totalCollected=0; controllerPos={x:10,y:10}; timerDisplay.textContent='30';
-  startBtn.disabled=true; pauseBtn.disabled=false; paused=false; fitBoard(true); createGrid(); spawnLevel(); startTimer();
+  gameOverOverlay.classList.remove('show');
+  levelUpOverlay.classList.remove('show');
+  lives = 3; level = 0; totalCollected = 0;
+  controllerPos = {x:10, y:10};
+  timerDisplay.textContent = '30';
+  startBtn.disabled = true; pauseBtn.disabled = false; paused = false;
+  fitBoard(true);           // make sure everything fits nicely at start
+  createGrid();
+  spawnLevel();
+  startTimer();
 }
-function pauseGame(){ paused=!paused; pauseBtn.textContent = paused ? '▶ Resume' : '⏸ Pause'; }
+function pauseGame(){
+  paused = !paused;
+  pauseBtn.textContent = paused ? '▶ Resume' : '⏸ Pause';
+}
 
 /* ===== Input ===== */
 function move(dir){
-  let m=false;
-  if(dir==="ArrowUp"&&controllerPos.y>0){controllerPos.y--;m=true}
-  if(dir==="ArrowDown"&&controllerPos.y<rows-1){controllerPos.y++;m=true}
-  if(dir==="ArrowLeft"&&controllerPos.x>0){controllerPos.x--;m=true}
-  if(dir==="ArrowRight"&&controllerPos.x<cols-1){controllerPos.x++;m=true}
-  if(m) checkCollision();
+  let moved = false;
+  if (dir === "ArrowUp"   && controllerPos.y > 0)         { controllerPos.y--; moved = true; }
+  if (dir === "ArrowDown" && controllerPos.y < rows - 1)   { controllerPos.y++; moved = true; }
+  if (dir === "ArrowLeft" && controllerPos.x > 0)          { controllerPos.x--; moved = true; }
+  if (dir === "ArrowRight"&& controllerPos.x < cols - 1)   { controllerPos.x++; moved = true; }
+  if (moved) checkCollision();
 }
-addEventListener('keydown', e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) e.preventDefault(); if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)&&!paused) move(e.key); });
-document.querySelectorAll('.key[data-dir]').forEach(k=>k.addEventListener('click',()=>move(k.getAttribute('data-dir'))));
-startBtn.addEventListener('click', startGame); pauseBtn.addEventListener('click', pauseGame); document.getElementById('retryBtn').addEventListener('click', startGame); fitBtn.addEventListener('click', ()=>fitBoard(false));
+
+document.addEventListener("keydown", e=>{
+  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
+  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key) && !paused){
+    move(e.key);
+  }
+});
+
+document.querySelectorAll('.key[data-dir]').forEach(k=>{
+  k.addEventListener('click', ()=> move(k.getAttribute('data-dir')));
+});
+
+startBtn.addEventListener("click", startGame);
+pauseBtn.addEventListener("click", pauseGame);
+document.getElementById('retryBtn')?.addEventListener('click', startGame);
+fitBtn.addEventListener('click', ()=>fitBoard(false));
 
 /* Init */
-fitBoard(true); createGrid(); render();
+createGrid();
+render();
 </script>
 </body>
 </html>
