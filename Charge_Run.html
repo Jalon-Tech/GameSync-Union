@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   :root{
-    /* JS updates this so the whole board fits */
+    /* JS updates this so the board fits nicely */
     --cell: 36px;
 
     --gsu-red:#e60023; 
@@ -24,19 +24,23 @@
   }
 
   *{box-sizing:border-box}
-  html, body {height:100%; overflow:hidden;} /* no page scrolling */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;   /* allow vertical scroll, block sideways */
+  }
   body{
-    margin:0; 
     font-family:'Orbitron',sans-serif; 
     background:var(--bg); 
     color:var(--fg);
-    min-height:100svh; /* stable viewport */
+    min-height:100svh;
     padding:calc(8px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left));
     display:flex; 
     justify-content:flex-start;
   }
 
-  /* ===== Global scale wrapper (we scale this if needed) ===== */
+  /* ===== Global scale wrapper (shrinks the whole game if needed) ===== */
   #game-wrapper{
     transform-origin: top center;
     display:flex;
@@ -110,7 +114,7 @@
     display:flex; 
     justify-content:center;
     min-height:0;
-    touch-action:none; /* prevent scroll on swipe inside board */
+    touch-action:none; /* smoother swipes inside the board */
   }
   #gameCanvas{
     display:grid;
@@ -298,7 +302,7 @@ const surgeLevelDisplay = document.getElementById("surgeLevel");
 const firesText = document.getElementById("firesText");
 const reverseHint = document.getElementById("reverseHint");
 
-/* Elements we measure to keep everything on 1 screen */
+/* Elements we measure for sizing + scaling */
 const wrapper = document.getElementById('game-wrapper');
 const hdr = document.getElementById('hdr');
 const titleEl = document.getElementById('title');
@@ -326,10 +330,10 @@ let totalCollected = 0;
 
 /* ===== Helpers ===== */
 const vvp = () => window.visualViewport || { width: window.innerWidth, height: window.innerHeight };
+const vh  = () => vvp().height;
 function safeH(el){ return el ? Math.ceil(el.getBoundingClientRect().height) : 0; }
-function safeW(el){ return el ? Math.ceil(el.getBoundingClientRect().width)  : 0; }
 
-/* ===== Fit board (choose cell size that fits box left for board) ===== */
+/* ===== Fit board (choose cell size to use remaining space) ===== */
 function fitBoard(auto=false){
   const reservedH =
     safeH(hdr) +
@@ -341,7 +345,7 @@ function fitBoard(auto=false){
     safeH(ftr) +
     28; // breathing room
 
-  const availH = Math.max(220, vvp().height - reservedH);
+  const availH = Math.max(220, vh() - reservedH);
   const availW = Math.max(220, frame.clientWidth - 16);
 
   const byW = Math.floor(availW / cols);
@@ -357,37 +361,34 @@ function fitBoard(auto=false){
   }
 }
 
-/* ===== Global scale: shrink whole game if still taller/wider than viewport ===== */
+/* ===== Global scale (shrink entire game if still taller than viewport) =====
+   NOTE: we allow vertical scroll now — this scale just improves first view. */
 function scaleGame(){
-  // Reset scale first to measure natural size after cell-fit
-  wrapper.style.transform = 'scale(1)';
-  // use scroll sizes to include everything
+  wrapper.style.transform = 'scale(1)'; // reset to measure true size
   const contentH = wrapper.scrollHeight;
   const contentW = wrapper.scrollWidth;
   const vw = vvp().width;
-  const vh = vvp().height;
+  const vheight = vvp().height;
 
-  // Leave tiny padding for safe-area + rounding
-  const scaleH = (vh - 2) / contentH;
+  const scaleH = (vheight - 2) / contentH;
   const scaleW = (vw - 2) / contentW;
   let scale = Math.min(scaleH, scaleW);
 
-  // Don't upscale on desktop
+  // Don't enlarge on big screens; allow normal page scroll if smaller
   if (scale > 1) scale = 1;
-  // Avoid going microscopic (still allow strong zoom-out if needed)
-  scale = Math.max(0.6, scale);
+  scale = Math.max(0.6, scale); // keep usable
 
   wrapper.style.transform = `scale(${scale})`;
 }
 
-/* Debounce helper */
+/* Debounced refit/scale */
 let rafId=null;
 function requestFit(){
   if (rafId) cancelAnimationFrame(rafId);
   rafId = requestAnimationFrame(()=>{ fitBoard(true); scaleGame(); });
 }
 
-/* React to every viewport change (iOS bars, rotation, split view) */
+/* React to viewport changes */
 window.addEventListener('resize', requestFit);
 window.visualViewport?.addEventListener('resize', requestFit);
 window.addEventListener('orientationchange', requestFit);
@@ -632,7 +633,7 @@ function startGame(){
   startBtn.disabled = true; pauseBtn.disabled = false; paused = false;
 
   fitBoard(true);   // pick best --cell
-  scaleGame();      // then ensure whole UI fits
+  scaleGame();      // scale wrapper to fit initial view
   createGrid();
   spawnLevel();
   startTimer();
@@ -675,9 +676,9 @@ createGrid();
 render();
 
 /* Refit on viewport changes */
-window.addEventListener('resize', ()=>{ requestFit(); });
-window.visualViewport?.addEventListener('resize', ()=>{ requestFit(); });
-window.addEventListener('orientationchange', ()=>{ requestFit(); });
+window.addEventListener('resize', ()=>{ fitBoard(true); scaleGame(); });
+window.visualViewport?.addEventListener('resize', ()=>{ fitBoard(true); scaleGame(); });
+window.addEventListener('orientationchange', ()=>{ fitBoard(true); scaleGame(); });
 </script>
 </body>
 </html>
