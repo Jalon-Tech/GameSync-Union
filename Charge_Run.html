@@ -8,40 +8,56 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   :root{
+    /* This is auto-updated by JS to fit your screen */
+    --cell: 36px;
+
     --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7;
-    --cell:40px; /* tile size */
   }
   *{box-sizing:border-box}
   body{
     margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:16px; gap:14px;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
-  header{display:flex; flex-direction:column; align-items:center; gap:8px}
-  .logo img{max-width:110px}
+
+  /* Header — centered perfectly */
+  header{
+    width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  }
+  .logo{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  }
+  .logo img{
+    width:clamp(88px, 10vw, 120px);
+    height:auto; display:block; margin:0 auto;
+  }
   .logo .text{letter-spacing:2px; opacity:.9}
 
   nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
   nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
 
+  /* Game frame */
   .frame{
-    width:min(960px,96vw);
+    width:min(1040px, 96vw);
     border:3px solid var(--gsu-red); border-radius:16px; padding:14px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
   }
   .frame.shake{animation:shake .25s ease}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-4px)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
 
-  h1{margin:6px 0 2px 6px}
-  h2.sub{margin:0 0 8px 6px; color:var(--gsu-red); font-size:1rem; opacity:.9}
+  h1{margin:6px 0 0 6px}
+  h2.sub{margin:4px 0 10px 6px; color:var(--gsu-red); font-size:1rem; opacity:.9}
 
+  /* HUD */
   .hud{
-    display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem);
+    display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:10px;
+    font-size:clamp(.8rem,2vw,1rem);
   }
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
 
   /* Board */
+  #boardWrap{position:relative; display:flex; justify-content:center}
   #gameCanvas{
     display:grid;
     grid-template-columns: repeat(20, var(--cell));
@@ -51,17 +67,16 @@
       linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
     background-size: var(--cell) var(--cell);
-    box-shadow:0 0 20px #e60023cc inset;
-    position:relative;
+    box-shadow:0 0 20px #e60023aa inset;
   }
-  /* subtle glow border that animates when power-up active */
+  /* Glow when Surge is active */
   #gameCanvas.power{
     animation:powerGlow 1s ease-in-out infinite alternate;
     border-color:#ff4060;
   }
   @keyframes powerGlow{
     from{box-shadow:0 0 16px #e60023aa inset}
-    to  {box-shadow:0 0 28px #ff6a80cc inset}
+    to  {box-shadow:0 0 30px #ff6a80cc inset}
   }
 
   .grid-cell{width:var(--cell); height:var(--cell); position:relative; overflow:visible}
@@ -70,12 +85,14 @@
     display:flex; align-items:center; justify-content:center; font-size:calc(var(--cell) * .7);
   }
 
+  /* Player controller — made BIGGER and easy to see */
   .controller{
     background-image:url('GSU_LOGO.png'); z-index:3;
-    filter:drop-shadow(0 0 8px rgba(230,0,35,.6));
+    transform:scale(1.55);   /* bigger than a cell, but centered */
+    filter:drop-shadow(0 0 8px rgba(230,0,35,.7));
     animation:idlePulse 1.4s ease-in-out infinite;
   }
-  @keyframes idlePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  @keyframes idlePulse{0%,100%{transform:scale(1.52)}50%{transform:scale(1.62)}}
 
   .battery::after{content:'🔋'}
   .hazard::after{content:'🔥'}
@@ -85,7 +102,7 @@
     animation:flash 1s infinite;
     filter:hue-rotate(140deg) drop-shadow(0 0 8px #66d1ff);
   }
-  @keyframes flash{0%,100%{opacity:.85}50%{opacity:.55}}
+  @keyframes flash{0%,100%{opacity:.9}50%{opacity:.6}}
 
   /* Floating feedback */
   .float{
@@ -95,10 +112,8 @@
   }
   @keyframes floatUp{from{transform:translateY(0); opacity:1}to{transform:translateY(-16px); opacity:0}}
 
-  /* Controls */
-  .controls{
-    margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:8px;
-  }
+  /* Controls & Buttons */
+  .controls{margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:8px}
   .dpad{display:grid; grid-template-columns:repeat(3,64px); gap:8px}
   .key{
     width:64px; height:64px; border-radius:12px; background:#121212; border:1px solid #333; display:flex;
@@ -126,8 +141,8 @@
 
   footer{opacity:.7; font-size:.85rem; text-align:center; margin-top:10px}
 
-  @media (max-width:640px){
-    :root{ --cell:32px }
+  /* Responsive tweaks */
+  @media (max-width:720px){
     .hud{grid-template-columns:repeat(3,1fr)}
   }
 </style>
@@ -135,7 +150,7 @@
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="text">GAMESYNC UNION</div>
     </div>
     <nav>
@@ -157,10 +172,10 @@
       <div class="pill">⬆ Level <strong id="surgeLevel">0</strong></div>
     </div>
 
-    <div id="boardWrap" style="position:relative">
+    <div id="boardWrap">
       <div id="gameCanvas" aria-live="polite"></div>
 
-      <!-- Overlay screens -->
+      <!-- Overlays -->
       <div class="overlay" id="gameOver">
         <div class="panel">
           <h2>Game Over</h2>
@@ -181,12 +196,13 @@
     </div>
 
     <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
-      <button class="btn" id="startGameBtn">▶ Start GSU Charge Run</button>
+      <button class="btn" id="startGameBtn">▶ Start</button>
       <button class="btn" id="pauseBtn" disabled>⏸ Pause</button>
+      <button class="btn" id="fitBtn">🔍 Fit to Screen</button>
     </div>
 
     <div class="controls">
-      <div style="color:var(--muted)">On desktop: Arrow Keys to move. On mobile: tap the D-Pad.</div>
+      <div style="color:var(--muted)">Desktop: Arrow Keys • Mobile: tap the D-Pad</div>
       <div class="dpad">
         <div></div><div class="key" data-dir="ArrowUp">⬆️</div><div></div>
         <div class="key" data-dir="ArrowLeft">⬅️</div><div class="key" data-dir="ArrowDown">⬇️</div><div class="key" data-dir="ArrowRight">➡️</div>
@@ -197,11 +213,13 @@
   </section>
 
 <script>
-/* ------------ DOM & State ------------ */
+/* ===== DOM & State ===== */
 const frame = document.getElementById('frame');
 const canvas = document.getElementById("gameCanvas");
 const startBtn = document.getElementById("startGameBtn");
 const pauseBtn = document.getElementById("pauseBtn");
+const fitBtn = document.getElementById("fitBtn");
+
 const gameOverOverlay = document.getElementById("gameOver");
 const levelUpOverlay = document.getElementById("levelUp");
 const finalStats = document.getElementById("finalStats");
@@ -230,18 +248,37 @@ let surgeActive = false;
 let paused = false;
 let totalCollected = 0;
 
-/* ------------ Helpers ------------ */
+/* ===== Fit-to-screen logic (ZOOM OUT smartly) ===== */
+function fitBoard(auto=false){
+  const wrap = document.getElementById('boardWrap');
+  const usableW = wrap.clientWidth - 10;       // padding
+  const usableH = Math.max(260, window.innerHeight - wrap.getBoundingClientRect().top - 140);
+  const byW = Math.floor(usableW / cols);
+  const byH = Math.floor(usableH / rows);
+  const cell = Math.max(24, Math.min(42, Math.min(byW, byH)));
+  document.documentElement.style.setProperty('--cell', cell + 'px');
+  if (auto) return;
+  // little nudge effect
+  canvas.style.transition = 'transform .15s ease';
+  canvas.style.transform = 'scale(0.995)';
+  setTimeout(()=>{ canvas.style.transform = 'scale(1)'; }, 160);
+}
+window.addEventListener('resize', ()=>fitBoard(true));
+fitBoard(true);
+
+/* ===== Grid helpers ===== */
 function createGrid(){
   canvas.innerHTML = "";
   canvas.classList.remove('power');
+  const frag = document.createDocumentFragment();
   for (let i=0;i<rows*cols;i++){
     const cell = document.createElement("div");
     cell.classList.add("grid-cell");
-    canvas.appendChild(cell);
+    frag.appendChild(cell);
   }
+  canvas.appendChild(frag);
 }
 function getIndex(x,y){ return y * cols + x; }
-function inBounds(x,y){ return x>=0 && x<cols && y>=0 && y<rows; }
 
 function render(){
   const cells = canvas.querySelectorAll(".grid-cell");
@@ -279,6 +316,7 @@ function render(){
   powerBar.textContent = level;
   surgeLevelDisplay.textContent = level;
   firesText.textContent = 20 + level*2;
+  reverseHint.textContent = `${reverseSurgeTiles.length} tiles`;
 }
 
 function getRandomUniquePositions(count, exclude = []){
@@ -313,7 +351,7 @@ function floatText(text, pos){
   setTimeout(()=>span.remove(), 650);
 }
 
-/* ------------ Level / Timer ------------ */
+/* ===== Level & Timer ===== */
 function spawnLevel(){
   const batteriesNeeded = 10 + level * 2;
   const firesNeeded = 20 + level * 2;
@@ -329,7 +367,6 @@ function spawnLevel(){
   surgeActive = false;
   canvas.classList.remove('power');
 
-  reverseHint.textContent = `${reverseSurgeTiles.length} tiles`;
   render();
 }
 
@@ -375,7 +412,7 @@ function loseLife(){
   }
 }
 
-/* ------------ Power-up ------------ */
+/* ===== Power-up ===== */
 function activateReverseSurge(){
   if (surgeActive) return;
   surgeActive = true;
@@ -397,7 +434,7 @@ function activateReverseSurge(){
   },1000);
 }
 
-/* ------------ Collisions & Progress ------------ */
+/* ===== Collisions & Progress ===== */
 function checkCollision(){
   let leveled = false;
 
@@ -421,7 +458,7 @@ function checkCollision(){
     return true;
   });
 
-  // trapped fires do nothing to player, just visuals
+  // trapped fires do nothing
   trappedFires = trappedFires.filter(pos=> !(pos.x === controllerPos.x && pos.y === controllerPos.y));
 
   // fire hit
@@ -458,7 +495,7 @@ function checkCollision(){
   }
 }
 
-/* ------------ Game Control ------------ */
+/* ===== Game Control ===== */
 function startGame(){
   gameOverOverlay.classList.remove('show');
   levelUpOverlay.classList.remove('show');
@@ -466,6 +503,7 @@ function startGame(){
   controllerPos = {x:10, y:10};
   timerDisplay.textContent = '30';
   startBtn.disabled = true; pauseBtn.disabled = false; paused = false;
+  fitBoard(true);           // make sure everything fits nicely at start
   createGrid();
   spawnLevel();
   startTimer();
@@ -475,7 +513,7 @@ function pauseGame(){
   pauseBtn.textContent = paused ? '▶ Resume' : '⏸ Pause';
 }
 
-/* ------------ Input ------------ */
+/* ===== Input ===== */
 function move(dir){
   let moved = false;
   if (dir === "ArrowUp"   && controllerPos.y > 0)         { controllerPos.y--; moved = true; }
@@ -486,7 +524,6 @@ function move(dir){
 }
 
 document.addEventListener("keydown", e=>{
-  // Only prevent arrows from scrolling
   if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
   if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key) && !paused){
     move(e.key);
@@ -500,6 +537,7 @@ document.querySelectorAll('.key[data-dir]').forEach(k=>{
 startBtn.addEventListener("click", startGame);
 pauseBtn.addEventListener("click", pauseGame);
 document.getElementById('retryBtn')?.addEventListener('click', startGame);
+fitBtn.addEventListener('click', ()=>fitBoard(false));
 
 /* Init */
 createGrid();
