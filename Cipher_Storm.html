@@ -1,91 +1,63 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <title>GSU Cipherstorm</title>
 <link rel="icon" href="GSU_LOGO.png" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   :root{ --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7 }
   *{box-sizing:border-box}
   body{
     margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; gap:16px;
+    padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+    touch-action:manipulation;
   }
   header{display:flex; flex-direction:column; align-items:center; gap:8px}
-  nav{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
-  nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
-  .logo{display:flex; flex-direction:column; align-items:center}
-  .logo img{max-width:96px}
-  .logo .text{letter-spacing:2px; opacity:.9}
-
-  /* Zoomed-out frame for visibility */
+  .logo img{max-width:100px}
   .frame{
-    width:min(900px,95vw);
-    border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
+    width:min(900px,96vw); border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
-    transform: scale(.92);
-    transform-origin: top center;
   }
-  @media (max-width:600px){ .frame{ transform: scale(.88) } }
-
-  .hud{
-    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem);
-  }
+  .hud{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.85rem,2vw,1rem)}
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
-
   #board{
-    position:relative; height:min(520px,62vh); overflow:hidden; border:1px solid #222; border-radius:12px;
-    background-image:
-      linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
-      linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
+    position:relative; height:clamp(280px,48dvh,520px); overflow:hidden; border:1px solid #222; border-radius:12px;
+    background-image:linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
+                     linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
     background-size:40px 40px; isolation:isolate;
   }
-
   .tile{
-    position:absolute; left:50%; transform:translateX(-50%);
-    padding:12px 16px; background:#0b0b0b; border:1px solid #333; border-radius:12px;
-    box-shadow:0 0 14px rgba(230,0,35,.35);
-    font-size:clamp(1rem,3.4vw,1.35rem);
-    transition: outline-color .12s ease, box-shadow .12s ease;
+    position:absolute; left:50%; transform:translateX(-50%); padding:10px 14px; background:#0b0b0b; border:1px solid #333; border-radius:12px;
+    box-shadow:0 0 14px rgba(230,0,35,.35); font-size:clamp(1rem,3.4vw,1.35rem);
   }
-  .tile .word{color:#f3f3f3}
-  .tile .hint{color:var(--muted); font-size:.85em; margin-top:2px}
-  .ok{outline:2px solid #21d07a}
-  .bad{outline:2px solid #d02121}
-
-  .controls{
-    margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
-  }
+  .tile.ok{outline:2px solid #21d07a}
+  .tile.bad{outline:2px solid #d02121}
+  .controls{margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center}
   #typed{
     width:min(520px,90%); font-family:inherit; font-size:1.05rem; color:#fff; background:#0a0a0a;
-    border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
-    box-shadow:0 0 8px rgba(255,255,255,.05);
+    border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none; box-shadow:0 0 8px rgba(255,255,255,.05);
   }
-  #startBtn, .btn{
-    border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
-    box-shadow:0 0 10px #e60023aa; font-weight:700;
-  }
-  #startBtn:hover,.btn:hover{filter:brightness(1.1)}
-  .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
-
-  footer{opacity:.7; font-size:.85rem}
-  @media (max-width:640px){ .hud{grid-template-columns:repeat(2,1fr)} }
+  .btn{border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer; box-shadow:0 0 10px #e60023aa; font-weight:700}
+  .btn:disabled{opacity:.6; cursor:not-allowed}
+  .subtle{color:var(--muted); text-align:center}
+  /* compact mode for small phones */
+  .compact .hud{grid-template-columns:repeat(2,1fr); gap:6px}
+  .compact #typed{font-size:1rem; padding:10px 12px}
 </style>
+<script>
+  // Auto compact mode based on dynamic viewport (iOS bars aware)
+  (function(){const apply=()=>{const h=(visualViewport?.height??innerHeight),w=(visualViewport?.width??innerWidth);document.documentElement.classList.toggle('compact', w<420||h<720);};addEventListener('resize',apply,{passive:true});addEventListener('orientationchange',apply,{passive:true});addEventListener('DOMContentLoaded',apply,{once:true});})();
+</script>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo">
-      <div class="text">GAMESYNC UNION</div>
-    </div>
-    <nav>
-      <a href="index.html">Home</a>
-    </nav>
+  <header class="logo">
+    <img src="GSU_LOGO.png" alt="GSU Logo" />
+    <div>GAMESYNC UNION</div>
   </header>
 
   <section class="frame">
@@ -102,258 +74,170 @@
 
     <div class="controls">
       <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" />
-      <button id="startBtn">▶ Start Run</button>
-      <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
+      <button id="startBtn" class="btn">▶ Start Run</button>
+      <button id="slowmoBtn" class="btn" disabled>⚡ Power Surge</button>
     </div>
 
-    <div class="row" style="color:var(--muted);margin-top:6px;">
-      <span>Tip: your tile glows **green** while your typed prefix is correct.</span>
-    </div>
+    <p class="subtle">Tip: your tile glows <strong>green</strong> while your typed prefix is correct.</p>
   </section>
 
-  <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
-
 <script>
-/* ------------------------ Easier Word Lists (3–5 letters only) ------------------------ */
+/* ---------- WORDS ---------- */
 const WORD_BANK = {
-games: [
-  "rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
-  "aim","ping","lag","farm","gank","bait","poke","zone","stun","root","bind","smite","spray","carry","steal","skill",
-  "stack","stats","quest","equip","dodge","feint","super","ultra","patch","boss","raid","loot","gold","coins","armor",
-  "spawn","smurf","macro","micro","ghost","score","reset","stage","match","camp","heal","perks","runes","punch","block",
-  "slide","burst","clash","scope","tilt"
-],
-
-tech: [
-  "byte","data","code","build","stack","array","debug","query","cache","ping","queue","input",
-  "index","token","regex","route","param","class","scope","state","event","logic","parse","print",
-  "stdin","shell","linux","macos","proxy","redis","mongo","nexus","azure","cloud","https","http",
-  "email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh",
-  "grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"
-],
-
-heroes: [
-  "loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic",
-  "Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan",
-  "Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby",
-  "Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"
-]
-
+  games: [
+    "rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
+    "feint","punish","special","cancel","frame","meter","super","tilt","macro","tilt","respawn","reload","bracket","queue",
+    "knockback","parade","stealth","impact","carry","flank","spawn","aim","scope","spray","sprinter","dodge","boost"
+  ],
+  tech: [
+    "byte","data","code","build","stack","array","debug","query","cache","ping","queue","input",
+    "proxy","token","router","server","client","buffer","commit","branch","deploy","script","async","fetch","render","sprite"
+  ],
+  heroes: [
+    "loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","spider","sonic",
+    "logan","venom","cable","groot","wasp","widow","hulk","rogue","kratos","ellie","samus","cloud","sora"
+  ]
 };
 const THEMES = Object.keys(WORD_BANK);
 
-/* ------------------------ DOM ------------------------ */
-const board   = document.getElementById('board');
-const timeEl  = document.getElementById('time');
-const waveEl  = document.getElementById('wave');
+/* ---------- DOM ---------- */
+const board = document.getElementById('board');
+const timeEl = document.getElementById('time');
+const waveEl = document.getElementById('wave');
 const scoreEl = document.getElementById('score');
 const streakEl= document.getElementById('streak');
 const livesEl = document.getElementById('lives');
-const typed   = document.getElementById('typed');
-const startBtn= document.getElementById('startBtn');
-const slowmoBtn = document.getElementById('slowmoBtn');
+const typed  = document.getElementById('typed');
+const startBtn = document.getElementById('startBtn');
+const slowmoBtn= document.getElementById('slowmoBtn');
 
-/* ------------------------ Helpers ------------------------ */
-function pickTheme(){ return THEMES[Math.floor(Math.random()*THEMES.length)] }
-function sample(list){ return list[Math.floor(Math.random()*list.length)] }
-
-/* Easier scramble: ALWAYS keep first & last letters fixed */
+/* ---------- Helpers ---------- */
+const pick = (arr)=>arr[Math.floor(Math.random()*arr.length)];
 function scrambleWord(w){
-  if (w.length <= 3) return w; // tiny words stay as-is to be super easy
-  const first = w[0], last = w[w.length-1];
-  const mid = w.slice(1,-1).split("");
-  // light shuffle middle only
-  for (let i = mid.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [mid[i], mid[j]] = [mid[j], mid[i]];
-  }
-  const scram = first + mid.join("") + last;
-  return (scram === w) ? first + mid.reverse().join("") + last : scram;
+  if (w.length < 3) return w.split("").reverse().join("");
+  let arr = w.split(""), out;
+  do{
+    for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+    out = arr.join("");
+  } while(out===w);
+  if(Math.random()<.35) out = w[0] + out.slice(1);
+  if(Math.random()<.25) out = out.slice(0,-1) + w[w.length-1];
+  return out;
 }
 
-/* ------------------------ State ------------------------ */
-let state = null;
-let rafId = null, timerId = null, slowId = null;
-let theme = "games";
-
-/* Slower, smoother speeds */
-const BASE_SPEED = 55;      // px/sec
-const SPEED_PER_WAVE = 8;   // add per wave
-const MAX_SPEED = 160;      // clamp
-const SLOW_FACTOR = 0.6;    // Power Surge
-
+/* ---------- State ---------- */
+let state=null, rafId=null, timerId=null, slowId=null;
+let theme="games";
 function initialState(){
-  return {
-    time: 60, lives:3, score:0, streak:0, wave:1, running:false,
-    activeTile:null, powerReady:false, slow:false, seed:crypto.randomUUID(),
-    lastT: 0
-  }
+  return {time:60,lives:3,score:0,streak:0,wave:1,running:false,activeTile:null,slow:false,lastT:0};
 }
 
-function currentSpeed(){
-  const raw = BASE_SPEED + (state.wave-1)*SPEED_PER_WAVE;
-  const s = Math.min(raw, MAX_SPEED);
-  return state.slow ? s*SLOW_FACTOR : s;
-}
+/* Motion tuning (px/sec) */
+const BASE=70, PER_WAVE=12, MAX=220, SLOW=0.6;
+function speed(){ const raw=BASE+(state.wave-1)*PER_WAVE; return (state.slow?SLOW:1)*Math.min(raw,MAX); }
 
-function setHUD(){
-  timeEl.textContent = state.time;
-  livesEl.textContent = state.lives;
-  scoreEl.textContent = state.score;
-  streakEl.textContent= state.streak;
-  waveEl.textContent  = state.wave;
-  slowmoBtn.disabled  = !state.powerReady || state.slow || !state.running;
-}
-
-/* ------------------------ Spawning (easier selection) ------------------------ */
-function allowedMaxLen(){
-  // Very gentle ramp: waves 1–3 → max 4 letters, 4–6 → max 5, 7+ → still 5
-  if (state.wave <= 3) return 4;
-  return 5;
-}
-
+/* ---------- Core ---------- */
 function spawnTile(){
-  const words = WORD_BANK[theme].filter(w => w.length <= allowedMaxLen());
-  const word = sample(words);
+  const len = Math.min(3 + Math.floor(state.wave/2) + Math.floor(Math.random()*2), 8);
+  const word = pick(WORD_BANK[theme].filter(w=>w.length>=Math.min(len,8)));
   const scram = scrambleWord(word);
-
-  const tile = document.createElement('div');
-  tile.className='tile';
-  tile.style.top='-52px';
-  tile.style.left = `${15 + Math.random()*70}%`;
-
-  // Add a friendly hint pattern like "p _ _ r y"
-  const hintMask = word[0] + " " + "_ ".repeat(Math.max(0,word.length-2)) + word[word.length-1];
-  tile.innerHTML = `<div class="word">${scram}</div><div class="hint">${hintMask.trim()}</div>`;
-  board.appendChild(tile);
-
-  state.activeTile = {el:tile, y:-52, word, scram};
+  const el = document.createElement('div');
+  el.className='tile';
+  el.style.top='-42px';
+  el.style.left = `${10 + Math.random()*80}%`;
+  el.innerHTML = `<div class="word">${scram}</div>`;
+  board.appendChild(el);
+  state.activeTile = {el,y:-42,word,scram,prefixOK:false};
 }
-
-/* ------------------------ Game Loop ------------------------ */
 function clearTile(ok){
   if(!state.activeTile) return;
-  const el = state.activeTile.el;
-  el.classList.add(ok? 'ok':'bad');
-  state.activeTile = null;
-  setTimeout(()=> el.remove(), 160);
+  state.activeTile.el.classList.add(ok?'ok':'bad');
+  const el=state.activeTile.el; state.activeTile=null;
+  setTimeout(()=>el.remove(),160);
 }
-
-function nextWave(){
-  state.wave++;
-  if (state.wave % 4 === 0) state.powerReady = true;
+function setHUD(){
+  timeEl.textContent=state.time; livesEl.textContent=state.lives; scoreEl.textContent=state.score;
+  streakEl.textContent=state.streak; waveEl.textContent=state.wave;
+  slowmoBtn.disabled = !(state.wave%4===0) || state.slow || !state.running;
 }
+function nextWave(){ state.wave++; setHUD(); }
 
-function loop(ts){
-  if (!state.running) return;
-  if (!state.lastT) state.lastT = ts;
-  const dt = Math.min(0.05, (ts - state.lastT) / 1000);
-  state.lastT = ts;
+/* rAF loop */
+function loop(t){
+  if(!state?.running) return;
+  if(!state.lastT) state.lastT=t;
+  const dt = Math.min(0.05,(t-state.lastT)/1000); state.lastT=t;
 
-  if (state.activeTile){
-    const px = currentSpeed() * dt;
-    state.activeTile.y += px;
-    state.activeTile.el.style.top = `${state.activeTile.y}px`;
-
-    if (state.activeTile.y > board.clientHeight - 60){
-      clearTile(false);
-      state.streak = 0;
-      state.lives--;
-      setHUD();
-      if (state.lives <= 0){ endRun(); return; }
+  const at=state.activeTile;
+  if(at){
+    at.y += speed()*dt;
+    at.el.style.top = `${at.y}px`;
+    if(at.y > board.clientHeight - 56){
+      clearTile(false); state.streak=0; state.lives--; setHUD();
+      if(state.lives<=0){ endRun(); return; }
       spawnTile();
     }
   }
   rafId = requestAnimationFrame(loop);
 }
 
-/* ------------------------ Game Control ------------------------ */
+/* ---------- Run control ---------- */
 function startRun(){
-  if (state?.running) return;
-  cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
-  board.innerHTML = ""; typed.value = "";
-  theme = pickTheme();
-  state = initialState();
-  state.running = true;
-  setHUD();
-  spawnTile();
-
-  timerId = setInterval(()=>{
-    if(!state.running) return;
-    state.time--;
-    if(state.time<=0){ state.lives=0; endRun(); }
-    setHUD();
-  },1000);
-
-  state.lastT = 0;
+  if(state?.running) return;
+  theme = pick(THEMES);
+  state = initialState(); state.running=true;
+  board.innerHTML=""; typed.value=""; setHUD(); spawnTile();
+  timerId = setInterval(()=>{ if(!state.running) return; state.time--; if(state.time<=0){ state.lives=0; endRun(); } setHUD(); },1000);
   rafId = requestAnimationFrame(loop);
+  typed.focus();
 }
-
 function endRun(){
   state.running=false;
-  cancelAnimationFrame(rafId);
-  clearInterval(timerId);
-  clearTimeout(slowId);
-  const frame = document.querySelector('.frame');
-  const prev = frame.style.boxShadow;
-  frame.style.boxShadow="0 0 30px #e60023, inset 0 0 18px #e6002344";
-  setTimeout(()=> frame.style.boxShadow=prev || "0 0 18px #e60023cc, inset 0 0 18px #e6002326", 280);
+  cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
   startBtn.textContent="🔁 Run Again";
 }
-
-/* Submit + live assist */
 function submitWord(){
-  if(!state.running || !state.activeTile) return;
-  const guess = typed.value.trim().toLowerCase();
-  if (!guess) return;
-  const target = state.activeTile.word.toLowerCase();
-
-  if (guess === target){
+  if(!state?.running || !state.activeTile) return;
+  const guess=typed.value.trim().toLowerCase();
+  if(!guess) return;
+  const target=state.activeTile.word.toLowerCase();
+  if(guess===target){
     const base = 100 * target.length;
-    state.streak = Math.min(999, state.streak + 1);
+    state.streak = Math.min(999, state.streak+1);
     const streakBonus = 1 + Math.min(0.5, state.streak*0.1);
     state.score += Math.floor(base * streakBonus);
-    clearTile(true);
-    typed.value="";
-    nextWave();
-    spawnTile();
-    setHUD();
+    clearTile(true); typed.value=""; nextWave(); spawnTile(); setHUD();
   } else {
-    // gentle feedback only
-    const el = state.activeTile.el;
-    el.classList.add('bad');
-    setTimeout(()=> el.classList.remove('bad'), 140);
-    state.streak = 0;
-    setHUD();
+    const el=state.activeTile.el; el.classList.add('bad'); setTimeout(()=>el.classList.remove('bad'),140);
+    state.streak=0; setHUD();
   }
 }
+
+/* prefix glow */
+typed.addEventListener('input', ()=>{
+  if(!state?.activeTile) return;
+  const cur=typed.value.toLowerCase();
+  const ok=state.activeTile.word.toLowerCase().startsWith(cur) && cur!=="";
+  state.activeTile.el.classList.toggle('ok', ok);
+  state.activeTile.el.classList.toggle('bad', !ok && cur.length>0);
+});
+typed.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); submitWord(); } });
 
 /* Power Surge */
+let audio;
+function ensureAudio(){ audio = audio || new (window.AudioContext||window.webkitAudioContext)(); }
 function useSlow(){
-  if(!state.powerReady || state.slow || !state.running) return;
-  state.powerReady=false; state.slow=true; setHUD();
-  slowId = setTimeout(()=>{ state.slow=false; setHUD(); }, 5000);
+  if(!(state.wave%4===0) || state.slow || !state.running) return;
+  ensureAudio();
+  state.slow=true; setHUD();
+  const o=audio.createOscillator(), g=audio.createGain(); o.type='sawtooth'; o.frequency.value=220; g.gain.value=.05; o.connect(g).connect(audio.destination); o.start();
+  slowId=setTimeout(()=>{ state.slow=false; setHUD(); o.stop(); },5000);
 }
 
-/* ------------------------ Events ------------------------ */
+/* Events */
 startBtn.addEventListener('click', startRun);
-typed.addEventListener('keydown', (e)=>{
-  if(e.key==='Enter'){ e.preventDefault(); submitWord(); return; }
-  // Live assist: outline green if typed prefix is correct
-  if (state?.activeTile){
-    const g = (typed.value + (e.key.length===1? e.key : "")).toLowerCase();
-    const target = state.activeTile.word.toLowerCase();
-    const okPrefix = target.startsWith(g.trim());
-    state.activeTile.el.style.boxShadow = okPrefix
-      ? "0 0 16px rgba(33,208,122,.55)"
-      : "0 0 14px rgba(208,33,33,.55)";
-  }
-});
-
-/* Keep input focused while running */
-window.addEventListener('keydown', ()=>{
-  if(state?.running) typed.focus();
-});
+document.getElementById('slowmoBtn').addEventListener('click', useSlow);
+window.addEventListener('keydown', ()=>{ if(state?.running) typed.focus(); });
 </script>
 </body>
 </html>
