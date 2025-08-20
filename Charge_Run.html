@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   :root{
-    /* JS keeps this updated to fit the screen */
+    /* JS updates this so the whole game fits with no scroll */
     --cell: 36px;
 
     --gsu-red:#e60023; 
@@ -24,7 +24,7 @@
   }
 
   *{box-sizing:border-box}
-  html, body {height:100%}
+  html, body {height:100%; overflow:hidden;} /* lock page from scrolling */
   body{
     margin:0; 
     font-family:'Orbitron',sans-serif; 
@@ -74,6 +74,7 @@
     border:2px solid var(--gsu-red); border-radius:16px; padding:12px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
+    max-height:calc(100svh - var(--safe-top) - var(--safe-bottom) - 32px); /* never taller than screen */
   }
   .frame.shake{animation:shake .25s ease}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
@@ -100,8 +101,8 @@
     position:relative; 
     display:flex; 
     justify-content:center;
-    /* reserve some room on very short screens */
-    min-height: 0;
+    min-height:0;
+    touch-action:none; /* prevent scroll on swipe inside board */
   }
   #gameCanvas{
     display:grid;
@@ -164,19 +165,19 @@
   .controls{margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:8px}
   .dpad{
     display:grid; 
-    grid-template-columns:repeat(3,clamp(48px, 15vw, 64px)); 
+    grid-template-columns:repeat(3,clamp(44px, 14vw, 64px)); 
     gap:8px
   }
   .key{
-    width:clamp(48px, 15vw, 64px); 
-    height:clamp(48px, 15vw, 64px); 
+    width:clamp(44px, 14vw, 64px); 
+    height:clamp(44px, 14vw, 64px); 
     border-radius:12px; background:#121212; border:1px solid #333; display:flex;
-    align-items:center; justify-content:center; font-size:clamp(1.1rem, 6vw, 1.4rem); cursor:pointer; user-select:none;
+    align-items:center; justify-content:center; font-size:clamp(1rem, 5.5vw, 1.35rem); cursor:pointer; user-select:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
   }
   .key:active{filter:brightness(1.2)}
   .btn{
-    border:none; background:var(--gsu-red); color:#fff; padding:.7rem 1rem; border-radius:10px; cursor:pointer;
+    border:none; background:var(--gsu-red); color:#fff; padding:.65rem .95rem; border-radius:10px; cursor:pointer;
     box-shadow:0 0 10px #e60023aa; font-weight:700; font-size:clamp(.9rem, 3.2vw, 1rem);
   }
   .btn:disabled{opacity:.6; cursor:not-allowed}
@@ -205,7 +206,7 @@
 </style>
 </head>
 <body>
-  <header>
+  <header id="hdr">
     <div class="logo">
       <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="text">GAMESYNC UNION</div>
@@ -214,10 +215,10 @@
   </header>
 
   <section class="frame" id="frame">
-    <h1>GSU CHARGE RUN</h1>
-    <h2 class="sub">Collect batteries, dodge fires, and trigger Reverse Surge to freeze hazards.</h2>
+    <h1 id="title">GSU CHARGE RUN</h1>
+    <h2 class="sub" id="subtitle">Collect batteries, dodge fires, and trigger Reverse Surge to freeze hazards.</h2>
 
-    <div class="hud">
+    <div class="hud" id="hud">
       <div class="pill">🔋 Goal <strong id="goalText">0 / 10</strong></div>
       <div class="pill">🔥 Fires <strong id="firesText">20</strong></div>
       <div class="pill">⏱ Time <strong id="timer">30</strong>s</div>
@@ -250,13 +251,13 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap">
+    <div id="btnRow" style="display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap">
       <button class="btn" id="startGameBtn">▶ Start</button>
       <button class="btn" id="pauseBtn" disabled>⏸ Pause</button>
       <button class="btn" id="fitBtn">🔍 Fit to Screen</button>
     </div>
 
-    <div class="controls">
+    <div class="controls" id="controls">
       <div style="color:var(--muted); font-size:clamp(.78rem, 2.6vw, .95rem)">Desktop: Arrow Keys • Mobile: tap the D-Pad</div>
       <div class="dpad" aria-label="Directional pad">
         <div></div><div class="key" data-dir="ArrowUp">⬆️</div><div></div>
@@ -264,7 +265,7 @@
       </div>
     </div>
 
-    <footer>Built for GameSync Union — GSU Charge Run™</footer>
+    <footer id="ftr">Built for GameSync Union — GSU Charge Run™</footer>
   </section>
 
 <script>
@@ -287,6 +288,15 @@ const surgeLevelDisplay = document.getElementById("surgeLevel");
 const firesText = document.getElementById("firesText");
 const reverseHint = document.getElementById("reverseHint");
 
+/* Elements we measure to keep everything on 1 screen */
+const hdr = document.getElementById('hdr');
+const titleEl = document.getElementById('title');
+const subtitleEl = document.getElementById('subtitle');
+const hudEl = document.getElementById('hud');
+const btnRow = document.getElementById('btnRow');
+const controls = document.getElementById('controls');
+const ftr = document.getElementById('ftr');
+
 const rows = 20, cols = 20;
 let controllerPos = { x: 10, y: 10 };
 let batteryPositions = [];
@@ -303,36 +313,34 @@ let surgeActive = false;
 let paused = false;
 let totalCollected = 0;
 
-/* ===== Fit-to-screen logic (iPhone-safe) =====
-   Chooses the largest cell size that allows:
-   - full 20x20 grid
-   - HUD + controls + margins
-   to fit in the *visual* viewport without scrolling. */
-function getViewportHeight(){
-  // Use VisualViewport when available (iOS Safari with dynamic bars)
+/* ===== Fit-to-screen logic (iPhone-safe, no-scroll) ===== */
+function vh(){
   return (window.visualViewport ? window.visualViewport.height : window.innerHeight);
 }
+function safeMeasure(el){
+  return el ? Math.ceil(el.getBoundingClientRect().height) : 0;
+}
 function fitBoard(auto=false){
-  const wrap = document.getElementById('boardWrap');
+  // total vertical space we must reserve for UI above/below the board
+  const reserved =
+    safeMeasure(hdr) +
+    safeMeasure(titleEl) +
+    safeMeasure(subtitleEl) +
+    safeMeasure(hudEl) +
+    safeMeasure(btnRow) +
+    safeMeasure(controls) +
+    safeMeasure(ftr) +
+    28; // small breathing room
 
-  // Width limit from frame padding
-  const usableW = wrap.clientWidth - 8;
+  const availableH = Math.max(220, vh() - reserved);
+  const availableW = Math.max(220, frame.clientWidth - 16); // inside frame
 
-  // Height: visual viewport minus distance from top of board to bottom, leaving room for controls/footer
-  const boardTop = wrap.getBoundingClientRect().top;
-  const vvh = getViewportHeight();
+  const byW = Math.floor(availableW / cols);
+  const byH = Math.floor(availableH / rows);
 
-  // Reserve some space below for buttons + dpad (~180-220 on phones), but scale with viewport
-  const reserveBelow = Math.max(150, Math.min(260, vvh * 0.28));
-  const usableH = Math.max(220, vvh - boardTop - reserveBelow);
-
-  // Determine cell size that fits both width and height
-  const byW = Math.floor(usableW / cols);
-  const byH = Math.floor(usableH / rows);
-
-  // Clamp so it doesn't get too tiny or too huge
-  const cell = Math.max(18, Math.min(44, Math.min(byW, byH)));
-
+  // Choose the largest cell that fits both width and height.
+  // Clamp to keep it readable but still fit on tiny screens.
+  const cell = Math.max(14, Math.min(44, Math.min(byW, byH)));
   document.documentElement.style.setProperty('--cell', cell + 'px');
 
   if (!auto){
@@ -341,7 +349,8 @@ function fitBoard(auto=false){
     setTimeout(()=>{ canvas.style.transform = 'scale(1)' }, 130);
   }
 }
-// Listen for all viewport changes (keyboard up, bars collapsing, rotation)
+
+// React to every viewport change (iOS bars, rotation, split view)
 window.addEventListener('resize', ()=>fitBoard(true));
 window.visualViewport?.addEventListener('resize', ()=>fitBoard(true));
 window.addEventListener('orientationchange', ()=>fitBoard(true));
