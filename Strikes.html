@@ -2,57 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>GSU Command Strike</title>
+<title>GSU Command Strike — Solo</title>
 <link rel="icon" href="GSU_LOGO.png" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
   :root{ --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7 }
   *{box-sizing:border-box}
+  html,body{height:100%}
   body{
     margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:16px; gap:12px;
+    display:flex; flex-direction:column; align-items:center; padding:16px; gap:12px;
   }
   header{display:flex; flex-direction:column; align-items:center; gap:8px}
-  nav{display:flex; gap:10px; flex-wrap:wrap}
+  nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
   nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
+
   .wrap{
-    width:min(1000px,96vw); border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
+    width:min(960px,96vw); border:3px solid var(--gsu-red); border-radius:16px; padding:14px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
   }
-  .hud{display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem)}
+  .hud{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; font-size:clamp(.8rem,2vw,1rem)}
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
-  .arena{
-    display:grid; grid-template-columns:1fr 1fr; gap:10px;
-  }
+  .pill strong{color:var(--gsu-red)}
+
   .panel{
-    border:1px solid #2a2a2a; border-radius:12px; padding:10px; background:#0a0a0a;
-    min-height:260px; display:flex; flex-direction:column; gap:10px;
+    border:1px solid #2a2a2a; border-radius:12px; padding:12px; background:#0b0b0b;
+    display:flex; flex-direction:column; gap:12px;
   }
-  .panel h3{margin:0 0 4px 0}
   .cmd{
-    background:#0f0f0f; border:1px dashed #444; border-radius:12px; padding:10px; min-height:70px;
-    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    background:#0f0f0f; border:1px dashed #444; border-radius:12px; padding:12px; min-height:80px;
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
   }
   .token{
-    padding:8px 10px; border-radius:8px; background:#171717; border:1px solid #333;
+    padding:10px 12px; border-radius:10px; background:#171717; border:1px solid #333; font-size:1.05rem;
   }
-  .token.pending{opacity:.7}
+  .token.pending{outline:2px solid #ffae00}
   .token.ok{outline:2px solid #29d07a}
   .token.bad{outline:2px solid #d02121}
-  .buffer{
-    background:#0f0f0f; border:1px solid #333; border-radius:10px; padding:8px; font-size:.95rem; min-height:40px;
+
+  .big-next{
+    text-align:center; font-size:clamp(1.2rem,4.5vw,1.8rem);
+    background:#0f0f0f; border:1px solid #333; border-radius:12px; padding:12px;
   }
-  .keys{font-size:.9rem; color:var(--muted)}
-  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center}
   .btn{
     border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
     box-shadow:0 0 10px #e60023aa; font-weight:700;
   }
   .btn:disabled{opacity:.5; cursor:not-allowed}
+
+  /* On-screen controls */
+  .controls{
+    margin-top:10px; display:grid; grid-template-columns:repeat(3,64px); gap:8px; justify-content:center; align-items:center;
+    user-select:none;
+  }
+  .key{
+    width:64px; height:64px; border-radius:12px; background:#121212; border:1px solid #333; display:flex;
+    align-items:center; justify-content:center; font-size:1.2rem; cursor:pointer;
+    box-shadow:0 0 8px rgba(255,255,255,.05);
+  }
+  .key:active{filter:brightness(1.2)}
+  .face{
+    display:flex; gap:10px; justify-content:center; margin-top:6px;
+  }
+  .face .key{width:72px; height:48px; font-weight:700}
+  .hint{color:var(--muted); text-align:center; font-size:.95rem}
+
   footer{opacity:.7; font-size:.85rem}
-  @media (max-width:800px){ .arena{grid-template-columns:1fr} }
+
+  @media (max-width:720px){
+    .hud{grid-template-columns:repeat(2,1fr)}
+  }
 </style>
 </head>
 <body>
@@ -67,239 +90,185 @@
   </header>
 
   <section class="wrap">
-    <h1 style="margin:6px 0 10px 6px;">GSU COMMAND STRIKE</h1>
+    <h1 style="margin:6px 0 10px 6px;">GSU COMMAND STRIKE — SOLO</h1>
     <div class="hud">
-      <div class="pill">🧩 Seed <strong id="seedShort">—</strong></div>
       <div class="pill">📜 Round <strong id="round">1</strong>/5</div>
-      <div class="pill">🏆 P1 Wins <strong id="p1Wins">0</strong></div>
-      <div class="pill">🏆 P2 Wins <strong id="p2Wins">0</strong></div>
-      <div class="pill">⏱ P1 <strong id="p1Time">0</strong>ms</div>
-      <div class="pill">⏱ P2 <strong id="p2Time">0</strong>ms</div>
+      <div class="pill">🎯 Progress <strong id="progress">0</strong>%</div>
+      <div class="pill">⏱ Time <strong id="time">0</strong>ms</div>
+      <div class="pill">✅ Accuracy <strong id="acc">0</strong>%</div>
+      <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
     </div>
 
-    <div class="arena">
-      <div class="panel" id="p1">
-        <h3>Player 1 — Arrows + Z/X/C (P/K/G)</h3>
-        <div class="cmd" id="p1Cmd"></div>
-        <div class="buffer" id="p1Buf">Buffer: —</div>
-        <div class="keys">Rewind: <strong>Backspace</strong> (1 per round)</div>
-      </div>
-      <div class="panel" id="p2">
-        <h3>Player 2 — WASD + J/K/L (P/K/G)</h3>
-        <div class="cmd" id="p2Cmd"></div>
-        <div class="buffer" id="p2Buf">Buffer: —</div>
-        <div class="keys">Rewind: <strong>H</strong> (1 per round)</div>
-      </div>
-    </div>
+    <div class="panel">
+      <div class="big-next">Next: <span id="nextToken">—</span></div>
+      <div class="cmd" id="cmd"></div>
 
-    <div class="row" style="margin-top:12px;">
-      <button class="btn" id="start">▶ Start Match</button>
-      <button class="btn" id="next" disabled>⏭ Next Round</button>
-      <div class="keys">Simultaneous inputs are shown with a “+”. Follow tokens left to right.</div>
+      <div class="row">
+        <button class="btn" id="start">▶ Start Drill</button>
+        <button class="btn" id="next" disabled>⏭ Next Pattern</button>
+        <button class="btn" id="restart" disabled>🔁 Restart</button>
+      </div>
+
+      <div class="hint">Controls: Arrow Keys for directions • Z = P • X = K • C = G</div>
+
+      <!-- On-screen controls (mobile friendly) -->
+      <div class="controls" aria-label="D-Pad">
+        <div></div><div class="key" data-sym="↑">↑</div><div></div>
+        <div class="key" data-sym="←">←</div><div class="key" data-sym="↓">↓</div><div class="key" data-sym="→">→</div>
+      </div>
+      <div class="face">
+        <div class="key" data-sym="P">P</div>
+        <div class="key" data-sym="K">K</div>
+        <div class="key" data-sym="G">G</div>
+      </div>
     </div>
   </section>
 
   <footer>Built for GameSync Union — GSU Command Strike™</footer>
 
 <script>
-/* ------------------------ Token Grammar ------------------------ */
-const DIR_P1 = {ArrowUp:"↑",ArrowDown:"↓",ArrowLeft:"←",ArrowRight:"→"};
-const BTN_P1 = {KeyZ:"P",KeyX:"K",KeyC:"G"};
-const DIR_P2 = {KeyW:"↑",KeyS:"↓",KeyA:"←",KeyD:"→"};
-const BTN_P2 = {KeyJ:"P",KeyK:"K",KeyL:"G"};
+/* ------------------------ Simple, Sequential Grammar (no simultaneous) ------------------------ */
+const DIR = ["↑","↓","←","→"];
+const BTN = ["P","K","G"];
 
-const TOK_DIR = ["↑","↓","←","→","↙","↘","↖","↗"];
-const TOK_BTN = ["P","K","G"];
-
-function randomChoice(arr){ return arr[Math.floor(Math.random()*arr.length)] }
-
-function genCommand(roundSeed){
-  // L1 (short) → L5 (long)
-  const len = [4,5,6,7,8][Math.min(roundSeed-1,4)];
-  const tokens = [];
+/** Generate a friendly pattern of 4–7 tokens, mostly directions with a few buttons. */
+function genPattern(round){
+  const len = [4,5,5,6,7][Math.min(4, round-1)];
+  const toks = [];
   for (let i=0;i<len;i++){
-    if (Math.random() < 0.33 && i>0){ // simultaneous chunk occasionally
-      const prev = tokens[tokens.length-1];
-      if (!prev.includes("+")){
-        const add = Math.random()<0.5? randomChoice(TOK_DIR) : randomChoice(TOK_BTN);
-        tokens[tokens.length-1] = prev + " + " + add;
-        continue;
-      }
-    }
-    const t = Math.random()<0.5? randomChoice(TOK_DIR) : randomChoice(TOK_BTN);
-    tokens.push(t);
+    const isBtn = Math.random() < 0.35; // 35% buttons to keep it readable
+    toks.push(isBtn ? BTN[Math.floor(Math.random()*BTN.length)]
+                    : DIR[Math.floor(Math.random()*DIR.length)]);
   }
-  return tokens;
+  return toks;
 }
 
 /* ------------------------ State ------------------------ */
-const seedShort = document.getElementById('seedShort');
 const roundEl = document.getElementById('round');
-const p1WinsEl = document.getElementById('p1Wins');
-const p2WinsEl = document.getElementById('p2Wins');
-const p1TimeEl = document.getElementById('p1Time');
-const p2TimeEl = document.getElementById('p2Time');
-const p1Cmd = document.getElementById('p1Cmd');
-const p2Cmd = document.getElementById('p2Cmd');
-const p1Buf = document.getElementById('p1Buf');
-const p2Buf = document.getElementById('p2Buf');
-const startBtn = document.getElementById('start');
-const nextBtn  = document.getElementById('next');
+const progEl  = document.getElementById('progress');
+const timeEl  = document.getElementById('time');
+const accEl   = document.getElementById('acc');
+const streakEl= document.getElementById('streak');
+const cmdEl   = document.getElementById('cmd');
+const nextTok = document.getElementById('nextToken');
+const startBtn= document.getElementById('start');
+const nextBtn = document.getElementById('next');
+const restartBtn=document.getElementById('restart');
 
-let match = null;
+let game = null;
 
-function newMatch(){
+function newGame(){
   return {
-    seed: crypto.randomUUID(),
     round:1, maxRounds:5,
-    p1:{idx:0,buf:[],rew:1,done:false,start:0,end:0,acc:0},
-    p2:{idx:0,buf:[],rew:1,done:false,start:0,end:0,acc:0},
-    tokens:[], p1Wins:0, p2Wins:0, active:false
+    tokens:[], idx:0, start:0, end:0,
+    hits:0, presses:0, streak:0, active:false
   }
 }
 
-function renderCmd(container, tokens, progress){
-  container.innerHTML = tokens.map((t,i)=>{
-    const cls = i < progress ? "token ok" : (i===progress ? "token pending":"token");
+function renderCmd(){
+  cmdEl.innerHTML = game.tokens.map((t,i)=>{
+    let cls = "token";
+    if (i < game.idx) cls += " ok";
+    else if (i === game.idx) cls += " pending";
     return `<div class="${cls}">${t}</div>`;
   }).join("");
+  nextTok.textContent = game.tokens[game.idx] ?? "—";
 }
 
 function setHUD(){
-  seedShort.textContent = match.seed.slice(0,6);
-  roundEl.textContent = match.round;
-  p1WinsEl.textContent = match.p1Wins;
-  p2WinsEl.textContent = match.p2Wins;
-  p1TimeEl.textContent = match.p1.end && match.p1.start ? (match.p1.end - match.p1.start) : 0;
-  p2TimeEl.textContent = match.p2.end && match.p2.start ? (match.p2.end - match.p2.start) : 0;
-  p1Buf.textContent = "Buffer: " + (match.p1.buf.join(" ") || "—");
-  p2Buf.textContent = "Buffer: " + (match.p2.buf.join(" ") || "—");
+  roundEl.textContent = game.round;
+  const p = game.tokens.length ? Math.floor(100 * (game.idx / game.tokens.length)) : 0;
+  progEl.textContent = p;
+  const t = game.end && game.start ? (game.end - game.start) : (performance.now() - game.start);
+  timeEl.textContent = game.active ? Math.floor(t) : Math.floor(game.end - game.start);
+  const acc = game.presses ? Math.floor(100 * (game.hits / game.presses)) : 0;
+  accEl.textContent = acc;
+  streakEl.textContent = game.streak;
 }
 
 function startRound(){
-  match.active = true;
-  match.tokens = genCommand(match.round);
-  ["p1","p2"].forEach(p=>{
-    match[p].idx=0; match[p].buf=[]; match[p].done=false; match[p].acc=0;
-    match[p].start=performance.now(); match[p].end=0; match[p].rew=1;
-  });
-  renderCmd(p1Cmd, match.tokens, 0);
-  renderCmd(p2Cmd, match.tokens, 0);
-  setHUD();
-  startBtn.disabled = true; nextBtn.disabled = true;
+  game.active = true;
+  game.tokens = genPattern(game.round);
+  game.idx = 0; game.hits = 0; game.presses = 0; game.streak = 0;
+  game.start = performance.now(); game.end = 0;
+  renderCmd(); setHUD();
+  startBtn.disabled = true; nextBtn.disabled = true; restartBtn.disabled = false;
 }
 
 function endRound(){
-  match.active = false;
-  // score: accuracy then speed then rewinds
-  function scoreSide(p){
-    const acc = match[p].acc;
-    const time = (match[p].end||performance.now()) - match[p].start;
-    const rew = (match[p].rew===0)?1:0;
-    return {acc,time,rew};
-  }
-  const s1 = scoreSide("p1"), s2 = scoreSide("p2");
-  let winner = null;
-  if (s1.acc !== s2.acc) winner = (s1.acc > s2.acc)? "p1":"p2";
-  else if (s1.time !== s2.time) winner = (s1.time < s2.time)? "p1":"p2";
-  else if (s1.rew !== s2.rew) winner = (s1.rew > s2.rew)? "p1":"p2";
-
-  if (winner){
-    match[winner+"Wins"]++;
-    // flash panel
-    const panel = document.getElementById(winner);
-    const prev = panel.style.boxShadow;
-    panel.style.boxShadow="0 0 18px #21d07a";
-    setTimeout(()=> panel.style.boxShadow=prev, 350);
-  }
-
+  game.active = false;
+  game.end = performance.now();
   setHUD();
-  if (match.p1Wins>=3 || match.p2Wins>=3 || match.round>=5){
-    startBtn.disabled=false; startBtn.textContent="🔁 Restart Match"; nextBtn.disabled=true;
+  if (game.round >= game.maxRounds){
+    startBtn.disabled = false; startBtn.textContent="🔁 New Drill";
+    nextBtn.disabled = true;
   } else {
-    nextBtn.disabled=false;
+    nextBtn.disabled = false;
   }
 }
 
-function applyInput(side, sym){
-  if (!match.active) return;
-  const me = match[side];
-  if (me.done) return;
-  // simultaneous tokens support: token like "→ + P"
-  const target = match.tokens[me.idx];
-  const parts = target.split("+").map(s=>s.trim());
-  // update buffer optimistically
-  me.buf.push(sym);
-  setHUD();
+function nextRound(){
+  game.round++;
+  startRound();
+}
 
-  // check if sym completes current part
-  const needed = parts[me.buf.length-1];
-  const ok = sym === needed;
-  if (!ok){
-    // over-input penalty: mark bad briefly
-    const panel = document.getElementById(side);
-    panel.style.outline="2px solid #d02121";
-    setTimeout(()=> panel.style.outline="none", 180);
-    return;
-  }
-  // if part complete and all parts matched, advance token
-  if (me.buf.length === parts.length){
-    me.idx++;
-    me.acc++;
-    me.buf = [];
-    renderCmd(side==="p1"?p1Cmd:p2Cmd, match.tokens, me.idx);
-    if (me.idx >= match.tokens.length){
-      me.done = true;
-      me.end = performance.now();
-      // if both done, end; or if one done and the other times out later, end on timeout
-      if (match.p1.done && match.p2.done) endRound();
+/* ------------------------ Input Handling ------------------------ */
+function apply(sym){
+  if (!game?.active) return;
+  game.presses++;
+
+  const need = game.tokens[game.idx];
+  if (sym === need){
+    game.hits++; game.streak = Math.min(999, game.streak+1);
+    game.idx++;
+    renderCmd(); setHUD();
+    if (game.idx >= game.tokens.length){
+      endRound();
     }
+  } else {
+    game.streak = 0;
+    // brief bad flash on the current token
+    const tokenEls = cmdEl.querySelectorAll('.token');
+    const cur = tokenEls[game.idx];
+    if (cur){
+      cur.classList.add('bad');
+      setTimeout(()=>cur.classList.remove('bad'), 150);
+    }
+    setHUD();
   }
 }
 
-function rewind(side){
-  if (!match.active) return;
-  const me = match[side];
-  if (me.rew<=0) return;
-  if (me.idx===0 && me.buf.length===0) return;
-  // penalty visual
-  const panel = document.getElementById(side);
-  panel.style.outline="2px solid #ffae00";
-  setTimeout(()=> panel.style.outline="none", 180);
-  // logic: drop current buffer, step back one token if buffer empty
-  if (me.buf.length>0){ me.buf=[]; }
-  else { me.idx = Math.max(0, me.idx-1); }
-  me.rew--;
-  renderCmd(side==="p1"?p1Cmd:p2Cmd, match.tokens, me.idx);
-  setHUD();
-}
+/* Keyboard: make sure arrows don't scroll the page */
+window.addEventListener('keydown', (e)=>{
+  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) e.preventDefault();
+  if (!game) return;
 
-/* ------------------------ Events ------------------------ */
-startBtn.addEventListener('click', ()=>{
-  match = newMatch();
-  setHUD();
-  startBtn.textContent="⏳ Get Ready…";
-  setTimeout(()=>{ startBtn.textContent="▶ Start Match"; startRound(); }, 600);
+  if (e.key === "ArrowUp")    return apply("↑");
+  if (e.key === "ArrowDown")  return apply("↓");
+  if (e.key === "ArrowLeft")  return apply("←");
+  if (e.key === "ArrowRight") return apply("→");
+
+  if (e.code === "KeyZ") return apply("P");
+  if (e.code === "KeyX") return apply("K");
+  if (e.code === "KeyC") return apply("G");
 });
-nextBtn.addEventListener('click', ()=>{
-  match.round++;
+
+/* On-screen controls */
+document.querySelectorAll('.key[data-sym]').forEach(k=>{
+  k.addEventListener('click', ()=> apply(k.getAttribute('data-sym')));
+});
+
+/* Buttons */
+startBtn.addEventListener('click', ()=>{
+  if (!game) game = newGame();
+  else { game.round = 1; }
   startRound();
 });
-
-window.addEventListener('keydown', (e)=>{
-  if (!match) return;
-
-  // P1 Inputs
-  if (e.key in DIR_P1) return applyInput("p1", DIR_P1[e.key]);
-  if (e.code in BTN_P1) return applyInput("p1", BTN_P1[e.code]);
-  if (e.key === "Backspace") return rewind("p1");
-
-  // P2 Inputs
-  if (e.code in {KeyW:1,KeyA:1,KeyS:1,KeyD:1}) return applyInput("p2", DIR_P2[e.code]);
-  if (e.code in BTN_P2) return applyInput("p2", BTN_P2[e.code]);
-  if (e.code === "KeyH") return rewind("p2");
+nextBtn.addEventListener('click', nextRound);
+restartBtn.addEventListener('click', ()=>{
+  if (!game) return;
+  startRound();
 });
 </script>
 </body>
 </html>
-
