@@ -4,16 +4,42 @@
 <meta charset="UTF-8" />
 <title>GSU Command Strike — Solo</title>
 <link rel="icon" href="GSU_LOGO.png" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
-  :root{ --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7 }
+  :root{
+    --gsu-red:#e60023; --bg:#000; --fg:#fff; --muted:#c7c7c7;
+    /* iOS safe areas */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+  }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{
-    margin:0; font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    display:flex; flex-direction:column; align-items:center; padding:16px; gap:12px;
+  html, body{
+    margin:0;
+    /* allow vertical scroll; block sideways */
+    overflow-x:hidden;
   }
+  body{
+    font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
+    display:flex; flex-direction:column; align-items:center;
+    padding:calc(12px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+    gap:12px;
+    min-height:100svh;
+  }
+
+  /* ===== Global scale wrapper (shrinks whole page on small screens) ===== */
+  #game-wrapper{
+    transform-origin: top center;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+  }
+
   header{display:flex; flex-direction:column; align-items:center; gap:8px}
   nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
   nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
@@ -36,6 +62,7 @@
   .stage{
     position:relative; height:200px; border:1px solid #333; border-radius:12px;
     background:#0f0f0f; overflow:hidden;
+    touch-action:manipulation; /* smoother taps on mobile */
   }
   .fx{position:absolute; inset:0; pointer-events:none}
   .target{position:absolute; font-size:52px; filter:drop-shadow(0 0 8px #fff)}
@@ -100,49 +127,91 @@
 </style>
 </head>
 <body>
-  <header>
-    <img src="GSU_LOGO.png" alt="GSU" style="max-width:96px">
-    <div>GAMESYNC UNION</div>
-    <nav><a href="index.html">Home</a></nav>
-  </header>
+  <div id="game-wrapper">
+    <header>
+      <img src="GSU_LOGO.png" alt="GSU" style="max-width:96px">
+      <div>GAMESYNC UNION</div>
+      <nav><a href="index.html">Home</a></nav>
+    </header>
 
-  <section class="wrap" id="wrap">
-    <h1 style="margin:6px 0 10px 6px;">GSU COMMAND STRIKE — SOLO</h1>
-    <div class="hud">
-      <div class="pill">📜 Round <strong id="round">1</strong>/12</div>
-      <div class="pill">🎯 Progress <strong id="progress">0</strong>%</div>
-      <div class="pill">⏱ Time <strong id="time">0</strong>ms</div>
-      <div class="pill">✅ Accuracy <strong id="acc">0</strong>%</div>
-      <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
-    </div>
-
-    <div class="panel">
-      <div class="stage" id="stage">
-        <div class="fx" id="fx"></div>
-        <div class="speedlines" id="speedlines"></div>
-        <div class="overlay" id="overlay"><div class="banner" id="banner">ROUND CLEAR!</div></div>
+    <section class="wrap" id="wrap">
+      <h1 style="margin:6px 0 10px 6px;">GSU COMMAND STRIKE — SOLO</h1>
+      <div class="hud">
+        <div class="pill">📜 Round <strong id="round">1</strong>/12</div>
+        <div class="pill">🎯 Progress <strong id="progress">0</strong>%</div>
+        <div class="pill">⏱ Time <strong id="time">0</strong>ms</div>
+        <div class="pill">✅ Accuracy <strong id="acc">0</strong>%</div>
+        <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
       </div>
 
-      <div class="big-next">Next: <span id="nextToken">—</span></div>
-      <div class="cmd" id="cmd"></div>
+      <div class="panel">
+        <div class="stage" id="stage">
+          <div class="fx" id="fx"></div>
+          <div class="speedlines" id="speedlines"></div>
+          <div class="overlay" id="overlay"><div class="banner" id="banner">ROUND CLEAR!</div></div>
+        </div>
 
-      <div class="row">
-        <button class="btn" id="start">▶ Start Drill</button>
-        <button class="btn" id="next" disabled>⏭ Next Pattern</button>
-        <button class="btn" id="restart" disabled>🔁 Restart</button>
+        <div class="big-next">Next: <span id="nextToken">—</span></div>
+        <div class="cmd" id="cmd"></div>
+
+        <div class="row">
+          <button class="btn" id="start">▶ Start Drill</button>
+          <button class="btn" id="next" disabled>⏭ Next Pattern</button>
+          <button class="btn" id="restart" disabled>🔁 Restart</button>
+        </div>
+
+        <div class="hint">Arrows = directions • Letters like A/S/D/Q/E/F/J/K/L/Z/X/C/W/R/U/I (press the same letter)</div>
+
+        <div class="controls" aria-label="D-Pad">
+          <div></div><div class="key" data-sym="↑">↑</div><div></div>
+          <div class="key" data-sym="←">←</div><div class="key" data-sym="↓">↓</div><div class="key" data-sym="→">→</div>
+        </div>
+        <div class="letters" id="lettersRow"></div>
       </div>
+    </section>
 
-      <div class="hint">Arrows = directions • Letters like A/S/D/Q/E/F/J/K/L/Z/X/C/W/R/U/I (press the same letter)</div>
+    <footer>Built for GameSync Union — GSU Command Strike™</footer>
+  </div>
 
-      <div class="controls" aria-label="D-Pad">
-        <div></div><div class="key" data-sym="↑">↑</div><div></div>
-        <div class="key" data-sym="←">←</div><div class="key" data-sym="↓">↓</div><div class="key" data-sym="→">→</div>
-      </div>
-      <div class="letters" id="lettersRow"></div>
-    </div>
-  </section>
+<script>
+/* ===== Global auto-scale (scroll allowed; sideways blocked) ===== */
+(function(){
+  const vvp = () => window.visualViewport || { width: innerWidth, height: innerHeight };
+  const wrapper = document.getElementById('game-wrapper');
 
-  <footer>Built for GameSync Union — GSU Command Strike™</footer>
+  function scalePage(){
+    if(!wrapper) return;
+    // reset to measure natural size
+    wrapper.style.transform = 'scale(1)';
+    const contentH = wrapper.scrollHeight;
+    const contentW = wrapper.scrollWidth;
+    const vw = vvp().width, vh = vvp().height;
+
+    // fit by both height and width
+    const sH = (vh - 2) / contentH;
+    const sW = (vw - 2) / contentW;
+    let scale = Math.min(sH, sW);
+
+    // don't upscale on big screens
+    if (scale > 1) scale = 1;
+    // keep things usable on very small screens
+    scale = Math.max(0.6, scale);
+
+    wrapper.style.transform = `scale(${scale})`;
+  }
+
+  let raf = null;
+  function requestFit(){ if(raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(scalePage); }
+
+  addEventListener('load', requestFit);
+  addEventListener('resize', requestFit);
+  addEventListener('orientationchange', requestFit);
+  window.visualViewport && visualViewport.addEventListener('resize', requestFit);
+
+  // Expose manual refresh for big layout changes if needed
+  window.gsuFit = { refresh: requestFit };
+})();
+</script>
 
 <script>
 /* ---------------- Tokens & Pattern ---------------- */
@@ -278,7 +347,7 @@ function flyController(keyframes, onHit){
     if (t){ t.classList.add('hit'); }
     const boom = document.createElement('div');
     boom.className = 'boom';
-    boom.textContent = pick(BOOM_ICONS);  /* ← BIGGER BOOM SET USED HERE */
+    boom.textContent = pick(BOOM_ICONS);
     const bx = (currentTarget?.x ?? 120) + rand(-8,8);
     const by = (currentTarget?.y ?? 24)  + rand(-8,8);
     boom.style.transform = `translate(${bx}px, ${by}px) scale(.6)`;
