@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
+/* [Your CSS as provided, unchanged] */
 :root{
   --gsu-red:#e60023; --bg: #141416; --fg:#fff; --muted:#babecb;
 }
@@ -119,7 +120,7 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto
 <footer>Built for GameSync Union — GSU Command Strike™</footer>
 <script>
 const DIR = ["↑","↓","←","→"];
-const LETTER_TOKENS = ["A","S","D","Q","E","F","J","K","L","Z","X","C","W","R","U","I"];
+const LETTER_TOKENS = []; // Empty; only arrows.
 const MAX_ROUNDS =12;
 const BOOM_ICONS=[
   '💥','✨','⚡','🔥','💣','🎆','🎇','🧨','🌩️','🌟','☄️','💫','🌋','🌀','⭐','🌠','🌪️','✴️','✳️','❇️','✺','✹','✸','✻',
@@ -127,7 +128,7 @@ const BOOM_ICONS=[
   '💥💥💥','✨✨✨','⚡⚡⚡','🔥🔥🔥','🎆🎆🎆','🎇🎇🎇','🧨🧨🧨'
 ];
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
-function tokenLengthByRound(r){ 
+function tokenLengthByRound(r){
   const map=[4,4,5,5,6,6,6,7,7,7,8,8];
   return map[Math.min(MAX_ROUNDS-1,Math.max(0,r-1))];
 }
@@ -135,7 +136,8 @@ function genPattern(round){
   const len=tokenLengthByRound(round);
   const toks=[];
   for(let i=0;i<len;i++){
-    const pool=Math.random()<0.52?DIR:LETTER_TOKENS;
+    // Only arrows now because LETTER_TOKENS is empty
+    const pool = DIR;
     let t=pick(pool);
     if(i>0&&t===toks[i-1]) t=pick(pool.filter(x=>x!==t));
     toks.push(t);
@@ -172,7 +174,7 @@ let playerTargets=[], cpuTargets=[];
 let audioCtx=null;
 function ensureAudio(){ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
 function beep(freq=880,dur=0.05,vol=0.03){
-  if(!audioCtx) return;
+  if(!audioCtx)return;
   const o=audioCtx.createOscillator(),g=audioCtx.createGain();
   o.frequency.value=freq;o.type='triangle';g.gain.value=vol;
   o.connect(g).connect(audioCtx.destination);o.start();
@@ -192,12 +194,11 @@ function spawnTargetFX(stage,fx){
   const x=rand(pad,rect.width-pad-38),y=rand(pad,rect.height-pad-38);
   const el=document.createElement('div');
   el.className='target';el.style.transform=`translate(${x}px,${y}px)`;
-  el.textContent=pick(['👾','😂','😈','🤡','🙄','☠️','🤪','🤬','🤑','😴','👺','🐒','🦅','🐸','🐷','🐊','🐰','🐉','🦊','😍','🥸','👻','🦁','🦄','😱','🐦‍🔥','🐲','😎','🤩','😘']);
+  el.textContent=pick(['↑','↓','←','→']);
   fx.appendChild(el);
   return {x,y,el};
 }
 function flyControllerFX(stage,fx,target,cb){
-  // Do NOT move target here! It is moved once before the round to avoid jumping on strike.
   const img=document.createElement('img');
   img.src="GSU_LOGO.png"; img.className='controller'; fx.appendChild(img);
   const tx=target.x,ty=target.y,sx=rand(-66,2),sy=rand(18,stage.clientHeight-30);
@@ -220,6 +221,7 @@ function flyControllerFX(stage,fx,target,cb){
     img.remove();
   };
 }
+
 function spawnSparkFX(stage,fx){
   const rect=stage.getBoundingClientRect();
   const s=document.createElement('div'); s.className='spark';
@@ -228,6 +230,7 @@ function spawnSparkFX(stage,fx){
   s.animate([{transform:`translate(${x}px,${y}px) scale(.9)`,opacity:1},{transform:`translate(${x+rand(-16,16)}px,${y-20}px) scale(.3)`,opacity:0}],
             {duration:190,easing:'ease',fill:'forwards'}).onfinish=()=>s.remove();
 }
+
 function confettiFX(stage,fx,x,y,n){
   for(let i=0;i<n;i++){
     const c=document.createElement('div');c.className='confetti';
@@ -240,6 +243,7 @@ function confettiFX(stage,fx,x,y,n){
       {duration:rand(620,950),easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'}).onfinish=()=>c.remove();
   }
 }
+
 function renderCmd(which,idx,tokens){
   let html=[];
   for(let i=0;i<tokens.length;i++){
@@ -251,6 +255,7 @@ function renderCmd(which,idx,tokens){
   if(which==="player") pCmd.innerHTML=html.join("");
   else cCmd.innerHTML=html.join("");
 }
+
 function setHUD(){
   pRound.textContent=pC.c; pTime.textContent=pC.time;
   pStreak.textContent=pC.streak; pProg.textContent=pC.prog; pHits.textContent=pC.hits;
@@ -259,15 +264,18 @@ function setHUD(){
   playerLeader.textContent=(pC.prog>cpuC.prog?"You're ahead!":(cpuC.prog>pC.prog?"CPU is ahead!":""));
   cpuLeader.textContent=(cpuC.prog>pC.prog?"CPU is ahead!":(pC.prog>cpuC.prog?"You're ahead!":""));
 }
+
 function leadingUpdate(){
   playerLeader.textContent=pC.prog>cpuC.prog?"You're ahead!":(cpuC.prog>pC.prog?"CPU is ahead!":"");
   cpuLeader.textContent=cpuC.prog>pC.prog?"CPU is ahead!":(pC.prog>cpuC.prog?"You're ahead!":"");
 }
+
 let pC={c:1,time:0,streak:0,prog:0,hits:0}, cpuC={c:1,time:0,streak:0,prog:0,hits:0};
 function resetCounters(){
   pC={c:game.round,time:0,streak:0,prog:0,hits:0};
   cpuC={c:game.round,time:0,streak:0,prog:0,hits:0};
 }
+
 function newGame(){
   return {
     round:1,maxRounds:MAX_ROUNDS,tokens:[],idx:0,start:0,end:0,
@@ -275,6 +283,7 @@ function newGame(){
     cpu:{idx:0,hits:0,presses:0,streak:0,speed:400}
   };
 }
+
 function startRound(){
   game.active=true;
   game.tokens=genPattern(game.round);
@@ -293,7 +302,7 @@ function startRound(){
   cpuTargets=[];
   const len=game.tokens.length;
   for(let i=0;i<len;i++){
-    // Move emoji target position here, not during strike to keep strike aligned
+    // Targets fixed here, so emojis do not move once set
     playerTargets.push(spawnTargetFX(fxPlayer.parentElement,fxPlayer));
     cpuTargets.push(spawnTargetFX(fxCPU.parentElement,fxCPU));
   }
@@ -346,12 +355,13 @@ function apply(sym){
     leadingUpdate();
   }
 }
+
 function startCPU(){
   game.cpu.idx=0; game.cpu.hits=0; game.cpu.streak=0;
-  // CPU speed balanced, roughly 380-600ms per action, slight round-based acceleration
-  game.cpu.speed=500 - game.round * 8 + Math.random() * 100;
-  if(game.cpu.speed<380) game.cpu.speed=380;
-  if(game.cpu.speed>600) game.cpu.speed=600;
+  // CPU speed approx 450-650ms per action - fair but challening
+  game.cpu.speed = 550 - game.round * 10 + Math.random() * 100;
+  if(game.cpu.speed<450) game.cpu.speed=450;
+  if(game.cpu.speed>650) game.cpu.speed=650;
   cpuFinishTime=null;
   function cpuStep(){
     if(!game.active) return;
@@ -372,17 +382,17 @@ function startCPU(){
         cpuStep();
       }
       leadingUpdate();
-    },game.cpu.speed+Math.random()*60);
+    },game.cpu.speed+Math.random()*50);
   }
   cpuStep();
 }
 function checkWinner(){
   if(playerFinishTime && cpuFinishTime){
-    if(playerFinishTime<cpuFinishTime-28){
+    if(playerFinishTime < cpuFinishTime - 28){
       showBanner("🏆 YOU WIN!");
-    }else if(cpuFinishTime<playerFinishTime-28){
+    } else if(cpuFinishTime < playerFinishTime - 28){
       showBanner("🤖 CPU WINS!");
-    }else{
+    } else{
       showBanner("⚖️ DRAW!");
     }
   }
@@ -391,6 +401,7 @@ function showBanner(t){
   overlay.innerHTML=`<div class="banner">${t}</div>`;
   setTimeout(()=>overlay.innerHTML="",1400);
 }
+
 window.addEventListener("keydown",e=>{
   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
   let sym=null;
@@ -399,11 +410,13 @@ window.addEventListener("keydown",e=>{
   else if(e.key==="ArrowLeft") sym="←";
   else if(e.key==="ArrowRight") sym="→";
   else if(/^[a-z]$/i.test(e.key)) sym=e.key.toUpperCase();
-  if(sym&&(DIR.includes(sym)||LETTER_TOKENS.includes(sym))) apply(sym);
+  if(sym&&(DIR.includes(sym) || LETTER_TOKENS.includes(sym))) apply(sym);
 });
+
 [...document.querySelectorAll(".key[data-sym]")].forEach(k=>{
   k.addEventListener("click",()=>apply(k.getAttribute("data-sym")));
 });
+
 startBtn.addEventListener("click",()=>{
   ensureAudio();
   if(!game)game=newGame();
