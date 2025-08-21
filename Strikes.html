@@ -7,70 +7,94 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --gsu-red:#e60023; --bg: #141416; --fg:#fff; --muted:#babecb;
+  --gsu-red:#e60023; --bg:#141416; --fg:#fff; --muted:#babecb;
 }
+
+/* Mobile-friendly text scaling without iOS auto-zoom */
+html{ -webkit-text-size-adjust:100%; }
 html, body { margin:0; padding:0; height:100%; background:var(--bg); color:var(--fg); font-family:'Orbitron',sans-serif; }
+
+/* Page frame */
+.header {display:flex; align-items:center; justify-content:center; gap:10px; margin:10px 0 8px 0;}
+.header img{ max-width:64px; height:auto; }
+.header .title{ letter-spacing:2px; font-size:clamp(1rem, 2.6vw, 1.12rem); }
+
+/* Main board */
 .split-container {
-  display: flex; width: 100vw; max-width: 940px; margin: 0 auto;
-  min-height: 330px; height:400px; border-radius:16px; overflow:hidden;
+  display:flex; width:min(940px, 96vw); margin:0 auto;
+  min-height:clamp(300px, 40vh, 420px); height:clamp(320px, 46vh, 440px);
+  border-radius:16px; overflow:hidden;
   box-shadow:0 2px 26px #470a1230;
   border:3px solid var(--gsu-red);
   background:linear-gradient(90deg,#1a1a1d 45%, #10101b 55%);
 }
 .split-side {
-  flex: 1;
-  display: flex; flex-direction:column; align-items:center; justify-content:space-between;
-  padding: 0 12px 12px 12px;
-  position:relative;
-  min-width:0; min-height: 0;
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+  padding:8px 12px 12px; position:relative; min-width:0; min-height:0;
 }
-.split-side.left { background: #181820; border-right:2px solid #e6002335; }
-.split-side.right { background: #191719; }
-h2 { text-align:center; margin:5px 0 4px 0; font-size:1.21em; letter-spacing:2px; }
+.split-side.left { background:#181820; border-right:2px solid #e6002335; }
+.split-side.right{ background:#191719; }
+h2 { text-align:center; margin:4px 0 4px; font-size:clamp(1rem, 2.8vw, 1.2rem); letter-spacing:2px; }
+
+/* Stage */
 .stage-outer {
   border:1.5px solid #2a2a3a; border-radius:12px; margin-bottom:8px;
-  height:130px; background:#18171c; width:100%; position: relative; overflow:hidden;
-  display: flex; align-items:center; justify-content:center;
+  height:clamp(90px, 22vh, 140px); background:#18171c; width:100%;
+  position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;
 }
-.fx{position:absolute;inset:0;pointer-events:none;}
-.target{position:absolute; font-size:41px; filter:drop-shadow(0 0 8px #fff); transition: transform .26s cubic-bezier(.33,1.2,.68,1);}
+.fx{position:absolute; inset:0; pointer-events:none;}
+.target{position:absolute; font-size:38px; filter:drop-shadow(0 0 8px #fff); transition:transform .26s cubic-bezier(.33,1.2,.68,1);}
 .target.hit{filter:drop-shadow(0 0 14px #e60023);}
-.controller{position:absolute; width:58px; will-change:transform; filter:drop-shadow(0 0 8px #e6002366);}
-.boom{position:absolute; font-size:50px; opacity:0;}
-.spark{position:absolute; width:8px; height:8px; border-radius:50%; background:radial-gradient(circle,#fff 0 47%, rgba(255,255,255,.2) 60%, transparent 75%);
-  box-shadow:0 0 10px rgba(255,255,255,.38);}
+.controller{position:absolute; width:54px; will-change:transform; filter:drop-shadow(0 0 8px #e6002366);}
+.boom{position:absolute; font-size:46px; opacity:0;}
 .confetti{position:absolute; width:8px; height:12px; will-change:transform; opacity:.96}
-.cmd {
-  min-height: 40px; display:flex; justify-content:center; align-items:center; gap:7px;
-  margin-bottom:6px;
-}
-.token{padding:7px 11px; margin:1px; border-radius:8px; background:#212123; border:1px solid #393a3c; font-size:1.0em;}
+
+/* HUD + commands */
+.hud{ font-size:clamp(.75rem, 2.1vw, .96rem); display:flex; gap:8px; margin-bottom:4px; flex-wrap:wrap; justify-content:center;}
+.pill{background:#222228; border:1px solid #35363a; border-radius:7px; padding:4px 7px; text-align:center; min-width:48px;}
+.pill strong{color:var(--gsu-red);}
+
+.cmd{ min-height:40px; display:flex; justify-content:center; align-items:center; gap:7px; margin-bottom:6px; flex-wrap:wrap; }
+.token{padding:6px 10px; margin:1px; border-radius:8px; background:#212123; border:1px solid #393a3c; font-size:clamp(.9rem,2.4vw,1rem);}
 .token.pending{outline:2px solid #ffae00;}
 .token.ok{outline:2px solid #29d07a;}
 .token.bad{outline:2px solid #d02121;}
-.hud{ font-size:.96em; display:flex; gap:11px; margin-bottom:4px;}
-.pill{background:#222228; border:1px solid #35363a; border-radius:7px; padding:4px 7px; text-align:center; min-width:48px;}
-.pill strong{color:var(--gsu-red);}
-.leader { letter-spacing:1px; margin:0; font-size:.98em; }
-.letters{margin-top:9px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
-.key{width:45px; height:36px; border-radius:8px; background:#25242b; border:1.2px solid #2a2d33; display:inline-flex; align-items:center; justify-content:center; font-size:1.08em; cursor:pointer; margin-bottom:4px;}
+
+.leader { letter-spacing:1px; margin:0; font-size:clamp(.82rem,2.2vw,.98rem); text-align:center; min-height:1.2em; }
+
+/* On-screen arrow keys */
+.directions{margin:8px auto 6px; display:flex; gap:8px; justify-content:center; width:min(940px, 96vw);}
+.key{width:52px; height:44px; border-radius:10px; background:#25242b; border:1.2px solid #2a2d33; display:inline-flex; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer; user-select:none;}
 .key:active{filter:brightness(1.2);}
-.directions{margin: 1px 0 7px 0; display:flex; gap:8px; justify-content:center;}
-.btnRow {display:flex; gap:10px;justify-content:center; margin:10px 0;}
-.btn{border:none; background:var(--gsu-red); color:#fff; padding:8px 16px; border-radius:9px; cursor:pointer; font-weight:700; font-size:1.1em;}
+
+/* Buttons */
+.btnRow {display:flex; gap:10px; justify-content:center; margin:10px 0;}
+.btn{border:none; background:var(--gsu-red); color:#fff; padding:9px 16px; border-radius:9px; cursor:pointer; font-weight:700; font-size:clamp(1rem,2.6vw,1.1rem);}
 .btn:disabled{opacity:.55; cursor:not-allowed;}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
-.banner{padding:8px 16px; border:2px solid #fff; border-radius:14px; background:rgba(230,0,35,.13); text-shadow:0 0 12px rgba(255,255,255,.34); font-size:clamp(1.18rem,3vw,1.35rem);}
-footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto; color:var(--muted);}
+
+/* Overlay banner */
+.overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; pointer-events:none;}
+.overlay.show{display:flex;}
+.banner{padding:10px 16px; border:2px solid #fff; border-radius:14px; background:rgba(230,0,35,.13); text-shadow:0 0 12px rgba(255,255,255,.34); font-size:clamp(1.05rem,3.5vw,1.35rem);}
+
+/* Helper text + footer */
+.helper{margin-top:8px; color:var(--muted); font-size:.95em; text-align:center;}
+footer{opacity:.8; text-align:center; font-size:.83em; margin:14px auto 10px; color:var(--muted);}
+
+/* Small screens: stack sides, shrink stage a touch */
 @media (max-width:900px){
-  .split-container{flex-direction:column; min-height:350px; height:auto;}
-  .split-side{min-height: 148px;}
-  .stage-outer{height: 98px;}
+  .split-container{flex-direction:column; height:auto; min-height:unset;}
+  .split-side{min-height:148px;}
+  .stage-outer{height:clamp(86px, 24vh, 120px);}
 }
 </style>
 </head>
 <body>
-<div style="text-align:center; margin-bottom:8px;"><img src="GSU_LOGO.png" alt="GSU" style="max-width:69px;vertical-align:middle;"> <span style="letter-spacing:2px;font-size:1.12em;vertical-align:middle;">GSU COMMAND STRIKE — SPLIT DUEL</span></div>
+
+<div class="header">
+  <img src="GSU_LOGO.png" alt="GSU">
+  <span class="title">GSU COMMAND STRIKE — SPLIT DUEL</span>
+</div>
 
 <div class="split-container">
   <div class="split-side left">
@@ -83,10 +107,10 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto
       <div class="pill">Hits <strong id="p-hits">0</strong></div>
     </div>
     <div class="cmd" id="p-cmd"></div>
-    <div class="stage-outer"><div class="fx" id="fx-player"></div></div>
+    <div class="stage-outer" id="stage-player"><div class="fx" id="fx-player"></div></div>
     <div id="player-leader" class="leader"></div>
-    <div class="letters" id="letters-player"></div>
   </div>
+
   <div class="split-side right">
     <h2>🤖 CPU</h2>
     <div class="hud" id="hud-cpu">
@@ -97,7 +121,7 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto
       <div class="pill">Streak <strong id="c-streak">0</strong></div>
     </div>
     <div class="cmd" id="c-cmd"></div>
-    <div class="stage-outer"><div class="fx" id="fx-cpu"></div></div>
+    <div class="stage-outer" id="stage-cpu"><div class="fx" id="fx-cpu"></div></div>
     <div id="cpu-leader" class="leader"></div>
   </div>
 </div>
@@ -108,50 +132,61 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto
   <div class="key" data-sym="↓">↓</div>
   <div class="key" data-sym="→">→</div>
 </div>
-<div class="letters" id="lettersRow"></div>
+
 <div class="btnRow">
   <button class="btn" id="start">▶ Start Drill</button>
   <button class="btn" id="next" disabled>⏭ Next Pattern</button>
   <button class="btn" id="restart" disabled>🔁 Restart</button>
 </div>
-<div style="margin-top:11px; color:var(--muted); font-size:.95em;text-align:center;">Arrows=move. Beat the CPU to win the round!</div>
-<div class="overlay" id="overlay"></div>
+
+<div class="helper">Arrows = move. Beat the CPU to win the round!</div>
+
+<div class="overlay" id="overlay"><div class="banner" id="bannerText"></div></div>
+
 <footer>Built for GameSync Union — GSU Command Strike™</footer>
+
 <script>
+/* -------------------- Constants & helpers -------------------- */
 const DIR = ["↑","↓","←","→"];
-const LETTER_TOKENS = []; // Disable letters
 const MAX_ROUNDS = 12;
-const BOOM_ICONS = [
-  '💥','✨','⚡','🔥','💣','🎆','🎇','🧨','🌩️','🌟','☄️','💫',
-  '🌋','🌀','⭐','🌠','🌪️','✴️','✳️','❇️','✺','✹','✸','✻'
-];
-const BOOM_KEYFRAMES = [
-  [{opacity:0.1},{opacity:1},{opacity:0}],
-  [{transform:'rotate(0deg) scale(0.3)',opacity:0.2},{transform:'rotate(20deg) scale(0.6)',opacity:1},{transform:'rotate(40deg) scale(0)',opacity:0}],
-  [{transform:'scale(0.5) translateX(-20px)',opacity:0.3},{transform:'scale(1) translateX(10px)',opacity:1},{transform:'scale(1.2) translateX(30px)',opacity:0}],
-];
+const BOOM_ICONS = ['💥','✨','⚡','🔥','💣','🎆','🎇','🧨','🌩️','🌟','☄️','💫','🌋','🌀','⭐','🌠','🌪️','✴️','✳️','❇️','✺','✹','✸','✻'];
 
-function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function rand(a,b){return Math.random()*(b-a)+a}
+const $ = (sel)=>document.querySelector(sel);
+const $$ = (sel)=>[...document.querySelectorAll(sel)];
+const pick = (arr)=>arr[Math.floor(Math.random()*arr.length)];
+const rand = (a,b)=>Math.random()*(b-a)+a;
 
-function spawnTargetFX(stage,fx,existing=[]) {
-  const rect = stage.getBoundingClientRect(), pad = 18;
-  const size = 38;
+/* Elements */
+const pCmd = $("#p-cmd"), cCmd = $("#c-cmd");
+const fxP = $("#fx-player"), fxC = $("#fx-cpu");
+const stageP = $("#stage-player"), stageC = $("#stage-cpu");
+const startBtn = $("#start"), nextBtn = $("#next"), restartBtn = $("#restart");
+const overlay = $("#overlay"), bannerText = $("#bannerText");
+
+/* HUD setters */
+function setHUD(side, data){
+  for(const k in data){
+    const el = document.getElementById(`${side}-${k}`);
+    if(el) el.textContent = data[k];
+  }
+}
+
+/* -------------------- FX -------------------- */
+function spawnTargetFX(stage, fx, existing=[]) {
+  const rect = stage.getBoundingClientRect(), pad = 14, size = 36;
   let x, y, tries = 0;
   do {
     x = rand(pad, rect.width - pad - size);
     y = rand(pad, rect.height - pad - size);
     tries++;
     const overlap = existing.some(t => Math.abs(x - t.x) < size && Math.abs(y - t.y) < size);
-    if(tries > 100) break;
-  } while(overlap);
+    if(tries > 60) break;
+    if(!overlap) break;
+  } while(true);
   const el = document.createElement('div');
   el.className='target';
   el.style.transform = `translate(${x}px,${y}px)`;
-  el.textContent = pick([
-    '👾', '😂','😈','🤡','🙄','☠️','🤪','🤬','🤑','😴','👺',
-    '🐒','🦅','🐸','🐷','🐊','🐰','🐉','🦊','😍','🥸','👻',
-    '🦁','🦄','😱','🐦‍🔥','🐲','😎','🤩','😘']);
+  el.textContent = pick(['👾','😈','🤡','☠️','😴','👺','🐉','🦊','😍','👻','🦁','😱','😎','🤩','😘']);
   fx.appendChild(el);
   return {x,y,el};
 }
@@ -161,31 +196,31 @@ function flyControllerFX(stage, fx, target, cb) {
   img.src = "GSU_LOGO.png";
   img.className = "controller";
   fx.appendChild(img);
-  const tx = target.x, ty = target.y, sx = rand(-66, 2), sy = rand(18, stage.clientHeight - 30);
+  const tx = target.x, ty = target.y, sx = rand(-40, 6), sy = rand(18, stage.clientHeight - 30);
   const kf = [
     {transform: `translate(${sx}px,${sy}px) scale(1)`},
-    {transform: `translate(${(sx + tx) / 2}px,${(sy + ty) / 2 - 25}px) scale(1.08)`},
+    {transform: `translate(${(sx + tx)/2}px,${(sy + ty)/2 - 24}px) scale(1.06)`},
     {transform: `translate(${tx}px,${ty}px) scale(1.10)`}
   ];
-  img.animate(kf, {duration: 350, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'forwards'}).onfinish = () => {
-    setTimeout(() => { // 120ms delay before boom effect
+  img.animate(kf, {duration: 330, easing: 'cubic-bezier(.2,.7,.2,1)', fill:'forwards'}).onfinish = () => {
+    setTimeout(() => {
       const boom = document.createElement('div');
       boom.className = "boom";
       boom.textContent = pick(BOOM_ICONS);
-      boom.style.transform = `translate(${tx + rand(-7, 7)}px,${ty + rand(-7,7)}px) scale(0.6)`;
+      boom.style.transform = `translate(${tx + rand(-6, 6)}px,${ty + rand(-6,6)}px) scale(0.6)`;
       fx.appendChild(boom);
-      boom.animate(pick(BOOM_KEYFRAMES), {duration: 320, fill: 'forwards'}).onfinish = () => boom.remove();
+      boom.animate(
+        [{opacity:.1},{opacity:1},{opacity:0}],
+        {duration: 300, fill:'forwards'}
+      ).onfinish = () => boom.remove();
       confettiFX(stage, fx, tx, ty, 6 + Math.floor(Math.random()*2));
-    }, 120);
+    }, 90);
     target.el.classList.add("hit");
-    setTimeout(() => { target.el && target.el.remove(); }, 160);
-    if(cb) cb();
+    setTimeout(() => { target.el && target.el.remove(); }, 140);
+    cb && cb();
     img.remove();
   };
 }
-
-// Rest of functions: confettiFX, spawnSparkFX, genPattern, tokenLengthByRound, apply, etc.
-// See above code; no letter commands, arrows only for input.
 
 function confettiFX(stage, fx, x, y, n) {
   for(let i=0; i<n; i++) {
@@ -198,42 +233,216 @@ function confettiFX(stage, fx, x, y, n) {
     c.animate([
       {transform: `translate(${sx}px,${sy}px)`, opacity: 1},
       {transform: `translate(${sx + rand(-38,38)}px,${th + 18}px) rotate(${rand(180,720)}deg)`, opacity: 0.05}
-    ], {duration: rand(620,950), easing: "cubic-bezier(.2,.7,.2,1)", fill: "forwards"}).onfinish = () => c.remove();
+    ], {duration: rand(560,920), easing: "cubic-bezier(.2,.7,.2,1)", fill: "forwards"}).onfinish = () => c.remove();
   }
 }
 
-// Continue with your existing logic for newGame, startRound, endRound, apply, startCPU, checkWinner, showBanner, setHUD, leadingUpdate, keyboard and click listeners...
+/* -------------------- Game core -------------------- */
+function tokenLengthByRound(r){ return Math.min(4 + Math.floor((r-1)/2), 10); }
+function cpuSpeedByRound(r){ return Math.max(260 - (r-1)*10, 150); } // faster each round
+function genPattern(len){
+  const out = [];
+  for(let i=0;i<len;i++) out.push(DIR[Math.floor(Math.random()*DIR.length)]);
+  return out;
+}
 
-// Keyboard and button event codes unchanged except letters removed from input:
+function renderTokens(container, arr, index){
+  container.innerHTML = "";
+  arr.forEach((sym,i)=>{
+    const t = document.createElement("div");
+    t.className = "token";
+    t.textContent = sym;
+    if(i < index) t.classList.add("ok");
+    else if(i === index) t.classList.add("pending");
+    container.appendChild(t);
+  });
+}
 
+function progressPct(done, total){ return Math.round((done/Math.max(1,total))*100); }
+
+let game = null;
+
+function newGame(){
+  return {
+    round: 1,
+    player: { idx:0, hits:0, streak:0, startedAt:0, time:0 },
+    cpu:    { idx:0, hits:0, streak:0, startedAt:0, time:0, timer:null },
+    pattern: [],
+    targetsP: [], targetsC: [],
+    busy:false,
+    done:false
+  };
+}
+
+function startRound(){
+  if(!game) game = newGame();
+  game.done = false; game.busy=false;
+  game.player.idx=0; game.player.streak=0; game.player.hits=0; game.player.time=0;
+  game.cpu.idx=0; game.cpu.streak=0; game.cpu.hits=0; game.cpu.time=0;
+
+  const len = tokenLengthByRound(game.round);
+  game.pattern = genPattern(len);
+  renderTokens(pCmd, game.pattern, game.player.idx);
+  renderTokens(cCmd, game.pattern, game.cpu.idx);
+
+  setHUD("p",{round:game.round, time:0, streak:0, prog:0, hits:0});
+  setHUD("c",{round:game.round, time:0, streak:0, prog:0, hits:0});
+  $("#player-leader").textContent = "";
+  $("#cpu-leader").textContent = "";
+
+  fxP.innerHTML = ""; fxC.innerHTML = ""; game.targetsP = []; game.targetsC = [];
+
+  // spawn first targets so it's visible
+  game.targetsP.push(spawnTargetFX(stageP, fxP, game.targetsP));
+  game.targetsC.push(spawnTargetFX(stageC, fxC, game.targetsC));
+
+  startBtn.disabled = true;
+  nextBtn.disabled = true;
+  restartBtn.disabled = false;
+
+  // start timers
+  game.player.startedAt = performance.now();
+  game.cpu.startedAt = performance.now();
+
+  startCPU();
+}
+
+function endRound(winner){
+  game.done = true;
+  clearInterval(game.cpu.timer); game.cpu.timer=null;
+  const msg = winner === "player" ? "Round Win! 🏆" : (winner==="cpu" ? "CPU Wins Round 🤖" : "Draw");
+  showBanner(msg);
+  nextBtn.disabled = game.round >= MAX_ROUNDS;
+  startBtn.disabled = false;
+  $("#player-leader").textContent = winner==="player" ? "You were faster!" : "";
+  $("#cpu-leader").textContent = winner==="cpu" ? "CPU was faster!" : "";
+}
+
+function showBanner(text){
+  bannerText.textContent = text;
+  overlay.classList.add("show");
+  setTimeout(()=>overlay.classList.remove("show"), 1100);
+}
+
+/* Player apply */
+function apply(sym){
+  if(!game || game.done) return;
+  const expect = game.pattern[game.player.idx];
+  if(!DIR.includes(sym)) return;
+
+  if(sym === expect){
+    // FX
+    const t = spawnTargetFX(stageP, fxP, game.targetsP);
+    flyControllerFX(stageP, fxP, t, ()=>{});
+    game.player.idx++;
+    game.player.hits++;
+    game.player.streak++;
+    const now = performance.now();
+    game.player.time = Math.round(now - game.player.startedAt);
+
+    renderTokens(pCmd, game.pattern, game.player.idx);
+    setHUD("p",{
+      time:game.player.time,
+      streak:game.player.streak,
+      prog:progressPct(game.player.idx, game.pattern.length),
+      hits:game.player.hits
+    });
+
+    if(game.player.idx >= game.pattern.length && !game.done){
+      // Player finished first?
+      if(game.cpu.idx < game.pattern.length){
+        endRound("player");
+      }else{
+        endRound("draw");
+      }
+    }
+  }else{
+    game.player.streak = 0;
+    // brief bad flash on current token
+    const cur = pCmd.children[game.player.idx];
+    if(cur){
+      cur.classList.add("bad");
+      setTimeout(()=>cur.classList.remove("bad"), 150);
+    }
+  }
+}
+
+/* CPU logic */
+function startCPU(){
+  const step = ()=> {
+    if(game.done) return;
+    const expect = game.pattern[game.cpu.idx];
+    // add small random hesitation so it feels fair
+    const t = spawnTargetFX(stageC, fxC, game.targetsC);
+    flyControllerFX(stageC, fxC, t, ()=>{});
+    game.cpu.idx++;
+    game.cpu.hits++;
+    game.cpu.streak++;
+    const now = performance.now();
+    game.cpu.time = Math.round(now - game.cpu.startedAt);
+
+    renderTokens(cCmd, game.pattern, game.cpu.idx);
+    setHUD("c",{
+      time:game.cpu.time,
+      streak:game.cpu.streak,
+      prog:progressPct(game.cpu.idx, game.pattern.length),
+      hits:game.cpu.hits
+    });
+
+    if(game.cpu.idx >= game.pattern.length && !game.done){
+      if(game.player.idx < game.pattern.length){
+        endRound("cpu");
+      }else{
+        endRound("draw");
+      }
+    }
+  };
+
+  const base = cpuSpeedByRound(game.round);
+  // Run repeatedly with a little jitter
+  game.cpu.timer = setInterval(()=>{
+    // 20% chance to "think" and skip a beat to give player a shot
+    if(Math.random()<0.2) return;
+    step();
+  }, base + Math.floor(rand(-40, 40)));
+}
+
+/* -------------------- Input -------------------- */
 window.addEventListener("keydown", (e) => {
-  if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) e.preventDefault();
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
   let sym = null;
   if (e.key === "ArrowUp") sym = "↑";
   else if (e.key === "ArrowDown") sym = "↓";
   else if (e.key === "ArrowLeft") sym = "←";
   else if (e.key === "ArrowRight") sym = "→";
-  if (sym && DIR.includes(sym)) apply(sym);
+  if (sym) apply(sym);
 });
 
-[...document.querySelectorAll(".key[data-sym]")].forEach((k) => {
-  k.addEventListener("click", () => apply(k.getAttribute("data-sym")));
+$$(".key[data-sym]").forEach(k=>{
+  k.addEventListener("click", ()=> apply(k.getAttribute("data-sym")));
 });
 
-startBtn.addEventListener("click", () => {
-  ensureAudio();
-  if (!game) game = newGame();
-  else game.round = 1;
+/* -------------------- Buttons -------------------- */
+startBtn.addEventListener("click", ()=>{
+  if(!game) game = newGame();
+  game.round = 1;
+  startRound();
+});
+nextBtn.addEventListener("click", ()=>{
+  if(!game) return;
+  game.round = Math.min(game.round+1, MAX_ROUNDS);
+  startRound();
+});
+restartBtn.addEventListener("click", ()=>{
+  if(!game) return;
   startRound();
 });
 
-nextBtn.addEventListener("click", () => {
-  game.round++;
-  startRound();
-});
-
-restartBtn.addEventListener("click", () => {
-  if (game) startRound();
+/* Enable Next after banner hides */
+overlay.addEventListener("transitionend", ()=>{
+  if(game && game.done && game.round < MAX_ROUNDS){
+    nextBtn.disabled = false;
+  }
 });
 </script>
 </body>
