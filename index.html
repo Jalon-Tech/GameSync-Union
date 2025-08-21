@@ -693,9 +693,16 @@ nav {
 
 .spotlight-video iframe {
   width: 100%;
-  height: 340px;
-  border-radius: 10px;
+  height: 380px;      /* bigger height */
+  border-radius: 12px;
 }
+
+#fav-game-updates {
+  grid-template-columns: 1fr;  /* one video per row */
+  max-width: 900px;            /* adjust width cap */
+  margin: 0 auto;
+}
+
 
 @media (max-width: 768px) {
   .spotlight-video iframe {
