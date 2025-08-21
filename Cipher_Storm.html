@@ -15,7 +15,7 @@
     --safe-right: env(safe-area-inset-right, 0px);
   }
   *{box-sizing:border-box}
-  html, body { height:100%; margin:0; overflow-x:hidden; }
+  html, body { height:100%; margin:0; overflow:hidden; } /* no page scroll */
   body{
     font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
     min-height:100svh; display:flex; flex-direction:column; align-items:center; gap:14px;
@@ -24,7 +24,6 @@
     -webkit-text-size-adjust:100%;
   }
 
-  /* Header like Charge Run */
   header{width:100%; display:flex; flex-direction:column; align-items:center; gap:8px}
   .logo{display:flex; flex-direction:column; align-items:center}
   .logo img{width:clamp(88px, 12vw, 120px); height:auto}
@@ -32,17 +31,17 @@
   nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
   nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:.6rem 1rem; border-radius:14px; font-weight:700}
 
-  /* Framed game area (same vibe as Charge Run) */
+  /* The whole game lives inside .frame which we scale to fit the screen */
   .frame{
     width:min(980px, 96vw);
     border:3px solid var(--gsu-red); border-radius:16px; padding:14px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
+    transform-origin: top center;
   }
   h1{margin:6px 0 0 6px}
   h2.sub{margin:4px 0 10px 6px; color:var(--gsu-red); font-size:1rem; opacity:.9}
 
-  /* HUD pills */
   .hud{
     display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:10px;
     font-size:clamp(.8rem,2vw,1rem);
@@ -50,10 +49,9 @@
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
 
-  /* Board — same size feel as Charge Run; page can scroll naturally */
   #board{
     position:relative;
-    height:min(520px, 58svh);
+    height:min(520px, 58svh); /* natural size; will be scaled by the frame */
     border:2px solid #222; border-radius:12px; overflow:hidden;
     background:
       linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
@@ -65,7 +63,6 @@
     touch-action:manipulation;
   }
 
-  /* Falling word tile */
   .tile{
     position:absolute; left:50%; transform:translateX(-50%);
     padding:12px 16px; background:#0b0b0b; border:1px solid #333; border-radius:12px;
@@ -78,26 +75,22 @@
   .ok{outline:2px solid #21d07a}
   .bad{outline:2px solid #d02121}
 
-  /* Controls row (like Charge Run buttons) */
-  .controls{
-    display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px;
-  }
+  .controls{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px}
   #typed{
     width:min(520px, 90%);
-    font-family:inherit; font-size:max(16px,1.05rem);  /* prevent iOS auto-zoom */
+    font-family:inherit; font-size:16px; /* prevent iOS zoom */
     color:#fff; background:#0a0a0a;
     border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
   }
   .btn{
     border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
-    box-shadow:0 0 10px #e60023aa; font-weight:700; font-size:max(16px,1rem);
+    box-shadow:0 0 10px #e60023aa; font-weight:700; font-size:16px;
   }
   .btn:disabled{opacity:.6; cursor:not-allowed}
 
   footer{opacity:.7; font-size:.85rem; text-align:center; margin-top:10px}
 
-  /* Responsive: fewer HUD columns on phones (like your other pages) */
   @media (max-width:900px){ .hud{grid-template-columns:repeat(4,1fr)} }
   @media (max-width:640px){ .hud{grid-template-columns:repeat(3,1fr)} }
 </style>
@@ -111,7 +104,7 @@
     <nav><a href="index.html">Home</a></nav>
   </header>
 
-  <section class="frame">
+  <section class="frame" id="frame">
     <h1>GSU CIPHERSTORM</h1>
     <h2 class="sub">Unscramble the word before it hits the bottom.</h2>
 
@@ -121,7 +114,7 @@
       <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
       <div class="pill">⭐ Score <strong id="score">0</strong></div>
       <div class="pill">❤️ <strong id="lives">3</strong></div>
-      <div class="pill">⚡ Surge <strong id="surge">Ready?</strong></div>
+      <div class="pill">⚡ Surge <strong id="surge">—</strong></div>
       <div class="pill">🎯 MaxLen <strong id="len">4</strong></div>
     </div>
 
@@ -131,6 +124,7 @@
       <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" autocapitalize="off" autocorrect="off" />
       <button class="btn" id="startBtn">▶ Start Run</button>
       <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
+      <button class="btn" id="fitBtn">🔍 Fit to Screen</button>
     </div>
 
     <div class="row" style="color:var(--muted); text-align:center; margin-top:6px;">
@@ -154,6 +148,7 @@ const WORD_BANK = {
 const THEMES = Object.keys(WORD_BANK);
 
 /* ---------- DOM ---------- */
+const frame   = document.getElementById('frame');
 const board   = document.getElementById('board');
 const timeEl  = document.getElementById('time');
 const waveEl  = document.getElementById('wave');
@@ -165,6 +160,26 @@ const lenEl   = document.getElementById('len');
 const typed   = document.getElementById('typed');
 const startBtn= document.getElementById('startBtn');
 const slowmoBtn = document.getElementById('slowmoBtn');
+const fitBtn  = document.getElementById('fitBtn');
+
+/* ---------- Fit-to-screen (no scroll) ---------- */
+function viewportH(){ return (window.visualViewport ? window.visualViewport.height : window.innerHeight); }
+function fitFrame(){
+  // Reset scale to measure natural height
+  frame.style.transform = 'scale(1)';
+  // Small top/bottom cushion so the frame isn't glued to edges
+  const cushion = 8;
+  const maxH = viewportH() - cushion;
+  const needed = frame.getBoundingClientRect().height;
+  const scale = Math.min(1, maxH / needed);
+  frame.style.transformOrigin = 'top center';
+  frame.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', fitFrame);
+window.visualViewport?.addEventListener('resize', fitFrame);
+window.addEventListener('orientationchange', fitFrame);
+fitBtn.addEventListener('click', fitFrame);
+fitFrame();
 
 /* ---------- helpers ---------- */
 function sample(a){ return a[Math.floor(Math.random()*a.length)] }
@@ -250,11 +265,13 @@ function startRun(){
   },1000);
 
   state.lastT=0; rafId=requestAnimationFrame(loop);
-  typed.focus({preventScroll:false});
+  typed.focus({preventScroll:true});
+  fitFrame(); // ensure it still fits after any metric changes
 }
 function endRun(){
   state.running=false; cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
   startBtn.textContent="🔁 Run Again";
+  fitFrame();
 }
 function submitWord(){
   if(!state.running || !state.activeTile) return;
@@ -290,7 +307,6 @@ typed.addEventListener('keydown', (e)=>{
       : "0 0 14px rgba(208,33,33,.55)";
   }
 });
-/* Keep input focused on desktop while running */
 window.addEventListener('keydown', ()=>{
   if(state?.running && document.activeElement!==typed){
     typed.focus({preventScroll:true});
