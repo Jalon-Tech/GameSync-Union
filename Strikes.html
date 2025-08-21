@@ -6,80 +6,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
 <style>
-:root{
-  --gsu-red:#e60023; --bg:#141416; --fg:#fff; --muted:#babecb;
-}
-html{ -webkit-text-size-adjust:100%; }
-html, body { margin:0; padding:0; height:100%; background:var(--bg); color:var(--fg); font-family:'Orbitron',sans-serif; }
-.header {display:flex; align-items:center; justify-content:center; gap:10px; margin:10px 0 8px;}
-.header img{ max-width:64px; height:auto; }
-.header .title{ letter-spacing:2px; font-size:clamp(1rem, 2.6vw, 1.12rem); }
+:root{ --gsu-red:#e60023; --bg:#141416; --fg:#fff; --muted:#babecb; }
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--fg);font-family:'Orbitron',sans-serif;}
+.header{display:flex;align-items:center;justify-content:center;gap:10px;margin:10px 0 8px}
+.header img{max-width:64px;height:auto}
+.header .title{letter-spacing:2px;font-size:clamp(1rem,2.6vw,1.12rem)}
 
-.controls {
-  width:min(940px,96vw); margin:0 auto 8px; display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap;
-  color:var(--muted); font-size:.95em;
-}
-.select {
-  appearance:none; border:1px solid #35363a; background:#1f1f24; color:#fff; border-radius:8px; padding:6px 10px; font-family:inherit;
-}
-.label {opacity:.9}
+.controls{width:min(940px,96vw);margin:0 auto 8px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.95em;}
+.select{appearance:none;border:1px solid #35363a;background:#1f1f24;color:#fff;border-radius:8px;padding:6px 10px;font-family:inherit}
+.label{opacity:.9}
 
-.split-container {
-  display:flex; width:min(940px, 96vw); margin:0 auto;
-  min-height:clamp(300px, 40vh, 420px); height:clamp(320px, 46vh, 440px);
-  border-radius:16px; overflow:hidden; box-shadow:0 2px 26px #470a1230;
-  border:3px solid var(--gsu-red);
+.split-container{
+  display:flex;width:min(940px,96vw);margin:0 auto;
+  min-height:clamp(300px,40vh,420px);height:clamp(320px,46vh,440px);
+  border-radius:16px;overflow:hidden;box-shadow:0 2px 26px #470a1230;border:3px solid var(--gsu-red);
   background:linear-gradient(90deg,#1a1a1d 45%, #10101b 55%);
 }
-.split-side { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:space-between;
-  padding:8px 12px 12px; position:relative; min-width:0; min-height:0; }
-.split-side.left { background:#181820; border-right:2px solid #e6002335; }
-.split-side.right{ background:#191719; }
-h2 { text-align:center; margin:4px 0 4px; font-size:clamp(1rem, 2.8vw, 1.2rem); letter-spacing:2px; }
+.split-side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 12px 12px;position:relative;min-width:0;min-height:0}
+.split-side.left{background:#181820;border-right:2px solid #e6002335}
+.split-side.right{background:#191719}
+h2{text-align:center;margin:4px 0;font-size:clamp(1rem,2.8vw,1.2rem);letter-spacing:2px}
 
-.stage-outer {
-  border:1.5px solid #2a2a3a; border-radius:12px; margin-bottom:8px;
-  height:clamp(90px, 22vh, 140px); background:#18171c; width:100%;
-  position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;
+.stage-outer{
+  border:1.5px solid #2a2a3a;border-radius:12px;margin-bottom:8px;
+  height:clamp(90px,22vh,140px);background:#18171c;width:100%;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
 }
-.fx{position:absolute; inset:0; pointer-events:none;}
-.target{position:absolute; font-size:38px; filter:drop-shadow(0 0 8px #fff); transition:transform .26s cubic-bezier(.33,1.2,.68,1);}
-.target.hit{filter:drop-shadow(0 0 14px #e60023);}
-.controller{position:absolute; width:54px; will-change:transform; filter:drop-shadow(0 0 8px #e6002366);}
-.boom{position:absolute; font-size:46px; opacity:0;}
-.confetti{position:absolute; width:8px; height:12px; will-change:transform; opacity:.96}
+.fx{position:absolute;inset:0;pointer-events:none}
+.target{position:absolute;font-size:38px;filter:drop-shadow(0 0 8px #fff);transition:transform .26s cubic-bezier(.33,1.2,.68,1)}
+.target.hit{filter:drop-shadow(0 0 14px #e60023)}
+.controller{position:absolute;width:54px;will-change:transform;filter:drop-shadow(0 0 8px #e6002366)}
+.boom{position:absolute;font-size:46px;opacity:0}
+.confetti{position:absolute;width:8px;height:12px;will-change:transform;opacity:.96}
 
-.hud{ font-size:clamp(.75rem, 2.1vw, .96rem); display:flex; gap:8px; margin-bottom:4px; flex-wrap:wrap; justify-content:center;}
-.pill{background:#222228; border:1px solid #35363a; border-radius:7px; padding:4px 7px; text-align:center; min-width:48px;}
-.pill strong{color:var(--gsu-red);}
+.hud{font-size:clamp(.75rem,2.1vw,.96rem);display:flex;gap:8px;margin-bottom:4px;flex-wrap:wrap;justify-content:center}
+.pill{background:#222228;border:1px solid #35363a;border-radius:7px;padding:4px 7px;text-align:center;min-width:48px}
+.pill strong{color:var(--gsu-red)}
 
-.cmd{ min-height:40px; display:flex; justify-content:center; align-items:center; gap:7px; margin-bottom:6px; flex-wrap:wrap; }
-.token{padding:6px 10px; margin:1px; border-radius:8px; background:#212123; border:1px solid #393a3c; font-size:clamp(.9rem,2.4vw,1rem);}
-.token.pending{outline:2px solid #ffae00;}
-.token.ok{outline:2px solid #29d07a;}
-.token.bad{outline:2px solid #d02121;}
+.cmd{min-height:40px;display:flex;justify-content:center;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
+.token{padding:6px 10px;margin:1px;border-radius:8px;background:#212123;border:1px solid #393a3c;font-size:clamp(.9rem,2.4vw,1rem)}
+.token.pending{outline:2px solid #ffae00}
+.token.ok{outline:2px solid #29d07a}
+.token.bad{outline:2px solid #d02121}
 
-.leader { letter-spacing:1px; margin:0; font-size:clamp(.82rem,2.2vw,.98rem); text-align:center; min-height:1.2em; }
+.leader{letter-spacing:1px;margin:0;font-size:clamp(.82rem,2.2vw,.98rem);text-align:center;min-height:1.2em}
 
-.directions{margin:8px auto 6px; display:flex; gap:8px; justify-content:center; width:min(940px, 96vw);}
-.key{width:52px; height:44px; border-radius:10px; background:#25242b; border:1.2px solid #2a2d33; display:inline-flex; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer; user-select:none;}
-.key:active{filter:brightness(1.2);}
+.directions{margin:8px auto 6px;display:flex;gap:8px;justify-content:center;width:min(940px,96vw)}
+.key{width:52px;height:44px;border-radius:10px;background:#25242b;border:1.2px solid #2a2d33;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;user-select:none}
+.key:active{filter:brightness(1.2)}
 
-.btnRow {display:flex; gap:10px; justify-content:center; margin:10px 0;}
-.btn{border:none; background:var(--gsu-red); color:#fff; padding:9px 16px; border-radius:9px; cursor:pointer; font-weight:700; font-size:clamp(1rem,2.6vw,1.1rem);}
-.btn:disabled{opacity:.55; cursor:not-allowed;}
+.btnRow{display:flex;gap:10px;justify-content:center;margin:10px 0}
+.btn{border:none;background:var(--gsu-red);color:#fff;padding:9px 16px;border-radius:9px;cursor:pointer;font-weight:700;font-size:clamp(1rem,2.6vw,1.1rem)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
 
-.overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; pointer-events:none;}
-.overlay.show{display:flex;}
-.banner{padding:10px 16px; border:2px solid #fff; border-radius:14px; background:rgba(230,0,35,.13); text-shadow:0 0 12px rgba(255,255,255,.34); font-size:clamp(1.05rem,3.5vw,1.35rem);}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none}
+.overlay.show{display:flex}
+.banner{padding:10px 16px;border:2px solid #fff;border-radius:14px;background:rgba(230,0,35,.13);text-shadow:0 0 12px rgba(255,255,255,.34);font-size:clamp(1.05rem,3.5vw,1.35rem)}
 
-.helper{margin-top:8px; color:var(--muted); font-size:.95em; text-align:center;}
-footer{opacity:.8; text-align:center; font-size:.83em; margin:14px auto 10px; color:var(--muted);}
+.helper{margin-top:8px;color:var(--muted);font-size:.95em;text-align:center}
+footer{opacity:.8;text-align:center;font-size:.83em;margin:14px auto 10px;color:var(--muted)}
 
 @media (max-width:900px){
-  .split-container{flex-direction:column; height:auto; min-height:unset;}
-  .split-side{min-height:148px;}
-  .stage-outer{height:clamp(86px, 24vh, 120px);}
+  .split-container{flex-direction:column;height:auto;min-height:unset}
+  .split-side{min-height:148px}
+  .stage-outer{height:clamp(86px,24vh,120px)}
 }
 </style>
 </head>
@@ -90,7 +81,6 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:14px auto 10px; co
   <span class="title">GSU COMMAND STRIKE — SPLIT DUEL</span>
 </div>
 
-<!-- New: difficulty control -->
 <div class="controls">
   <span class="label">Difficulty:</span>
   <select id="difficulty" class="select">
@@ -214,12 +204,9 @@ function flyControllerFX(stage, fx, target, cb) {
       boom.textContent = pick(BOOM_ICONS);
       boom.style.transform = `translate(${tx + rand(-6, 6)}px,${ty + rand(-6,6)}px) scale(0.6)`;
       fx.appendChild(boom);
-      boom.animate(
-        [{opacity:.1},{opacity:1},{opacity:0}],
-        {duration: 300, fill:'forwards'}
-      ).onfinish = () => boom.remove();
+      boom.animate([{opacity:.1},{opacity:1},{opacity:0}], {duration: 300, fill:'forwards'}).onfinish = () => boom.remove();
       confettiFX(stage, fx, tx, ty, 6 + Math.floor(Math.random()*2));
-    }, 90);
+    }, 80);
     target.el.classList.add("hit");
     setTimeout(() => { target.el && target.el.remove(); }, 140);
     cb && cb();
@@ -242,10 +229,7 @@ function confettiFX(stage, fx, x, y, n) {
   }
 }
 
-/* -------------------- Game core -------------------- */
-function tokenLengthByRound(r){ return Math.min(4 + Math.floor((r-1)/2), 10); }
-
-// Difficulty model
+/* -------------------- Difficulty -------------------- */
 function getDifficulty(){
   const d = difficultySel.value;
   if(d === "hard")   return { base: 280, min: 180, skip: 0.10, jitter:[30,90], fumble:0.00 };
@@ -254,16 +238,12 @@ function getDifficulty(){
 }
 function cpuSpeedByRound(r){
   const d = getDifficulty();
-  const speed = Math.max(d.base - (r-1)*8, d.min); // slight ramp
-  return speed;
+  return Math.max(d.base - (r-1)*8, d.min);
 }
 
-function genPattern(len){
-  const out = [];
-  for(let i=0;i<len;i++) out.push(DIR[Math.floor(Math.random()*DIR.length)]);
-  return out;
-}
-
+/* -------------------- Game core -------------------- */
+function tokenLengthByRound(r){ return Math.min(4 + Math.floor((r-1)/2), 10); }
+function genPattern(len){ return Array.from({length:len}, ()=> DIR[Math.floor(Math.random()*DIR.length)]); }
 function renderTokens(container, arr, index){
   container.innerHTML = "";
   arr.forEach((sym,i)=>{
@@ -275,27 +255,35 @@ function renderTokens(container, arr, index){
     container.appendChild(t);
   });
 }
-
 function progressPct(done, total){ return Math.round((done/Math.max(1,total))*100); }
 
 let game = null;
-
 function newGame(){
   return {
     round: 1,
     player: { idx:0, hits:0, streak:0, startedAt:0, time:0 },
-    cpu:    { idx:0, hits:0, streak:0, startedAt:0, time:0, timer:null, cooldown:0 },
+    cpu:    { idx:0, hits:0, streak:0, startedAt:0, time:0, timer:null },
     pattern: [],
     targetsP: [], targetsC: [],
     done:false
   };
 }
 
+/* Pre-spawn targets = number of commands (both sides) */
+function populateTargets(len){
+  fxP.innerHTML = ""; fxC.innerHTML = "";
+  game.targetsP = []; game.targetsC = [];
+  for(let i=0;i<len;i++){
+    game.targetsP.push(spawnTargetFX(stageP, fxP, game.targetsP));
+    game.targetsC.push(spawnTargetFX(stageC, fxC, game.targetsC));
+  }
+}
+
 function startRound(){
   if(!game) game = newGame();
   game.done = false;
   game.player.idx=0; game.player.streak=0; game.player.hits=0; game.player.time=0;
-  game.cpu.idx=0; game.cpu.streak=0; game.cpu.hits=0; game.cpu.time=0; game.cpu.cooldown=0;
+  game.cpu.idx=0; game.cpu.streak=0; game.cpu.hits=0; game.cpu.time=0;
 
   const len = tokenLengthByRound(game.round);
   game.pattern = genPattern(len);
@@ -307,9 +295,7 @@ function startRound(){
   $("#player-leader").textContent = "";
   $("#cpu-leader").textContent = "";
 
-  fxP.innerHTML = ""; fxC.innerHTML = ""; game.targetsP = []; game.targetsC = [];
-  game.targetsP.push(spawnTargetFX(stageP, fxP, game.targetsP));
-  game.targetsC.push(spawnTargetFX(stageC, fxC, game.targetsC));
+  populateTargets(len); // 👈 pre-spawn exactly len emojis
 
   startBtn.disabled = true; nextBtn.disabled = true; restartBtn.disabled = false;
 
@@ -321,7 +307,7 @@ function startRound(){
 
 function endRound(winner){
   game.done = true;
-  if(game.cpu.timer) { clearInterval(game.cpu.timer); game.cpu.timer=null; }
+  if(game.cpu.timer){ clearInterval(game.cpu.timer); game.cpu.timer=null; }
   const msg = winner === "player" ? "Round Win! 🏆" : (winner==="cpu" ? "CPU Wins Round 🤖" : "Draw");
   showBanner(msg);
   nextBtn.disabled = game.round >= MAX_ROUNDS;
@@ -336,15 +322,17 @@ function showBanner(text){
   setTimeout(()=>overlay.classList.remove("show"), 1100);
 }
 
-/* Player input */
+/* -------------------- Player input => boom the NEXT emoji -------------------- */
 function apply(sym){
   if(!game || game.done) return;
   const expect = game.pattern[game.player.idx];
   if(!DIR.includes(sym)) return;
 
   if(sym === expect){
-    const t = spawnTargetFX(stageP, fxP, game.targetsP);
-    flyControllerFX(stageP, fxP, t, ()=>{});
+    const target = game.targetsP[game.player.idx]; // hit the next pre-spawned emoji
+    if(target){
+      flyControllerFX(stageP, fxP, target, ()=>{});
+    }
     game.player.idx++;
     game.player.hits++;
     game.player.streak++;
@@ -370,7 +358,7 @@ function apply(sym){
   }
 }
 
-/* CPU logic (slower, hesitations, occasional fumbles on Easy) */
+/* -------------------- CPU logic => boom its NEXT emoji -------------------- */
 function startCPU(){
   const d = getDifficulty();
   const base = cpuSpeedByRound(game.round);
@@ -378,25 +366,24 @@ function startCPU(){
   const step = ()=> {
     if(game.done) return;
 
-    // Hesitation chance per tick
+    // hesitation chance
     if(Math.random() < d.skip) return;
 
-    // Tiny reaction jitter
     const jitter = rand(d.jitter[0], d.jitter[1]);
 
     setTimeout(()=>{
       if(game.done) return;
 
-      // Fumble (Easy/Normal only): occasionally lose one step of progress
+      // fumble (Easy/Normal)
       if(d.fumble > 0 && Math.random() < d.fumble && game.cpu.idx > 0){
         game.cpu.idx = Math.max(0, game.cpu.idx - 1);
-        // brief visual to show a stall (no token advance)
         const cur = cCmd.children[Math.max(0, game.cpu.idx)];
         if(cur){ cur.classList.add("bad"); setTimeout(()=>cur.classList.remove("bad"), 140); }
       } else {
-        // normal advance
-        const t = spawnTargetFX(stageC, fxC, game.targetsC);
-        flyControllerFX(stageC, fxC, t, ()=>{});
+        const target = game.targetsC[game.cpu.idx];
+        if(target){
+          flyControllerFX(stageC, fxC, target, ()=>{});
+        }
         game.cpu.idx++;
         game.cpu.hits++;
         game.cpu.streak++;
@@ -423,7 +410,7 @@ function startCPU(){
   game.cpu.timer = setInterval(step, base);
 }
 
-/* -------------------- Input -------------------- */
+/* -------------------- Input & Buttons -------------------- */
 window.addEventListener("keydown", (e) => {
   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
   let sym = null;
@@ -435,7 +422,6 @@ window.addEventListener("keydown", (e) => {
 });
 $$(".key[data-sym]").forEach(k=> k.addEventListener("click", ()=> apply(k.getAttribute("data-sym")) ));
 
-/* -------------------- Buttons -------------------- */
 startBtn.addEventListener("click", ()=>{
   game = newGame();
   startRound();
@@ -450,13 +436,12 @@ restartBtn.addEventListener("click", ()=>{
   startRound();
 });
 
-// Changing difficulty mid-session restarts round 1 for clarity
+// if difficulty changes, require a fresh start
 difficultySel.addEventListener("change", ()=>{
   startBtn.disabled = false;
   nextBtn.disabled = true;
   restartBtn.disabled = true;
 });
-
 </script>
 </body>
 </html>
