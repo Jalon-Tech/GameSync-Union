@@ -33,7 +33,7 @@ h2 { text-align:center; margin:5px 0 4px 0; font-size:1.21em; letter-spacing:2px
   display: flex; align-items:center; justify-content:center;
 }
 .fx{position:absolute;inset:0;pointer-events:none;}
-.target{position:absolute; font-size:41px; filter:drop-shadow(0 0 8px #fff)}
+.target{position:absolute; font-size:41px; filter:drop-shadow(0 0 8px #fff); transition: transform .26s cubic-bezier(.33,1.2,.68,1);}
 .target.hit{filter:drop-shadow(0 0 14px #e60023)}
 .controller{position:absolute; width:58px; will-change:transform; filter:drop-shadow(0 0 8px #e6002366);}
 .boom{position:absolute; font-size:50px; opacity:0}
@@ -184,6 +184,14 @@ lettersPlayer.innerHTML = LETTER_TOKENS.map(ch=>`<div class="key" data-sym="${ch
 
 // Helper (FX per stage)
 function rand(a,b){ return Math.random()*(b-a)+a }
+function moveTargetRandomly(stage, target) {
+  // Randomly reposition the emoji target within the stage, don't go out of bounds
+  const rect = stage.getBoundingClientRect(), pad = 18;
+  const x = rand(pad, rect.width-pad-38), y = rand(pad, rect.height-pad-38);
+  target.x = x;
+  target.y = y;
+  target.el.style.transform = `translate(${x}px,${y}px)`;
+}
 function spawnTargetFX(stage, fx){
   // spawn target in random pos within stage (returns {x,y,el})
   fx.innerHTML = "";
@@ -191,10 +199,11 @@ function spawnTargetFX(stage, fx){
   const x = rand(pad, rect.width-pad-38), y = rand(pad, rect.height-pad-38);
   const el = document.createElement('div');
   el.className='target'; el.style.transform = `translate(${x}px,${y}px)`;
-  el.textContent = pick(['👾','😂','😈','🤡','🙄','☠️','🤪','🤬','🤑','😴','👺', '🐒','🦅','🐸','🐷','🐊','🐰','🐉','🦊','😍','🥸','👻','🦁','🦄','😱','🐦‍🔥','🐲','😎','🤩','😘']);;
+  el.textContent = pick(['👾','😂','😈','🤡','🙄','☠️','🤪','🤬','🤑','😴','👺', '🐒','🦅','🐸','🐷','🐊','🐰','🐉','🦊','😍','🥸','👻','🦁','🦄','😱','🐦‍🔥','🐲','😎','🤩','😘']);
   fx.appendChild(el); return {x,y,el:el};
 }
 function flyControllerFX(stage, fx, target, cb){
+  moveTargetRandomly(stage, target); // Emoji moves right before strike
   const img = document.createElement('img');
   img.src="GSU_LOGO.png"; img.className='controller'; fx.appendChild(img);
   const tx=target.x, ty=target.y, sx=rand(-66,2), sy=rand(18,stage.clientHeight-30);
@@ -322,10 +331,11 @@ function apply(sym){
     setHUD(); leadingUpdate();
   }
 }
-// CPU simulation
+// CPU simulation (slow, always beatable)
 function startCPU(){
   game.cpu.idx=0; game.cpu.hits=0; game.cpu.streak=0;
-  game.cpu.speed=420 + Math.random()*44 + game.round*3.5;
+  // CPU speed: always slower than a reasonable player (600-900ms/action)
+  game.cpu.speed=650 + Math.random()*180;
   cpuFinishTime=null;
   function cpuStep(){
     if(!game.active) return;
@@ -344,7 +354,7 @@ function startCPU(){
         cpuStep();
       }
       leadingUpdate();
-    }, game.cpu.speed + Math.random()*48);
+    }, game.cpu.speed + Math.random()*110);
   }
   cpuStep();
 }
