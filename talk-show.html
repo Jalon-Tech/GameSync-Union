@@ -198,90 +198,101 @@
   </footer>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyABC123...",
-      authDomain: "gamesync-union.firebaseapp.com",
-      projectId: "gamesync-union",
-      storageBucket: "gamesync-union.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abcdef123456"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyABC123...", // Replace with your real config
+    authDomain: "gamesync-union.firebaseapp.com",
+    projectId: "gamesync-union",
+    storageBucket: "gamesync-union.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef123456"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    const videoContainer = document.getElementById("video-container");
-    const q = query(collection(db, "submissions"), where("type", "==", "breakdown"));
+  const videoContainer = document.getElementById("video-container");
+  const q = query(collection(db, "submissions"), where("type", "==", "breakdown"));
 
-    onSnapshot(q, (snapshot) => {
-      videoContainer.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const { videoUrl, caption } = doc.data();
-        if (!videoUrl) return;
+  onSnapshot(q, (snapshot) => {
+    videoContainer.innerHTML = "";
 
-        const embedUrl = videoUrl.includes("watch?v=")
-          ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
-          : videoUrl.includes("youtu.be/")
-            ? `https://www.youtube.com/embed/${videoUrl.split("youtu.be/")[1]}`
-            : videoUrl;
+    snapshot.forEach((doc) => {
+      const { videoUrl, caption } = doc.data();
+      if (!videoUrl) return;
 
-        const card = document.createElement("div");
-        card.style.backgroundColor = "#2a2a2a";
-        card.style.borderRadius = "10px";
-        card.style.padding = "1rem";
+      // Generate embed URL from various YouTube URL types
+      const embedUrl = videoUrl.includes("watch?v=")
+        ? videoUrl.replace("watch?v=", "embed/").split("&")[0]
+        : videoUrl.includes("youtu.be/")
+          ? `https://www.youtube.com/embed/${videoUrl.split("youtu.be/")[11]}`
+          : videoUrl;
+
+      const card = document.createElement("div");
+      card.style.backgroundColor = "#2a2a2a";
+      card.style.borderRadius = "10px";
+      card.style.padding = "1rem";
+      card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
+      card.style.width = "min(100%, 560px)";
+      card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+      card.style.textAlign = "center";
+
+      card.onmouseenter = () => {
+        card.style.transform = "translateY(-6px) scale(1.01)";
+        card.style.boxShadow = "0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05)";
+      };
+
+      card.onmouseleave = () => {
+        card.style.transform = "none";
         card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
-        card.style.width = "min(100%, 560px)";
-        card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
-        card.onmouseenter = () => {
-          card.style.transform = "translateY(-6px) scale(1.01)";
-          card.style.boxShadow = "0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05)";
-        };
-        card.onmouseleave = () => {
-          card.style.transform = "none";
-          card.style.boxShadow = "0 0 0 1px var(--gsu-red)";
-        };
+      };
 
-        const iframeWrapper = document.createElement("div");
-        iframeWrapper.style.position = "relative";
-        iframeWrapper.style.width = "100%";
-        iframeWrapper.style.paddingTop = videoUrl.includes("shorts") ? "177.78%" : "56.25%";
-        iframeWrapper.style.borderRadius = "8px";
-        iframeWrapper.style.overflow = "hidden";
+      const iframeWrapper = document.createElement("div");
+      iframeWrapper.style.position = "relative";
+      iframeWrapper.style.width = "100%";
 
-        const iframe = document.createElement("iframe");
-        iframe.src = embedUrl;
-        iframe.style.position = "absolute";
-        iframe.style.top = "0";
-        iframe.style.left = "0";
-        iframe.style.width = "100%";
-        iframe.style.height = "100%";
-        iframe.setAttribute('allowfullscreen', '');
-        iframe.style.border = "none";
+      // Adjust aspect ratio for shorts or regular videos
+      const isShort = videoUrl.includes("shorts");
+      iframeWrapper.style.paddingTop = isShort ? "177.78%" : "56.25%"; // 9:16 vs 16:9
+      iframeWrapper.style.borderRadius = "8px";
+      iframeWrapper.style.overflow = "hidden";
 
-        iframeWrapper.appendChild(iframe);
-        card.appendChild(iframeWrapper);
+      const iframe = document.createElement("iframe");
+      iframe.src = embedUrl;
+      iframe.style.position = "absolute";
+      iframe.style.top = "0";
+      iframe.style.left = "0";
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.border = "none";
 
-        const title = document.createElement("p");
-        title.textContent = caption || "No caption provided.";
-        title.style.color = "#fff";
-        title.style.fontWeight = "600";
-        title.style.fontFamily = "Montserrat, sans-serif";
-        title.style.margin = "1rem 0 0.5rem";
-        title.style.fontSize = "1rem";
+      // Properly enable fullscreen with attributes
+      iframe.setAttribute("allowfullscreen", "");
+      iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen");
 
-        const note = document.createElement("p");
-        note.textContent = "🎮 GSU Commentary Drop via YouTube";
-        note.style.color = "#ccc";
-        note.style.fontSize = "0.9rem";
+      iframeWrapper.appendChild(iframe);
+      card.appendChild(iframeWrapper);
 
-        card.appendChild(title);
-        card.appendChild(note);
-        videoContainer.appendChild(card);
-      });
+      const title = document.createElement("p");
+      title.textContent = caption || "No caption provided.";
+      title.style.color = "#fff";
+      title.style.fontWeight = "600";
+      title.style.fontFamily = "Montserrat, sans-serif";
+      title.style.margin = "1rem 0 0.5rem";
+      title.style.fontSize = "1rem";
+
+      const note = document.createElement("p");
+      note.textContent = "🎮 GSU Commentary Drop via YouTube";
+      note.style.color = "#ccc";
+      note.style.fontSize = "0.9rem";
+
+      card.appendChild(title);
+      card.appendChild(note);
+      videoContainer.appendChild(card);
     });
-  </script>
+  });
+</script>
 </body>
 </html>
