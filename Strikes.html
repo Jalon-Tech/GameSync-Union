@@ -18,15 +18,15 @@ html, body { margin:0; padding:0; height:100%; background:var(--bg); color:var(-
   background:linear-gradient(90deg,#1a1a1d 45%, #10101b 55%);
 }
 .split-side {
-  flex: 1; 
+  flex: 1;
   display: flex; flex-direction:column; align-items:center; justify-content:space-between;
-  padding: 0px 12px 12px 12px; 
-  position:relative; /* for FX */
+  padding: 0 12px 12px 12px;
+  position:relative;
   min-width:0; min-height: 0;
 }
-.split-side.left { background: #181820; border-right:2px solid #e6002335;}
-.split-side.right { background: #191719;}
-h2 { text-align:center; margin:5px 0 4px 0; font-size:1.21em; letter-spacing:2px;}
+.split-side.left { background: #181820; border-right:2px solid #e6002335; }
+.split-side.right { background: #191719; }
+h2 { text-align:center; margin:5px 0 4px 0; font-size:1.21em; letter-spacing:2px; }
 .stage-outer {
   border:1.5px solid #2a2a3a; border-radius:12px; margin-bottom:8px;
   height:130px; background:#18171c; width:100%; position: relative; overflow:hidden;
@@ -34,9 +34,9 @@ h2 { text-align:center; margin:5px 0 4px 0; font-size:1.21em; letter-spacing:2px
 }
 .fx{position:absolute;inset:0;pointer-events:none;}
 .target{position:absolute; font-size:41px; filter:drop-shadow(0 0 8px #fff); transition: transform .26s cubic-bezier(.33,1.2,.68,1);}
-.target.hit{filter:drop-shadow(0 0 14px #e60023)}
+.target.hit{filter:drop-shadow(0 0 14px #e60023);}
 .controller{position:absolute; width:58px; will-change:transform; filter:drop-shadow(0 0 8px #e6002366);}
-.boom{position:absolute; font-size:50px; opacity:0}
+.boom{position:absolute; font-size:50px; opacity:0;}
 .spark{position:absolute; width:8px; height:8px; border-radius:50%; background:radial-gradient(circle,#fff 0 47%, rgba(255,255,255,.2) 60%, transparent 75%);
   box-shadow:0 0 10px rgba(255,255,255,.38);}
 .confetti{position:absolute; width:8px; height:12px; will-change:transform; opacity:.96}
@@ -44,17 +44,17 @@ h2 { text-align:center; margin:5px 0 4px 0; font-size:1.21em; letter-spacing:2px
   min-height: 40px; display:flex; justify-content:center; align-items:center; gap:7px;
   margin-bottom:6px;
 }
-.token{padding:7px 11px; margin:1px; border-radius:8px; background:#212123; border:1px solid #393a3c; font-size:1.0em}
-.token.pending{outline:2px solid #ffae00}
-.token.ok{outline:2px solid #29d07a}
-.token.bad{outline:2px solid #d02121}
+.token{padding:7px 11px; margin:1px; border-radius:8px; background:#212123; border:1px solid #393a3c; font-size:1.0em;}
+.token.pending{outline:2px solid #ffae00;}
+.token.ok{outline:2px solid #29d07a;}
+.token.bad{outline:2px solid #d02121;}
 .hud{ font-size:.96em; display:flex; gap:11px; margin-bottom:4px;}
 .pill{background:#222228; border:1px solid #35363a; border-radius:7px; padding:4px 7px; text-align:center; min-width:48px;}
-.pill strong{color:var(--gsu-red)}
+.pill strong{color:var(--gsu-red);}
 .leader { letter-spacing:1px; margin:0; font-size:.98em; }
 .letters{margin-top:9px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
 .key{width:45px; height:36px; border-radius:8px; background:#25242b; border:1.2px solid #2a2d33; display:inline-flex; align-items:center; justify-content:center; font-size:1.08em; cursor:pointer; margin-bottom:4px;}
-.key:active{filter:brightness(1.2)}
+.key:active{filter:brightness(1.2);}
 .directions{margin: 1px 0 7px 0; display:flex; gap:8px; justify-content:center;}
 .btnRow {display:flex; gap:10px;justify-content:center; margin:10px 0;}
 .btn{border:none; background:var(--gsu-red); color:#fff; padding:8px 16px; border-radius:9px; cursor:pointer; font-weight:700; font-size:1.1em;}
@@ -73,7 +73,6 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto
 <div style="text-align:center; margin-bottom:8px;"><img src="GSU_LOGO.png" alt="GSU" style="max-width:69px;vertical-align:middle;"> <span style="letter-spacing:2px;font-size:1.12em;vertical-align:middle;">GSU COMMAND STRIKE — SPLIT DUEL</span></div>
 
 <div class="split-container">
-  <!-- Left: Player -->
   <div class="split-side left">
     <h2>👤 YOU</h2>
     <div class="hud" id="hud-player">
@@ -88,8 +87,6 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto
     <div id="player-leader" class="leader"></div>
     <div class="letters" id="letters-player"></div>
   </div>
-
-  <!-- Right: CPU -->
   <div class="split-side right">
     <h2>🤖 CPU</h2>
     <div class="hud" id="hud-cpu">
@@ -178,11 +175,6 @@ function beep(freq=880, dur=0.05, vol=0.03){
   g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
   o.stop(audioCtx.currentTime + dur);
 }
-// Key/letter UI
-lettersRow.innerHTML = LETTER_TOKENS.map(c=>`<div class="key" data-sym="${c}">${c}</div>`).join("");
-lettersPlayer.innerHTML = LETTER_TOKENS.map(ch=>`<div class="key" data-sym="${ch}">${ch}</div>`).join("");
-
-// Helper (FX per stage)
 function rand(a,b){ return Math.random()*(b-a)+a }
 function moveTargetRandomly(stage, target) {
   // Randomly reposition the emoji target within the stage, don't go out of bounds
@@ -269,7 +261,6 @@ function setHUD(){
   cpuLeader.textContent=(cpuC.prog>pC.prog?"CPU is ahead!":(pC.prog>cpuC.prog?"You're ahead!":""));
 }
 function leadingUpdate(){
-  // call on every move to update leader message
   playerLeader.textContent=pC.prog>cpuC.prog?"You're ahead!":(cpuC.prog>pC.prog?"CPU is ahead!":"");
   cpuLeader.textContent=cpuC.prog>pC.prog?"CPU is ahead!":(pC.prog>cpuC.prog?"You're ahead!":"");
 }
@@ -363,20 +354,20 @@ function startCPU(){
 
 function checkWinner(){
   if(playerFinishTime && cpuFinishTime){
-    if(playerFinishTime<cpuFinishTime-28){
+    if(playerFinishTime < cpuFinishTime - 28){
       showBanner("🏆 YOU WIN!");
-    }else if(cpuFinishTime<playerFinishTime-28){
+    }else if(cpuFinishTime < playerFinishTime - 28){
       showBanner("🤖 CPU WINS!");
     }else{
       showBanner("⚖️ DRAW!");
     }
   }
 }
-// UI
 function showBanner(t){
   overlay.innerHTML = `<div class="banner">${t}</div>`;
   setTimeout(()=>overlay.innerHTML="", 1400);
 }
+
 window.addEventListener('keydown', e=>{
   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
   let sym = null;
@@ -385,12 +376,26 @@ window.addEventListener('keydown', e=>{
   else if(e.key==="ArrowLeft") sym="←";
   else if(e.key==="ArrowRight") sym="→";
   else if(/^[a-z]$/i.test(e.key)) sym = e.key.toUpperCase();
-  if(sym&&(DIR.includes(sym)||LETTER_TOKENS.includes(sym))) apply(sym);
+  if(sym&&(DIR.includes(sym) || LETTER_TOKENS.includes(sym))) apply(sym);
 });
-[...document.querySelectorAll('.key[data-sym]')].forEach(k=>{k.addEventListener('click',()=>apply(k.getAttribute('data-sym')));});
-startBtn.addEventListener('click',()=>{ensureAudio();if(!game)game=newGame();else game.round=1; startRound();});
-nextBtn.addEventListener('click',()=>{game.round++;startRound();});
-restartBtn.addEventListener('click',()=>{if(game)startRound();});
+
+[...document.querySelectorAll('.key[data-sym]')].forEach(k=>{
+  k.addEventListener('click',()=>apply(k.getAttribute('data-sym')));
+});
+
+startBtn.addEventListener('click', ()=>{
+  ensureAudio();
+  if (!game) game = newGame();
+  else game.round = 1;
+  startRound();
+});
+nextBtn.addEventListener('click', ()=>{
+  game.round++;
+  startRound();
+});
+restartBtn.addEventListener('click', ()=>{
+  if(game) startRound();
+});
 </script>
 </body>
 </html>
