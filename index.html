@@ -11,6 +11,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   
 <style>
+  .spotlight-video iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 0 14px rgba(230, 0, 35, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 340px;
+  max-height: 480px;
+}
+
+.spotlight-video {
+  background: #2a2a2a;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  margin-bottom: 1.5rem;
+}
+.spotlight-video:hover {
+  transform: scale(1.02);
+  border-color: var(--gsu-red);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+}
+
   .update-flash-img {
   animation: flashGlow 1.3s ease-in-out;
 }
@@ -1591,6 +1615,32 @@ When the Union highlights you â€” it means something. If your nameâ€™s
 </style>
 
 <script>
+  async function loadCommunityStats() {
+  try {
+    // Example: Fetch stats from Firestore 'stats' document or aggregate counts from collections
+    const statsDoc = await getDoc(doc(db, "communityStats", "summary"));
+    if (statsDoc.exists()) {
+      const stats = statsDoc.data();
+      document.getElementById("totalMembers").textContent = stats.totalMembers || "N/A";
+      document.getElementById("newMembers").textContent = stats.newMembersThisWeek || "N/A";
+      document.getElementById("videoUploads").textContent = stats.videosShared || "N/A";
+      document.getElementById("fanArt").textContent = stats.fanArtPieces || "N/A";
+      document.getElementById("trophies").textContent = stats.trophiesEarned || "N/A";
+      document.getElementById("combos").textContent = stats.comboGuides || "N/A";
+      document.getElementById("pollVotes").textContent = stats.pollVotes || "N/A";
+    } else {
+      console.warn("Community stats document missing.");
+    }
+  } catch (error) {
+    console.error("Error loading community stats:", error);
+  }
+}
+
+// Call community stats loader on page load
+window.addEventListener("DOMContentLoaded", () => {
+  loadCommunityStats();
+});
+
   function openEditModal() {
 
   document.getElementById('editModal').style.display = 'block';
