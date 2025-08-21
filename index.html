@@ -45,9 +45,9 @@
   width: 100%;
 }
 
-/* 🔽 emoji arrow */
+/* ðŸ”½ emoji arrow */
 .dropdown-wrapper::after {
-  content: "🔽";
+  content: "ðŸ”½";
   position: absolute;
   top: 50%;
   right: 16px;
@@ -205,7 +205,7 @@
   .retro-body .game-title {
   font-size: 1rem;
   font-weight: bold;
-  color: var(--gsu-red); /* 🔥 Highlight in GSU red */
+  color: var(--gsu-red); /* ðŸ”¥ Highlight in GSU red */
   margin-bottom: 0.4rem;
 }
 
@@ -244,7 +244,7 @@
   animation: fadeSlideIn 0.5s ease-out;
 }
 
-/* 🔴 Always shows red glow on hover */
+/* ðŸ”´ Always shows red glow on hover */
 #quick-review-box:hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow: 0 6px 16px rgba(230, 0, 35, 0.4), 0 0 8px rgba(255, 255, 255, 0.05);
@@ -973,29 +973,29 @@ nav {
       </p>
       </div>
       
-     <!-- 🕹️ Retro Game Flashback -->
+     <!-- ðŸ•¹ï¸ Retro Game Flashback -->
 <div class="box match-review-style">
-  <h2 class="retro-header">🕹️ Retro Game Flashback</h2>
+  <h2 class="retro-header">ðŸ•¹ï¸ Retro Game Flashback</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry — a reminder of where the journey began.
+    Step back into the early days of gaming, when every level was a challenge and every victory felt earned. This flashback spotlights a title that helped shape the industry â€” a reminder of where the journey began.
   </p>
   <div class="retro-body">
     <div class="game-title">From here, the Retroverse info unfolds.</div>
     <div class="game-fact" id="retro-fact" style="max-height: 90px; overflow-y: auto;">
       Loading fact...
     </div>
-    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">🕹️ Spin the Retro Wheel</button>
+    <button class="btn" onclick="loadRetroFact()" style="margin-top: 0.8rem; font-size: 0.85rem;">ðŸ•¹ï¸ Spin the Retro Wheel</button>
   </div>
 </div>
 
-<!-- 🎮 GSU Character Sync -->
+<!-- ðŸŽ® GSU Character Sync -->
 <div class="gsu-sync-box">
-  <h2 class="retro-header">🎮 GSU Character Sync-Up</h2>
+  <h2 class="retro-header">ðŸŽ® GSU Character Sync-Up</h2>
   <p class="sync-desc">
-    Ready to find out who you’re synced with? Choose your platform and let GSU reveal the video game character that fits your world best.
+    Ready to find out who youâ€™re synced with? Choose your platform and let GSU reveal the video game character that fits your world best.
   </p>
 
-  <label for="platform-select" class="sync-label">🕹️ Choose Your Platform to Begin the Sync:</label>
+  <label for="platform-select" class="sync-label">ðŸ•¹ï¸ Choose Your Platform to Begin the Sync:</label>
   <select id="platform-select" class="input-field" onchange="updateCharacterOptions()">
     <option value="">-- Choose Platform --</option>
     <option value="PlayStation">PlayStation</option>
@@ -1022,25 +1022,25 @@ nav {
 </div>
 
 
-<!-- 🔧 Scripts -->
+<!-- ðŸ”§ Scripts -->
 <script>
   const RetroFacts = [
-    "🕹️ Donkey Kong (1981) introduced Jumpman — who would later become Mario.",
-    "🧱 Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
-    "💾 NES cartridges used 'lockout chips' to prevent unlicensed games.",
-    "🎯 Pong (1972) was so popular that the original machine overflowed with quarters and broke.",
-    "🎮 The Sega Genesis had a hidden sound test screen used for cheat codes in Sonic games.",
-    "👾 Space Invaders (1978) was the first game to increase difficulty as you played.",
-    "🎤 Mortal Kombat sparked U.S. government hearings that led to the ESRB rating system.",
-    "🌀 SNES Mode 7 graphics engine enabled fake 3D effects in F-Zero and Mario Kart.",
-    "📼 Game saves didn’t exist early on — players had to beat the game in one sitting."
+    "ðŸ•¹ï¸ Donkey Kong (1981) introduced Jumpman â€” who would later become Mario.",
+    "ðŸ§± Tetris (1984) was created by a Soviet engineer and smuggled out of the USSR.",
+    "ðŸ’¾ NES cartridges used 'lockout chips' to prevent unlicensed games.",
+    "ðŸŽ¯ Pong (1972) was so popular that the original machine overflowed with quarters and broke.",
+    "ðŸŽ® The Sega Genesis had a hidden sound test screen used for cheat codes in Sonic games.",
+    "ðŸ‘¾ Space Invaders (1978) was the first game to increase difficulty as you played.",
+    "ðŸŽ¤ Mortal Kombat sparked U.S. government hearings that led to the ESRB rating system.",
+    "ðŸŒ€ SNES Mode 7 graphics engine enabled fake 3D effects in F-Zero and Mario Kart.",
+    "ðŸ“¼ Game saves didnâ€™t exist early on â€” players had to beat the game in one sitting."
   ]; 
   
   const CharacterAssignments = [
 {
   name: "Peter Parker/Spider-Man",
   role: "superhero",
-  desc: "You balance smarts, strength, and soul. In every crisis, you choose the right thing — even when it costs you everything.",
+  desc: "You balance smarts, strength, and soul. In every crisis, you choose the right thing â€” even when it costs you everything.",
   game: "Marvel's Spider-Man 2",
   img: "https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg",
   platforms: ["PlayStation", "PC"]
@@ -1049,8 +1049,8 @@ nav {
 {
   name: "Kratos",
   role: "anti-hero",
-  desc: "Fueled by rage but guided by growth, you’ve fought your past and forged a new path. You don’t run — you conquer.",
-  game: "God of War Ragnarök",
+  desc: "Fueled by rage but guided by growth, youâ€™ve fought your past and forged a new path. You donâ€™t run â€” you conquer.",
+  game: "God of War RagnarÃ¶k",
   img: "https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg",
   platforms: ["PlayStation"]
 },
@@ -1058,7 +1058,7 @@ nav {
 {
   name: "Miles Morales",
   role: "superhero",
-  desc: "You carry the weight of two worlds on your shoulders — and still move with purpose, heart, and style. You’re the spark.",
+  desc: "You carry the weight of two worlds on your shoulders â€” and still move with purpose, heart, and style. Youâ€™re the spark.",
   game: "Marvel's Spider-Man: Miles Morales",
   img: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg",
   platforms: ["PlayStation", "PC"]
@@ -1067,7 +1067,7 @@ nav {
 {
   name: "Aloy",
   role: "hunter-protector",
-  desc: "Driven by curiosity and courage, you never stop pushing boundaries. You’re not afraid to question the world to save it.",
+  desc: "Driven by curiosity and courage, you never stop pushing boundaries. Youâ€™re not afraid to question the world to save it.",
   game: "Horizon Forbidden West",
   img: "https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg",
   platforms: ["PlayStation", "PC"]
@@ -1076,7 +1076,7 @@ nav {
 {
   name: "Jin Sakai",
   role: "samurai-turned-ghost",
-  desc: "Honor matters — but survival means adapting. You protect your people not by tradition, but by any means necessary.",
+  desc: "Honor matters â€” but survival means adapting. You protect your people not by tradition, but by any means necessary.",
   game: "Ghost of Tsushima",
   img: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2YwMzQwNWI1LTQzNjEtNDQ0MC05YmQzLTZlN2RiNmU5ZDBlMlwvZGhvendxMS1iMjRjN2ExNS0xNDJiLTQ0MzctOGY2Ny1kZTRlOTYwMDU1MzcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.wjQsMoxLyA5hjX_JsiDaTeuhiWbyihYKpCN5rnol8TM",
   platforms: ["PlayStation"]
@@ -1085,7 +1085,7 @@ nav {
 {
   name: "Ratchet",
   role: "galactic hero",
-  desc: "You’re inventive, loyal, and always ready to blast through any challenge. No matter the dimension, you rise up with grit and gear.",
+  desc: "Youâ€™re inventive, loyal, and always ready to blast through any challenge. No matter the dimension, you rise up with grit and gear.",
   game: "Ratchet & Clank: Rift Apart",
   img: "https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100",
   platforms: ["PlayStation"]
@@ -1094,7 +1094,7 @@ nav {
 {
   name: "Mario",
   role: "hero-plumber",
-  desc: "Whether it’s Bowser, bricks, or bananas, you’re jumping in with heart and hustle. It’s-a you!",
+  desc: "Whether itâ€™s Bowser, bricks, or bananas, youâ€™re jumping in with heart and hustle. Itâ€™s-a you!",
   game: "Super Mario Odyssey",
   img: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/03/super-mario-odyssey-sequel-beanbean-kingdom.jpg",
   platforms: ["Nintendo"]
@@ -1102,7 +1102,7 @@ nav {
 {
   name: "Donkey Kong",
   role: "jungle powerhouse",
-  desc: "You’re bold, strong, and unshakable. Whether it’s Kremlings or chaos, you smash through with fearless energy and loyalty to your crew.",
+  desc: "Youâ€™re bold, strong, and unshakable. Whether itâ€™s Kremlings or chaos, you smash through with fearless energy and loyalty to your crew.",
   game: "Donkey Kong Bananza",
   img: "https://metro.co.uk/wp-content/uploads/2025/06/SEI_255987806-22f2.jpg?quality=90&strip=all&w=646",
   platforms: ["Nintendo"]
@@ -1112,7 +1112,7 @@ nav {
 
 function assignCharacter() {
   const userGames = document.getElementById("fav-games").textContent || "";
-  const favGameTitles = userGames.replace("🔥 Favorite Games: ", "").split(",").map(g => g.trim());
+  const favGameTitles = userGames.replace("ðŸ”¥ Favorite Games: ", "").split(",").map(g => g.trim());
 
   const matchedPlatforms = detectPreferredPlatforms(favGameTitles);
 
@@ -1124,7 +1124,7 @@ function assignCharacter() {
     ? filteredCharacters[Math.floor(Math.random() * filteredCharacters.length)]
     : CharacterAssignments[Math.floor(Math.random() * CharacterAssignments.length)];
 
-  document.getElementById("character-role").innerText = `🎮 You Are: ${selected.name} (${selected.role})`;
+  document.getElementById("character-role").innerText = `ðŸŽ® You Are: ${selected.name} (${selected.role})`;
   document.getElementById("character-desc").innerText = selected.desc;
   document.getElementById("character-image").src = selected.img;
 }
@@ -1138,7 +1138,7 @@ function assignCharacter() {
 
   function assignCharacter() {
     const random = CharacterAssignments[Math.floor(Math.random() * CharacterAssignments.length)];
-    document.getElementById("character-role").innerText = `🎮 You Are: ${random.name} (${random.role})`;
+    document.getElementById("character-role").innerText = `ðŸŽ® You Are: ${random.name} (${random.role})`;
     document.getElementById("character-desc").innerText = random.desc;
     document.getElementById("character-image").src = random.img;
   }
@@ -1153,19 +1153,19 @@ function assignCharacter() {
     <main>
       <div class="box" style="text-align:center;">
         <h2>Welcome to GameSync Union</h2>
-        <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync — GameSync Union is where gamers link.</p>
-        <button class="btn" onclick="window.location.href='about.html'"><h3>📘🎮 The Full Breakdown: GameSync Union Explained</h3></button>
+        <p style="margin-bottom: 1rem;">No pause. No kink. Just raw sync â€” GameSync Union is where gamers link.</p>
+        <button class="btn" onclick="window.location.href='about.html'"><h3>ðŸ“˜ðŸŽ® The Full Breakdown: GameSync Union Explained</h3></button>
       </div>
 
       <div class="box" id="profile-box">
     <h2 style="color: var(--gsu-red);">Your Profile</h2>
-    <p id="fav-games" class="stat-box">🔥 Favorite Games</p>
-    <p id="games-played" class="stat-box">🎮 Number Of Games Played</p>
-    <p id="trophy-stats" class="stat-box">🏆 Trophy Stats (Total Trophies)</p>
+    <p id="fav-games" class="stat-box">ðŸ”¥ Favorite Games</p>
+    <p id="games-played" class="stat-box">ðŸŽ® Number Of Games Played</p>
+    <p id="trophy-stats" class="stat-box">ðŸ† Trophy Stats (Total Trophies)</p>
 
 
     <div style="margin-top: 1rem;">
-      <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
+      <label style="color:#ccc; font-size: 0.9rem;">ðŸŽ® Synced Game Covers â€“ Pulled from Your Top 3 Favorites</label>
     </div>
 
     <div id="fav-images" style="
@@ -1190,16 +1190,16 @@ function assignCharacter() {
       <input type="text" class="input-field" placeholder="Search guides, uploads, art, users, or trophies..." />
 
 <div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🔥 Statline Supreme: All Union. All Syncd.</h2>
+  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">ðŸ”¥ Statline Supreme: All Union. All Syncd.</h2>
   <div class="livewire-stats">
 
-    <div class="stat-item">👥 Total GSU Members: <span id="totalMembers">_</span></div>
-    <div class="stat-item">🆕 New Members This Week: <span id="newMembers">_</span></div>
-    <div class="stat-item">📹 Videos Shared Across the GSU Community: <span id="videoUploads">_</span></div>
-    <div class="stat-item">🎨 Fan Art Pieces Shared: <span id="fanArt">_</span></div>
-    <div class="stat-item">🏆 Trophies Earned by GSU Players: <span id="trophies">_</span></div>
-    <div class="stat-item">🥊 Combo Guides Shared: <span id="combos">_</span></div>
-    <div class="stat-item">📊 Total Community Poll Votes: <span id="pollVotes">_</span></div>
+    <div class="stat-item">ðŸ‘¥ Total GSU Members: <span id="totalMembers">_</span></div>
+    <div class="stat-item">ðŸ†• New Members This Week: <span id="newMembers">_</span></div>
+    <div class="stat-item">ðŸ“¹ Videos Shared Across the GSU Community: <span id="videoUploads">_</span></div>
+    <div class="stat-item">ðŸŽ¨ Fan Art Pieces Shared: <span id="fanArt">_</span></div>
+    <div class="stat-item">ðŸ† Trophies Earned by GSU Players: <span id="trophies">_</span></div>
+    <div class="stat-item">ðŸ¥Š Combo Guides Shared: <span id="combos">_</span></div>
+    <div class="stat-item">ðŸ“Š Total Community Poll Votes: <span id="pollVotes">_</span></div>
 
 
   </div>
@@ -1207,34 +1207,34 @@ function assignCharacter() {
 </div>
 
 <div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">💪 Built by GSU. Flexed by Gamers.</h2>
+  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">ðŸ’ª Built by GSU. Flexed by Gamers.</h2>
 
   <div class="culture-grid">
-    <a href="games.html" class="culture-tile">🎮 Game Lineup<div class="tile-hover">What We’re Really Playing.</div></a>
+    <a href="games.html" class="culture-tile">ðŸŽ® Game Lineup<div class="tile-hover">What Weâ€™re Really Playing.</div></a>
 
-    <a href="boss-fight-strategies.html" class="culture-tile">⚔️ Boss Fight Guides<div class="tile-hover">Dominate Every Encounter.</div></a>
+    <a href="boss-fight-strategies.html" class="culture-tile">âš”ï¸ Boss Fight Guides<div class="tile-hover">Dominate Every Encounter.</div></a>
 
-    <a href="gameplay-tutorials.html" class="culture-tile">🎓 Gameplay Tutorials<div class="tile-hover">Learn Fast. Play Smarter.</div></a>
+    <a href="gameplay-tutorials.html" class="culture-tile">ðŸŽ“ Gameplay Tutorials<div class="tile-hover">Learn Fast. Play Smarter.</div></a>
 
-    <a href="community-gameplay-videos.html" class="culture-tile">🎥 Gameplay Hub<div class="tile-hover">Your Best Runs. On Display.</div></a>
+    <a href="community-gameplay-videos.html" class="culture-tile">ðŸŽ¥ Gameplay Hub<div class="tile-hover">Your Best Runs. On Display.</div></a>
 
-    <a href="combo-guides.html" class="culture-tile">🥊 Combo Guides<div class="tile-hover">Damage That Matters.</div></a>
+    <a href="combo-guides.html" class="culture-tile">ðŸ¥Š Combo Guides<div class="tile-hover">Damage That Matters.</div></a>
 
-    <a href="trophy-tips.html" class="culture-tile">📈 Trophy Tips<div class="tile-hover">Level Up Without Wasting Time.</div></a>
+    <a href="trophy-tips.html" class="culture-tile">ðŸ“ˆ Trophy Tips<div class="tile-hover">Level Up Without Wasting Time.</div></a>
 
-    <a href="uploads.html" class="culture-tile">💬 Player Lounge<div class="tile-hover">Talk Real. Squad Up.</div></a>
+    <a href="uploads.html" class="culture-tile">ðŸ’¬ Player Lounge<div class="tile-hover">Talk Real. Squad Up.</div></a>
 
-    <a href="art.html" class="culture-tile">🖼️ Fan Art<div class="tile-hover">Clipped. Posted. Respected.</div></a>
+    <a href="art.html" class="culture-tile">ðŸ–¼ï¸ Fan Art<div class="tile-hover">Clipped. Posted. Respected.</div></a>
   </div>
 </div>
 
 
 <div class="box">
  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
-🔥 Made the Union Watch
+ðŸ”¥ Made the Union Watch
 </h2>
 <p style="text-align: center; font-family: 'Roboto'; color: var( --white-text);">
-When the Union highlights you — it means something. If your name’s echoing in live chat, it’s because your skills made the noise. Real gameplay earns the light.
+When the Union highlights you â€” it means something. If your nameâ€™s echoing in live chat, itâ€™s because your skills made the noise. Real gameplay earns the light.
 </p>
 
   <div class="showoff-card" style="flex-direction: column; align-items: center;">
@@ -1246,38 +1246,38 @@ When the Union highlights you — it means something. If your name’s echoing i
     />
   </div>
   <div class="showoff-info" style="text-align: center;">
-    <h3>@QuantumX - “One Parry, One Kill”</h3>
-    <p>Disrespected the Valkyrie Queen with no HUD in God of War: Ragnarök. Certified GSU moment.</p>
+    <h3>@QuantumX - â€œOne Parry, One Killâ€</h3>
+    <p>Disrespected the Valkyrie Queen with no HUD in God of War: RagnarÃ¶k. Certified GSU moment.</p>
   </div>
 </div>
 
 
-<!-- ⬇️ Moved button OUTSIDE the post box, but still in the Union Watch section -->
+<!-- â¬‡ï¸ Moved button OUTSIDE the post box, but still in the Union Watch section -->
 <div style="width: 100%; display: flex; justify-content: center; margin-top: 1.2rem;">
   <button onclick="window.location.href='uploads.html'" class="btn" style="width: 100%; max-width: 240px;">
-    See Why Everyone’s Talking
+    See Why Everyoneâ€™s Talking
   </button>
 </div>
 
 </div>
 
    <div class="box">
-  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">🎭 Union Rewind: Talk of the Week</h2>
+  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">ðŸŽ­ Union Rewind: Talk of the Week</h2>
 
   <div class="talk-quote">
-    <blockquote>“Bro didn’t dodge — he teleported 💀”</blockquote>
-    <p>— Pulled from GSU Lounge</p>
+    <blockquote>â€œBro didnâ€™t dodge â€” he teleported ðŸ’€â€</blockquote>
+    <p>â€” Pulled from GSU Lounge</p>
   </div>
 </div>
 
 <div class="box">
  <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
-👑 One Trophy. One Flex. You Dropped It — Now the Union Sees Why.
+ðŸ‘‘ One Trophy. One Flex. You Dropped It â€” Now the Union Sees Why.
 </h2>
 
   <div class="certified-moment">
     <img src="https://your-image-url.jpg" alt="Moment Screenshot" class="certified-img" />
-    <p class="certified-caption">“Left the boss at 1% just to taunt 💀” — <strong>@ThroneSnatcher</strong></p>
+    <p class="certified-caption">â€œLeft the boss at 1% just to taunt ðŸ’€â€ â€” <strong>@ThroneSnatcher</strong></p>
     <div style="text-align: center;">
       <button class="btn" onclick="window.location.href='trophies.html'" style="margin: 0 auto; display: inline-block;">Relive the Moment</button>
     </div>
@@ -1286,32 +1286,32 @@ When the Union highlights you — it means something. If your name’s echoing i
 
 <div class="box">
   <h2 style="color: var(--gsu-red); font-family: 'Montserrat', sans-serif; text-align: center;">
-  📡 Union Alert: Drop Goes Live Soon
+  ðŸ“¡ Union Alert: Drop Goes Live Soon
   </h2>
 
   <ul class="incoming-drop">
-    <li>🎯 Challenge Theme dropping Friday: <strong>✨ Style Over Damage</strong></li>
-    <li>🖼️ Fan Art Tournament Round 2 this weekend</li>
-    <li>🆕 GSU Custom Avatars launching soon</li>
+    <li>ðŸŽ¯ Challenge Theme dropping Friday: <strong>âœ¨ Style Over Damage</strong></li>
+    <li>ðŸ–¼ï¸ Fan Art Tournament Round 2 this weekend</li>
+    <li>ðŸ†• GSU Custom Avatars launching soon</li>
   </ul>
 </div>
 
    <!-- Spotlight 3 stays after these -->
 
   <div class="box" id="spotlight3">
-    <h2>🎮 GameSync Spotlight 3</h2>
-    <p>GameSync Spotlight 3 delivers gameplay from the titles that matter to you — daily.</p>
+    <h2>ðŸŽ® GameSync Spotlight 3</h2>
+    <p>GameSync Spotlight 3 delivers gameplay from the titles that matter to you â€” daily.</p>
     <div id="fav-game-updates"></div>
     </div>
 
     </main>
 
    <aside>
- <!-- 🎮 GSU Mini Games Zone -->
+ <!-- ðŸŽ® GSU Mini Games Zone -->
 <div class="box match-review-style">
-  <h2 class="retro-header">🕹️ The GameSync Game Room</h2>
+  <h2 class="retro-header">ðŸ•¹ï¸ The GameSync Game Room</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-   Explore GSU’s original mini-games—designed to deliver quick, high-impact experiences that challenge reflexes, focus, and precision. In GSU Charge Run, navigate a dynamic grid, avoid system hazards, and collect all power sources to achieve Full Sync. GSU Cipherstorm puts your speed and decoding skills to the test as you race to unscramble falling letter sequences before time runs out. GSU Command Strike brings competitive energy to the forefront in a real-time input duel where accuracy and reaction speed decide the winner. Each game is designed for instant accessibility, repeat play, and competitive depth—perfect for players looking to sharpen their skills or challenge friends.
+   Explore GSUâ€™s original mini-gamesâ€”designed to deliver quick, high-impact experiences that challenge reflexes, focus, and precision. In GSU Charge Run, navigate a dynamic grid, avoid system hazards, and collect all power sources to achieve Full Sync. GSU Cipherstorm puts your speed and decoding skills to the test as you race to unscramble falling letter sequences before time runs out. GSU Command Strike brings competitive energy to the forefront in a real-time input duel where accuracy and reaction speed decide the winner. Each game is designed for instant accessibility, repeat play, and competitive depthâ€”perfect for players looking to sharpen their skills or challenge friends.
   </p>
   <div class="retro-body" style="display: flex; flex-direction: column; gap: 0.5rem;">
     <button class="btn" style="font-size: 0.85rem;" onclick="location.href='Charge_Run.html'">GSU Charge Run</button>
@@ -1320,29 +1320,29 @@ When the Union highlights you — it means something. If your name’s echoing i
   </div>
 </div>
 
-<!-- 🧠 Game Dev Knowledge Drop -->
+<!-- ðŸ§  Game Dev Knowledge Drop -->
 <div class="box match-review-style">
-  <h2 class="retro-header">🧠 Game Dev Knowledge Drop</h2>
+  <h2 class="retro-header">ðŸ§  Game Dev Knowledge Drop</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
     Game development goes way beyond just code. Level design, engines, AI, and even psychology play a role. Level up your dev brain here.
   </p>
   <div class="retro-body" style="display: flex; flex-direction: column; gap: 0.5rem;">
-    <div style="font-size: 0.85rem;">📘 <strong>Today's Topic:</strong> Why level design is more psychology than geometry.</div>
-    <button class="btn" style="font-size: 0.85rem;">📚 Learn More</button>
+    <div style="font-size: 0.85rem;">ðŸ“˜ <strong>Today's Topic:</strong> Why level design is more psychology than geometry.</div>
+    <button class="btn" style="font-size: 0.85rem;">ðŸ“š Learn More</button>
   </div>
 </div>
 
 <div class="box match-review-style">
-  <h2 class="retro-header">💬 GSU Vibe Check</h2>
+  <h2 class="retro-header">ðŸ’¬ GSU Vibe Check</h2>
   <p style="font-size: 0.9rem; color: #ccc; font-family: 'Roboto', sans-serif; margin-bottom: 0.8rem;">
-    What’s the vibe across GameSync Union right now? We scanned the Lounge, uploads, and current plays to bring you the mood.
+    Whatâ€™s the vibe across GameSync Union right now? We scanned the Lounge, uploads, and current plays to bring you the mood.
   </p>
 
   <div class="retro-body" style="display: flex; flex-direction: column; gap: 0.6rem;">
-    <div style="font-size: 1rem; color: white; font-weight: bold;">🔥 Mood: Hype & Competitive</div>
-    <div style="font-size: 0.85rem; color: #bbb;">Top quoted: “Don’t get perfect-parried again.”</div>
+    <div style="font-size: 1rem; color: white; font-weight: bold;">ðŸ”¥ Mood: Hype & Competitive</div>
+    <div style="font-size: 0.85rem; color: #bbb;">Top quoted: â€œDonâ€™t get perfect-parried again.â€</div>
     <div style="font-size: 0.85rem; color: #bbb;">Top activity: Trophy flexes + fan art drops</div>
-    <button class="btn" style="margin-top: 0.6rem; font-size: 0.85rem;">📡 Scan Live Vibe</button>
+    <button class="btn" style="margin-top: 0.6rem; font-size: 0.85rem;">ðŸ“¡ Scan Live Vibe</button>
   </div>
 </div>
 
@@ -1595,12 +1595,12 @@ When the Union highlights you — it means something. If your name’s echoing i
 
   document.getElementById('editModal').style.display = 'block';
 
-  // 🧠 Auto-fill current profile values
-  document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
-  document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('🎮 Number Of Games Played: ', '');
-  document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('🏆 Trophy Stats (Total Trophies): ', '');
-  document.getElementById('editUsername').value = document.querySelector(".username-info")?.textContent.replace("👤 Username: ", "") || '';
-  document.getElementById('editPlatform').value = document.querySelector(".platform-info")?.textContent.replace("🔹 Platform: ", "") || '';
+  // ðŸ§  Auto-fill current profile values
+  document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('ðŸ”¥ Favorite Games: ', '');
+  document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('ðŸŽ® Number Of Games Played: ', '');
+  document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('ðŸ† Trophy Stats (Total Trophies): ', '');
+  document.getElementById('editUsername').value = document.querySelector(".username-info")?.textContent.replace("ðŸ‘¤ Username: ", "") || '';
+  document.getElementById('editPlatform').value = document.querySelector(".platform-info")?.textContent.replace("ðŸ”¹ Platform: ", "") || '';
 }
 
 
@@ -1617,7 +1617,7 @@ function updateCharacterOptions() {
   const imgEl = document.getElementById("character-image");
   const msgEl = document.getElementById("no-character-msg");
 
-  const gsuLogo = "GSU_LOGO.png"; // 🔁 Used when no match
+  const gsuLogo = "GSU_LOGO.png"; // ðŸ” Used when no match
 
   if (!platform) {
     roleEl.innerText = "";
@@ -1635,14 +1635,14 @@ function updateCharacterOptions() {
     msgEl.style.display = "block";
   } else {
     const chosen = filtered[Math.floor(Math.random() * filtered.length)];
-    roleEl.innerText = `🎮 You Are: ${chosen.name} (${chosen.role})`;
+    roleEl.innerText = `ðŸŽ® You Are: ${chosen.name} (${chosen.role})`;
     descEl.innerText = chosen.desc;
     imgEl.src = chosen.img;
     msgEl.style.display = "none";
   }
 }
 
-// 🧠 Show default state on first load
+// ðŸ§  Show default state on first load
 window.addEventListener('DOMContentLoaded', () => {
   updateCharacterOptions();
 });
@@ -1652,7 +1652,7 @@ function displayCharacterDetails() {
   const character = CharacterAssignments.find(char => char.name === selectedName);
 
   if (character) {
-    document.getElementById("character-role").innerText = `🎮 You Are: ${character.name} (${character.role})`;
+    document.getElementById("character-role").innerText = `ðŸŽ® You Are: ${character.name} (${character.role})`;
     document.getElementById("character-desc").innerText = character.desc;
     document.getElementById("character-image").src = character.img;
   } else {
@@ -1695,16 +1695,16 @@ function displayCharacterDetails() {
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // ✅ Ensure persistent login
+  // âœ… Ensure persistent login
   setPersistence(auth, browserLocalPersistence)
     .then(() => {
-      console.log("✅ Auth persistence enabled.");
+      console.log("âœ… Auth persistence enabled.");
     })
     .catch((error) => {
       console.error("Auth persistence error:", error);
     });
 
-  // 🔐 Login logic
+  // ðŸ” Login logic
   const emailInput = document.querySelector('#auth-box input[placeholder="Email"]');
   const passwordInput = document.querySelector('#auth-box input[placeholder="Password"]');
   const usernameInput = document.querySelector('#auth-box input[placeholder="Username"]');
@@ -1736,7 +1736,7 @@ function displayCharacterDetails() {
     }
   });
 
-  // 🔄 Load Profile Box
+  // ðŸ”„ Load Profile Box
   async function loadProfile(uid) {
     window.favoriteCoverMap = {};
     const snap = await getDoc(doc(db, "users", uid));
@@ -1761,7 +1761,7 @@ function displayCharacterDetails() {
       // Create new username element
       const usernameEl = document.createElement("p");
       usernameEl.className = "username-info";
-      usernameEl.textContent = `👤 Username: ${data.username || "N/A"}`;
+      usernameEl.textContent = `ðŸ‘¤ Username: ${data.username || "N/A"}`;
       usernameEl.style.fontWeight = "bold";
       usernameEl.style.fontSize = "1rem";
       usernameEl.style.marginBottom = "0.5rem";
@@ -1770,7 +1770,7 @@ function displayCharacterDetails() {
       // Create new platform element
       const platformEl = document.createElement("p");
       platformEl.className = "platform-info";
-      platformEl.textContent = `🔹 Platform: ${data.platform || "N/A"}`;
+      platformEl.textContent = `ðŸ”¹ Platform: ${data.platform || "N/A"}`;
       platformEl.style.fontSize = "0.95rem";
       platformEl.style.marginBottom = "0.5rem";
       profileBox.insertBefore(platformEl, usernameEl.nextSibling);
@@ -1795,9 +1795,9 @@ function displayCharacterDetails() {
 
       imageRow.innerHTML = "";
 
-      favGamesEl.textContent = `🔥 Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
-      gamesPlayedEl.textContent = `🎮 Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
-      trophyStatsEl.textContent = `🏆 Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
+      favGamesEl.textContent = `ðŸ”¥ Favorite Games: ${Array.isArray(data.favoriteGames) ? data.favoriteGames.join(", ") : "N/A"}`;
+      gamesPlayedEl.textContent = `ðŸŽ® Number Of Games Played: ${data.gamesPlayed || "N/A"}`;
+      trophyStatsEl.textContent = `ðŸ† Trophy Stats (Total Trophies): ${data.trophyCount || "N/A"}`;
 
       if (Array.isArray(data.favoriteImages)) {
         data.favoriteImages.forEach((url, index) => {
@@ -1833,7 +1833,7 @@ function displayCharacterDetails() {
     }
   }
 
-  // 🔓 Logout
+  // ðŸ”“ Logout
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
@@ -1848,7 +1848,7 @@ function displayCharacterDetails() {
     });
   }
 
-  // 🌎 Expose Firebase globals
+  // ðŸŒŽ Expose Firebase globals
   window.db = db;
   window.doc = doc;
   window.setDoc = setDoc;
@@ -1869,10 +1869,10 @@ function displayCharacterDetails() {
   }
 
   window.displaySelectedCover = displaySelectedCover;
-  // ✅ Auto-load profile on refresh or returning to page
+  // âœ… Auto-load profile on refresh or returning to page
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    loadProfile(user.uid); // 🧠 Already defined above
+    loadProfile(user.uid); // ðŸ§  Already defined above
     const profileBox = document.getElementById("profile-box");
     if (profileBox) profileBox.style.display = "block";
   } else {
@@ -1924,7 +1924,7 @@ async function saveProfileChanges() {
       usernameEl.style.marginBottom = "0.5rem";
       profileBox.prepend(usernameEl);
     }
-    usernameEl.textContent = `👤 Username: ${username || "N/A"}`;
+    usernameEl.textContent = `ðŸ‘¤ Username: ${username || "N/A"}`;
 
     // Update platform display (create if missing)
     let platformEl = profileBox.querySelector(".platform-info");
@@ -1935,12 +1935,12 @@ async function saveProfileChanges() {
       platformEl.style.marginBottom = "0.5rem";
       usernameEl.insertAdjacentElement("afterend", platformEl);
     }
-    platformEl.textContent = `🔹 Platform: ${platform || "N/A"}`;
+    platformEl.textContent = `ðŸ”¹ Platform: ${platform || "N/A"}`;
 
     // Update favorite games, games played, trophies
-    document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games || "N/A"}`;
-    document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed || "N/A"}`;
-    document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies || "N/A"}`;
+    document.getElementById('fav-games').textContent = `ðŸ”¥ Favorite Games: ${games || "N/A"}`;
+    document.getElementById('games-played').textContent = `ðŸŽ® Number Of Games Played: ${gamesPlayed || "N/A"}`;
+    document.getElementById('trophy-stats').textContent = `ðŸ† Trophy Stats (Total Trophies): ${trophies || "N/A"}`;
 
     // Update favorite images
     const imageRow = document.getElementById("fav-images");
@@ -2002,24 +2002,24 @@ import {
 
 
 const spotlightRef = document.getElementById("fav-game-updates");
-const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // ✅ Your API key
+const apiKey = "AIzaSyBtVEG3436lk_I4gfKCAxYSRv_IBU6lcBA"; // âœ… Your API key
 
 async function rotateYouTubeVideosForUser(uid) {
   try {
     const snap = await getDoc(doc(db, "users", uid));
     if (!snap.exists()) {
-      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No user data found.</p>";
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>âŒ No user data found.</p>";
       return;
     }
 
     const { favoriteGames } = snap.data();
     console.log("Favorite games from Firebase:", favoriteGames);
     if (!Array.isArray(favoriteGames) || favoriteGames.length === 0) {
-      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>❌ No favorite games set.</p>";
+      spotlightRef.innerHTML = "<p style='color:red; text-align:center;'>âŒ No favorite games set.</p>";
       return;
     }
 
-    spotlightRef.innerHTML = "<p style='text-align:center;'>🔄 Loading gameplay drops...</p>";
+    spotlightRef.innerHTML = "<p style='text-align:center;'>ðŸ”„ Loading gameplay drops...</p>";
 
    const blocks = await Promise.all(
   favoriteGames.slice(0, 3).map(async (title) => {
@@ -2030,11 +2030,11 @@ async function rotateYouTubeVideosForUser(uid) {
       );
       const data = await res.json();
 
-      // ✅ Handle YouTube quota errors here
+      // âœ… Handle YouTube quota errors here
     if (data?.error?.errors?.[0]?.reason === 'quotaExceeded') {
     return `
       <div style="color: var(--gsu-red); text-align: center; padding: 1rem;">
-        Today’s video drops are temporarily unavailable. Check back tomorrow for fresh gameplay!
+        Todayâ€™s video drops are temporarily unavailable. Check back tomorrow for fresh gameplay!
         <br/><br/>
         <button onclick="window.location.href='uploads.html'" style="background-color: var(--gsu-red); color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600;">
           Explore GSU Player Lounge
@@ -2052,14 +2052,14 @@ async function rotateYouTubeVideosForUser(uid) {
       return `
       <div class="spotlight-video">
         <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
-        <h3>🎮 ${title}</h3>
-        <p>▶️ Daily gameplay drop powered by YouTube</p>
+        <h3>ðŸŽ® ${title}</h3>
+        <p>â–¶ï¸ Daily gameplay drop powered by YouTube</p>
       </div>
     `;
 
     } catch (err) {
       console.error(`Error loading video for ${title}:`, err);
-      return `<div style="color:red; text-align:center;">❌ Failed to load video for <strong>${title}</strong></div>`;
+      return `<div style="color:red; text-align:center;">âŒ Failed to load video for <strong>${title}</strong></div>`;
     }
   })
 );
@@ -2068,7 +2068,7 @@ async function rotateYouTubeVideosForUser(uid) {
     spotlightRef.innerHTML = blocks.join("");
   } catch (e) {
     console.error("Error fetching YouTube videos:", e);
-    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Could not load personalized videos.</p>`;
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">âŒ Could not load personalized videos.</p>`;
   }
   
 
@@ -2077,13 +2077,13 @@ async function rotateYouTubeVideosForUser(uid) {
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    rotateYouTubeVideosForUser(user.uid); // 🔁 Personalized per user
-    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // ⏱️ Every 24 hours
+    rotateYouTubeVideosForUser(user.uid); // ðŸ” Personalized per user
+    setInterval(() => rotateYouTubeVideosForUser(user.uid), 86400000); // â±ï¸ Every 24 hours
   } else {
-    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">❌ Please log in to see personalized videos.</p>`;
+    spotlightRef.innerHTML = `<p style="color:red; text-align:center;">âŒ Please log in to see personalized videos.</p>`;
   }
   if (!user) {
-  showAuthNotice(); // 🔔 shows the styled message box
+  showAuthNotice(); // ðŸ”” shows the styled message box
   setTimeout(hideAuthNotice, 10000);
 }
 
@@ -2115,11 +2115,11 @@ onAuthStateChanged(auth, (user) => {
         username: user.email,
         timestamp: serverTimestamp()
       });
-      alert("✅ Review submitted successfully!");
+      alert("âœ… Review submitted successfully!");
       document.getElementById("reviewGame").value = "";
       document.getElementById("reviewText").value = "";
     } catch (err) {
-      console.error("❌ Error submitting review:", err);
+      console.error("âŒ Error submitting review:", err);
       alert("Something went wrong while saving your review.");
     }
   };
@@ -2148,7 +2148,7 @@ onAuthStateChanged(auth, (user) => {
     Signed out:
   </div>
   <div style="margin-bottom: 1rem;">
-    Access limited — sign in or create your GSU account to get the full GSU experience.
+    Access limited â€” sign in or create your GSU account to get the full GSU experience.
   </div>
   <button onclick="hideAuthNotice()" style="background-color: #e60023; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-family: 'Montserrat'; cursor: pointer;">
     Close
