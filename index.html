@@ -662,7 +662,7 @@ nav {
   text-align: center;
   margin-bottom: 1.5rem;
   transition: border 0.3s ease;
-  max-width: 800px;
+  max-width: 1000px;    
   margin-left: auto;
   margin-right: auto;
 }
@@ -691,22 +691,31 @@ nav {
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
 }
 
+/* Video sizing */
 .spotlight-video iframe {
   width: 100%;
-  height: 380px;      /* bigger height */
+  aspect-ratio: 16 / 9;       /* responsive */
+  height: auto;               /* let aspect-ratio control height */
+  min-height: 360px;          /* desktop feel; tweak to taste */
   border-radius: 12px;
 }
 
+/* Spotlight 3 grid: one big video per row, centered */
 #fav-game-updates {
-  grid-template-columns: 1fr;  /* one video per row */
-  max-width: 900px;            /* adjust width cap */
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr; /* always one per row on desktop */
+  gap: 2rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  max-width: 1000px;          /* match #spotlight3 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 
 @media (max-width: 768px) {
   .spotlight-video iframe {
-    height: 220px;
+    min-height: 220px;
   }
 }
 
