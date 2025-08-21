@@ -42,19 +42,13 @@ h2{text-align:center;margin:4px 0;font-size:clamp(1rem,2.8vw,1.2rem);letter-spac
 .boom{position:absolute;font-size:46px;opacity:0}
 .confetti{position:absolute;width:8px;height:12px;will-change:transform;opacity:.96}
 
-/* Winner badge INSIDE stage */
-.winner-badge{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.86);
-  background:rgba(255,255,255,.08); border:2px solid #fff; border-radius:14px;
-  padding:10px 16px; font-weight:800; letter-spacing:1px;
-  text-shadow:0 0 10px rgba(255,255,255,.35); box-shadow:0 0 18px rgba(230,0,35,.35);
-  opacity:0; pointer-events:none; z-index:5;
+/* In-box winner banner */
+.stage-banner{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);
+  padding:8px 14px;border:2px solid #fff;border-radius:14px;
+  background:rgba(230,0,35,.14);text-shadow:0 0 12px rgba(255,255,255,.34);
+  font-size:clamp(.95rem,2.8vw,1.15rem);opacity:0;pointer-events:none;
 }
-.winner-badge.show{
-  animation:badgePop .2s ease-out forwards, badgeFade .9s ease .9s forwards;
-}
-@keyframes badgePop{to{opacity:1; transform:translate(-50%,-50%) scale(1)}}
-@keyframes badgeFade{to{opacity:0}}
 
 .hud{font-size:clamp(.75rem,2.1vw,.96rem);display:flex;gap:8px;margin-bottom:4px;flex-wrap:wrap;justify-content:center}
 .pill{background:#222228;border:1px solid #35363a;border-radius:7px;padding:4px 7px;text-align:center;min-width:48px}
@@ -76,11 +70,6 @@ h2{text-align:center;margin:4px 0;font-size:clamp(1rem,2.8vw,1.2rem);letter-spac
 .btn{border:none;background:var(--gsu-red);color:#fff;padding:9px 16px;border-radius:9px;cursor:pointer;font-weight:700;font-size:clamp(1rem,2.6vw,1.1rem)}
 .btn:disabled{opacity:.55;cursor:not-allowed}
 
-/* Overlay kept only for FINAL match message */
-.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none}
-.overlay.show{display:flex}
-.banner{padding:10px 16px;border:2px solid #fff;border-radius:14px;background:rgba(230,0,35,.13);text-shadow:0 0 12px rgba(255,255,255,.34);font-size:clamp(1.05rem,3.5vw,1.35rem)}
-
 .helper{margin-top:8px;color:var(--muted);font-size:.95em;text-align:center}
 footer{opacity:.8;text-align:center;font-size:.83em;margin:14px auto 10px;color:var(--muted)}
 
@@ -91,10 +80,7 @@ footer{opacity:.8;text-align:center;font-size:.83em;margin:14px auto 10px;color:
 }
 
 nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-nav a{
-  color:#fff; text-decoration:none; background:var(--gsu-red);
-  padding:.55rem .9rem; border-radius:10px; font-weight:700;
-}
+nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:.55rem .9rem; border-radius:10px; font-weight:700;}
 </style>
 </head>
 <body>
@@ -132,11 +118,12 @@ nav a{
       <div class="pill">Hits <strong id="p-hits">0</strong></div>
     </div>
     <div class="cmd" id="p-cmd"></div>
+
     <div class="stage-outer" id="stage-player">
       <div class="fx" id="fx-player"></div>
-      <!-- winner badge inside your stage -->
-      <div class="winner-badge" id="badge-player">YOU WIN ⭐</div>
+      <div class="stage-banner" id="banner-player"></div>
     </div>
+
     <div id="player-leader" class="leader"></div>
   </div>
 
@@ -150,11 +137,12 @@ nav a{
       <div class="pill">Hits <strong id="c-hits">0</strong></div>
     </div>
     <div class="cmd" id="c-cmd"></div>
+
     <div class="stage-outer" id="stage-cpu">
       <div class="fx" id="fx-cpu"></div>
-      <!-- winner badge inside cpu stage -->
-      <div class="winner-badge" id="badge-cpu">CPU WINS 🤖</div>
+      <div class="stage-banner" id="banner-cpu"></div>
     </div>
+
     <div id="cpu-leader" class="leader"></div>
   </div>
 </div>
@@ -174,9 +162,6 @@ nav a{
 
 <div class="helper">Arrows = move. Beat the CPU to win the round!</div>
 
-<!-- Overlay kept only for FINAL match summary -->
-<div class="overlay" id="overlay"><div class="banner" id="bannerText"></div></div>
-
 <footer>Built for GameSync Union — GSU Command Strike™</footer>
 
 <script>
@@ -186,8 +171,7 @@ const MAX_ROUNDS = 12;
 const BOOM_ICONS = [
   '💥','✨','⚡','🔥','💣','🎆','🎇','🧨','🌩️','🌟','☄️','💫',
   '🌋','🌀','⭐','🌠','🌪️','✴️','✳️','❇️','✺','✹','✸','✻',
-  '🌊','❄️','💨','🌫️','💀','💢','🔨','🪓','🧨','🧯','💣','🪓',
-  '🏚️','🏚️','💣','🧨','🪨',
+  '🌊','❄️','💨','🌫️','💀','💢','🔨','🪓','🧯','🏚️','🪨',
   '💥✨','⚡🔥','🎆💣','🌩️💥','☄️✨','🌋⚡','⭐🔥','🌀💥',
   '🌠⚡','🌪️🎇','💫💣','🧨⭐','🎇🔥','✨🌟','⚡☄️','💥🌠',
   '🌩️⚡','🌪️🌊','❄️💨','🔥🌩️','☄️🔥','🌊⚡','🌫️🌪️','🌋💨',
@@ -199,7 +183,7 @@ const BOOM_ICONS = [
   '🌩️⚡🔥','🌪️🌊💨','❄️☄️⚡','🔥🌋🌪️','🌀💥⚡',
   '🌊❄️💨','☄️🌪️🔥','💥⚡🌊','🌫️🌪️🔥','❄️🌊🌋',
   '⚡🔥🌀','☄️💥🌪️','🌊⚡❄️','🌋🔥⚡',
-  '💥💀🔥','💣💥⚡','🏚️🔥💨','🧨💥☄️','💀⚡🌪️','💢💥🔥',
+  '💥💣💀🏚️','🔥💀☄️⚡','💢💥🌋⚡','🧨💥🔥💀','🏚️☄️⚡💥'
 ];
 
 const $ = (sel)=>document.querySelector(sel);
@@ -211,9 +195,8 @@ const rand = (a,b)=>Math.random()*(b-a)+a;
 const pCmd = $("#p-cmd"), cCmd = $("#c-cmd");
 const fxP = $("#fx-player"), fxC = $("#fx-cpu");
 const stageP = $("#stage-player"), stageC = $("#stage-cpu");
-const badgeP = $("#badge-player"), badgeC = $("#badge-cpu");
+const bannerP = $("#banner-player"), bannerC = $("#banner-cpu");
 const startBtn = $("#start"), nextBtn = $("#next"), restartBtn = $("#restart");
-const overlay = $("#overlay"), bannerText = $("#bannerText");
 const difficultySel = $("#difficulty");
 const scoreP = $("#score-p"), scoreC = $("#score-c"), scoreT = $("#score-t");
 
@@ -324,6 +307,27 @@ function renderTokens(container, arr, index){
 }
 function progressPct(done, total){ return Math.round((done/Math.max(1,total))*100); }
 
+/* In-box banner helpers */
+function showInBoxBanner(which, text, duration=1400){
+  const el = which === "player" ? bannerP : bannerC;
+  if(!el) return;
+  el.textContent = text;
+  el.style.opacity = 0;
+  el.style.transform = "translate(-50%,-50%) scale(.9)";
+  el.animate(
+    [{opacity:0, transform:"translate(-50%,-50%) scale(.9)"},
+     {opacity:1, transform:"translate(-50%,-50%) scale(1)"}],
+    {duration:220, easing:"ease-out", fill:"forwards"}
+  );
+  setTimeout(()=>{
+    el.animate(
+      [{opacity:1, transform:"translate(-50%,-50%) scale(1)"},
+       {opacity:0, transform:"translate(-50%,-50%) scale(.96)"}],
+      {duration:360, easing:"ease-in", fill:"forwards"}
+    );
+  }, duration);
+}
+
 let game = null;
 function newGame(){
   score.p = 0; score.c = 0; score.t = 0; updateScoreboard();
@@ -345,19 +349,6 @@ function populateTargets(len){
   for(let i=0;i<len;i++){
     game.targetsP.push(spawnTargetFX(stageP, fxP, game.targetsP));
     game.targetsC.push(spawnTargetFX(stageC, fxC, game.targetsC));
-  }
-}
-
-/* Badge helpers */
-function flashBadge(who){
-  if (who === "player"){
-    badgeP.classList.remove("show"); void badgeP.offsetWidth; // restart animation
-    badgeP.classList.add("show");
-    setTimeout(()=>badgeP.classList.remove("show"), 1200);
-  } else if (who === "cpu"){
-    badgeC.classList.remove("show"); void badgeC.offsetWidth;
-    badgeC.classList.add("show");
-    setTimeout(()=>badgeC.classList.remove("show"), 1200);
   }
 }
 
@@ -397,17 +388,26 @@ function endRound(winner){
   else score.t++;
   updateScoreboard();
 
-  // 🔴 Show winner badge INSIDE the correct stage (no center banner for round)
-  if (winner === "player") flashBadge("player");
-  else if (winner === "cpu") flashBadge("cpu");
+  // Show round result inside both strike areas
+  const roundMsg = winner === "player" ? "You win round 🏆"
+                  : winner === "cpu" ? "CPU wins round 🤖"
+                  : "Round tied ⚖️";
+  showInBoxBanner("player", roundMsg, 1300);
+  showInBoxBanner("cpu",    roundMsg, 1300);
 
+  // If final round -> show final match result **inside the boxes** too
   const isFinal = (game.round >= MAX_ROUNDS);
   if(isFinal){
-    let finalMsg = `Match Result — You ${score.p} : ${score.c} CPU`;
+    let finalMsg = `Match: You ${score.p} – ${score.c} CPU`;
     if(score.p > score.c) finalMsg += " • You Win 🏆";
     else if(score.c > score.p) finalMsg += " • CPU Wins 🤖";
     else finalMsg += " • Tie ⚖️";
-    showBanner(finalMsg); // only final uses overlay
+
+    setTimeout(()=>{
+      showInBoxBanner("player", finalMsg, 2200);
+      showInBoxBanner("cpu",    finalMsg, 2200);
+    }, 1100);
+
     nextBtn.disabled = true;
     startBtn.disabled = false;
     startBtn.textContent = "🔁 Restart Match";
@@ -420,13 +420,7 @@ function endRound(winner){
   $("#cpu-leader").textContent = winner==="cpu" ? "CPU was faster!" : "";
 }
 
-function showBanner(text){
-  bannerText.textContent = text;
-  overlay.classList.add("show");
-  setTimeout(()=>overlay.classList.remove("show"), 1600);
-}
-
-/* -------------------- Player input -------------------- */
+/* -------------------- Player input => boom next emoji -------------------- */
 function apply(sym){
   if(!game || game.done) return;
   const expect = game.pattern[game.player.idx];
@@ -434,8 +428,12 @@ function apply(sym){
 
   if(sym === expect){
     const target = game.targetsP[game.player.idx];
-    if(target){ flyControllerFX(stageP, fxP, target, ()=>{}); }
-    game.player.idx++; game.player.hits++; game.player.streak++;
+    if(target){
+      flyControllerFX(stageP, fxP, target, ()=>{});
+    }
+    game.player.idx++;
+    game.player.hits++;
+    game.player.streak++;
     const now = performance.now();
     game.player.time = Math.round(now - game.player.startedAt);
 
@@ -458,28 +456,33 @@ function apply(sym){
   }
 }
 
-/* -------------------- CPU logic -------------------- */
+/* -------------------- CPU logic => boom next emoji -------------------- */
 function startCPU(){
   const d = getDifficulty();
   const base = cpuSpeedByRound(game.round);
 
   const step = ()=> {
     if(game.done) return;
-    if(Math.random() < d.skip) return;
+    if(Math.random() < d.skip) return; // hesitation
 
     const jitter = rand(d.jitter[0], d.jitter[1]);
 
     setTimeout(()=>{
       if(game.done) return;
 
+      // fumble (Easy/Normal): small chance to lose one step
       if(d.fumble > 0 && Math.random() < d.fumble && game.cpu.idx > 0){
         game.cpu.idx = Math.max(0, game.cpu.idx - 1);
         const cur = cCmd.children[Math.max(0, game.cpu.idx)];
         if(cur){ cur.classList.add("bad"); setTimeout(()=>cur.classList.remove("bad"), 140); }
       } else {
         const target = game.targetsC[game.cpu.idx];
-        if(target){ flyControllerFX(stageC, fxC, target, ()=>{}); }
-        game.cpu.idx++; game.cpu.hits++; game.cpu.streak++;
+        if(target){
+          flyControllerFX(stageC, fxC, target, ()=>{});
+        }
+        game.cpu.idx++;
+        game.cpu.hits++;
+        game.cpu.streak++;
       }
 
       const now = performance.now();
