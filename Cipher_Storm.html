@@ -15,7 +15,6 @@
     --safe-right: env(safe-area-inset-right, 0px);
   }
   *{box-sizing:border-box}
-
   html, body { height:100%; margin:0; overflow-x:hidden; }
   body{
     font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
@@ -25,40 +24,48 @@
     -webkit-text-size-adjust:100%;
   }
 
-  header{display:flex; flex-direction:column; align-items:center; gap:8px}
-  nav{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
-  nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:8px 12px; border-radius:10px}
+  /* Header like Charge Run */
+  header{width:100%; display:flex; flex-direction:column; align-items:center; gap:8px}
   .logo{display:flex; flex-direction:column; align-items:center}
-  .logo img{max-width:96px}
+  .logo img{width:clamp(88px, 12vw, 120px); height:auto}
   .logo .text{letter-spacing:2px; opacity:.9}
+  nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+  nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:.6rem 1rem; border-radius:14px; font-weight:700}
 
-  /* Same frame vibe as Charge Run */
+  /* Framed game area (same vibe as Charge Run) */
   .frame{
-    width:min(900px,95vw);
-    border:3px solid var(--gsu-red); border-radius:16px; padding:12px;
+    width:min(980px, 96vw);
+    border:3px solid var(--gsu-red); border-radius:16px; padding:14px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
   }
+  h1{margin:6px 0 0 6px}
+  h2.sub{margin:4px 0 10px 6px; color:var(--gsu-red); font-size:1rem; opacity:.9}
 
+  /* HUD pills */
   .hud{
-    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px;
+    display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-bottom:10px;
     font-size:clamp(.8rem,2vw,1rem);
   }
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
 
-  /* Board stays stable; page can scroll (like Charge Run). */
+  /* Board — same size feel as Charge Run; page can scroll naturally */
   #board{
     position:relative;
-    height:min(520px,62svh);
-    overflow:hidden; border:1px solid #222; border-radius:12px;
-    background-image:
-      linear-gradient(to right,rgba(255,255,255,.06) 1px,transparent 1px),
-      linear-gradient(to bottom,rgba(255,255,255,.06) 1px,transparent 1px);
-    background-size:40px 40px; isolation:isolate;
+    height:min(520px, 58svh);
+    border:2px solid #222; border-radius:12px; overflow:hidden;
+    background:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size:40px 40px;
+    box-shadow:0 0 20px #e60023aa inset;
+    margin: 6px auto 10px;
+    isolation:isolate;
     touch-action:manipulation;
   }
 
+  /* Falling word tile */
   .tile{
     position:absolute; left:50%; transform:translateX(-50%);
     padding:12px 16px; background:#0b0b0b; border:1px solid #333; border-radius:12px;
@@ -71,78 +78,78 @@
   .ok{outline:2px solid #21d07a}
   .bad{outline:2px solid #d02121}
 
+  /* Controls row (like Charge Run buttons) */
   .controls{
-    margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
+    display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px;
   }
   #typed{
-    width:min(520px,90%); font-family:inherit;
-    font-size:max(16px, 1.05rem);  /* prevent iOS zoom */
+    width:min(520px, 90%);
+    font-family:inherit; font-size:max(16px,1.05rem);  /* prevent iOS auto-zoom */
     color:#fff; background:#0a0a0a;
     border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
   }
-  #startBtn, .btn{
+  .btn{
     border:none; background:var(--gsu-red); color:#fff; padding:10px 16px; border-radius:10px; cursor:pointer;
     box-shadow:0 0 10px #e60023aa; font-weight:700; font-size:max(16px,1rem);
   }
-  #startBtn:hover,.btn:hover{filter:brightness(1.1)}
-  .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+  .btn:disabled{opacity:.6; cursor:not-allowed}
 
-  footer{opacity:.7; font-size:.85rem}
-  @media (max-width:640px){ .hud{grid-template-columns:repeat(2,1fr)} }
+  footer{opacity:.7; font-size:.85rem; text-align:center; margin-top:10px}
+
+  /* Responsive: fewer HUD columns on phones (like your other pages) */
+  @media (max-width:900px){ .hud{grid-template-columns:repeat(4,1fr)} }
+  @media (max-width:640px){ .hud{grid-template-columns:repeat(3,1fr)} }
 </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="GSU_LOGO.png" alt="GSU Logo">
+      <img src="GSU_LOGO.png" alt="GSU Logo" />
       <div class="text">GAMESYNC UNION</div>
     </div>
     <nav><a href="index.html">Home</a></nav>
   </header>
 
   <section class="frame">
-    <h1 style="margin:6px 0 10px 6px;">GSU CIPHERSTORM</h1>
+    <h1>GSU CIPHERSTORM</h1>
+    <h2 class="sub">Unscramble the word before it hits the bottom.</h2>
+
     <div class="hud">
       <div class="pill">⏱ <strong id="time">60</strong>s</div>
       <div class="pill">🔢 Wave <strong id="wave">1</strong></div>
       <div class="pill">🔥 Streak <strong id="streak">0</strong></div>
       <div class="pill">⭐ Score <strong id="score">0</strong></div>
       <div class="pill">❤️ <strong id="lives">3</strong></div>
+      <div class="pill">⚡ Surge <strong id="surge">Ready?</strong></div>
+      <div class="pill">🎯 MaxLen <strong id="len">4</strong></div>
     </div>
 
     <div id="board" aria-live="polite"></div>
 
     <div class="controls">
       <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" autocapitalize="off" autocorrect="off" />
-      <button id="startBtn">▶ Start Run</button>
+      <button class="btn" id="startBtn">▶ Start Run</button>
       <button class="btn" id="slowmoBtn" disabled>⚡ Power Surge</button>
     </div>
 
-    <div class="row" style="color:var(--muted);margin-top:6px;">
-      <span>Tip: your tile glows green while your typed prefix is correct.</span>
+    <div class="row" style="color:var(--muted); text-align:center; margin-top:6px;">
+      Tip: your tile glows green while your typed prefix is correct.
     </div>
+
+    <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
   </section>
 
-  <footer>Built for GameSync Union — GSU Cipherstorm™</footer>
-
 <script>
-/* ---------- Word Lists (3–5 letters) ---------- */
+/* ---------- Word bank (short words) ---------- */
 const WORD_BANK = {
   games:["rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
          "aim","ping","lag","farm","gank","bait","poke","zone","stun","root","bind","smite","spray","carry","steal","skill",
          "stack","stats","quest","equip","dodge","feint","super","ultra","patch","boss","raid","loot","gold","coins","armor",
          "spawn","smurf","macro","micro","ghost","score","reset","stage","match","camp","heal","perks","runes","punch","block",
          "slide","burst","clash","scope","tilt"],
-  tech:["byte","data","code","build","stack","array","debug","query","cache","ping","queue","input",
-        "index","token","regex","route","param","class","scope","state","event","logic","parse","print",
-        "stdin","shell","linux","macos","proxy","redis","mongo","nexus","azure","cloud","https","http",
-        "email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh",
-        "grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"],
-  heroes:["loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic",
-          "Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan",
-          "Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby",
-          "Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"]
+  tech:["byte","data","code","build","stack","array","debug","query","cache","ping","queue","input","index","token","regex","route","param","class","scope","state","event","logic","parse","print","stdin","shell","linux","macos","proxy","redis","mongo","nexus","azure","cloud","https","http","email","hash","salt","merge","split","shift","node","deno","rust","java","perl","bash","zsh","grep","pipe","host","port","path","link","uuid","yaml","json","nano","yarn","vim","npm"],
+  heroes:["loki","thor","miles","storm","blade","nova","wasp","hulk","rogue","Spider","Sonic","Mario","Luigi","Peach","Tails","Link","Zelda","Ryu","Ken","Akuma","Sagat","Venom","Cable","Groot","Logan","Peter","Gwen","Zorro","Sora","Riku","Tifa","Cloud","Ellie","Abby","Joel","Lara","Samus","Yoshi","Kirby","Ness","Lucas","Robin","Flash","Rogue","Miles","Venom"]
 };
 const THEMES = Object.keys(WORD_BANK);
 
@@ -153,11 +160,13 @@ const waveEl  = document.getElementById('wave');
 const scoreEl = document.getElementById('score');
 const streakEl= document.getElementById('streak');
 const livesEl = document.getElementById('lives');
+const surgeEl = document.getElementById('surge');
+const lenEl   = document.getElementById('len');
 const typed   = document.getElementById('typed');
 const startBtn= document.getElementById('startBtn');
 const slowmoBtn = document.getElementById('slowmoBtn');
 
-/* ---------- Helpers ---------- */
+/* ---------- helpers ---------- */
 function sample(a){ return a[Math.floor(Math.random()*a.length)] }
 function pickTheme(){ return sample(THEMES) }
 function scrambleWord(w){
@@ -169,7 +178,7 @@ function scrambleWord(w){
   return (s===w) ? first + mid.reverse().join("") + last : s;
 }
 
-/* ---------- State ---------- */
+/* ---------- state ---------- */
 let state=null, rafId=null, timerId=null, slowId=null, theme="games";
 const BASE_SPEED=55, SPEED_PER_WAVE=8, MAX_SPEED=160, SLOW_FACTOR=0.6;
 
@@ -186,22 +195,24 @@ function setHUD(){
   timeEl.textContent=state.time; livesEl.textContent=state.lives;
   scoreEl.textContent=state.score; streakEl.textContent=state.streak;
   waveEl.textContent=state.wave; slowmoBtn.disabled=!state.powerReady||state.slow||!state.running;
+  surgeEl.textContent = state.powerReady ? "Ready" : (state.slow ? "Active" : "—");
+  lenEl.textContent = state.wave<=3 ? "4" : "5";
 }
 
-/* ---------- Tiles ---------- */
+/* ---------- tiles ---------- */
 function allowedMaxLen(){ return state.wave<=3 ? 4 : 5; }
 function spawnTile(){
   const words = WORD_BANK[theme].filter(w=>w.length<=allowedMaxLen());
   const word = sample(words), scram = scrambleWord(word);
   const tile = document.createElement('div');
   tile.className='tile'; tile.style.top='-52px'; tile.style.left=`${15+Math.random()*70}%`;
-  const hintMask = word[0]+" "+ "_ ".repeat(Math.max(0,word.length-2)) + word[word.length-1];
-  tile.innerHTML = `<div class="word">${scram}</div><div class="hint">${hintMask.trim()}</div>`;
+  const hint = word[0] + " " + "_ ".repeat(Math.max(0,word.length-2)) + word[word.length-1];
+  tile.innerHTML = `<div class="word">${scram}</div><div class="hint">${hint.trim()}</div>`;
   board.appendChild(tile);
   state.activeTile = {el:tile, y:-52, word, scram};
 }
 
-/* ---------- Loop ---------- */
+/* ---------- loop ---------- */
 function clearTile(ok){
   if(!state.activeTile) return;
   const el = state.activeTile.el; el.classList.add(ok?'ok':'bad');
@@ -225,7 +236,7 @@ function loop(ts){
   rafId = requestAnimationFrame(loop);
 }
 
-/* ---------- Control ---------- */
+/* ---------- control ---------- */
 function startRun(){
   if(state?.running) return;
   cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
@@ -265,10 +276,9 @@ function useSlow(){
   slowId=setTimeout(()=>{ state.slow=false; setHUD(); },5000);
 }
 
-/* ---------- Events ---------- */
+/* ---------- events ---------- */
 startBtn.addEventListener('click', startRun);
 slowmoBtn.addEventListener('click', useSlow);
-
 typed.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){ e.preventDefault(); submitWord(); return; }
   if (state?.activeTile){
@@ -280,8 +290,7 @@ typed.addEventListener('keydown', (e)=>{
       : "0 0 14px rgba(208,33,33,.55)";
   }
 });
-
-/* Desktop convenience */
+/* Keep input focused on desktop while running */
 window.addEventListener('keydown', ()=>{
   if(state?.running && document.activeElement!==typed){
     typed.focus({preventScroll:true});
