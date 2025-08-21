@@ -214,55 +214,12 @@ function genPattern(round) {
   return toks;
 }
 
-const pRound = document.getElementById('p-round'),
-  pTime = document.getElementById('p-time'),
-  pStreak = document.getElementById('p-streak'),
-  pProg = document.getElementById('p-prog'),
-  pHits = document.getElementById('p-hits'),
-  pCmd = document.getElementById('p-cmd'),
-  fxPlayer = document.getElementById('fx-player'),
-  lettersPlayer = document.getElementById('letters-player'),
-  playerLeader = document.getElementById('player-leader');
-
-const cRound = document.getElementById('c-round'),
-  cTime = document.getElementById('c-time'),
-  cStreak = document.getElementById('c-streak'),
-  cProg = document.getElementById('c-prog'),
-  cHits = document.getElementById('c-hits'),
-  cCmd = document.getElementById('c-cmd'),
-  fxCPU = document.getElementById('fx-cpu'),
-  cpuLeader = document.getElementById('cpu-leader');
-
-const overlay = document.getElementById('overlay');
-const lettersRow = document.getElementById('lettersRow');
-const startBtn = document.getElementById('start');
-const nextBtn = document.getElementById('next');
-const restartBtn = document.getElementById('restart');
-
-let game = null;
-let cpuFinishTime = null;
-let playerFinishTime = null;
-let playerTargets = [];
-let cpuTargets = [];
-let audioCtx = null;
-
-function ensureAudio() {
-  if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-}
-
-function beep(freq=880, dur=0.05, vol=0.03) {
-  if(!audioCtx) return;
-  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  o.frequency.value=freq; o.type='triangle'; g.gain.value=vol;
-  o.connect(g).connect(audioCtx.destination);
-  o.start();
-  g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-  o.stop(audioCtx.currentTime + dur);
-}
+let pC = {c:1, time:0, streak:0, prog:0, hits:0};
+let cpuC = {c:1, time:0, streak:0, prog:0, hits:0};
 
 function resetCounters() {
-  pC = { c: game.round, time: 0, streak: 0, prog: 0, hits: 0 };
-  cpuC = { c: game.round, time: 0, streak: 0, prog: 0, hits: 0 };
+  pC = {c:game.round, time:0, streak:0, prog:0, hits:0};
+  cpuC = {c:game.round, time:0, streak:0, prog:0, hits:0};
 }
 
 function newGame() {
@@ -277,7 +234,7 @@ function newGame() {
     presses: 0,
     streak: 0,
     active: false,
-    cpu: { idx: 0, hits: 0, presses: 0, streak: 0, speed: 400 }
+    cpu: {idx: 0, hits: 0, presses: 0, streak: 0, speed: 400}
   };
 }
 
@@ -358,7 +315,7 @@ function apply(sym) {
 
 function startCPU() {
   game.cpu.idx = 0; game.cpu.hits = 0; game.cpu.streak = 0;
-  // CPU speed slower: 400-650 ms per input for fair challenge
+  // CPU speed between 400-650ms for fair challenge
   game.cpu.speed = 400 + Math.random() * 250;
   cpuFinishTime = null;
   function cpuStep() {
@@ -368,7 +325,7 @@ function startCPU() {
       game.cpu.hits++; cpuC.hits = game.cpu.hits;
       game.cpu.streak++; cpuC.streak = game.cpu.streak;
       spawnSparkFX(fxCPU.parentElement, fxCPU);
-      flyControllerFX(fxCPU.parentElement, fxCPU, cpuTargets[game.cpu.idx], () => { });
+      flyControllerFX(fxCPU.parentElement, fxCPU, cpuTargets[game.cpu.idx], () => {});
       game.cpu.idx++;
       cpuC.prog = Math.round(100 * (game.cpu.idx / game.tokens.length));
       renderCmd("cpu", game.cpu.idx, game.tokens);
@@ -396,6 +353,7 @@ function checkWinner() {
     }
   }
 }
+
 function showBanner(text) {
   overlay.innerHTML = `<div class="banner">${text}</div>`;
   setTimeout(() => overlay.innerHTML = "", 1400);
