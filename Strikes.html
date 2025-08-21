@@ -191,7 +191,7 @@ function spawnTargetFX(stage, fx){
   const x = rand(pad, rect.width-pad-38), y = rand(pad, rect.height-pad-38);
   const el = document.createElement('div');
   el.className='target'; el.style.transform = `translate(${x}px,${y}px)`;
-  el.textContent = pick(['🎮','🎯','🧩','🏆','👾','⭐']);
+  el.textContent = pick(['👾','😂','😈','🤡','🙄','☠️','🤪','🤬','🤑','😴','👺', '🐒','🦅','🐸','🐷','🐊','🐰','🐉','🦊','😍','🥸','👻','🦁','🦄','😱','🐦‍🔥','🐲','😎','🤩','😘']);;
   fx.appendChild(el); return {x,y,el:el};
 }
 function flyControllerFX(stage, fx, target, cb){
