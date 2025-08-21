@@ -15,12 +15,13 @@
     --safe-right: env(safe-area-inset-right, 0px);
   }
   *{box-sizing:border-box}
-  html, body { height:100%; margin:0; overflow:hidden; } /* no page scroll */
+  html, body { height:100%; margin:0; }          /* SCROLL IS ALLOWED */
   body{
     font-family:'Orbitron',sans-serif; background:var(--bg); color:var(--fg);
-    min-height:100svh; display:flex; flex-direction:column; align-items:center; gap:14px;
+    min-height:100svh;
     padding:calc(12px + var(--safe-top)) calc(16px + var(--safe-right))
             calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+    display:flex; flex-direction:column; align-items:center; gap:14px;
     -webkit-text-size-adjust:100%;
   }
 
@@ -31,13 +32,11 @@
   nav{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
   nav a{color:#fff; text-decoration:none; background:var(--gsu-red); padding:.6rem 1rem; border-radius:14px; font-weight:700}
 
-  /* The whole game lives inside .frame which we scale to fit the screen */
   .frame{
     width:min(980px, 96vw);
     border:3px solid var(--gsu-red); border-radius:16px; padding:14px;
     box-shadow:0 0 18px #e60023cc, inset 0 0 18px #e6002326;
     background:linear-gradient(#0a0a0a,#000);
-    transform-origin: top center;
   }
   h1{margin:6px 0 0 6px}
   h2.sub{margin:4px 0 10px 6px; color:var(--gsu-red); font-size:1rem; opacity:.9}
@@ -49,9 +48,14 @@
   .pill{background:#111; border:1px solid #2a2a2a; border-radius:10px; padding:8px; text-align:center}
   .pill strong{color:var(--gsu-red)}
 
+  /* Board wrapper lets us measure available width */
+  #boardWrap{position:relative; display:flex; justify-content:center}
+
   #board{
     position:relative;
-    height:min(520px, 58svh); /* natural size; will be scaled by the frame */
+    width:100%;                                /* fill the wrap */
+    max-width:900px;
+    height:520px;                              /* JS will adjust */
     border:2px solid #222; border-radius:12px; overflow:hidden;
     background:
       linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
@@ -78,7 +82,7 @@
   .controls{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px}
   #typed{
     width:min(520px, 90%);
-    font-family:inherit; font-size:16px; /* prevent iOS zoom */
+    font-family:inherit; font-size:16px;       /* prevent iOS zoom */
     color:#fff; background:#0a0a0a;
     border:1px solid #333; border-radius:10px; padding:12px 14px; outline:none;
     box-shadow:0 0 8px rgba(255,255,255,.05);
@@ -118,7 +122,9 @@
       <div class="pill">🎯 MaxLen <strong id="len">4</strong></div>
     </div>
 
-    <div id="board" aria-live="polite"></div>
+    <div id="boardWrap">
+      <div id="board" aria-live="polite"></div>
+    </div>
 
     <div class="controls">
       <input id="typed" type="text" placeholder="Type the correct word, then press Enter…" autocomplete="off" autocapitalize="off" autocorrect="off" />
@@ -135,7 +141,52 @@
   </section>
 
 <script>
-/* ---------- Word bank (short words) ---------- */
+/* --------- Fit board height while allowing page scroll --------- */
+const board = document.getElementById('board');
+const fitBtn = document.getElementById('fitBtn');
+let typing = false;
+
+function visualVH(){ return (window.visualViewport ? window.visualViewport.height : window.innerHeight); }
+
+function fitBoard(auto=true){
+  const wrap = document.getElementById('boardWrap');
+  const vvh = visualVH();
+
+  // Space above the board:
+  const top = wrap.getBoundingClientRect().top;
+
+  // Reserve area below for controls + footer; scale with viewport
+  const reserveBelow = Math.max(150, Math.min(260, vvh * 0.28));
+
+  // Compute height that keeps the whole frame visible without forcing zoom
+  const usableH = Math.max(260, vvh - top - reserveBelow);
+
+  // Also respect available width (keep board roughly square-ish feel)
+  const usableW = wrap.clientWidth - 8;
+  const target = Math.min(usableH, Math.max(300, Math.min(680, usableW * 0.9)));
+
+  board.style.height = Math.round(target) + 'px';
+
+  if (!auto){
+    board.style.transition='transform .12s ease';
+    board.style.transform='scale(.995)';
+    setTimeout(()=>board.style.transform='scale(1)',130);
+  }
+}
+
+window.addEventListener('resize', ()=>!typing && fitBoard(true));
+window.visualViewport?.addEventListener('resize', ()=>!typing && fitBoard(true));
+window.addEventListener('orientationchange', ()=>fitBoard(true));
+fitBtn.addEventListener('click', ()=>fitBoard(false));
+
+/* Pause auto-fit while keyboard is up */
+const typed = document.getElementById('typed');
+typed.addEventListener('focus', ()=> typing = true);
+typed.addEventListener('blur',  ()=> { typing = false; fitBoard(true); });
+
+fitBoard(true);
+
+/* -------------------- Game logic (same as before) -------------------- */
 const WORD_BANK = {
   games:["rank","buff","nerf","tech","tilt","grab","chip","roll","dash","jump","kick","throw","guard","meter","combo","parry",
          "aim","ping","lag","farm","gank","bait","poke","zone","stun","root","bind","smite","spray","carry","steal","skill",
@@ -147,9 +198,6 @@ const WORD_BANK = {
 };
 const THEMES = Object.keys(WORD_BANK);
 
-/* ---------- DOM ---------- */
-const frame   = document.getElementById('frame');
-const board   = document.getElementById('board');
 const timeEl  = document.getElementById('time');
 const waveEl  = document.getElementById('wave');
 const scoreEl = document.getElementById('score');
@@ -157,31 +205,9 @@ const streakEl= document.getElementById('streak');
 const livesEl = document.getElementById('lives');
 const surgeEl = document.getElementById('surge');
 const lenEl   = document.getElementById('len');
-const typed   = document.getElementById('typed');
 const startBtn= document.getElementById('startBtn');
 const slowmoBtn = document.getElementById('slowmoBtn');
-const fitBtn  = document.getElementById('fitBtn');
 
-/* ---------- Fit-to-screen (no scroll) ---------- */
-function viewportH(){ return (window.visualViewport ? window.visualViewport.height : window.innerHeight); }
-function fitFrame(){
-  // Reset scale to measure natural height
-  frame.style.transform = 'scale(1)';
-  // Small top/bottom cushion so the frame isn't glued to edges
-  const cushion = 8;
-  const maxH = viewportH() - cushion;
-  const needed = frame.getBoundingClientRect().height;
-  const scale = Math.min(1, maxH / needed);
-  frame.style.transformOrigin = 'top center';
-  frame.style.transform = `scale(${scale})`;
-}
-window.addEventListener('resize', fitFrame);
-window.visualViewport?.addEventListener('resize', fitFrame);
-window.addEventListener('orientationchange', fitFrame);
-fitBtn.addEventListener('click', fitFrame);
-fitFrame();
-
-/* ---------- helpers ---------- */
 function sample(a){ return a[Math.floor(Math.random()*a.length)] }
 function pickTheme(){ return sample(THEMES) }
 function scrambleWord(w){
@@ -193,7 +219,6 @@ function scrambleWord(w){
   return (s===w) ? first + mid.reverse().join("") + last : s;
 }
 
-/* ---------- state ---------- */
 let state=null, rafId=null, timerId=null, slowId=null, theme="games";
 const BASE_SPEED=55, SPEED_PER_WAVE=8, MAX_SPEED=160, SLOW_FACTOR=0.6;
 
@@ -214,7 +239,6 @@ function setHUD(){
   lenEl.textContent = state.wave<=3 ? "4" : "5";
 }
 
-/* ---------- tiles ---------- */
 function allowedMaxLen(){ return state.wave<=3 ? 4 : 5; }
 function spawnTile(){
   const words = WORD_BANK[theme].filter(w=>w.length<=allowedMaxLen());
@@ -227,7 +251,6 @@ function spawnTile(){
   state.activeTile = {el:tile, y:-52, word, scram};
 }
 
-/* ---------- loop ---------- */
 function clearTile(ok){
   if(!state.activeTile) return;
   const el = state.activeTile.el; el.classList.add(ok?'ok':'bad');
@@ -251,7 +274,6 @@ function loop(ts){
   rafId = requestAnimationFrame(loop);
 }
 
-/* ---------- control ---------- */
 function startRun(){
   if(state?.running) return;
   cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
@@ -265,14 +287,14 @@ function startRun(){
   },1000);
 
   state.lastT=0; rafId=requestAnimationFrame(loop);
-  typed.focus({preventScroll:true});
-  fitFrame(); // ensure it still fits after any metric changes
+  typed.focus({preventScroll:false});
+  fitBoard(true);
 }
 function endRun(){
   state.running=false; cancelAnimationFrame(rafId); clearInterval(timerId); clearTimeout(slowId);
   startBtn.textContent="🔁 Run Again";
-  fitFrame();
 }
+
 function submitWord(){
   if(!state.running || !state.activeTile) return;
   const guess = typed.value.trim().toLowerCase(); if(!guess) return;
@@ -293,9 +315,9 @@ function useSlow(){
   slowId=setTimeout(()=>{ state.slow=false; setHUD(); },5000);
 }
 
-/* ---------- events ---------- */
-startBtn.addEventListener('click', startRun);
-slowmoBtn.addEventListener('click', useSlow);
+/* events */
+document.getElementById('startBtn').addEventListener('click', startRun);
+document.getElementById('slowmoBtn').addEventListener('click', useSlow);
 typed.addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){ e.preventDefault(); submitWord(); return; }
   if (state?.activeTile){
