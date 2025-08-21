@@ -114,402 +114,287 @@ footer{opacity:.8; text-align:center; font-size:.83em; margin:19px auto 3px auto
   <button class="btn" id="next" disabled>⏭ Next Pattern</button>
   <button class="btn" id="restart" disabled>🔁 Restart</button>
 </div>
-<div style="margin-top:11px; color:var(--muted); font-size:.95em;text-align:center;">
-Arrows=move • A/S/D/Q/E/F/J/K/L/Z/X/C/W/R/U/I=letters. Beat the CPU to win the round!
-</div>
+<div style="margin-top:11px; color:var(--muted); font-size:.95em;text-align:center;">Arrows=move • A/S/D/Q/E/F/J/K/L/Z/X/C/W/R/U/I=letters. Beat the CPU to win the round!</div>
 <div class="overlay" id="overlay"></div>
 <footer>Built for GameSync Union — GSU Command Strike™</footer>
-
 <script>
 const DIR = ["↑","↓","←","→"];
 const LETTER_TOKENS = ["A","S","D","Q","E","F","J","K","L","Z","X","C","W","R","U","I"];
 const MAX_ROUNDS = 12;
 const BOOM_ICONS = [
-  '💥','✨','⚡','🔥','💣','🎆','🎇','🧨','🌩️','🌟','☄️','💫','🌋','🌀','⭐','🌠','🌪️',
-  '✴️','✳️','❇️','✺','✹','✸','✻','💥✨','⚡💥','🔥💥','🎆💥','🎇✨','🧨💥','💣💥','🌩️⚡',
-  '☄️💥','🌋🔥','🌟✨','⭐✨','🌠✨','💫✨','⚡🔥','✨⚡','💥💥💥','✨✨✨','⚡⚡⚡','🔥🔥🔥',
-  '🎆🎆🎆','🎇🎇🎇','🧨🧨🧨'
+  '💥','✨','⚡','🔥','💣','🎆','🎇','🧨','🌩️','🌟','☄️','💫','🌋','🌀','⭐','🌠','🌪️','✴️','✳️','❇️','✺','✹','✸','✻',
+  '💥✨','⚡💥','🔥💥','🎆💥','🎇✨','🧨💥','💣💥','🌩️⚡','☄️💥','🌋🔥','🌟✨','⭐✨','🌠✨','💫✨','⚡🔥','✨⚡',
+  '💥💥💥','✨✨✨','⚡⚡⚡','🔥🔥🔥','🎆🎆🎆','🎇🎇🎇','🧨🧨🧨'
 ];
-
-function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function rand(a, b) { return Math.random() * (b - a) + a; }
-
-function spawnTargetFX(stage, fx, existing = []) {
-  const rect = stage.getBoundingClientRect(), pad = 18;
-  const size = 38;
-  let x, y, tries = 0;
-  do {
-    x = rand(pad, rect.width - pad - size);
-    y = rand(pad, rect.height - pad - size);
-    tries++;
-    const overlap = existing.some(t => Math.abs(x - t.x) < size && Math.abs(y - t.y) < size);
-    if (tries > 100) break;
-  } while (overlap);
-  const el = document.createElement('div');
-  el.className = 'target';
-  el.style.transform = `translate(${x}px,${y}px)`;
-  el.textContent = pick([
-    '👾', '😂', '😈', '🤡', '🙄', '☠️', '🤪', '🤬', '🤑', '😴', '👺',
-    '🐒', '🦅', '🐸', '🐷', '🐊', '🐰', '🐉', '🦊', '😍', '🥸', '👻',
-    '🦁', '🦄', '😱', '🐦‍🔥', '🐲', '😎', '🤩', '😘'
-  ]);
-  fx.appendChild(el);
-  return { x, y, el };
-}
-
-function flyControllerFX(stage, fx, target, cb) {
-  const img = document.createElement('img');
-  img.src = "GSU_LOGO.png";
-  img.className = "controller";
-  fx.appendChild(img);
-  const tx = target.x,
-    ty = target.y,
-    sx = rand(-66, 2),
-    sy = rand(18, stage.clientHeight - 30);
-
-  const kf = [
-    { transform: `translate(${sx}px,${sy}px) scale(1)` },
-    { transform: `translate(${(sx + tx) / 2}px,${(sy + ty) / 2 - 25}px) scale(1.08)` },
-    { transform: `translate(${tx}px,${ty}px) scale(1.10)` }
-  ];
-
-  img.animate(kf, { duration: 350, easing: "cubic-bezier(.2,.7,.2,1)", fill: "forwards" }).onfinish = () => {
-    target.el.classList.add("hit");
-    setTimeout(() => {
-      target.el && target.el.remove();
-    }, 160);
-    const boom = document.createElement("div");
-    boom.className = "boom";
-    boom.textContent = pick(BOOM_ICONS);
-    boom.style.transform = `translate(${tx + rand(-7, 7)}px,${ty + rand(-7, 7)}px) scale(.6)`;
-    fx.appendChild(boom);
-    boom.animate([{ opacity: 0.1 }, { opacity: 1 }, { opacity: 0 }], { duration: 320, fill: "forwards" });
-    setTimeout(() => {
-      boom.remove();
-    }, 322);
-    confettiFX(stage, fx, tx, ty, 6 + Math.floor(Math.random() * 2));
-    if (cb) cb();
-    img.remove();
-  };
-}
-
-function spawnSparkFX(stage, fx) {
-  const rect = stage.getBoundingClientRect();
-  const s = document.createElement("div");
-  s.className = "spark";
-  const x = rand(10, rect.width - 10),
-    y = rand(10, rect.height - 10);
-  s.style.transform = `translate(${x}px,${y}px)`;
-  fx.appendChild(s);
-  s.animate(
-    [
-      { transform: `translate(${x}px,${y}px) scale(.9)`, opacity: 1 },
-      { transform: `translate(${x + rand(-16, 16)}px,${y - 20}px) scale(.3)`, opacity: 0 }
-    ],
-    { duration: 190, easing: "ease", fill: "forwards" }
-  ).onfinish = () => s.remove();
-}
-
-function confettiFX(stage, fx, x, y, n) {
-  for (let i = 0; i < n; i++) {
-    const c = document.createElement("div");
-    c.className = "confetti";
-    c.style.background = pick(["#e60023", "#22cc88", "#33aaff", "#ffcc33", "#dd66ff", "#ffffff"]);
-    const sx = x + rand(-10, 10),
-      sy = y + rand(-7, 7),
-      th = stage.clientHeight;
-    c.style.transform = `translate(${sx}px,${sy}px) rotate(${rand(0, 360)}deg)`;
-    fx.appendChild(c);
-    c.animate(
-      [
-        { transform: `translate(${sx}px,${sy}px)`, opacity: 1 },
-        { transform: `translate(${sx + rand(-38, 38)}px,${th + 18}px) rotate(${rand(180, 720)}deg)`, opacity: 0.05 }
-      ],
-      { duration: rand(620, 950), easing: "cubic-bezier(.2,.7,.2,1)", fill: "forwards" }
-    ).onfinish = () => c.remove();
-  }
-}
-
-function tokenLengthByRound(r) {
-  const map = [4, 4, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8];
-  return map[Math.min(MAX_ROUNDS - 1, Math.max(0, r - 1))];
-}
-
-function genPattern(round) {
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
+function tokenLengthByRound(r){ const map = [4,4,5,5,6,6,6,7,7,7,8,8]; return map[Math.min(MAX_ROUNDS-1, Math.max(0, r-1))]; }
+function genPattern(round){
   const len = tokenLengthByRound(round);
   const toks = [];
-  for (let i = 0; i < len; i++) {
-    const pool = Math.random() < 0.52 ? DIR : LETTER_TOKENS;
-    let t = pick(pool);
-    if (i > 0 && t === toks[i - 1]) t = pick(pool.filter(x => x !== t));
+  for (let i=0;i<len;i++){
+    const pool = Math.random()<0.52?DIR:LETTER_TOKENS;
+    let t=pick(pool);
+    if(i>0 && t===toks[i-1]) t=pick(pool.filter(x=>x!==t));
     toks.push(t);
   }
   return toks;
 }
+const pRound = document.getElementById('p-round'),
+      pTime = document.getElementById('p-time'),
+      pStreak = document.getElementById('p-streak'),
+      pProg = document.getElementById('p-prog'),
+      pHits = document.getElementById('p-hits'),
+      pCmd = document.getElementById('p-cmd'),
+      fxPlayer=document.getElementById('fx-player'),
+      lettersPlayer = document.getElementById('letters-player'),
+      playerLeader = document.getElementById('player-leader');
 
-const pRound = document.getElementById("p-round"),
-  pTime = document.getElementById("p-time"),
-  pStreak = document.getElementById("p-streak"),
-  pProg = document.getElementById("p-prog"),
-  pHits = document.getElementById("p-hits"),
-  pCmd = document.getElementById("p-cmd"),
-  fxPlayer = document.getElementById("fx-player"),
-  lettersPlayer = document.getElementById("letters-player"),
-  playerLeader = document.getElementById("player-leader");
+const cRound = document.getElementById('c-round'),
+      cTime = document.getElementById('c-time'),
+      cStreak = document.getElementById('c-streak'),
+      cProg = document.getElementById('c-prog'),
+      cHits = document.getElementById('c-hits'),
+      cCmd = document.getElementById('c-cmd'),
+      fxCPU = document.getElementById('fx-cpu'),
+      cpuLeader = document.getElementById('cpu-leader');
+const overlay = document.getElementById('overlay');
+const lettersRow = document.getElementById('lettersRow');
+const startBtn = document.getElementById('start');
+const nextBtn = document.getElementById('next');
+const restartBtn = document.getElementById('restart');
 
-const cRound = document.getElementById("c-round"),
-  cTime = document.getElementById("c-time"),
-  cStreak = document.getElementById("c-streak"),
-  cProg = document.getElementById("c-prog"),
-  cHits = document.getElementById("c-hits"),
-  cCmd = document.getElementById("c-cmd"),
-  fxCPU = document.getElementById("fx-cpu"),
-  cpuLeader = document.getElementById("cpu-leader");
-
-const overlay = document.getElementById("overlay");
-const lettersRow = document.getElementById("lettersRow");
-const startBtn = document.getElementById("start");
-const nextBtn = document.getElementById("next");
-const restartBtn = document.getElementById("restart");
-
-let game = null;
-let cpuFinishTime = null;
-let playerFinishTime = null;
-let playerTargets = [];
-let cpuTargets = [];
+let game=null, cpuTimer=null, cpuFinishTime=null, playerFinishTime=null;
+let playerTargets=[], cpuTargets=[];
 let audioCtx = null;
-
-function ensureAudio() {
-  if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-}
-
-function beep(freq = 880, dur = 0.05, vol = 0.03) {
-  if (!audioCtx) return;
-  const o = audioCtx.createOscillator(),
-    g = audioCtx.createGain();
-  o.frequency.value = freq;
-  o.type = "triangle";
-  g.gain.value = vol;
-  o.connect(g).connect(audioCtx.destination);
-  o.start();
+function ensureAudio(){ if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function beep(freq=880, dur=0.05, vol=0.03){
+  if(!audioCtx) return;
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.frequency.value=freq; o.type='triangle'; g.gain.value=vol;
+  o.connect(g).connect(audioCtx.destination); o.start();
   g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
   o.stop(audioCtx.currentTime + dur);
 }
-
-function resetCounters() {
-  pC = { c: game.round, time: 0, streak: 0, prog: 0, hits: 0 };
-  cpuC = { c: game.round, time: 0, streak: 0, prog: 0, hits: 0 };
+function rand(a,b){ return Math.random()*(b-a)+a }
+function moveTargetRandomly(stage, target) {
+  // Randomly reposition the emoji target within the stage, don't go out of bounds
+  const rect = stage.getBoundingClientRect(), pad = 18;
+  const x = rand(pad, rect.width-pad-38), y = rand(pad, rect.height-pad-38);
+  target.x = x;
+  target.y = y;
+  target.el.style.transform = `translate(${x}px,${y}px)`;
 }
-
-function newGame() {
-  return {
-    round: 1,
-    maxRounds: MAX_ROUNDS,
-    tokens: [],
-    idx: 0,
-    start: 0,
-    end: 0,
-    hits: 0,
-    presses: 0,
-    streak: 0,
-    active: false,
-    cpu: { idx: 0, hits: 0, presses: 0, streak: 0, speed: 400 }
+function spawnTargetFX(stage, fx){
+  // spawn target in random pos within stage (returns {x,y,el})
+  fx.innerHTML = "";
+  const rect = stage.getBoundingClientRect(), pad = 18;
+  const x = rand(pad, rect.width-pad-38), y = rand(pad, rect.height-pad-38);
+  const el = document.createElement('div');
+  el.className='target'; el.style.transform = `translate(${x}px,${y}px)`;
+  el.textContent = pick(['👾','😂','😈','🤡','🙄','☠️','🤪','🤬','🤑','😴','👺', '🐒','🦅','🐸','🐷','🐊','🐰','🐉','🦊','😍','🥸','👻','🦁','🦄','😱','🐦‍🔥','🐲','😎','🤩','😘']);
+  fx.appendChild(el); return {x,y,el:el};
+}
+function flyControllerFX(stage, fx, target, cb){
+  moveTargetRandomly(stage, target); // Emoji moves right before strike
+  const img = document.createElement('img');
+  img.src="GSU_LOGO.png"; img.className='controller'; fx.appendChild(img);
+  const tx=target.x, ty=target.y, sx=rand(-66,2), sy=rand(18,stage.clientHeight-30);
+  const kf = [
+    {transform:`translate(${sx}px,${sy}px) scale(1)`},
+    {transform:`translate(${(sx+tx)/2}px,${(sy+ty)/2-25}px) scale(1.08)`},
+    {transform:`translate(${tx}px,${ty}px) scale(1.10)`}
+  ];
+  img.animate(kf,{duration:350,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'}).onfinish=()=>{
+    target.el.classList.add('hit');
+    setTimeout(()=>{target.el && target.el.remove();},160);
+    const boom = document.createElement('div');
+    boom.className='boom'; boom.textContent=pick(BOOM_ICONS);
+    boom.style.transform = `translate(${tx+rand(-7,7)}px,${ty+rand(-7,7)}px) scale(.6)`;
+    fx.appendChild(boom);
+    boom.animate([{opacity:.1},{opacity:1},{opacity:.0}],{duration:320,fill:'forwards'});
+    setTimeout(()=>{boom.remove()},322);
+    confettiFX(stage,fx,tx,ty,6+Math.floor(Math.random()*2));
+    cb && cb();
+    img.remove();
   };
 }
-
-function startRound() {
-  game.active = true;
-  game.tokens = genPattern(game.round);
-  game.idx = 0;
-  game.hits = 0;
-  game.presses = 0;
-  game.streak = 0;
-  game.start = performance.now();
-  game.end = 0;
-  cpuFinishTime = null;
-  playerFinishTime = null;
-  resetCounters();
-  setHUD();
-  renderCmd("player", 0, game.tokens);
-  renderCmd("cpu", 0, game.tokens);
-  fxPlayer.innerHTML = "";
-  fxCPU.innerHTML = "";
-  playerTargets = [];
-  cpuTargets = [];
-  for (let i = 0; i < game.tokens.length; i++) {
-    playerTargets.push(spawnTargetFX(fxPlayer.parentElement, fxPlayer, playerTargets));
-    cpuTargets.push(spawnTargetFX(fxCPU.parentElement, fxCPU, cpuTargets));
+function spawnSparkFX(stage,fx){
+  const rect = stage.getBoundingClientRect();
+  const s = document.createElement('div'); s.className='spark';
+  const x = rand(10,rect.width-10), y = rand(10, rect.height-10);
+  s.style.transform = `translate(${x}px,${y}px)`; fx.appendChild(s);
+  s.animate([{transform:`translate(${x}px,${y}px) scale(.9)`,opacity:1},{transform:`translate(${x+rand(-16,16)}px,${y-20}px) scale(.3)`,opacity:0}]
+          ,{duration:190,easing:'ease',fill:'forwards'}).onfinish=()=>s.remove();
+}
+function confettiFX(stage,fx,x,y,n){
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.background = pick(['#e60023','#22cc88','#33aaff','#ffcc33','#dd66ff','#ffffff']);
+    const sx=x+rand(-10,10), sy=y+rand(-7,7), th=stage.clientHeight;
+    c.style.transform = `translate(${sx}px,${sy}px) rotate(${rand(0,360)}deg)`;
+    fx.appendChild(c);
+    c.animate([{transform:`translate(${sx}px,${sy}px)`,opacity:1},
+      {transform:`translate(${sx+rand(-38,38)}px,${th+18}px) rotate(${rand(180,720)}deg)`, opacity:.05}],
+      {duration:rand(620,950),easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'}).onfinish=()=>c.remove();
   }
-  startBtn.disabled = true;
-  nextBtn.disabled = true;
-  restartBtn.disabled = false;
-  overlay.innerHTML = "";
+}
+// Command progress UI
+function renderCmd(which, idx, tokens){
+  // tokens = array of symbol letters/arrows, idx = progress so far
+  let html = [];
+  for(let i=0;i<tokens.length;i++){
+    let cl="token";
+    if(i<idx) cl+=" ok"
+    else if(i==idx) cl+=" pending";
+    html.push(`<div class="${cl}">${tokens[i]}</div>`)
+  }
+  if(which==="player"){ pCmd.innerHTML=html.join(""); }
+  else{ cCmd.innerHTML=html.join(""); }
+}
+// HUD updates
+function setHUD(){
+  pRound.textContent=pC.c; pTime.textContent=pC.time;
+  pStreak.textContent=pC.streak; pProg.textContent=pC.prog; pHits.textContent=pC.hits;
+  cRound.textContent=cpuC.c; cTime.textContent=cpuC.time;
+  cStreak.textContent=cpuC.streak; cProg.textContent=cpuC.prog; cHits.textContent=cpuC.hits;
+  playerLeader.textContent=(pC.prog>cpuC.prog?"You're ahead!":(cpuC.prog>pC.prog?"CPU is ahead!":""));
+  cpuLeader.textContent=(cpuC.prog>pC.prog?"CPU is ahead!":(pC.prog>cpuC.prog?"You're ahead!":""));
+}
+function leadingUpdate(){
+  playerLeader.textContent=pC.prog>cpuC.prog?"You're ahead!":(cpuC.prog>pC.prog?"CPU is ahead!":"");
+  cpuLeader.textContent=cpuC.prog>pC.prog?"CPU is ahead!":(pC.prog>cpuC.prog?"You're ahead!":"");
+}
+// State for each
+let pC = { c:1, time:0, streak:0, prog:0, hits:0 },
+    cpuC = { c:1, time:0, streak:0, prog:0, hits:0 }
+function resetCounters(){
+  pC={c:game.round,time:0,streak:0,prog:0,hits:0};
+  cpuC={c:game.round,time:0,streak:0,prog:0,hits:0};
+}
+// Game logic
+function newGame(){
+  return {
+    round:1, maxRounds:MAX_ROUNDS, tokens:[], idx:0, start:0, end:0,
+    hits:0, presses:0, streak:0, active:false,
+    cpu:{ idx:0, hits:0, presses:0, streak:0, speed:400 }
+  };
+}
+function startRound(){
+  game.active=true;
+  game.tokens=genPattern(game.round); game.idx=0; game.hits=0; game.presses=0; game.streak=0;
+  game.start=performance.now(); game.end=0; cpuFinishTime=null; playerFinishTime=null;
+  resetCounters(); setHUD();
+  renderCmd("player",0,game.tokens); renderCmd("cpu",0,game.tokens);
+  fxPlayer.innerHTML = "", fxCPU.innerHTML = ""; playerTargets=[], cpuTargets=[];
+  const len = game.tokens.length;
+  for(let i=0;i<len;i++){
+    playerTargets.push(spawnTargetFX(fxPlayer.parentElement,fxPlayer));
+    cpuTargets.push(spawnTargetFX(fxCPU.parentElement,fxCPU));
+  }
+  startBtn.disabled=true; nextBtn.disabled=true; restartBtn.disabled=false;
+  overlay.innerHTML="";
   startCPU();
 }
-
-function endRound() {
-  game.active = false;
-  game.end = performance.now();
-  setHUD();
-  checkWinner();
-  nextBtn.disabled = game.round >= game.maxRounds;
-  startBtn.disabled = false;
-  setTimeout(() => {
-    fxPlayer.innerHTML = "";
-    fxCPU.innerHTML = "";
-  }, 450);
+function endRound(){
+  game.active=false; game.end=performance.now();
+  setHUD(); checkWinner();
+  nextBtn.disabled = game.round>=game.maxRounds; startBtn.disabled=false;
+  setTimeout(()=>{fxPlayer.innerHTML="";fxCPU.innerHTML="";},450);
 }
-
-function apply(sym) {
-  if (!game?.active) return;
-  game.presses++;
-  const need = game.tokens[game.idx];
-  if (sym === need) {
-    ensureAudio();
-    beep(920 + (game.streak % 3) * 55, 0.04, 0.033);
-    game.hits++;
-    game.streak = Math.min(999, game.streak + 1);
-    pC.hits = game.hits;
-    pC.streak = game.streak;
-    spawnSparkFX(fxPlayer.parentElement, fxPlayer);
-    flyControllerFX(fxPlayer.parentElement, fxPlayer, playerTargets[game.idx], () => {});
-    game.idx++;
-    pC.prog = Math.round((game.idx / game.tokens.length) * 100);
-    renderCmd("player", game.idx, game.tokens);
-    setHUD();
-    if (game.idx >= game.tokens.length && !playerFinishTime) {
-      playerFinishTime = performance.now();
-      endRound();
-    }
+// Player input
+function apply(sym){
+  if(!game?.active) return;
+  game.presses++; const need = game.tokens[game.idx];
+  if(sym===need){
+    ensureAudio(); beep(920+(game.streak%3)*55,0.04,0.033);
+    game.hits++; game.streak=Math.min(999,game.streak+1);
+    pC.hits=game.hits;pC.streak=game.streak;
+    spawnSparkFX(fxPlayer.parentElement,fxPlayer);
+    flyControllerFX(fxPlayer.parentElement,fxPlayer,playerTargets[game.idx],()=>{});
+    game.idx++; pC.prog=Math.round(100*(game.idx/game.tokens.length)); renderCmd("player",game.idx,game.tokens); setHUD();
+    if(game.idx>=game.tokens.length && !playerFinishTime){ playerFinishTime=performance.now(); endRound();}
     leadingUpdate();
-  } else {
-    ensureAudio();
-    beep(180, 0.05, 0.04);
-    game.streak = 0;
-    pC.streak = 0;
-    const tokenEls = pCmd.querySelectorAll(".token");
+  }else{
+    ensureAudio(); beep(180,.05,.04); game.streak=0;pC.streak=0;
+    const tokenEls = pCmd.querySelectorAll('.token');
     const cur = tokenEls[game.idx];
-    if (cur) cur.classList.add("bad");
-    setTimeout(() => {
-      if (cur) cur.classList.remove("bad");
-    }, 110);
-    setHUD();
-    leadingUpdate();
+    if(cur){ cur.classList.add('bad'); setTimeout(()=>cur.classList.remove('bad'),110);}
+    setHUD(); leadingUpdate();
   }
 }
-
-function startCPU() {
-  game.cpu.idx = 0;
-  game.cpu.hits = 0;
-  game.cpu.streak = 0;
-  // CPU speed slower: 400-650 ms per input for fair challenge
-  game.cpu.speed = 400 + Math.random() * 250;
+function startCPU(){
+  game.cpu.idx=0; game.cpu.hits=0; game.cpu.streak=0;
+  // CPU speed approx 400-600ms per action, faster as rounds increase for difficulty
+  game.cpu.speed = 500 - game.round * 8 + Math.random() * 100;
+  if (game.cpu.speed < 380) game.cpu.speed = 380; // lower bound limit
+  if (game.cpu.speed > 600) game.cpu.speed = 600; // upper bound limit
   cpuFinishTime = null;
-
-  function cpuStep() {
-    if (!game.active) return;
-    setTimeout(() => {
-      if (!game.active || game.cpu.idx >= game.tokens.length) return;
-      game.cpu.hits++;
-      cpuC.hits = game.cpu.hits;
-      game.cpu.streak++;
-      cpuC.streak = game.cpu.streak;
+  function cpuStep(){
+    if(!game.active) return;
+    setTimeout(()=>{
+      if(!game.active || game.cpu.idx >= game.tokens.length) return;
+      game.cpu.hits++; cpuC.hits=game.cpu.hits;
+      game.cpu.streak++; cpuC.streak=game.cpu.streak;
       spawnSparkFX(fxCPU.parentElement, fxCPU);
-      flyControllerFX(fxCPU.parentElement, fxCPU, cpuTargets[game.cpu.idx], () => {});
-      game.cpu.idx++;
-      cpuC.prog = Math.round((game.cpu.idx / game.tokens.length) * 100);
+      flyControllerFX(fxCPU.parentElement, fxCPU, cpuTargets[game.cpu.idx],()=>{});
+      game.cpu.idx++; cpuC.prog=Math.round(100*(game.cpu.idx/game.tokens.length));
       renderCmd("cpu", game.cpu.idx, game.tokens);
       setHUD();
-      if (game.cpu.idx >= game.tokens.length && !cpuFinishTime) {
+      if(game.cpu.idx >= game.tokens.length && !cpuFinishTime){
         cpuFinishTime = performance.now();
         checkWinner();
       } else {
         cpuStep();
       }
       leadingUpdate();
-    }, game.cpu.speed + Math.random() * 50);
+    }, game.cpu.speed + Math.random() * 60);
   }
   cpuStep();
 }
 
-function checkWinner() {
-  if (playerFinishTime && cpuFinishTime) {
-    if (playerFinishTime < cpuFinishTime - 28) {
+function checkWinner(){
+  if(playerFinishTime && cpuFinishTime){
+    if(playerFinishTime < cpuFinishTime - 28){
       showBanner("🏆 YOU WIN!");
-    } else if (cpuFinishTime < playerFinishTime - 28) {
+    }else if(cpuFinishTime < playerFinishTime - 28){
       showBanner("🤖 CPU WINS!");
-    } else {
+    }else{
       showBanner("⚖️ DRAW!");
     }
   }
 }
-
-function showBanner(text) {
-  overlay.innerHTML = `<div class="banner">${text}</div>`;
-  setTimeout(() => (overlay.innerHTML = ""), 1400);
+function showBanner(t){
+  overlay.innerHTML = `<div class="banner">${t}</div>`;
+  setTimeout(()=>overlay.innerHTML="", 1400);
 }
 
-function renderCmd(which, idx, tokens) {
-  let html = [];
-  for (let i = 0; i < tokens.length; i++) {
-    let cl = "token";
-    if (i < idx) cl += " ok";
-    else if (i === idx) cl += " pending";
-    html.push(`<div class="${cl}">${tokens[i]}</div>`);
-  }
-  if (which === "player") pCmd.innerHTML = html.join("");
-  else cCmd.innerHTML = html.join("");
-}
-
-function setHUD() {
-  pRound.textContent = pC.c;
-  pTime.textContent = pC.time;
-  pStreak.textContent = pC.streak;
-  pProg.textContent = pC.prog;
-  pHits.textContent = pC.hits;
-  cRound.textContent = cpuC.c;
-  cTime.textContent = cpuC.time;
-  cStreak.textContent = cpuC.streak;
-  cProg.textContent = cpuC.prog;
-  cHits.textContent = cpuC.hits;
-  playerLeader.textContent = pC.prog > cpuC.prog ? "You're ahead!" : cpuC.prog > pC.prog ? "CPU is ahead!" : "";
-  cpuLeader.textContent = cpuC.prog > pC.prog ? "CPU is ahead!" : pC.prog > cpuC.prog ? "You're ahead!" : "";
-}
-
-function leadingUpdate() {
-  playerLeader.textContent = pC.prog > cpuC.prog ? "You're ahead!" : cpuC.prog > pC.prog ? "CPU is ahead!" : "";
-  cpuLeader.textContent = cpuC.prog > pC.prog ? "CPU is ahead!" : pC.prog > cpuC.prog ? "You're ahead!" : "";
-}
-
-window.addEventListener("keydown", (e) => {
-  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) e.preventDefault();
+window.addEventListener('keydown', e=>{
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
   let sym = null;
-  if (e.key === "ArrowUp") sym = "↑";
-  else if (e.key === "ArrowDown") sym = "↓";
-  else if (e.key === "ArrowLeft") sym = "←";
-  else if (e.key === "ArrowRight") sym = "→";
-  else if (/^[a-z]$/i.test(e.key)) sym = e.key.toUpperCase();
-  if (sym && (DIR.includes(sym) || LETTER_TOKENS.includes(sym))) apply(sym);
+  if(e.key==="ArrowUp") sym = "↑";
+  else if(e.key==="ArrowDown") sym = "↓";
+  else if(e.key==="ArrowLeft") sym="←";
+  else if(e.key==="ArrowRight") sym="→";
+  else if(/^[a-z]$/i.test(e.key)) sym = e.key.toUpperCase();
+  if(sym&&(DIR.includes(sym) || LETTER_TOKENS.includes(sym))) apply(sym);
 });
 
-[...document.querySelectorAll(".key[data-sym]")].forEach((k) => {
-  k.addEventListener("click", () => apply(k.getAttribute("data-sym")));
+[...document.querySelectorAll('.key[data-sym]')].forEach(k=>{
+  k.addEventListener('click',()=>apply(k.getAttribute('data-sym')));
 });
 
-startBtn.addEventListener("click", () => {
+startBtn.addEventListener('click', ()=>{
   ensureAudio();
   if (!game) game = newGame();
   else game.round = 1;
   startRound();
 });
-
-nextBtn.addEventListener("click", () => {
+nextBtn.addEventListener('click', ()=>{
   game.round++;
   startRound();
 });
-
-restartBtn.addEventListener("click", () => {
-  if (game) startRound();
+restartBtn.addEventListener('click', ()=>{
+  if(game) startRound();
 });
 </script>
 </body>
