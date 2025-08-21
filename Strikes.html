@@ -331,33 +331,36 @@ function apply(sym){
     setHUD(); leadingUpdate();
   }
 }
-// CPU simulation (slow, always beatable)
 function startCPU(){
   game.cpu.idx=0; game.cpu.hits=0; game.cpu.streak=0;
-  // CPU speed: always slower than a reasonable player (600-900ms/action)
-  game.cpu.speed=650 + Math.random()*180;
-  cpuFinishTime=null;
+  // CPU speed approx 400-600ms per action, faster as rounds increase for difficulty
+  game.cpu.speed = 500 - game.round * 8 + Math.random() * 100;
+  if (game.cpu.speed < 380) game.cpu.speed = 380; // lower bound limit
+  if (game.cpu.speed > 600) game.cpu.speed = 600; // upper bound limit
+  cpuFinishTime = null;
   function cpuStep(){
     if(!game.active) return;
     setTimeout(()=>{
-      if(!game.active||game.cpu.idx>=game.tokens.length) return;
+      if(!game.active || game.cpu.idx >= game.tokens.length) return;
       game.cpu.hits++; cpuC.hits=game.cpu.hits;
       game.cpu.streak++; cpuC.streak=game.cpu.streak;
-      // FX on CPU side
-      spawnSparkFX(fxCPU.parentElement,fxCPU);
-      flyControllerFX(fxCPU.parentElement,fxCPU,cpuTargets[game.cpu.idx],()=>{});
+      spawnSparkFX(fxCPU.parentElement, fxCPU);
+      flyControllerFX(fxCPU.parentElement, fxCPU, cpuTargets[game.cpu.idx],()=>{});
       game.cpu.idx++; cpuC.prog=Math.round(100*(game.cpu.idx/game.tokens.length));
-      renderCmd("cpu",game.cpu.idx,game.tokens); setHUD();
-      if(game.cpu.idx>=game.tokens.length && !cpuFinishTime){
-        cpuFinishTime=performance.now(); checkWinner();
-      }else{
+      renderCmd("cpu", game.cpu.idx, game.tokens);
+      setHUD();
+      if(game.cpu.idx >= game.tokens.length && !cpuFinishTime){
+        cpuFinishTime = performance.now();
+        checkWinner();
+      } else {
         cpuStep();
       }
       leadingUpdate();
-    }, game.cpu.speed + Math.random()*110);
+    }, game.cpu.speed + Math.random() * 60);
   }
   cpuStep();
 }
+
 function checkWinner(){
   if(playerFinishTime && cpuFinishTime){
     if(playerFinishTime<cpuFinishTime-28){
