@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   
@@ -11,142 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
   
 <style>
-  .update-flash-img {
-  animation: flashGlow 1.3s ease-in-out;
-}
-
-@keyframes flashGlow {
-  0% {
-    background-color: #e60023; /* GSU red */
-    color: white;
-    border: 2px solid white;
-    box-shadow: 0 0 18px 6px #e60023;
-    margin-bottom: 14px;  /* default margin */
-  }
-  50% {
-    background-color: rgba(230, 0, 35, 0.15); /* transparent red */
-    color: #e60023; /* GSU red text */
-    border: 2px solid #e60023;
-    box-shadow: 0 0 28px 10px #e60023;
-    margin-bottom: 24px; /* more space during flash */
-  }
-  100% {
-    background-color: transparent;
-    color: white;
-    border: 2px solid #e60023; /* GSU red border */
-    box-shadow: none;
-    margin-bottom: 14px;  /* back to normal */
-  }
-}
-
- .dropdown-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-/* 🔽 emoji arrow */
-.dropdown-wrapper::after {
-  content: "🔽";
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  transform: translateY(-50%);
-  font-size: 1.2rem;
-  pointer-events: none;
-  transition: transform 0.3s ease;
-}
-
-/* Flip on hover or focus */
-.dropdown-wrapper:hover::after,
-.dropdown-wrapper:focus-within::after {
-  transform: translateY(-50%) rotate(180deg);
-}
-
-#editPlatform {
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: white;
-  border: 2px solid #e60023;
-  border-radius: 10px;
-  padding: 10px 40px 10px 15px; /* Room for emoji */
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  position: relative;
-  z-index: 1;
-}
-
-
-
-/* Flip arrow on hover or focus */
-#editPlatform:hover::after,
-#editPlatform:focus::after {
-  transform: translateY(-50%) rotate(180deg);
-}
-
-  .stat-box {
-  margin-bottom: 12px;
-  padding: 10px 15px;
-  border: 2px solid #e60023;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.05);
-  transition: margin 0.3s ease;
-}
-
-
-  #profile-box.update-flash p,
-#profile-box.mid-flash p,
-#profile-box.update-flash div p,
-#profile-box.mid-flash div p,
-#profile-box.update-flash > p,
-#profile-box.mid-flash > p {
-  margin-bottom: 14px !important;
-  line-height: 1.6 !important;
-}
-
-
-  #profile-box.update-flash {
-  animation: flashGlow 1.2s ease-in-out;
-}
-
-#profile-box.update-flash .stat-box,
-#profile-box.mid-flash .stat-box {
-  margin-bottom: 24px !important; /* More space between boxes during flash */
-}
-
-@keyframes flashGlow {
-  0% {
-    background-color: #e60023; /* GSU red */
-    color: white;
-    border: 2px solid white;
-    box-shadow: 0 0 18px 6px #e60023;
-  }
-  50% {
-    background-color: white;
-    color: #e60023;
-    border: 2px solid #e60023;
-    box-shadow: 0 0 28px 10px white;
-  }
-  100% {
-    background-color: transparent;
-    color: white;
-    border: 2px solid var(--gsu-red); /* return to original GSU red border */
-    box-shadow: none;
-  }
-}
-
-
-
-.update-flash {
-  animation: flashGlow 1.8s ease-in-out;
-}
-
-
-
 
   .sync-desc {
   font-size: 0.9rem;
@@ -894,42 +759,6 @@ nav {
   border: 2px solid var(--gsu-red);
 }
 
-.gsu-dropdown {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0 18px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: white;
-  border: 2px solid #e60023;
-  border-radius: 10px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
-  transition: box-shadow 0.3s ease, background-color 0.3s ease;
-
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  background-position: right 18px center;
-  background-size: 16px;
-  padding-right: 48px;
-
-}
-
-.gsu-dropdown {
-  height: 42px; /* Or match the actual visual height */
-  line-height: 1.2;
-}
-
-
-.gsu-dropdown:hover,
-.gsu-dropdown:focus {
-  box-shadow: 0 0 10px 2px #e60023;
-  outline: none;
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-
 
   </style>
 </head>
@@ -998,7 +827,7 @@ nav {
   <label for="platform-select" class="sync-label">🕹️ Choose Your Platform to Begin the Sync:</label>
   <select id="platform-select" class="input-field" onchange="updateCharacterOptions()">
     <option value="">-- Choose Platform --</option>
-    <option value="PlayStation">PlayStation</option>
+    <option value="Playstation">PlayStation</option>
     <option value="PC">PC</option>
     <option value="Xbox">Xbox</option>
     <option value="Nintendo">Nintendo</option>
@@ -1043,7 +872,7 @@ nav {
   desc: "You balance smarts, strength, and soul. In every crisis, you choose the right thing — even when it costs you everything.",
   game: "Marvel's Spider-Man 2",
   img: "https://cdn2.unrealengine.com/egs-marvelsspidermandigitaldeluxeedition-insomniacgamesnixxessoftware-editions-g1a-00-1920x1080-f8f8dc068a4d.jpg",
-  platforms: ["PlayStation", "PC"]
+  platforms: ["Playstation", "PC"]
 },
 
 {
@@ -1052,7 +881,7 @@ nav {
   desc: "Fueled by rage but guided by growth, you’ve fought your past and forged a new path. You don’t run — you conquer.",
   game: "God of War Ragnarök",
   img: "https://w0.peakpx.com/wallpaper/909/900/HD-wallpaper-kratos-game-games-god-of-war-playstation-ps4-ps5-video-games-thumbnail.jpg",
-  platforms: ["PlayStation"]
+  platforms: ["Playstation"]
 },
 
 {
@@ -1061,7 +890,7 @@ nav {
   desc: "You carry the weight of two worlds on your shoulders — and still move with purpose, heart, and style. You’re the spark.",
   game: "Marvel's Spider-Man: Miles Morales",
   img: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/02/spider-man-miles-morales-web-fired-at-screen-night-time.jpg",
-  platforms: ["PlayStation", "PC"]
+  platforms: ["Playstation"]
 },
 
 {
@@ -1070,7 +899,7 @@ nav {
   desc: "Driven by curiosity and courage, you never stop pushing boundaries. You’re not afraid to question the world to save it.",
   game: "Horizon Forbidden West",
   img: "https://media.wired.com/photos/623233505f9392d9abe3e43e/master/pass/Horizon-Forbidden-West-Spoilers-Character-Games-Culture.jpg",
-  platforms: ["PlayStation", "PC"]
+  platforms: ["Playstation"]
 },
 
 {
@@ -1079,7 +908,7 @@ nav {
   desc: "Honor matters — but survival means adapting. You protect your people not by tradition, but by any means necessary.",
   game: "Ghost of Tsushima",
   img: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f03405b5-4361-4440-9bd3-6e7db6e9d0e2/dhozwq1-b24c7a15-142b-4437-8f67-de4e96005537.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2YwMzQwNWI1LTQzNjEtNDQ0MC05YmQzLTZlN2RiNmU5ZDBlMlwvZGhvendxMS1iMjRjN2ExNS0xNDJiLTQ0MzctOGY2Ny1kZTRlOTYwMDU1MzcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.wjQsMoxLyA5hjX_JsiDaTeuhiWbyihYKpCN5rnol8TM",
-  platforms: ["PlayStation"]
+  platforms: ["Playstation"]
 },
 
 {
@@ -1088,7 +917,7 @@ nav {
   desc: "You’re inventive, loyal, and always ready to blast through any challenge. No matter the dimension, you rise up with grit and gear.",
   game: "Ratchet & Clank: Rift Apart",
   img: "https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22528658/RACRA_Juggernaut_Legal_scaled.jpeg?quality=90&strip=all&crop=7.8125,0,84.375,100",
-  platforms: ["PlayStation"]
+  platforms: ["Playstation"]
 },
 
 {
@@ -1159,10 +988,9 @@ function assignCharacter() {
 
       <div class="box" id="profile-box">
     <h2 style="color: var(--gsu-red);">Your Profile</h2>
-    <p id="fav-games" class="stat-box">🔥 Favorite Games</p>
-    <p id="games-played" class="stat-box">🎮 Number Of Games Played</p>
-    <p id="trophy-stats" class="stat-box">🏆 Trophy Stats (Total Trophies)</p>
-
+    <p id="fav-games">🌟 Favorite Games</p>
+    <p id="games-played">🎮 Games Played</p>
+    <p id="trophy-stats">🏆 Trophy Stats</p>
 
     <div style="margin-top: 1rem;">
       <label style="color:#ccc; font-size: 0.9rem;">🎮 Synced Game Covers – Pulled from Your Top 3 Favorites</label>
@@ -1368,31 +1196,13 @@ When the Union highlights you — it means something. If your name’s echoing i
     <span class="close" onclick="closeEditModal()">&times;</span>
     <h2>Update Profile</h2>
 
-    <label>Username:</label>
-    <input type="text" id="editUsername" placeholder="Change your Username">
-
-   <label>Platform:</label>
-  <div class="dropdown-wrapper">
-  <select id="editPlatform">
-    <option value="">-- Select your new Platform --</option>
-    <option value="PlayStation">PlayStation</option>
-    <option value="PC">PC</option>
-    <option value="Xbox">Xbox</option>
-    <option value="Nintendo">Nintendo</option>
-    <option value="Multiple">Multiple Platforms</option>
-  </select>
-</div>
-
-
-
-
     <label>Favorite Games (comma-separated):</label>
     <input type="text" id="editGames" placeholder="Spider-Man 2, Ratchet & Clank...">
 
     <label>Number of Games Played:</label>
     <input type="number" id="editGamesPlayed" min="0">
 
-    <label>Favorite Games' Cover Image URLs (comma-separated):</label>
+    <label>Favorite Game Image URLs (comma-separated):</label>
     <input type="text" id="editGameImages" placeholder="url1, url2, url3">
 
     <label>Total Trophy Count:</label>
@@ -1599,8 +1409,6 @@ When the Union highlights you — it means something. If your name’s echoing i
   document.getElementById('editGames').value = document.getElementById('fav-games').textContent.replace('🔥 Favorite Games: ', '');
   document.getElementById('editGamesPlayed').value = document.getElementById('games-played').textContent.replace('🎮 Number Of Games Played: ', '');
   document.getElementById('editTrophies').value = document.getElementById('trophy-stats').textContent.replace('🏆 Trophy Stats (Total Trophies): ', '');
-  document.getElementById('editUsername').value = document.querySelector(".username-info")?.textContent.replace("👤 Username: ", "") || '';
-  document.getElementById('editPlatform').value = document.querySelector(".platform-info")?.textContent.replace("🔹 Platform: ", "") || '';
 }
 
 
@@ -1609,6 +1417,58 @@ When the Union highlights you — it means something. If your name’s echoing i
     document.getElementById('editModal').style.display = 'none';
   }
 
+  async function saveProfileChanges() {
+  const games = document.getElementById('editGames').value;
+  const gamesPlayed = document.getElementById('editGamesPlayed').value;
+  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim());
+  const trophies = document.getElementById('editTrophies').value;
+  const user = getAuth().currentUser;
+if (user) {
+  const uid = user.uid;
+  const docRef = doc(db, "users", uid);
+  try {
+    await setDoc(docRef, {
+      favoriteGames: games.split(',').map(s => s.trim()),
+      gamesPlayed: parseInt(gamesPlayed),
+      favoriteImages: imageUrls,
+      trophyCount: parseInt(trophies)
+    }, { merge: true });
+
+    alert("Profile updated successfully.");
+  } catch (err) {
+    console.error("Error saving profile:", err);
+    alert("Error saving changes.");
+  }
+}
+
+
+
+  document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games}`;
+  document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed}`;
+  document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies}`;
+
+  const imageRow = document.getElementById("fav-images");
+  imageRow.innerHTML = "";
+ imageUrls.forEach(url => {
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "Game cover";
+  img.classList.add("profile-fav-img"); // So CSS controls layout
+  img.style.objectFit = "contain";
+  img.style.backgroundColor = "transparent";
+  img.style.boxShadow = "none";
+  img.style.borderRadius = "0";
+  img.style.transition = "transform 0.3s ease";
+  img.style.scrollSnapAlign = "center";
+  img.onmouseover = () => img.style.transform = "scale(1.05)";
+  img.onmouseout = () => img.style.transform = "scale(1)";
+  imageRow.appendChild(img); // ✅ This was missing
+});
+
+
+
+  closeEditModal();
+}
 
 function updateCharacterOptions() {
   const platform = document.getElementById("platform-select").value;
@@ -1880,113 +1740,6 @@ onAuthStateChanged(auth, (user) => {
     if (profileBox) profileBox.style.display = "none";
   }
 });
-
-async function saveProfileChanges() {
-  const auth = getAuth();
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert("You must be signed in to update your profile.");
-    return;
-  }
-
-  const games = document.getElementById('editGames').value.trim();
-  const gamesPlayed = document.getElementById('editGamesPlayed').value.trim();
-  const imageUrls = document.getElementById('editGameImages').value.split(',').map(s => s.trim()).filter(Boolean);
-  const trophies = document.getElementById('editTrophies').value.trim();
-  const username = document.getElementById('editUsername').value.trim();
-  const platform = document.getElementById('editPlatform').value;
-
-  const uid = user.uid;
-  const docRef = doc(db, "users", uid);
-
-  try {
-    await setDoc(docRef, {
-      username,
-      platform,
-      favoriteGames: games ? games.split(',').map(s => s.trim()) : [],
-      gamesPlayed: gamesPlayed ? parseInt(gamesPlayed) : 0,
-      favoriteImages: imageUrls,
-      trophyCount: trophies ? parseInt(trophies) : 0
-    }, { merge: true });
-
-    // Update DOM immediately
-
-    const profileBox = document.getElementById("profile-box");
-
-    // Update username display (create if missing)
-    let usernameEl = profileBox.querySelector(".username-info");
-    if (!usernameEl) {
-      usernameEl = document.createElement("p");
-      usernameEl.className = "username-info";
-      usernameEl.style.fontWeight = "bold";
-      usernameEl.style.fontSize = "1rem";
-      usernameEl.style.marginBottom = "0.5rem";
-      profileBox.prepend(usernameEl);
-    }
-    usernameEl.textContent = `👤 Username: ${username || "N/A"}`;
-
-    // Update platform display (create if missing)
-    let platformEl = profileBox.querySelector(".platform-info");
-    if (!platformEl) {
-      platformEl = document.createElement("p");
-      platformEl.className = "platform-info";
-      platformEl.style.fontSize = "0.95rem";
-      platformEl.style.marginBottom = "0.5rem";
-      usernameEl.insertAdjacentElement("afterend", platformEl);
-    }
-    platformEl.textContent = `🔹 Platform: ${platform || "N/A"}`;
-
-    // Update favorite games, games played, trophies
-    document.getElementById('fav-games').textContent = `🔥 Favorite Games: ${games || "N/A"}`;
-    document.getElementById('games-played').textContent = `🎮 Number Of Games Played: ${gamesPlayed || "N/A"}`;
-    document.getElementById('trophy-stats').textContent = `🏆 Trophy Stats (Total Trophies): ${trophies || "N/A"}`;
-
-    // Update favorite images
-    const imageRow = document.getElementById("fav-images");
-    imageRow.innerHTML = "";
-    imageUrls.forEach(url => {
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = "Game cover";
-      img.classList.add("profile-fav-img");
-      img.style.objectFit = "contain";
-      img.style.transition = "transform 0.3s ease";
-      img.onmouseover = () => img.style.transform = "scale(1.05)";
-      img.onmouseout = () => img.style.transform = "scale(1)";
-      imageRow.appendChild(img);
-
-      // Optional flash effect on image update
-      img.classList.add("update-flash-img");
-      setTimeout(() => img.classList.remove("update-flash-img"), 1300);
-    });
-
-    // Flash animation on updated text elements
-    const updatedElements = [
-      usernameEl,
-      platformEl,
-      document.getElementById('fav-games'),
-      document.getElementById('games-played'),
-      document.getElementById('trophy-stats'),
-      imageRow
-    ];
-    updatedElements.forEach(el => {
-      el.classList.remove('update-flash');
-      void el.offsetWidth; // trigger reflow for restart animation
-      el.classList.add('update-flash');
-    });
-
-    // Close modal smoothly
-    closeEditModal();
-
-  } catch (err) {
-    console.error("Error saving profile:", err);
-    alert("Error saving changes.");
-  }
-}
-
-  window.saveProfileChanges = saveProfileChanges; // Expose to global scope
-
 
 </script>
 
